@@ -4,7 +4,7 @@
   "description": "The Synthicide system for FoundryVTT!",
   "authors": [
     {
-      "name": "MarvinV",
+      "name": "Marvin",
       "discord": "marvin9257"
     }
   ],
@@ -47,7 +47,7 @@
       "thumbnail": "systems/synthicide/assets/anvil-impact.png"
     }
   ],
-  "version": "3.0.0",
+  "version": "1.0.0",
   "compatibility": {
     "minimum": "13.339",
     "verified": "13.339"
