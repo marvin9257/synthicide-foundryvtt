@@ -1,0 +1,17 @@
+{
+  "name": "synthicide",
+  "version": "3.0.0",
+  "description": "Compiler for the Synthicide system",
+  "scripts": {
+    "createSymlinks": "node src/create-symlinks.mjs"
+  },
+  "browserslist": [
+    "last 3 versions"
+  ],
+  "author": "Marvin",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}
