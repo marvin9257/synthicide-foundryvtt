@@ -4,5 +4,68 @@
   data-group='primary'
   data-tab='attributes'
 >
-  {{! As you add new fields, add them in here! }}
+  <div class="modifiers-table">
+    <div class="modifiers-header">Attribute</div>
+    <div class="modifiers-header">Value</div>
+    <div class="modifiers-header">Type</div>
+    <div class="modifiers-header">Condition</div>
+    <div class="modifiers-header">Source</div>
+    <div class="modifiers-header"></div>
+    {{#if system.modifiers.length}}
+      {{#each system.modifiers as |mod i|}}
+        <div>
+          <select name="system.modifiers.{{i}}.target">
+            {{#each @root.config.attributes as |label key|}}
+              <option value="{{key}}" {{#if (eq key mod.target)}}selected{{/if}}>{{localize label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div>
+          <input type="number" name="system.modifiers.{{i}}.value" value="{{mod.value}}" step="1"/>
+        </div>
+        <div>
+          <select name="system.modifiers.{{i}}.type">
+            <option value="bonus" {{#if (eq mod.type "bonus")}}selected{{/if}}>Bonus</option>
+            <option value="penalty" {{#if (eq mod.type "penalty")}}selected{{/if}}>Penalty</option>
+            <option value="set" {{#if (eq mod.type "set")}}selected{{/if}}>Set</option>
+          </select>
+        </div>
+        <div>
+          <input type="text" name="system.modifiers.{{i}}.condition" value="{{mod.condition}}" placeholder="Optional"/>
+        </div>
+        <div>
+          <input type="text" name="system.modifiers.{{i}}.source" value="{{mod.source}}" placeholder="Optional"/>
+        </div>
+        <div>
+          <a class="modifiers-remove" data-action="removeModifier" data-index="{{i}}" title="Remove Modifier"><i class="fas fa-trash"></i></a>
+        </div>
+      {{/each}}
+    {{else}}
+      <div>
+        <select name="system.modifiers.0.target">
+          {{#each @root.config.attributes as |label key|}}
+            <option value="{{key}}">{{localize label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <div>
+        <input type="number" name="system.modifiers.0.value" value="0" step="1"/>
+      </div>
+      <div>
+        <select name="system.modifiers.0.type">
+          <option value="bonus">Bonus</option>
+          <option value="penalty">Penalty</option>
+          <option value="set">Set</option>
+        </select>
+      </div>
+      <div>
+        <input type="text" name="system.modifiers.0.condition" value="" placeholder="Optional"/>
+      </div>
+      <div>
+        <input type="text" name="system.modifiers.0.source" value="" placeholder="Optional"/>
+      </div>
+      <div></div>
+    {{/if}}
+  </div>
+  <button type="button" class="modifiers-add" data-action="addModifier"><i class="fas fa-plus"></i> Add Modifier</button>
 </section>

@@ -7,9 +7,7 @@ const DragDrop = foundry.applications.ux.DragDrop;
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheetV2}
  */
-export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(
-  sheets.ItemSheetV2
-) {
+export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2) {
   constructor(options = {}) {
     super(options);
   }
@@ -23,13 +21,44 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(
       createDoc: this._createEffect,
       deleteDoc: this._deleteEffect,
       toggleEffect: this._toggleEffect,
+      addModifier: this._onAddModifier,
+      removeModifier: this._onRemoveModifier,
     },
     form: {
       submitOnChange: true,
     },
-    // Custom property that's merged into `this.options`
     dragDrop: [{ dragSelector: '.draggable', dropSelector: null }],
   };
+  /**
+   * Handle adding a new modifier row to the feature item.
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async _onAddModifier(event, _target) {
+    event.preventDefault();
+    const item = this.item;
+    const modifiers = Array.isArray(item.system.modifiers) ? foundry.utils.deepClone(item.system.modifiers) : [];
+    const defaultTarget = Object.keys(CONFIG.SYNTHICIDE.attributes)[0] ?? 'awareness';
+    // Add a blank modifier
+    modifiers.push({ target: defaultTarget, value: 0, type: 'bonus', condition: '', source: '' });
+    await item.update({ 'system.modifiers': modifiers });
+  }
+
+  /**
+   * Handle removing a modifier row from the feature item.
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async _onRemoveModifier(event, target) {
+    event.preventDefault();
+    const item = this.item;
+    const index = Number(target.dataset.index);
+    let modifiers = Array.isArray(item.system.modifiers) ? foundry.utils.deepClone(item.system.modifiers) : [];
+    if (index >= 0 && index < modifiers.length) {
+      modifiers.splice(index, 1);
+      await item.update({ 'system.modifiers': modifiers });
+    }
+  }
 
   /* -------------------------------------------- */
 
@@ -120,7 +149,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(
         context.tab = context.tabs[partId];
         // Enrich description info for display
         // Enrichment turns text like `[[/r 1d20]]` into buttons
-        context.enrichedDescription = await TextEditor.enrichHTML(
+        context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
           this.item.system.description,
           {
             // Whether to show secret blocks in the finished html
@@ -170,16 +199,19 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(
         case 'description':
           tab.id = 'description';
           tab.label += 'Description';
+          tab.icon = 'fa-solid fa-align-left';
           break;
         case 'attributesFeature':
         case 'attributesGear':
         case 'attributesSpell':
           tab.id = 'attributes';
           tab.label += 'Attributes';
+          tab.icon = 'fa-solid fa-list';
           break;
         case 'effects':
           tab.id = 'effects';
           tab.label += 'Effects';
+          tab.icon = 'fa-solid fa-bolt';
           break;
       }
       if (this.tabGroups[tabGroup] === tab.id) tab.cssClass = 'active';
@@ -347,7 +379,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(
    * @returns {boolean}             Can the current user drag this selector?
    * @protected
    */
-  _canDragStart(selector) {
+  _canDragStart(_selector) {
     // game.user fetches the current user
     return this.isEditable;
   }
@@ -358,7 +390,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(
    * @returns {boolean}             Can the current user drop on this selector?
    * @protected
    */
-  _canDragDrop(selector) {
+  _canDragDrop(_selector) {
     // game.user fetches the current user
     return this.isEditable;
   }
@@ -391,7 +423,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(
    * @param {DragEvent} event       The originating DragEvent
    * @protected
    */
-  _onDragOver(event) { }
+  _onDragOver(_event) { }
 
   /**
    * Callback actions which occur when a dragged element is dropped on a target.
@@ -492,7 +524,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(
    *                                     not permitted.
    * @protected
    */
-  async _onDropActor(event, data) {
+  async _onDropActor(_event, _data) {
     if (!this.item.isOwner) return false;
   }
 
@@ -505,7 +537,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(
    * @returns {Promise<Item[]|boolean>}  The created or updated Item instances, or false if the drop was not permitted.
    * @protected
    */
-  async _onDropItem(event, data) {
+  async _onDropItem(_event, _data) {
     if (!this.item.isOwner) return false;
   }
 
@@ -519,7 +551,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(
    * @returns {Promise<Item[]>}
    * @protected
    */
-  async _onDropFolder(event, data) {
+  async _onDropFolder(_event, _data) {
     if (!this.item.isOwner) return [];
   }
 }
