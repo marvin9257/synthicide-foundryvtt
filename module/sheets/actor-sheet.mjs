@@ -73,16 +73,16 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
     // Not all parts always render
-    options.parts = ['header', 'tabs', 'biography'];
+    options.parts = ['header', 'tabs'];
     // Don't show the other tabs if only limited view
     if (this.document.limited) return;
     // Control which parts show based on document subtype
     switch (this.document.type) {
       case 'sharper':
-        options.parts.push('features', 'gear', 'spells', 'effects');
+        options.parts.push('features', 'gear', 'spells', 'biography', 'effects');
         break;
       case 'npc':
-        options.parts.push('gear', 'effects');
+        options.parts.push('gear', 'biography', 'effects');
         break;
     }
   }
@@ -163,7 +163,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // If you have sub-tabs this is necessary to change
     const tabGroup = 'primary';
     // Default tab for first time it's rendered this session
-    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'biography';
+    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'features';
     return parts.reduce((tabs, partId) => {
       const tab = {
         cssClass: '',
@@ -179,11 +179,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         case 'header':
         case 'tabs':
           return tabs;
-        case 'biography':
-          tab.id = 'biography';
-          tab.label += 'Biography';
-          tab.icon = 'fa-solid fa-user';
-          break;
         case 'features':
           tab.id = 'features';
           tab.label += 'Features';
@@ -198,6 +193,11 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           tab.id = 'spells';
           tab.label += 'Spells';
           tab.icon = 'fa-solid fa-wand-magic-sparkles';
+          break;
+        case 'biography':
+          tab.id = 'biography';
+          tab.label += 'Biography';
+          tab.icon = 'fa-solid fa-user';
           break;
         case 'effects':
           tab.id = 'effects';
@@ -301,7 +301,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     const { img } =
       this.document.constructor.getDefaultArtwork?.(this.document.toObject()) ??
       {};
-    const fp = new FilePicker({
+    const fp = new foundry.applications.apps.FilePicker.implementation({
       current,
       type: 'image',
       redirectToRoot: img ? [img] : [],

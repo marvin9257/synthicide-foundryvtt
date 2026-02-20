@@ -531,7 +531,7 @@
 
 .attributes-table {
   display: grid;
-  grid-template-columns: 40% 34% 26%;
+  grid-template-columns: 30% 35% 35%;
   margin-left: 0;
   align-items: center;
 }
@@ -604,4 +604,10 @@
 .attribute-input input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+img.actions-img {
+  height: 4ch;
+  width: auto;
+  display: inline-flex;
 }

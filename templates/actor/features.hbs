@@ -5,10 +5,10 @@
   data-group='primary'
   data-tab='features'
 >
-  <section class='grid grid-3col'>
-    <aside class='sidebar'>
+  <section class='grid grid-5col'>
+    <aside class='sidebar grid-span-2'>
       <div class="attributes-table">
-        <div class="attributes-header">Attribute</div>
+        <div class="attributes-header">ACTIONS</div>
         <div class="attributes-header">Level Increase</div>
         <div class="attributes-header">Current</div>
         {{#each system.attributes as |attribute key|}}
@@ -20,9 +20,11 @@
               data-label="{{localize (lookup @root.config.attributes key)}}"
               tabindex="0"
               role="button"
+              data-tooltip="{{localize (lookup @root.config.attributes key)}}"
             >
-              {{localize (lookup @root.config.attributes key)}}
+            <img class = "actions-img" src=" {{concat '/systems/synthicide/assets/' key '.png'}}">
             </span>
+            
           </div>
           <div class="attribute-input">
             <div class="attribute-stepper" data-attribute-key="{{key}}">
@@ -37,7 +39,7 @@
     </aside>
 
     {{! For the main features list, span the right two columns }}
-    <section class='main grid-span-2'>
+    <section class='main grid-span-3'>
       <ol class='items-list'>
         <li class='item flexrow items-header'>
           <div class='item-name'>{{localize 'Name'}}</div>
