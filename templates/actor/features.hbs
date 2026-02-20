@@ -25,7 +25,11 @@
             </span>
           </div>
           <div class="attribute-input">
-            <input type="number" name="system.attributes.{{key}}.increase" value="{{attribute.increase}}" class="attribute-score" data-dtype="Number" min="0" max="5" step="1">
+            <div class="attribute-stepper" data-attribute-key="{{key}}">
+              <button type="button" class="attribute-step-btn" data-action="decreaseAttribute" data-attribute-key="{{key}}" aria-label="Decrease {{localize (lookup @root.config.attributes key)}}">-</button>
+              <input type="number" name="system.attributes.{{key}}.increase" value="{{attribute.increase}}" class="attribute-score" data-dtype="Number" min="0" max="5" step="1">
+              <button type="button" class="attribute-step-btn" data-action="increaseAttribute" data-attribute-key="{{key}}" aria-label="Increase {{localize (lookup @root.config.attributes key)}}">+</button>
+            </div>
           </div>
           <div class="attribute-current">{{numberFormat attribute.current decimals=0 sign=true}}</div>
         {{/each}}

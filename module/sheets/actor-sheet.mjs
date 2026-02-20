@@ -27,6 +27,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       deleteDoc: this._deleteDoc,
       toggleEffect: this._toggleEffect,
       roll: this._onRoll,
+      increaseAttribute: this._onIncreaseAttribute,
+      decreaseAttribute: this._onDecreaseAttribute,
     },
     // Custom property that's merged into `this.options`
     // dragDrop: [{ dragSelector: '.draggable', dropSelector: null }],
@@ -415,6 +417,48 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       });
       return roll;
     }
+  }
+
+  /**
+   * Increase an attribute's level increase value by 1.
+   * @this SynthicideActorSheet
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   * @protected
+   */
+  static async _onIncreaseAttribute(event, target) {
+    event.preventDefault();
+    event.stopPropagation();
+    const key =
+      target.dataset.attributeKey ||
+      target.closest('[data-attribute-key]')?.dataset.attributeKey ||
+      target.closest('.attribute-stepper')?.dataset.attributeKey;
+    if (!key) return;
+    const path = `system.attributes.${key}.increase`;
+    const current = Number(foundry.utils.getProperty(this.actor.system, `attributes.${key}.increase`) ?? 0);
+    const next = Math.min(5, current + 1);
+    await this.actor.update({ [path]: next });
+  }
+
+  /**
+   * Decrease an attribute's level increase value by 1.
+   * @this SynthicideActorSheet
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   * @protected
+   */
+  static async _onDecreaseAttribute(event, target) {
+    event.preventDefault();
+    event.stopPropagation();
+    const key =
+      target.dataset.attributeKey ||
+      target.closest('[data-attribute-key]')?.dataset.attributeKey ||
+      target.closest('.attribute-stepper')?.dataset.attributeKey;
+    if (!key) return;
+    const path = `system.attributes.${key}.increase`;
+    const current = Number(foundry.utils.getProperty(this.actor.system, `attributes.${key}.increase`) ?? 0);
+    const next = Math.max(0, current - 1);
+    await this.actor.update({ [path]: next });
   }
 
   /** Helper Functions */

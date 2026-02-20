@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
 /* Feature Modifier Table Layout */
 .modifiers-table {
   display: grid;
@@ -11,7 +13,6 @@
   text-align: center;
   padding: 4px 0;
 }
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 :root {
   --synthicide-c-dark: #191813;
   --synthicide-c-faint: #c9c7b8;
@@ -530,7 +531,7 @@
 
 .attributes-table {
   display: grid;
-  grid-template-columns: 40% 30% 30%;
+  grid-template-columns: 40% 34% 26%;
   margin-left: 0;
   align-items: center;
 }
@@ -544,15 +545,63 @@
 }
 
 .attribute-input {
-  padding: 4px 8px;
+  padding: 3px 6px;
+}
+
+.attribute-stepper {
+  display: grid;
+  grid-template-columns: 32px 14px;
+  grid-template-rows: 12px 12px;
+  gap: 2px 2px;
+  align-items: center;
+  max-width: 62px;
+  margin: 0 auto;
+}
+
+.attribute-step-btn {
+  width: 14px;
+  height: 12px;
+  min-height: 12px;
+  padding: 0;
+  line-height: 1;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.attribute-step-btn[data-action="increaseAttribute"] {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.attribute-step-btn[data-action="decreaseAttribute"] {
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .attribute-input input[type="number"] {
-  max-width: 60px;
-  width: 100%;
-  height: 32px;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 28px;
+  max-width: 44px;
+  height: 26px;
   font-size: 1em;
   text-align: center;
+  padding: 0 4px;
+  box-sizing: border-box;
   margin: 0 auto;
   display: block;
+  appearance: textfield;
+}
+
+/*.attribute-current {
+  padding-left: 8px;
+}*/
+
+.attribute-input input[type="number"]::-webkit-outer-spin-button,
+.attribute-input input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
