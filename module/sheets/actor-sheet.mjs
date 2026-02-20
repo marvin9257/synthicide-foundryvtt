@@ -388,9 +388,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     // Handle item rolls.
     switch (dataset.rollType) {
-      case 'item':
+      case 'item': {
         const item = this._getEmbeddedDocument(target);
         if (item) return item.roll();
+      }
     }
 
     // Handle rolls that supply the formula directly.
@@ -517,7 +518,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    *                                     not permitted.
    * @protected
    */
-  async _onDropActor(event, data) {
+  async _onDropActor(_event, _data) {
     if (!this.actor.isOwner) return false;
   }
 
@@ -537,7 +538,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     if (folder.type !== 'Item') return [];
     const droppedItemData = await Promise.all(
       folder.contents.map(async (item) => {
-        if (!(document instanceof Item)) item = await fromUuid(item.uuid);
+        if (!(item instanceof Item)) item = await fromUuid(item.uuid);
         return item;
       })
     );
@@ -552,7 +553,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @returns {Promise<Item[]>}
    * @private
    */
-  async _onDropItemCreate(itemData, event) {
+  async _onDropItemCreate(itemData, _event) {
     itemData = itemData instanceof Array ? itemData : [itemData];
     return this.actor.createEmbeddedDocuments('Item', itemData);
   }

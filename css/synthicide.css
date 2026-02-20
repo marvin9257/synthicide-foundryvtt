@@ -301,8 +301,20 @@
   margin: 0;
   padding: 0;
   overflow-y: auto;
-  scrollbar-width: thin;
   color: var(--synthicide-c-tan);
+}
+
+.synthicide .items-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.synthicide .items-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.synthicide .items-list::-webkit-scrollbar-thumb {
+  background: var(--synthicide-c-beige);
+  border-radius: 4px;
 }
 .synthicide .items-list .item-list {
   list-style: none;
@@ -402,8 +414,20 @@
   margin: 0;
   padding: 0;
   overflow-y: auto;
-  scrollbar-width: thin;
   color: var(--synthicide-c-tan);
+}
+
+.synthicide .effects-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.synthicide .effects-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.synthicide .effects-list::-webkit-scrollbar-thumb {
+  background: var(--synthicide-c-beige);
+  border-radius: 4px;
 }
 .synthicide .effects-list .effect-list {
   list-style: none;

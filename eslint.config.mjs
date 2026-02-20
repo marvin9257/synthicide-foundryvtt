@@ -49,11 +49,15 @@ export default defineConfig([
         setInterval: "readonly",
         clearTimeout: "readonly",
         clearInterval: "readonly",
-        console: "readonly"
+        console: "readonly",
+        getDocumentClass: "readonly",
+        SortingHelpers: "readonly",
+        fromUuid: "readonly"
       },
     },
     rules: {
       "no-console": "off",
+      "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     },
   },
   { files: ["**/*.json"], plugins: { json }, language: "json/json", extends: ["json/recommended"] },
