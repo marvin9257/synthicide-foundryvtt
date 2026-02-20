@@ -1,6 +1,6 @@
 // Export Actors
 export { default as SynthicideActorBaseData } from './base-actor.mjs';
-export { default as SynthicideShaperData } from './actor-shaper.mjs';
+export { default as SynthicideSharperData } from './actor-sharper.mjs';
 export { default as SynthicideNPCData } from './actor-npc.mjs';
 
 // Export Items

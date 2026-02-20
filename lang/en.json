@@ -10,7 +10,7 @@
       "Speed": { "long": "Speed", "abbr": "S" }
     },
     "SheetLabels": {
-      "Actor": "Shaper Sheet",
+      "Actor": "Sharper Sheet",
       "Item": "Synthicide Item Sheet"
     },
     "Actor": {
@@ -80,7 +80,7 @@
   },
   "TYPES": {
     "Actor": {
-      "shaper": "Shaper",
+      "sharper": "Sharper",
       "npc": "NPC"
     },
     "Item": {

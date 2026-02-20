@@ -16,6 +16,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       width: 600,
       height: 600,
     },
+    window: {
+      resizable: true,
+      icon: "fa-solid fa-user-astronaut"
+    },
     actions: {
       onEditImage: this._onEditImage,
       viewDoc: this._viewDoc,
@@ -29,6 +33,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     form: {
       submitOnChange: true,
     },
+    sheetType: "SynthecideActorSheet"
   };
 
   /** @override */
@@ -71,7 +76,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     if (this.document.limited) return;
     // Control which parts show based on document subtype
     switch (this.document.type) {
-      case 'shaper':
+      case 'sharper':
         options.parts.push('features', 'gear', 'spells', 'effects');
         break;
       case 'npc':

@@ -7,37 +7,16 @@
 >
   <section class='grid grid-3col'>
     <aside class='sidebar'>
-      <div class='attributes flexrow flex-group-center'>
-        <header>Atrtribute</header>
-        <header>Lvl Increase</header>
-        <header>Current</header>
-      </div>
-      {{! The grid classes are defined in scss/global/_grid.scss. To use,
-          use both the "grid" and "grid-Ncol" class where "N" can be any number
-          from 1 to 12 and will create that number of columns.  }}
-      <div class='attributes flexcol'>
+      <div class="attributes-table">
+        <div class="attributes-header">Attribute</div>
+        <div class="attributes-header">Level Increase</div>
+        <div class="attributes-header">Current</div>
         {{#each system.attributes as |attribute key|}}
-          <div class='attribute flexrow flex-group-center'>
-            <label
-              class='resource-label rollable flexlarge align-left'
-              data-action='roll'
-              data-roll='d10+@attributes.{{key}}.current'
-              data-label='{{localize (lookup @root.config.attributes key)}}'
-            >{{localize (lookup @root.config.attributes key)}}</label>
-            <input
-              type='text'
-              name='system.attributes.{{key}}.increase'
-              value='{{attribute.increase}}'
-              class="attribute-score"
-              data-dtype='Number'
-            />
-            <span
-              class='attribute-mod rollable'
-              data-action='roll'
-              data-roll='d10+@attributes.{{key}}.current'
-              data-label='{{localize (lookup @root.config.attributes key)}}'
-            >{{numberFormat attribute.current decimals=0 sign=true}}</span>
+          <div class="attribute-label">{{localize (lookup @root.config.attributes key)}}</div>
+          <div class="attribute-input">
+            <input type="number" name="system.attributes.{{key}}.increase" value="{{attribute.increase}}" class="attribute-score" data-dtype="Number" min="0" max="5" step="1">
           </div>
+          <div class="attribute-current">{{numberFormat attribute.current decimals=0 sign=true}}</div>
         {{/each}}
       </div>
     </aside>

@@ -1,6 +1,6 @@
 import SynthicideActorBaseData from './base-actor.mjs';
 
-export default class SynthicideShaperData extends SynthicideActorBaseData {
+export default class SynthicideSharperData extends SynthicideActorBaseData {
   static LOCALIZATION_PREFIXES = [
     ...super.LOCALIZATION_PREFIXES,
     'SYNTHICIDE.Actor.Character',

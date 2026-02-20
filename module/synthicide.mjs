@@ -53,7 +53,7 @@ Hooks.once('init', function () {
   // for the base actor/item classes - they are included
   // with the Character/NPC as part of super.defineSchema()
   CONFIG.Actor.dataModels = {
-    shaper: models.SynthicideShaperData,
+    sharper: models.SynthicideSharperData,
     npc: models.SynthicideNPCData,
   };
   CONFIG.Item.documentClass = SynthicideItem;
@@ -70,7 +70,9 @@ Hooks.once('init', function () {
 
   // Register sheet application classes
   collections.Actors.unregisterSheet('core', sheets.ActorSheet);
+  collections.Actors.unregisterSheet('core', foundry.applications.sheets.ActorSheetV2)
   collections.Actors.registerSheet('synthicide', SynthicideActorSheet, {
+    types:["sharper", "NPC"],
     makeDefault: true,
     label: 'SYNTHICIDE.SheetLabels.Actor',
   });
