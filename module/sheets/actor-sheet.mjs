@@ -18,7 +18,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     },
     window: {
       resizable: true,
-      icon: "fa-solid fa-user-astronaut"
+      icon: "fa-solid fa-person"
     },
     actions: {
       onEditImage: this._onEditImage,
@@ -180,22 +180,27 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         case 'biography':
           tab.id = 'biography';
           tab.label += 'Biography';
+          tab.icon = 'fa-solid fa-user';
           break;
         case 'features':
           tab.id = 'features';
           tab.label += 'Features';
+          tab.icon = 'fa-solid fa-star';
           break;
         case 'gear':
           tab.id = 'gear';
           tab.label += 'Gear';
+          tab.icon = 'fa-solid fa-toolbox';
           break;
         case 'spells':
           tab.id = 'spells';
           tab.label += 'Spells';
+          tab.icon = 'fa-solid fa-wand-magic-sparkles';
           break;
         case 'effects':
           tab.id = 'effects';
           tab.label += 'Effects';
+          tab.icon = 'fa-solid fa-bolt';
           break;
       }
       if (this.tabGroups[tabGroup] === tab.id) tab.cssClass = 'active';

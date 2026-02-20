@@ -34,7 +34,7 @@ export class SynthicideItem extends Item {
    * @param {Event} event   The originating click event
    * @private
    */
-  async roll(event) {
+  async roll(_event) {
     const item = this;
 
     // Initialize chat data.

@@ -12,7 +12,18 @@
         <div class="attributes-header">Level Increase</div>
         <div class="attributes-header">Current</div>
         {{#each system.attributes as |attribute key|}}
-          <div class="attribute-label">{{localize (lookup @root.config.attributes key)}}</div>
+          <div class="attribute-label">
+            <span
+              class="rollable"
+              data-action="roll"
+              data-roll="d10+@attributes.{{key}}.current"
+              data-label="{{localize (lookup @root.config.attributes key)}}"
+              tabindex="0"
+              role="button"
+            >
+              {{localize (lookup @root.config.attributes key)}}
+            </span>
+          </div>
           <div class="attribute-input">
             <input type="number" name="system.attributes.{{key}}.increase" value="{{attribute.increase}}" class="attribute-score" data-dtype="Number" min="0" max="5" step="1">
           </div>
