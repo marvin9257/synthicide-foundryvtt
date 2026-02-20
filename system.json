@@ -10,7 +10,7 @@
   ],
   "documentTypes": {
     "Actor": {
-        "character": {
+        "shaper": {
             "htmlFields": ["biography"]
         },
         "npc": {

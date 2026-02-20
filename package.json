@@ -3,7 +3,8 @@
   "version": "3.0.0",
   "description": "Compiler for the Synthicide system",
   "scripts": {
-    "createSymlinks": "node src/create-symlinks.mjs"
+    "createSymlinks": "node src/create-symlinks.mjs",
+    "lint": "eslint ."
   },
   "browserslist": [
     "last 3 versions"
@@ -12,6 +13,11 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "js-yaml": "^4.1.0"
+    "@eslint/css": "^0.14.1",
+    "@eslint/js": "^10.0.1",
+    "@eslint/json": "^1.0.1",
+    "eslint": "^10.0.0",
+    "globals": "^17.3.0",
+    "js-yaml": "^4.1.1"
   }
 }

@@ -1,15 +1,16 @@
 {
   "SYNTHICIDE": {
-    "Ability": {
-      "Str": { "long": "Strength", "abbr": "str" },
-      "Con": { "long": "Constitution", "abbr": "con" },
-      "Dex": { "long": "Dexterity", "abbr": "dex" },
-      "Int": { "long": "Intelligence", "abbr": "int" },
-      "Wis": { "long": "Wisdom", "abbr": "wis" },
-      "Cha": { "long": "Charisma", "abbr": "cha" }
+    "Attribute": {
+      "Awareness": { "long": "Awareness", "abbr": "A" },
+      "Combat": { "long": "Combat", "abbr": "C" },
+      "Toughness": { "long": "Toughness", "abbr": "T" },
+      "Influence": { "long": "Influence", "abbr": "I" },
+      "Operation": { "long": "Operation", "abbr": "O" },
+      "Nerve": { "long": "Nerve", "abbr": "N" },
+      "Speed": { "long": "Speed", "abbr": "S" }
     },
     "SheetLabels": {
-      "Actor": "Synthicide Actor Sheet",
+      "Actor": "Shaper Sheet",
       "Item": "Synthicide Item Sheet"
     },
     "Actor": {
@@ -79,7 +80,7 @@
   },
   "TYPES": {
     "Actor": {
-      "character": "Character",
+      "shaper": "Shaper",
       "npc": "NPC"
     },
     "Item": {

@@ -4,10 +4,11 @@ import path from "path";
 
 console.log("Reforging Symlinks");
 
-if (fs.existsSync("foundry-config.yaml")) {
-  let fileRoot = "";
-  try {
-    const fc = await fs.promises.readFile("foundry-config.yaml", "utf-8");
+async function main() {
+  if (fs.existsSync("foundry-config.yaml")) {
+    let fileRoot = "";
+    try {
+      const fc = await fs.promises.readFile("foundry-config.yaml", "utf-8");
 
     const foundryConfig = yaml.load(fc);
 
@@ -41,6 +42,9 @@ if (fs.existsSync("foundry-config.yaml")) {
   } catch (e) {
     if (e.code !== "EEXIST") throw e;
   }
-} else {
-  console.log("Foundry config file did not exist.");
+  } else {
+    console.log("Foundry config file did not exist.");
+  }
 }
+
+main();

@@ -1,11 +1,23 @@
-export default class SynthicideActorBase extends foundry.abstract
+export default class SynthicideActorBaseData extends foundry.abstract
   .TypeDataModel {
   static LOCALIZATION_PREFIXES = ["SYNTHICIDE.Actor.base"];
-
   static defineSchema() {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = {};
+
+    // Synthicide attributes: base and current values, min -1
+    schema.attributes = new fields.SchemaField(
+      Object.keys(CONFIG.SYNTHICIDE.attributes).reduce((obj, attribute) => {
+        obj[attribute] = new fields.SchemaField({
+          base: new fields.NumberField({...requiredInteger, initial: 0}),
+          modifier: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+          increase: new fields.NumberField({ ...requiredInteger, initial: 0, max: 5 }),
+          current: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
+        });
+        return obj;
+      }, {})
+    );
 
     schema.health = new fields.SchemaField({
       value: new fields.NumberField({
@@ -15,12 +27,27 @@ export default class SynthicideActorBase extends foundry.abstract
       }),
       max: new fields.NumberField({ ...requiredInteger, initial: 10 }),
     });
+
     schema.power = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }),
       max: new fields.NumberField({ ...requiredInteger, initial: 5 }),
     });
+
     schema.biography = new fields.HTMLField();
 
     return schema;
+  }
+
+  prepareDerivedData() {
+  // Loop through attribute scores, and add their modifiers to our sheet output.
+    super.prepareDerivedData();
+    for (const key in this.attributes) {
+      // Calculate the modifier using d20 rules.
+      this.attributes[key].current = this.attributes[key].base + this.attributes[key].modifier + this.attributes[key].increase;
+
+      // Handle attribute label localization.
+      this.attributes[key].label =
+        game.i18n.localize(CONFIG.SYNTHICIDE.attributes[key]) ?? key;
+    }
   }
 }

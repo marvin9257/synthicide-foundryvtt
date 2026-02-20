@@ -1,6 +1,6 @@
-import SynthicideActorBase from './base-actor.mjs';
+import SynthicideActorBaseData from './base-actor.mjs';
 
-export default class SynthicideNPC extends SynthicideActorBase {
+export default class SynthicideNPCData extends SynthicideActorBaseData {
   static LOCALIZATION_PREFIXES = [
     ...super.LOCALIZATION_PREFIXES,
     'SYNTHICIDE.Actor.NPC',

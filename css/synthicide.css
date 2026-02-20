@@ -270,11 +270,11 @@
 .synthicide .resource-label {
   font-weight: bold;
 }
-.synthicide .ability {
+.synthicide .attribute {
   margin-bottom: 2px;
 }
-.synthicide .ability-score,
-.synthicide .ability-mod {
+.synthicide .attribute-score,
+.synthicide .attribute-mod {
   flex: 0 0 44px;
 }
 .synthicide .items-header {

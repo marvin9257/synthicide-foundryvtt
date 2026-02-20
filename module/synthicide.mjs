@@ -42,7 +42,7 @@ Hooks.once('init', function () {
    * @type {String}
    */
   CONFIG.Combat.initiative = {
-    formula: '1d20 + @abilities.dex.mod',
+    formula: '1d10 + @attributes.dex.mod',
     decimals: 2,
   };
 
@@ -53,8 +53,8 @@ Hooks.once('init', function () {
   // for the base actor/item classes - they are included
   // with the Character/NPC as part of super.defineSchema()
   CONFIG.Actor.dataModels = {
-    character: models.SynthicideCharacter,
-    npc: models.SynthicideNPC,
+    shaper: models.SynthicideShaperData,
+    npc: models.SynthicideNPCData,
   };
   CONFIG.Item.documentClass = SynthicideItem;
   CONFIG.Item.dataModels = {
