@@ -1,3 +1,4 @@
+import SYNTHICIDE from "../helpers/config.mjs";
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -11,7 +12,7 @@ export class SynthicideActor extends Actor {
     const debugModifiers = true//Boolean(CONFIG?.debug?.synthicideModifiers);
 
     // --- 1. Aggregate modifiers from item-defined custom modifiers ---
-    const attributeKeys = Object.keys(CONFIG.SYNTHICIDE.attributes);
+    const attributeKeys = Object.keys(SYNTHICIDE.attributes);
     const attributeModifiers = {};
     for (const key of attributeKeys) attributeModifiers[key] = 0;
     const nonAttributeModifiers = [];

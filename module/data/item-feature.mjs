@@ -1,3 +1,4 @@
+import SYNTHICIDE from '../helpers/config.mjs';
 import SynthicideItemBase from './base-item.mjs';
 
 export default class SynthicideFeature extends SynthicideItemBase {
@@ -15,7 +16,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
       new fields.SchemaField({
         target: new fields.StringField({
           required: true,
-          choices: Object.keys(CONFIG.SYNTHICIDE.attributes),
+          choices: Object.keys(SYNTHICIDE.attributes),
         }),
         value: new fields.NumberField({ required: true }),
         type: new fields.StringField({

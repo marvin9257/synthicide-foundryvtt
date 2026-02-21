@@ -1,3 +1,4 @@
+import SYNTHICIDE from '../helpers/config.mjs';
 export default class SynthicideActorBaseData extends foundry.abstract
   .TypeDataModel {
   static LOCALIZATION_PREFIXES = ["SYNTHICIDE.Actor.base"];
@@ -8,7 +9,7 @@ export default class SynthicideActorBaseData extends foundry.abstract
 
     // Synthicide attributes: base and current values, min -1
     schema.attributes = new fields.SchemaField(
-      Object.keys(CONFIG.SYNTHICIDE.attributes).reduce((obj, attribute) => {
+      Object.keys(SYNTHICIDE.attributes).reduce((obj, attribute) => {
         obj[attribute] = new fields.SchemaField({
           base: new fields.NumberField({...requiredInteger, initial: 0}),
           modifier: new fields.NumberField({ ...requiredInteger, initial: 0 }),
@@ -20,11 +21,7 @@ export default class SynthicideActorBaseData extends foundry.abstract
     );
 
     schema.hitPoints = new fields.SchemaField({
-      value: new fields.NumberField({
-        ...requiredInteger,
-        initial: 10,
-        min: 0,
-      }),
+      value: new fields.NumberField({...requiredInteger, initial: 10, min: 0}),
       max: new fields.NumberField({ ...requiredInteger, initial: 10 }, {persisted: false}),
       base: new fields.NumberField({ ...requiredInteger, initial: 20 }),
       perLevel: new fields.NumberField({ ...requiredInteger, initial: 5 })
@@ -32,7 +29,7 @@ export default class SynthicideActorBaseData extends foundry.abstract
 
     schema.power = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }),
-      max: new fields.NumberField({ ...requiredInteger, initial: 5 }),
+      max: new fields.NumberField({ ...requiredInteger, initial: 5 })
     });
 
     schema.biography = new fields.HTMLField();
@@ -44,12 +41,12 @@ export default class SynthicideActorBaseData extends foundry.abstract
   // Loop through attribute scores, and add their modifiers to our sheet output.
     super.prepareDerivedData();
     for (const key in this.attributes) {
-      // Calculatatio of attributes current handled in actor prepared data to addresess features modifiying.
+      // Calculatation of attributes current handled in actor prepared data to addresess features modifiying.
       //this.attributes[key].current = this.attributes[key].base + this.attributes[key].modifier + this.attributes[key].increase;
 
       // Handle attribute label localization.
       this.attributes[key].label =
-        game.i18n.localize(CONFIG.SYNTHICIDE.attributes[key]) ?? key;
+        game.i18n.localize(SYNTHICIDE.attributes[key]) ?? key;
     }
   }
 }

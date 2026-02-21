@@ -1,4 +1,15 @@
-export const SYNTHICIDE = {};
+const SYNTHICIDE = {};
+
+export default SYNTHICIDE;
+/**
+ * Bioclass type choices used in the system.
+ */
+SYNTHICIDE.bioclassTypes = [
+  'skinbag',
+  'scraphead',
+  'hardshell',
+  'rigfiend'
+];
 
 /**
  * The set of Attribute Scores used within the system.
@@ -24,3 +35,4 @@ SYNTHICIDE.attributeAbbreviations = {
   nerve: 'SYNTHICIDE.Attribute.Nerve.abbr',
   speed: 'SYNTHICIDE.Attribute.Speed.abbr',
 };
+

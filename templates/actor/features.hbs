@@ -13,15 +13,15 @@
         <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Features.Current'}}</div>
         {{#each system.attributes as |attribute key|}}
           <div class="attribute-label">
-            {{localize (lookup @root.config.attributeAbbreviations key)}}
+            {{localize (lookup @root.SYNTHICIDE.attributeAbbreviations key)}}
             <span
               class="rollable"
               data-action="roll"
               data-roll="d10+@attributes.{{key}}.current"
-              data-label="{{localize (lookup @root.config.attributes key)}}"
+              data-label="{{localize (lookup @root.SYNTHICIDE.attributes key)}}"
               tabindex="0"
               role="button"
-              data-tooltip="{{localize (lookup @root.config.attributes key)}}"
+              data-tooltip="{{localize (lookup @root.SYNTHICIDE.attributes key)}}"
             >
             <img class = "actions-img" src=" {{concat '/systems/synthicide/assets/' key '.png'}}">
             </span>
@@ -29,9 +29,9 @@
           </div>
           <div class="attribute-input">
             <div class="attribute-stepper" data-attribute-key="{{key}}">
-              <button type="button" class="attribute-step-btn" data-action="decreaseAttribute" data-attribute-key="{{key}}" aria-label="Decrease {{localize (lookup @root.config.attributes key)}}">-</button>
+              <button type="button" class="attribute-step-btn" data-action="decreaseAttribute" data-attribute-key="{{key}}" aria-label="Decrease {{localize (lookup @root.SYNTHICIDE.attributes key)}}">-</button>
               <input type="number" name="system.attributes.{{key}}.increase" value="{{attribute.increase}}" class="attribute-score" data-dtype="Number" min="0" max="5" step="1">
-              <button type="button" class="attribute-step-btn" data-action="increaseAttribute" data-attribute-key="{{key}}" aria-label="Increase {{localize (lookup @root.config.attributes key)}}">+</button>
+              <button type="button" class="attribute-step-btn" data-action="increaseAttribute" data-attribute-key="{{key}}" aria-label="Increase {{localize (lookup @root.SYNTHICIDE.attributes key)}}">+</button>
             </div>
           </div>
           <div class="attribute-current">{{numberFormat attribute.current decimals=0 sign=true}}</div>

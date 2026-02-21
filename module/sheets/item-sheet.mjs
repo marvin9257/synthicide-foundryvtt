@@ -1,4 +1,5 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
+import SYNTHICIDE from '../helpers/config.mjs';
 
 const { api, sheets } = foundry.applications;
 const DragDrop = foundry.applications.ux.DragDrop;
@@ -38,7 +39,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     event.preventDefault();
     const item = this.item;
     const modifiers = Array.isArray(item.system.modifiers) ? foundry.utils.deepClone(item.system.modifiers) : [];
-    const defaultTarget = Object.keys(CONFIG.SYNTHICIDE.attributes)[0] ?? 'awareness';
+    const defaultTarget = Object.keys(SYNTHICIDE.attributes)[0] ?? 'awareness';
     // Add a blank modifier
     modifiers.push({ target: defaultTarget, value: 0, type: 'bonus', condition: '', source: '' });
     await item.update({ 'system.modifiers': modifiers });
@@ -124,8 +125,9 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       // Adding system and flags for easier access
       system: this.item.system,
       flags: this.item.flags,
-      // Adding a pointer to CONFIG.SYNTHICIDE
-      config: CONFIG.SYNTHICIDE,
+      // Adding a pointer to SYNTHICIDE
+      SYNTHICIDE: SYNTHICIDE,
+      //config: CONFIG,
       // You can factor out context construction to helper functions
       tabs: this._getTabs(options.parts),
       // Necessary for formInput and formFields helpers

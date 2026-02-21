@@ -1,4 +1,7 @@
 import SynthicideActorBaseData from './base-actor.mjs';
+import {makeValueField} from './commonSchemaUtils.mjs'
+//const fields = foundry.data.fields;
+//const requiredInteger = { required: true, nullable: false, integer: true };
 
 export default class SynthicideSharperData extends SynthicideActorBaseData {
   static LOCALIZATION_PREFIXES = [
@@ -7,14 +10,11 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
   ];
 
   static defineSchema() {
-    const fields = foundry.data.fields;
-    const requiredInteger = { required: true, nullable: false, integer: true };
+    
     const schema = super.defineSchema();
 
     // Level field (if needed)
-    schema.level = new fields.SchemaField({
-      value: new fields.NumberField({ ...requiredInteger, initial: 1 }),
-    });
+    schema.level = makeValueField(1);
 
     
 

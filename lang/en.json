@@ -81,6 +81,10 @@
         },
         "SpellLVL": "Level {level} Spells",
         "AddLVL": "Add LVL {level}"
+      },
+      "BodyType": {
+        "Organic": "Organic",
+        "Rigged": "Rigged"
       }
     },
     "Effect": {
@@ -89,6 +93,12 @@
       "Temporary": "Temporary Effects",
       "Passive": "Passive Effects",
       "Inactive": "Inactive Effects"
+    },
+    "Bioclass": {
+      "Skinbag": "Skinbag",
+      "Scraphead": "Scraphead",
+      "Hardshell": "Hardshell",
+      "Rigfiend": "Rigfiend"
     }
   },
   "TYPES": {

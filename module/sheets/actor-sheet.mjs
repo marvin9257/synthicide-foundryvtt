@@ -1,5 +1,5 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
-
+import SYNTHICIDE from '../helpers/config.mjs';
 const { api, sheets } = foundry.applications;
 
 /**
@@ -102,8 +102,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       // Add the actor's data to context.data for easier access, as well as flags.
       system: this.actor.system,
       flags: this.actor.flags,
-      // Adding a pointer to CONFIG.SYNTHICIDE
-      config: CONFIG.SYNTHICIDE,
+      // Add both configs
+      //config: CONFIG, // Foundry's global CONFIG
+      SYNTHICIDE: SYNTHICIDE, // Your local config
       tabs: this._getTabs(options.parts),
       // Necessary for formInput and formFields helpers
       fields: this.document.schema.fields,

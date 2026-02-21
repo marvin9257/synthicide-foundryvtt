@@ -6,7 +6,7 @@ import { SynthicideItem } from './documents/item.mjs';
 import { SynthicideActorSheet } from './sheets/actor-sheet.mjs';
 import { SynthicideItemSheet } from './sheets/item-sheet.mjs';
 // Import helper/utility classes and constants.
-import { SYNTHICIDE } from './helpers/config.mjs';
+import SYNTHICIDE from './helpers/config.mjs';
 // Import DataModel classes
 import * as models from './data/_module.mjs';
 

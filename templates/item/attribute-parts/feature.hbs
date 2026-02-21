@@ -15,7 +15,7 @@
       {{#each system.modifiers as |mod i|}}
         <div>
           <select name="system.modifiers.{{i}}.target">
-            {{#each @root.config.attributes as |label key|}}
+            {{#each @root.SYNTHICIDE.attributes as |label key|}}
               <option value="{{key}}" {{#if (eq key mod.target)}}selected{{/if}}>{{localize label}}</option>
             {{/each}}
           </select>
