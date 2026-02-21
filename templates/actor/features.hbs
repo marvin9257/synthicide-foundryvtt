@@ -1,4 +1,3 @@
-{{log this}}
 {{! Features Tab }}
 <section
   class='tab features scrollable {{tab.cssClass}}'
@@ -29,9 +28,14 @@
           </div>
           <div class="attribute-input">
             <div class="attribute-stepper" data-attribute-key="{{key}}">
-              <button type="button" class="attribute-step-btn" data-action="decreaseAttribute" data-attribute-key="{{key}}" aria-label="Decrease {{localize (lookup @root.SYNTHICIDE.attributes key)}}">-</button>
+              <div class="attribute-block-meter" style="--level: {{attribute.increase}};" aria-label="{{localize (lookup @root.SYNTHICIDE.attributes key)}} increase {{attribute.increase}} of 5">
+                <div class="attribute-block-fill" style="height: calc({{attribute.increase}} * 20%);"></div>
+              </div>
               <input type="number" name="system.attributes.{{key}}.increase" value="{{attribute.increase}}" class="attribute-score" data-dtype="Number" min="0" max="5" step="1">
-              <button type="button" class="attribute-step-btn" data-action="increaseAttribute" data-attribute-key="{{key}}" aria-label="Increase {{localize (lookup @root.SYNTHICIDE.attributes key)}}">+</button>
+              <div class="attribute-step-buttons">
+                <button type="button" class="attribute-step-btn" data-action="increaseAttribute" data-attribute-key="{{key}}" aria-label="Increase {{localize (lookup @root.SYNTHICIDE.attributes key)}}">+</button>
+                <button type="button" class="attribute-step-btn" data-action="decreaseAttribute" data-attribute-key="{{key}}" aria-label="Decrease {{localize (lookup @root.SYNTHICIDE.attributes key)}}">-</button>
+              </div>
             </div>
           </div>
           <div class="attribute-current">{{numberFormat attribute.current decimals=0 sign=true}}</div>

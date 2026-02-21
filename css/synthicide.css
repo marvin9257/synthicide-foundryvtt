@@ -1,18 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
-/* Feature Modifier Table Layout */
-.modifiers-table {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr 1fr 1.2fr 1.2fr 0.5fr;
-  gap: 4px;
-  align-items: center;
-  margin: 10px 0 10px 0;
-}
-.modifiers-header {
-  font-weight: bold;
-  text-align: center;
-  padding: 4px 0;
-}
 :root {
   --synthicide-c-dark: #191813;
   --synthicide-c-faint: #c9c7b8;
@@ -21,6 +8,12 @@
   --synthicide-c-white: #ffffff;
   --synthicide-c-black: #000000;
   --synthicide-c-groove: #eeede0;
+  --synthicide-c-danger: #b42318;
+  --synthicide-c-success: #2f9e44;
+  --synthicide-c-panel-bg: rgba(0, 0, 0, 0.05);
+  --synthicide-c-meter-line: rgba(0, 0, 0, 0.02);
+  --synthicide-c-border-subtle: var(--synthicide-c-faint);
+  --synthicide-c-hover-glow: red;
 }
 
 .theme-dark {
@@ -31,7 +24,127 @@
   --synthicide-c-white: #000000;
   --synthicide-c-black: #ffffff;
   --synthicide-c-groove: #11121f;
+  --synthicide-c-panel-bg: rgba(255, 255, 255, 0.08);
+  --synthicide-c-meter-line: rgba(255, 255, 255, 0.08);
+  --synthicide-c-border-subtle: var(--synthicide-c-faint);
+  --synthicide-c-danger: #b42318;
+  --synthicide-c-success: #2f9e44;
+  --synthicide-c-hover-glow: red;
 }
+/* ============================== */
+/* Attributes Panel              */
+/* ============================== */
+
+.attribute-block-meter {
+  position: relative;
+  flex: 0 0 10px;
+  width: 10px;
+  height: 30px;
+  border: 1px solid var(--synthicide-c-dark);
+  background-image: repeating-linear-gradient(
+    to top,
+    var(--synthicide-c-meter-line) 0,
+    var(--synthicide-c-meter-line) 4px,
+    var(--synthicide-c-dark) 4px,
+    var(--synthicide-c-dark) 5px
+  );
+  background-color: var(--synthicide-c-white);
+  overflow: hidden;
+}
+.attribute-block-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--synthicide-c-dark);
+}
+
+/* ============================== */
+/* Resolve/Cynicism Controls     */
+/* ============================== */
+
+.synthicide .resource-track {
+  width: 100%;
+  height: 4px;
+  margin-top: 0.2rem;
+  border-radius: 3px;
+  background: var(--synthicide-c-faint);
+  overflow: hidden;
+}
+.synthicide .resource-track .resource-track-fill {
+  height: 100%;
+  width: 0;
+  transition: width 120ms ease-in-out;
+}
+.synthicide .resource-track-cynicism .resource-track-fill {
+  background: var(--synthicide-c-danger);
+}
+.synthicide .resource-track-resolve .resource-track-fill {
+  background: var(--synthicide-c-success);
+}
+
+
+
+/* ============================== */
+/* Theme Tokens                  */
+/* ============================== */
+
+/* Feature Modifier Table Layout */
+.modifiers-table {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 1fr 1.2fr 1.2fr 0.5fr;
+  gap: 4px;
+  align-items: center;
+  margin: 10px 0 10px 0;
+}
+
+
+/* Unified vertical and horizontal progress bar styles */
+.synthicide .progress-bar {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--synthicide-c-white);
+  border-radius: 3px;
+}
+.synthicide .progress-bar.vertical {
+  flex: 0 0 10px;
+  width: 10px;
+  height: 30px;
+  border: 1px solid var(--synthicide-c-dark);
+  background-image: repeating-linear-gradient(
+    to top,
+    var(--synthicide-c-meter-line) 0,
+    var(--synthicide-c-meter-line) 4px,
+    var(--synthicide-c-dark) 4px,
+    var(--synthicide-c-dark) 5px
+  );
+}
+.synthicide .progress-bar.horizontal {
+  width: 100%;
+  height: 4px;
+  margin-top: 0.2rem;
+  background: var(--synthicide-c-faint);
+}
+.synthicide .progress-bar-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 0;
+  transition: width 120ms ease-in-out, height 120ms ease-in-out;
+}
+.synthicide .progress-bar.vertical .progress-bar-fill {
+  background: var(--synthicide-c-dark);
+}
+.synthicide .progress-bar.horizontal.resolve .progress-bar-fill {
+  background: var(--synthicide-c-success);
+}
+
+
+/* ============================== */
+/* App-Wide Utilities            */
+/* ============================== */
 
 /* Global styles */
 .window-app {
@@ -40,7 +153,7 @@
 
 .rollable:hover, .rollable:focus {
   color: var(--synthicide-c-black);
-  text-shadow: 0 0 10px red;
+  text-shadow: 0 0 10px var(--synthicide-c-hover-glow);
   cursor: pointer;
 }
 
@@ -237,13 +350,17 @@
   text-align: center;
 }
 
+/* ============================== */
+/* Sheet Layout                  */
+/* ============================== */
+
 /* Styles limited to synthicide sheets */
 .synthicide .item-form {
   font-family: "Roboto", sans-serif;
 }
 .synthicide .sheet-header {
   flex: 0 auto;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -257,6 +374,72 @@
 }
 .synthicide .sheet-header .header-fields {
   flex: 1;
+  min-width: 0;
+}
+.synthicide .sheet-header .document-name {
+  margin-bottom: 6px;
+}
+.synthicide .sheet-header .document-name input {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.synthicide .header-resource-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.synthicide .header-resource {
+  min-height: 60px;
+  padding: 2px 4px;
+  border: 1px solid var(--synthicide-c-faint);
+  border-radius: 4px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.synthicide .header-resource .resource-label {
+  font-size: 0.95rem;
+  line-height: 1.1;
+  width: 100%;
+  text-align: center;
+  white-space: normal;
+}
+.synthicide .header-resource .resource-content {
+  width: 100%;
+  margin-top: 2px;
+}
+.synthicide .header-resource .resource-content.resource-pair {
+  justify-content: center;
+  gap: 4px;
+}
+.synthicide .header-resource .resource-content.resource-single {
+  justify-content: center;
+}
+.synthicide .header-resource input[type="text"],
+.synthicide .header-resource input[type="number"] {
+  min-width: 3.5ch;
+  width: 3.5ch;
+  max-width: 4ch;
+  text-align: center;
+  padding: 0 2px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+@media (max-width: 840px) {
+  .synthicide .header-resource-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 620px) {
+  .synthicide .header-resource-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 .synthicide .sheet-tabs {
   flex: 0;
@@ -275,6 +458,11 @@
 .synthicide .tab.biography .editor {
   height: 100%;
 }
+
+/* ============================== */
+/* Content + Lists               */
+/* ============================== */
+
 .synthicide .tox .tox-editor-container {
   background: var(--synthicide-c-white);
 }
@@ -291,20 +479,31 @@
 .synthicide .attribute-mod {
   flex: 0 0 44px;
 }
-.synthicide .items-header {
+
+/* Unified header style for items/effects */
+.synthicide .items-header,
+.synthicide .effects-header,
+.synthicide .items-list .items-header,
+.synthicide .effects-list .effects-header {
   height: 28px;
   margin: 2px 0;
   padding: 0;
   align-items: center;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--synthicide-c-panel-bg);
   border: 2px groove var(--synthicide-c-groove);
   font-weight: bold;
 }
-.synthicide .items-header > * {
+.synthicide .items-header > *,
+.synthicide .effects-header > *,
+.synthicide .items-list .items-header > *,
+.synthicide .effects-list .effects-header > * {
   font-size: 14px;
   text-align: center;
 }
-.synthicide .items-header .item-name {
+.synthicide .items-header .item-name,
+.synthicide .items-list .items-header .item-name,
+.synthicide .effects-header .effect-name,
+.synthicide .effects-list .effects-header .effect-name {
   font-weight: bold;
   padding-left: 5px;
   text-align: left;
@@ -379,49 +578,13 @@
 }
 .synthicide .items-list .item-prop {
   text-align: center;
-  border-left: 1px solid #c9c7b8;
-  border-right: 1px solid #c9c7b8;
+  border-left: 1px solid var(--synthicide-c-border-subtle);
+  border-right: 1px solid var(--synthicide-c-border-subtle);
   font-size: 12px;
-}
-.synthicide .items-list .items-header {
-  height: 29px;
-  margin: 2px 0;
-  padding: 0;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px groove var(--synthicide-c-groove);
-  font-weight: bold;
-}
-.synthicide .items-list .items-header > * {
-  font-size: 12px;
-  text-align: center;
-}
-.synthicide .items-list .items-header .item-name {
-  padding-left: 5px;
-  text-align: left;
 }
 .synthicide .item-formula {
   flex: 0 0 200px;
   padding: 0 8px;
-}
-.synthicide .effects-header {
-  height: 28px;
-  margin: 2px 0;
-  padding: 0;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px groove var(--synthicide-c-groove);
-  font-weight: bold;
-}
-.synthicide .effects-header > * {
-  font-size: 14px;
-  text-align: center;
-}
-.synthicide .effects-header .effect-name {
-  font-weight: bold;
-  padding-left: 5px;
-  text-align: left;
-  display: flex;
 }
 .synthicide .effects-list {
   list-style: none;
@@ -492,26 +655,9 @@
 }
 .synthicide .effects-list .effect-prop {
   text-align: center;
-  border-left: 1px solid #c9c7b8;
-  border-right: 1px solid #c9c7b8;
+  border-left: 1px solid var(--synthicide-c-border-subtle);
+  border-right: 1px solid var(--synthicide-c-border-subtle);
   font-size: 12px;
-}
-.synthicide .effects-list .effects-header {
-  height: 28px;
-  margin: 2px 0;
-  padding: 0;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px groove var(--synthicide-c-groove);
-  font-weight: bold;
-}
-.synthicide .effects-list .effects-header > * {
-  font-size: 12px;
-  text-align: center;
-}
-.synthicide .effects-list .effects-header .effect-name {
-  padding-left: 5px;
-  text-align: left;
 }
 .synthicide .effect-formula {
   flex: 0 0 200px;
@@ -521,13 +667,17 @@
 .synthicide .effects .item .effect-duration,
 .synthicide .effects .item .effect-controls {
   text-align: center;
-  border-left: 1px solid #c9c7b8;
-  border-right: 1px solid #c9c7b8;
+  border-left: 1px solid var(--synthicide-c-border-subtle);
+  border-right: 1px solid var(--synthicide-c-border-subtle);
   font-size: 12px;
 }
 .synthicide .effects .item .effect-controls {
   border: none;
 }
+
+/* ============================== */
+/* Attributes Panel              */
+/* ============================== */
 
 .attributes-table {
   display: grid;
@@ -549,13 +699,42 @@
 }
 
 .attribute-stepper {
-  display: grid;
-  grid-template-columns: 32px 14px;
-  grid-template-rows: 12px 12px;
-  gap: 2px 2px;
+  display: flex;
   align-items: center;
-  max-width: 62px;
-  margin: 0 auto;
+  justify-content: center;
+  gap: 4px;
+}
+
+.attribute-block-meter {
+  position: relative;
+  flex: 0 0 10px;
+  width: 10px;
+  height: 30px;
+  border: 1px solid var(--synthicide-c-dark);
+  background-image: repeating-linear-gradient(
+    to top,
+    var(--synthicide-c-meter-line) 0,
+    var(--synthicide-c-meter-line) 4px,
+    var(--synthicide-c-dark) 4px,
+    var(--synthicide-c-dark) 5px
+  );
+  background-color: var(--synthicide-c-white);
+  overflow: hidden;
+}
+
+.attribute-block-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--synthicide-c-dark);
+}
+
+.attribute-step-buttons {
+  display: grid;
+  grid-template-rows: 12px 12px;
+  gap: 2px;
+  align-items: center;
 }
 
 .attribute-step-btn {
@@ -571,27 +750,15 @@
   justify-content: center;
 }
 
-.attribute-step-btn[data-action="increaseAttribute"] {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.attribute-step-btn[data-action="decreaseAttribute"] {
-  grid-column: 2;
-  grid-row: 2;
-}
-
 .attribute-input input[type="number"] {
-  grid-column: 1;
-  grid-row: 1 / span 2;
-  width: 28px;
+  width: 30px;
   max-width: 44px;
-  height: 26px;
-  font-size: 1em;
+  height: 30px;
+  font-size: 0.95em;
   text-align: center;
   padding: 0 4px;
   box-sizing: border-box;
-  margin: 0 auto;
+  margin: 0;
   display: block;
   appearance: textfield;
 }
@@ -610,10 +777,14 @@ img.actions-img {
   height: 4ch;
   width: auto;
   display: inline-flex;
-  border: 1px solid;
+  border: 1px solid var(--synthicide-c-dark);
   border-radius: 4px;
   vertical-align: middle;
 }
+
+/* ============================== */
+/* Resolve/Cynicism Controls     */
+/* ============================== */
 
 .synthicide .resource-counter {
   justify-content: center;
@@ -622,11 +793,14 @@ img.actions-img {
 .synthicide .resource-stepper {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.25rem;
+  width: 100%;
 }
 
 .synthicide .resource-stepper input[type="number"] {
-  width: 40px;
+  width: 44px;
+  max-width: 44px;
   text-align: center;
 }
 
@@ -655,9 +829,9 @@ img.actions-img {
 }
 
 .synthicide .resource-track-cynicism .resource-track-fill {
-  background: #b42318;
+  background: var(--synthicide-c-danger);
 }
 
 .synthicide .resource-track-resolve .resource-track-fill {
-  background: #2f9e44;
+  background: var(--synthicide-c-success);
 }
