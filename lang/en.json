@@ -21,12 +21,17 @@
         "Spells": "Spells",
         "Effects": "Effects"
       },
+      "Features": {
+        "Actions": "ACTIONS",
+        "LevelIncrease": "Level Increase",
+        "Current": "Current"
+      },
       "base": {
         "FIELDS": {
           "biography": {"label": "Biography"},
-          "health": {
-            "value": {"label": "Health"},
-            "max": {"label": "Maximum Health"}
+          "hitPoints": {
+            "value": {"label": "Hit Points"},
+            "max": {"label": "Maximum HP"}
           },
           "power": {
             "value": {"label": "Power"},
@@ -36,7 +41,7 @@
       },
       "Character": {
         "FIELDS": {
-          "attributes.level.value": {"label": "Level"}
+          "level.value": {"label": "Level"}
         }
       },
       "NPC": {
@@ -61,6 +66,14 @@
           "quantity": {"label": "Quantity"},
           "weight": {"label": "Weight"}
         }
+      },
+      "Feature": {
+        "Attribute": "Attribute",
+        "Value": "Value",
+        "Type": "Type",
+        "Condition": "Condition",
+        "Source": "Source",
+        "AddFeature": "Add Feature"
       },
       "Spell": {
         "FIELDS": {
