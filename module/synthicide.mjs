@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 // Import document classes.
 import { SynthicideActor } from './documents/actor.mjs';
 import { SynthicideItem } from './documents/item.mjs';
@@ -76,6 +75,7 @@ Hooks.once('init', function () {
     gear: models.SynthicideGear,
     feature: models.SynthicideFeature,
     spell: models.SynthicideSpell,
+    bioclass: models.SynthicideBioclass,
   };
 
   // Active Effects are never copied to the Actor,

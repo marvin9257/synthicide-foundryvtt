@@ -1,0 +1,28 @@
+{{! Cybernetics Tab }}
+<section
+  class='tab attributes {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='cybernetics'
+>
+  <div class='grid grid-2col'>
+    <div class='resource'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.BodyType'}}</label>
+      <input type='text' value='{{system.bodyType}}' disabled />
+    </div>
+    <div class='resource'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.BrainType'}}</label>
+      <input type='text' value='{{system.brainType}}' disabled />
+    </div>
+  </div>
+
+  <div class='grid grid-2col'>
+    <div class='resource'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.FIELDS.bodySlots.label'}}</label>
+      <input type='number' name='system.bodySlots' value='{{system.bodySlots}}' data-dtype='Number' />
+    </div>
+    <div class='resource'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.FIELDS.brainSlots.label'}}</label>
+      <input type='number' name='system.brainSlots' value='{{system.brainSlots}}' data-dtype='Number' />
+    </div>
+  </div>
+</section>

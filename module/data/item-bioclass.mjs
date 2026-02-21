@@ -10,64 +10,50 @@ export default class SynthicideBioclass extends SynthicideItemBase {
   static defineSchema() {
     const fields = foundry.data.fields;
     const schema = super.defineSchema();
+    const defaultPreset = SYNTHICIDE.getBioclassPreset('skinbag');
 
     // Bioclass type: Skinbag, Scraphead, Hardshell, Rigfiend
     schema.bioclassType = new fields.StringField({
       required: true,
       choices: SYNTHICIDE.bioclassTypes,
+      initial: 'skinbag',
     });
 
     // Starting attributes
     schema.startingAttributes = new fields.SchemaField({
-      actions: new fields.NumberField({ required: true, initial: 0 }),
-      awareness: new fields.NumberField({ required: true, initial: 0 }),
-      combat: new fields.NumberField({ required: true, initial: 0 }),
-      nerve: new fields.NumberField({ required: true, initial: 0 }),
-      speed: new fields.NumberField({ required: true, initial: 0 }),
-      toughness: new fields.NumberField({ required: true, initial: 0 }),
-      will: new fields.NumberField({ required: true, initial: 0 }),
-      hp: new fields.NumberField({ required: true, initial: 0 }),
-      hpPerLevel: new fields.NumberField({ required: true, initial: 0 }),
+      actions: new fields.NumberField({ required: true, initial: defaultPreset.startingAttributes.actions }),
+      awareness: new fields.NumberField({ required: true, initial: defaultPreset.startingAttributes.awareness }),
+      combat: new fields.NumberField({ required: true, initial: defaultPreset.startingAttributes.combat }),
+      nerve: new fields.NumberField({ required: true, initial: defaultPreset.startingAttributes.nerve }),
+      speed: new fields.NumberField({ required: true, initial: defaultPreset.startingAttributes.speed }),
+      toughness: new fields.NumberField({ required: true, initial: defaultPreset.startingAttributes.toughness }),
+      will: new fields.NumberField({ required: true, initial: defaultPreset.startingAttributes.will }),
+      hp: new fields.NumberField({ required: true, initial: defaultPreset.startingAttributes.hp }),
+      hpPerLevel: new fields.NumberField({ required: true, initial: defaultPreset.startingAttributes.hpPerLevel }),
     });
 
     // Bioclass traits
     schema.traits = new fields.ArrayField(
       new fields.SchemaField({
+        sort: new fields.NumberField({ required: true, integer: true, initial: 0 }),
         name: new fields.StringField({ required: true }),
         description: new fields.HTMLField({ required: true }),
-      })
+      }),
+      { initial: foundry.utils.deepClone(defaultPreset.traits) }
     );
 
     // Bioclass slots
-    schema.bodySlots = new fields.NumberField({ required: true, initial: 0 });
-    schema.brainSlots = new fields.NumberField({ required: true, initial: 0 });
+    schema.bodySlots = new fields.NumberField({ required: true, initial: defaultPreset.bodySlots });
+    schema.brainSlots = new fields.NumberField({ required: true, initial: defaultPreset.brainSlots });
 
     return schema;
   }
 
   prepareDerivedData() {
-    // Derive and localize bodyType and brainType from bioclassType
     const bioclassType = this.bioclassType;
-    let bodyTypeKey = 'Organic';
-    let brainTypeKey = 'Organic';
-    switch (bioclassType) {
-      case 'skinbag':
-        bodyTypeKey = 'Organic';
-        brainTypeKey = 'Organic';
-        break;
-      case 'scraphead':
-        bodyTypeKey = 'Organic';
-        brainTypeKey = 'Rigged';
-        break;
-      case 'hardshell':
-        bodyTypeKey = 'Rigged';
-        brainTypeKey = 'Organic';
-        break;
-      case 'rigfiend':
-        bodyTypeKey = 'Rigged';
-        brainTypeKey = 'Rigged';
-        break;
-    }
+    const preset = SYNTHICIDE.getBioclassPreset(bioclassType);
+    const bodyTypeKey = preset.bodyType;
+    const brainTypeKey = preset.brainType;
     this.bodyType = game.i18n.localize(`SYNTHICIDE.Item.BodyType.${bodyTypeKey}`);
     this.brainType = game.i18n.localize(`SYNTHICIDE.Item.BodyType.${brainTypeKey}`);
     this.bioclassTypeLabel = game.i18n.localize(`SYNTHICIDE.Item.Bioclass.${bioclassType.charAt(0).toUpperCase() + bioclassType.slice(1)}`);

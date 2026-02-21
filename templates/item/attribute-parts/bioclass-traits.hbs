@@ -1,0 +1,36 @@
+{{! Traits Tab }}
+<section
+  class='tab attributes {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='traits'
+>
+  <div class='resource' style='margin-bottom: 0.5rem;'>
+    <button type='button' data-action='addTrait'>
+      <i class='fas fa-plus'></i>
+      {{localize 'SYNTHICIDE.Item.Bioclass.AddTrait'}}
+    </button>
+  </div>
+
+  {{#if system.traits.length}}
+    <div class='grid grid-1col'>
+      {{#each system.traits as |trait i|}}
+        <fieldset class='resource'>
+          <div style='display:flex; gap:0.5rem; align-items:flex-end;'>
+            <div style='flex:1;'>
+              <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.TraitName'}}</label>
+              <input type='text' name='system.traits.{{i}}.name' value='{{trait.name}}' />
+            </div>
+            <div style='display:flex; align-items:flex-end; justify-content:flex-end;'>
+              <button type='button' data-action='removeTrait' data-index='{{i}}'>
+                <i class='fas fa-trash'></i>
+              </button>
+            </div>
+          </div>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.TraitDescription'}}</label>
+          <input type='hidden' name='system.traits.{{i}}.sort' value='{{trait.sort}}' data-dtype='Number' />
+          <textarea name='system.traits.{{i}}.description' rows='4'>{{trait.description}}</textarea>
+        </fieldset>
+      {{/each}}
+    </div>
+  {{/if}}
+</section>

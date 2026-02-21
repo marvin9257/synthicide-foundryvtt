@@ -25,10 +25,17 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       viewDoc: this._viewDoc,
       createDoc: this._createDoc,
       deleteDoc: this._deleteDoc,
+      addBioclassTrait: this._addBioclassTrait,
+      saveBioclassTrait: this._saveBioclassTrait,
+      deleteBioclassTrait: this._deleteBioclassTrait,
       toggleEffect: this._toggleEffect,
       roll: this._onRoll,
       increaseAttribute: this._onIncreaseAttribute,
       decreaseAttribute: this._onDecreaseAttribute,
+      increaseResolve: this._onIncreaseResolve,
+      decreaseResolve: this._onDecreaseResolve,
+      increaseCynicism: this._onIncreaseCynicism,
+      decreaseCynicism: this._onDecreaseCynicism,
     },
     // Custom property that's merged into `this.options`
     // dragDrop: [{ dragSelector: '.draggable', dropSelector: null }],
@@ -63,6 +70,14 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       template: 'systems/synthicide/templates/actor/spells.hbs',
       scrollable: [""],
     },
+    cybernetics: {
+      template: 'systems/synthicide/templates/actor/cybernetics.hbs',
+      scrollable: [""],
+    },
+    traits: {
+      template: 'systems/synthicide/templates/actor/traits.hbs',
+      scrollable: [""],
+    },
     effects: {
       template: 'systems/synthicide/templates/actor/effects.hbs',
       scrollable: [""],
@@ -79,7 +94,15 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // Control which parts show based on document subtype
     switch (this.document.type) {
       case 'sharper':
-        options.parts.push('features', 'gear', 'spells', 'biography', 'effects');
+        options.parts.push(
+          'features',
+          'gear',
+          'spells',
+          'cybernetics',
+          'traits',
+          'biography',
+          'effects'
+        );
         break;
       case 'npc':
         options.parts.push('gear', 'biography', 'effects');
@@ -123,6 +146,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       case 'features':
       case 'spells':
       case 'gear':
+      case 'cybernetics':
+      case 'traits':
         context.tab = context.tabs[partId];
         break;
       case 'biography':
@@ -195,6 +220,16 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           tab.label += 'Spells';
           tab.icon = 'fa-solid fa-wand-magic-sparkles';
           break;
+        case 'cybernetics':
+          tab.id = 'cybernetics';
+          tab.label += 'Cybernetics';
+          tab.icon = 'fa-solid fa-microchip';
+          break;
+        case 'traits':
+          tab.id = 'traits';
+          tab.label += 'Traits';
+          tab.icon = 'fa-solid fa-dna';
+          break;
         case 'biography':
           tab.id = 'biography';
           tab.label += 'Biography';
@@ -224,6 +259,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // this sheet does with spells
     const gear = [];
     const features = [];
+    let bioclass = null;
     const spells = {
       0: [],
       1: [],
@@ -253,6 +289,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           spells[i.system.spellLevel].push(i);
         }
       }
+      // Capture at most one bioclass for display.
+      else if (i.type === 'bioclass' && !bioclass) {
+        bioclass = i;
+      }
     }
 
     for (const s of Object.values(spells)) {
@@ -263,6 +303,12 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.features = features.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.spells = spells;
+    context.bioclass = bioclass;
+    context.bioclassTraits = bioclass
+      ? foundry.utils.deepClone(bioclass.system.traits ?? []).sort(
+          (a, b) => (a.sort || 0) - (b.sort || 0)
+        )
+      : [];
   }
 
   /**
@@ -339,6 +385,101 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   static async _deleteDoc(event, target) {
     const doc = this._getEmbeddedDocument(target);
     await doc.delete();
+  }
+
+  /**
+   * Add a new trait to the actor's assigned bioclass item.
+   *
+   * @this SynthicideActorSheet
+   * @param {PointerEvent} event
+   * @protected
+   */
+  static async _addBioclassTrait(event) {
+    event.preventDefault();
+    const bioclass = this.actor.itemTypes.bioclass?.[0];
+    if (!bioclass) {
+      ui.notifications.warn(
+        game.i18n.localize('SYNTHICIDE.Actor.Bioclass.NoneAssigned')
+      );
+      return;
+    }
+
+    const traits = foundry.utils.deepClone(bioclass.system.traits ?? []);
+    const maxSort = traits.reduce(
+      (currentMax, trait) => Math.max(currentMax, Number(trait.sort) || 0),
+      -10
+    );
+
+    traits.push({
+      name: game.i18n.localize('SYNTHICIDE.Item.Bioclass.TraitName'),
+      description: '',
+      sort: maxSort + 10,
+    });
+
+    await bioclass.update({ 'system.traits': traits });
+  }
+
+  /**
+   * Save a trait edit from the actor traits tab to the assigned bioclass item.
+   *
+   * @this SynthicideActorSheet
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   * @protected
+   */
+  static async _saveBioclassTrait(event, target) {
+    event.preventDefault();
+    const bioclass = this.actor.itemTypes.bioclass?.[0];
+    if (!bioclass) return;
+
+    const traitIndex = Number(target.dataset.traitIndex);
+    if (!Number.isInteger(traitIndex) || traitIndex < 0) return;
+
+    const row = target.closest('[data-trait-index]');
+    if (!row) return;
+
+    const nameInput = row.querySelector('.bioclass-trait-name');
+    const descriptionInput = row.querySelector('.bioclass-trait-description');
+
+    const nextName = String(nameInput?.value ?? '').trim();
+    const nextDescription = String(descriptionInput?.value ?? '').trim();
+
+    const traits = foundry.utils.deepClone(bioclass.system.traits ?? []).sort(
+      (a, b) => (a.sort || 0) - (b.sort || 0)
+    );
+
+    if (!traits[traitIndex]) return;
+
+    traits[traitIndex].name = nextName;
+    traits[traitIndex].description = nextDescription;
+
+    await bioclass.update({ 'system.traits': traits });
+  }
+
+  /**
+   * Delete a trait from the actor's assigned bioclass item.
+   *
+   * @this SynthicideActorSheet
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   * @protected
+   */
+  static async _deleteBioclassTrait(event, target) {
+    event.preventDefault();
+    const bioclass = this.actor.itemTypes.bioclass?.[0];
+    if (!bioclass) return;
+
+    const traitIndex = Number(target.dataset.traitIndex);
+    if (!Number.isInteger(traitIndex) || traitIndex < 0) return;
+
+    const traits = foundry.utils.deepClone(bioclass.system.traits ?? []).sort(
+      (a, b) => (a.sort || 0) - (b.sort || 0)
+    );
+
+    if (!traits[traitIndex]) return;
+
+    traits.splice(traitIndex, 1);
+    await bioclass.update({ 'system.traits': traits });
   }
 
   /**
@@ -460,6 +601,38 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     const current = Number(foundry.utils.getProperty(this.actor.system, `attributes.${key}.increase`) ?? 0);
     const next = Math.max(0, current - 1);
     await this.actor.update({ [path]: next });
+  }
+
+  /** @protected */
+  static async _onIncreaseResolve(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const current = Number(this.actor.system.resolve ?? 0);
+    await this.actor.update({ 'system.resolve': Math.min(5, current + 1) });
+  }
+
+  /** @protected */
+  static async _onDecreaseResolve(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const current = Number(this.actor.system.resolve ?? 0);
+    await this.actor.update({ 'system.resolve': Math.max(0, current - 1) });
+  }
+
+  /** @protected */
+  static async _onIncreaseCynicism(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const current = Number(this.actor.system.cynicism ?? 0);
+    await this.actor.update({ 'system.cynicism': Math.min(10, current + 1) });
+  }
+
+  /** @protected */
+  static async _onDecreaseCynicism(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const current = Number(this.actor.system.cynicism ?? 0);
+    await this.actor.update({ 'system.cynicism': Math.max(0, current - 1) });
   }
 
   /** Helper Functions */
@@ -610,7 +783,35 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    */
   async _onDropItemCreate(itemData, _event) {
     itemData = itemData instanceof Array ? itemData : [itemData];
-    return this.actor.createEmbeddedDocuments('Item', itemData);
+    const hasExistingBioclass = !!this.actor.itemTypes.bioclass?.length;
+    let hasIncomingBioclass = false;
+    let blockedBioclass = false;
+
+    const filteredItemData = itemData.reduce((items, entry) => {
+      const entryData = entry instanceof Item ? entry.toObject() : entry;
+      if (entryData.type !== 'bioclass') {
+        items.push(entryData);
+        return items;
+      }
+
+      if (hasExistingBioclass || hasIncomingBioclass) {
+        blockedBioclass = true;
+        return items;
+      }
+
+      hasIncomingBioclass = true;
+      items.push(entryData);
+      return items;
+    }, []);
+
+    if (blockedBioclass) {
+      ui.notifications.warn(
+        game.i18n.localize('SYNTHICIDE.Actor.Bioclass.OnlyOneWarning')
+      );
+    }
+
+    if (!filteredItemData.length) return [];
+    return this.actor.createEmbeddedDocuments('Item', filteredItemData);
   }
 
   /********************

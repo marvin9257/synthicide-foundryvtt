@@ -1,8 +1,126 @@
+import SYNTHICIDE from '../helpers/config.mjs';
+
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
 export class SynthicideItem extends Item {
+  /** @override */
+  async _preCreate(data, options, user) {
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
+
+    if (this.type !== 'bioclass') return;
+
+    if (this.actor?.itemTypes.bioclass?.length) {
+      if (game.userId === user) {
+        ui.notifications.warn(
+          game.i18n.localize('SYNTHICIDE.Actor.Bioclass.OnlyOneWarning')
+        );
+      }
+      return false;
+    }
+
+    const bioclassType =
+      foundry.utils.getProperty(data, 'system.bioclassType') ??
+      this.system.bioclassType ??
+      'skinbag';
+    const preset = SYNTHICIDE.getBioclassPreset(bioclassType);
+    const updateData = {};
+
+    if (!foundry.utils.hasProperty(data, 'system.bioclassType')) {
+      updateData['system.bioclassType'] = bioclassType;
+    }
+    if (!foundry.utils.hasProperty(data, 'system.startingAttributes')) {
+      updateData['system.startingAttributes'] = foundry.utils.deepClone(
+        preset.startingAttributes
+      );
+    }
+    if (!foundry.utils.hasProperty(data, 'system.bodySlots')) {
+      updateData['system.bodySlots'] = preset.bodySlots;
+    }
+    if (!foundry.utils.hasProperty(data, 'system.brainSlots')) {
+      updateData['system.brainSlots'] = preset.brainSlots;
+    }
+    if (!foundry.utils.hasProperty(data, 'system.traits')) {
+      updateData['system.traits'] = foundry.utils.deepClone(preset.traits);
+    }
+
+    if (Object.keys(updateData).length > 0) {
+      this.updateSource(updateData);
+    }
+  }
+
+  /** @override */
+  _onCreate(data, options, userId) {
+    super._onCreate(data, options, userId);
+    if (this.type !== 'bioclass') return;
+    if (userId !== game.userId) return;
+    void this._syncActorFromBioclass(this.actor, this);
+  }
+
+  /** @override */
+  _onUpdate(changed, options, userId) {
+    super._onUpdate(changed, options, userId);
+    if (this.type !== 'bioclass') return;
+    if (userId !== game.userId) return;
+
+    const touchesStartingAttributes =
+      foundry.utils.hasProperty(changed, 'system.startingAttributes') ||
+      foundry.utils.hasProperty(changed, 'system.bioclassType');
+    if (!touchesStartingAttributes) return;
+
+    void this._syncActorFromBioclass(this.actor, this);
+  }
+
+  /** @override */
+  _onDelete(options, userId) {
+    super._onDelete(options, userId);
+    if (this.type !== 'bioclass') return;
+    if (userId !== game.userId) return;
+    if (!(this.parent instanceof Actor)) return;
+
+    // If a replacement bioclass exists (direct API usage), sync from that.
+    const replacement = this.parent.itemTypes.bioclass?.[0];
+    if (!replacement) return;
+    void this._syncActorFromBioclass(this.parent, replacement);
+  }
+
+  /**
+   * Sync actor base values from a bioclass item's starting attributes.
+   * @param {Actor|null} actor
+   * @param {Item} bioclassItem
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _syncActorFromBioclass(actor, bioclassItem) {
+    if (!(actor instanceof Actor)) return;
+    if (!bioclassItem || bioclassItem.type !== 'bioclass') return;
+
+    const starting = bioclassItem.system?.startingAttributes ?? {};
+    const updates = {};
+
+    const actorAttributes = actor.system?.attributes ?? {};
+    for (const [key, value] of Object.entries(starting)) {
+      const mappedKey =
+        key in actorAttributes
+          ? key
+          : SYNTHICIDE.bioclassToActorAttributeMap?.[key];
+      if (!mappedKey || !(mappedKey in actorAttributes)) continue;
+      updates[`system.attributes.${mappedKey}.base`] = Number(value ?? 0);
+    }
+
+    if (Object.prototype.hasOwnProperty.call(starting, 'hp')) {
+      updates['system.hitPoints.base'] = Number(starting.hp ?? 0);
+    }
+    if (Object.prototype.hasOwnProperty.call(starting, 'hpPerLevel')) {
+      updates['system.hitPoints.perLevel'] = Number(starting.hpPerLevel ?? 0);
+    }
+
+    if (!Object.keys(updates).length) return;
+    await actor.update(updates);
+  }
+
   /**
    * Augment the basic Item data model with additional dynamic data.
    */

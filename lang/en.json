@@ -19,7 +19,15 @@
         "Features": "Features",
         "Gear": "Gear",
         "Spells": "Spells",
+        "Cybernetics": "Cybernetics",
+        "Traits": "Traits",
         "Effects": "Effects"
+      },
+      "Bioclass": {
+        "NoneAssigned": "No bioclass assigned. Drop or create one.",
+        "Create": "Create Bioclass",
+        "NoTraits": "No bioclass traits found.",
+        "OnlyOneWarning": "Only one bioclass may be assigned to an actor."
       },
       "Features": {
         "Actions": "ACTIONS",
@@ -29,6 +37,8 @@
       "base": {
         "FIELDS": {
           "biography": {"label": "Biography"},
+          "cynicism": {"label": "Cynicism"},
+          "resolve": {"label": "Resolve"},
           "hitPoints": {
             "value": {"label": "Hit Points"},
             "max": {"label": "Maximum HP"}
@@ -54,6 +64,8 @@
     "Item": {
       "Tabs": {
         "Attributes": "Attributes",
+        "Cybernetics": "Cybernetics",
+        "Traits": "Traits",
         "Description": "Description",
         "Effects": "Effects"
       },
@@ -82,6 +94,33 @@
         "SpellLVL": "Level {level} Spells",
         "AddLVL": "Add LVL {level}"
       },
+      "Bioclass": {
+        "Type": "Bioclass",
+        "BodyType": "Body Type",
+        "BrainType": "Brain Type",
+        "AddTrait": "Add Trait",
+        "TraitName": "Trait Name",
+        "TraitDescription": "Trait Description",
+        "Skinbag": "Skinbag",
+        "Scraphead": "Scraphead",
+        "Hardshell": "Hardshell",
+        "Rigfiend": "Rigfiend",
+        "FIELDS": {
+          "bodySlots": {"label": "Body Slots"},
+          "brainSlots": {"label": "Brain Slots"},
+          "startingAttributes": {
+            "actions": {"label": "Actions"},
+            "awareness": {"label": "Awareness"},
+            "combat": {"label": "Combat"},
+            "nerve": {"label": "Nerve"},
+            "speed": {"label": "Speed"},
+            "toughness": {"label": "Toughness"},
+            "will": {"label": "Will"},
+            "hp": {"label": "HP"},
+            "hpPerLevel": {"label": "HP / Level"}
+          }
+        }
+      },
       "BodyType": {
         "Organic": "Organic",
         "Rigged": "Rigged"
@@ -109,7 +148,8 @@
     "Item": {
       "gear": "Gear",
       "feature": "Feature",
-      "spell": "Spell"
+      "spell": "Spell",
+      "bioclass": "Bioclass"
     }
   }
 }

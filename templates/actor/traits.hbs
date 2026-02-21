@@ -1,0 +1,65 @@
+{{! Traits Tab }}
+<section
+  class='tab traits scrollable {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='traits'
+>
+  {{#if bioclass}}
+    <ol class='items-list'>
+      <li class='item flexrow items-header'>
+        <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}}</div>
+        <div class='item-controls'>
+          {{#if @root.editable}}
+            <a
+              class='item-control'
+              data-action='addBioclassTrait'
+              data-tooltip='{{localize "SYNTHICIDE.Item.Bioclass.AddTrait"}}'
+            >
+              <i class='fas fa-plus'></i>
+            </a>
+          {{/if}}
+        </div>
+      </li>
+    </ol>
+
+    {{#if bioclassTraits.length}}
+      <div class='grid grid-1col'>
+        {{#each bioclassTraits as |trait i|}}
+          <fieldset class='resource' data-trait-index='{{i}}'>
+            <div style='display:flex; gap:0.5rem; align-items:flex-end;'>
+              <div style='flex:1;'>
+                <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.TraitName'}}</label>
+                <input
+                  type='text'
+                  class='bioclass-trait-name'
+                  value='{{trait.name}}'
+                  {{#unless @root.editable}}disabled{{/unless}}
+                />
+              </div>
+              {{#if @root.editable}}
+                <div style='display:flex; align-items:flex-end; justify-content:flex-end; gap:0.25rem;'>
+                  <button type='button' data-action='saveBioclassTrait' data-trait-index='{{i}}'>
+                    <i class='fas fa-save'></i>
+                  </button>
+                  <button type='button' data-action='deleteBioclassTrait' data-trait-index='{{i}}'>
+                    <i class='fas fa-trash'></i>
+                  </button>
+                </div>
+              {{/if}}
+            </div>
+            <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.TraitDescription'}}</label>
+            <textarea
+              class='bioclass-trait-description'
+              rows='4'
+              {{#unless @root.editable}}disabled{{/unless}}
+            >{{trait.description}}</textarea>
+          </fieldset>
+        {{/each}}
+      </div>
+    {{else}}
+      <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoTraits'}}</p>
+    {{/if}}
+  {{else}}
+    <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoneAssigned'}}</p>
+  {{/if}}
+</section>

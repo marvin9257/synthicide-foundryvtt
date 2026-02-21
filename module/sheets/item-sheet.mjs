@@ -24,6 +24,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       toggleEffect: this._toggleEffect,
       addModifier: this._onAddModifier,
       removeModifier: this._onRemoveModifier,
+      addTrait: this._onAddTrait,
+      removeTrait: this._onRemoveTrait,
     },
     form: {
       submitOnChange: true,
@@ -61,6 +63,42 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     }
   }
 
+  /**
+   * Handle adding a new trait row to the bioclass item.
+   * @param {PointerEvent} event
+   */
+  static async _onAddTrait(event) {
+    event.preventDefault();
+    const item = this.item;
+    const traits = Array.isArray(item.system.traits)
+      ? foundry.utils.deepClone(item.system.traits)
+      : [];
+    const maxSort = traits.reduce(
+      (max, trait) => Math.max(max, Number(trait?.sort ?? 0)),
+      0
+    );
+    traits.push({ sort: maxSort + 10, name: '', description: '' });
+    await item.update({ 'system.traits': traits });
+  }
+
+  /**
+   * Handle removing a trait row from the bioclass item.
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async _onRemoveTrait(event, target) {
+    event.preventDefault();
+    const item = this.item;
+    const index = Number(target.dataset.index);
+    const traits = Array.isArray(item.system.traits)
+      ? foundry.utils.deepClone(item.system.traits)
+      : [];
+    if (index >= 0 && index < traits.length) {
+      traits.splice(index, 1);
+      await item.update({ 'system.traits': traits });
+    }
+  }
+
   /* -------------------------------------------- */
 
   /** @override */
@@ -85,6 +123,18 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     attributesSpell: {
       template: 'systems/synthicide/templates/item/attribute-parts/spell.hbs',
     },
+    attributesBioclass: {
+      template:
+        'systems/synthicide/templates/item/attribute-parts/bioclass-attributes.hbs',
+    },
+    cyberneticsBioclass: {
+      template:
+        'systems/synthicide/templates/item/attribute-parts/bioclass-cybernetics.hbs',
+    },
+    traitsBioclass: {
+      template:
+        'systems/synthicide/templates/item/attribute-parts/bioclass-traits.hbs',
+    },
     effects: {
       template: 'systems/synthicide/templates/item/effects.hbs',
     },
@@ -107,6 +157,13 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         break;
       case 'spell':
         options.parts.push('attributesSpell');
+        break;
+      case 'bioclass':
+        options.parts.push(
+          'attributesBioclass',
+          'cyberneticsBioclass',
+          'traitsBioclass'
+        );
         break;
     }
   }
@@ -144,6 +201,9 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       case 'attributesFeature':
       case 'attributesGear':
       case 'attributesSpell':
+      case 'attributesBioclass':
+      case 'cyberneticsBioclass':
+      case 'traitsBioclass':
         // Necessary for preserving active tab on re-render
         context.tab = context.tabs[partId];
         break;
@@ -170,6 +230,31 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         break;
     }
     return context;
+  }
+
+  /** @override */
+  async _processSubmitData(event, form, submitData) {
+    if (this.item.type === 'bioclass') {
+      const nextType = foundry.utils.getProperty(submitData, 'system.bioclassType');
+      const currentType = this.item.system.bioclassType;
+      if (nextType && nextType !== currentType) {
+        const preset = SYNTHICIDE.getBioclassPreset(nextType);
+        foundry.utils.setProperty(
+          submitData,
+          'system.startingAttributes',
+          foundry.utils.deepClone(preset.startingAttributes)
+        );
+        foundry.utils.setProperty(submitData, 'system.bodySlots', preset.bodySlots);
+        foundry.utils.setProperty(submitData, 'system.brainSlots', preset.brainSlots);
+        foundry.utils.setProperty(
+          submitData,
+          'system.traits',
+          foundry.utils.deepClone(preset.traits)
+        );
+      }
+    }
+
+    await this.document.update(submitData);
   }
 
   /**
@@ -209,6 +294,21 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
           tab.id = 'attributes';
           tab.label += 'Attributes';
           tab.icon = 'fa-solid fa-list';
+          break;
+        case 'attributesBioclass':
+          tab.id = 'attributes';
+          tab.label += 'Attributes';
+          tab.icon = 'fa-solid fa-list';
+          break;
+        case 'cyberneticsBioclass':
+          tab.id = 'cybernetics';
+          tab.label += 'Cybernetics';
+          tab.icon = 'fa-solid fa-microchip';
+          break;
+        case 'traitsBioclass':
+          tab.id = 'traits';
+          tab.label += 'Traits';
+          tab.icon = 'fa-solid fa-dna';
           break;
         case 'effects':
           tab.id = 'effects';

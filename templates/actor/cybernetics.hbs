@@ -1,0 +1,54 @@
+{{! Cybernetics Tab }}
+<section
+  class='tab cybernetics scrollable {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='cybernetics'
+>
+  {{#if bioclass}}
+    <ol class='items-list'>
+      <li class='item flexrow items-header' data-item-id='{{bioclass._id}}' data-document-class='Item'>
+        <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}}</div>
+        <div class='item-controls'>
+          <a class='item-control item-edit' data-action='viewDoc' data-tooltip='{{localize "DOCUMENT.Update" type='bioclass'}}'>
+            <i class='fas fa-edit'></i>
+          </a>
+          {{#if @root.editable}}
+            <a class='item-control item-delete' data-action='deleteDoc' data-tooltip='{{localize "DOCUMENT.Delete" type='bioclass'}}'>
+              <i class='fas fa-trash'></i>
+            </a>
+          {{/if}}
+        </div>
+      </li>
+    </ol>
+
+    <div class='grid grid-2col'>
+      <div class='resource flex-group-center'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.BodyType'}}</label>
+        <div>{{bioclass.system.bodyType}}</div>
+      </div>
+
+      <div class='resource flex-group-center'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.BrainType'}}</label>
+        <div>{{bioclass.system.brainType}}</div>
+      </div>
+
+      <div class='resource flex-group-center'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.FIELDS.bodySlots.label'}}</label>
+        <div>{{bioclass.system.bodySlots}}</div>
+      </div>
+
+      <div class='resource flex-group-center'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.FIELDS.brainSlots.label'}}</label>
+        <div>{{bioclass.system.brainSlots}}</div>
+      </div>
+    </div>
+  {{else}}
+    <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoneAssigned'}}</p>
+    {{#if @root.editable}}
+      <a class='item-control item-create' data-action='createDoc' data-document-class='Item' data-type='bioclass'>
+        <i class='fas fa-plus'></i>
+        {{localize 'SYNTHICIDE.Actor.Bioclass.Create'}}
+      </a>
+    {{/if}}
+  {{/if}}
+</section>

@@ -21,7 +21,7 @@
     {{! The grid classes are defined in scss/global/_grid.scss. To use,
       use both the "grid" and "grid-Ncol" class where "N" can be any number
       from 1 to 12 and will create that number of columns.  }}
-    <div class='resources grid grid-3col'>
+    <div class='resources grid grid-5col'>
 
       {{! "flex-group-center" is also defined in the _grid.scss file
         and it will add a small amount of padding, a border, and will
@@ -104,6 +104,82 @@
             />
           </div>
         {{/if}}
+      </div>
+
+      <div class='resource flex-group-center'>
+        <label class='resource-label'>
+          {{localize 'SYNTHICIDE.Actor.base.FIELDS.cynicism.label'}}
+        </label>
+        <div class='resource-content flexrow flex-center flex-between resource-counter'>
+          <div class='resource-stepper' data-counter-key='cynicism'>
+            {{#if @root.editable}}
+              <button
+                type='button'
+                class='resource-step-btn'
+                data-action='decreaseCynicism'
+                aria-label='Decrease cynicism'
+              >-</button>
+            {{/if}}
+            <input
+              type='number'
+              name='system.cynicism'
+              value='{{system.cynicism}}'
+              data-dtype='Number'
+              min='0'
+              max='10'
+              step='1'
+            />
+            {{#if @root.editable}}
+              <button
+                type='button'
+                class='resource-step-btn'
+                data-action='increaseCynicism'
+                aria-label='Increase cynicism'
+              >+</button>
+            {{/if}}
+          </div>
+        </div>
+        <div class='resource-track resource-track-cynicism'>
+          <div class='resource-track-fill' style='width: calc(({{system.cynicism}} / 10) * 100%);'></div>
+        </div>
+      </div>
+
+      <div class='resource flex-group-center'>
+        <label class='resource-label'>
+          {{localize 'SYNTHICIDE.Actor.base.FIELDS.resolve.label'}}
+        </label>
+        <div class='resource-content flexrow flex-center flex-between resource-counter'>
+          <div class='resource-stepper' data-counter-key='resolve'>
+            {{#if @root.editable}}
+              <button
+                type='button'
+                class='resource-step-btn'
+                data-action='decreaseResolve'
+                aria-label='Decrease resolve'
+              >-</button>
+            {{/if}}
+            <input
+              type='number'
+              name='system.resolve'
+              value='{{system.resolve}}'
+              data-dtype='Number'
+              min='0'
+              max='5'
+              step='1'
+            />
+            {{#if @root.editable}}
+              <button
+                type='button'
+                class='resource-step-btn'
+                data-action='increaseResolve'
+                aria-label='Increase resolve'
+              >+</button>
+            {{/if}}
+          </div>
+        </div>
+        <div class='resource-track resource-track-resolve'>
+          <div class='resource-track-fill' style='width: calc(({{system.resolve}} / 5) * 100%);'></div>
+        </div>
       </div>
     </div>
   </div>
