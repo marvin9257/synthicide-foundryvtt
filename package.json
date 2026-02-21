@@ -6,6 +6,7 @@
     "createSymlinks": "node src/create-symlinks.mjs",
     "lint": "eslint ."
   },
+  "type": "module",
   "browserslist": [
     "last 3 versions"
   ],
