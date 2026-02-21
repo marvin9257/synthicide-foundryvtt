@@ -305,9 +305,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     context.spells = spells;
     context.bioclass = bioclass;
     context.bioclassTraits = bioclass
-      ? foundry.utils.deepClone(bioclass.system.traits ?? []).sort(
-          (a, b) => (a.sort || 0) - (b.sort || 0)
-        )
+      ? foundry.utils.deepClone(bioclass.system.traits ?? [])
       : [];
   }
 
@@ -435,18 +433,17 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     const traitIndex = Number(target.dataset.traitIndex);
     if (!Number.isInteger(traitIndex) || traitIndex < 0) return;
 
-    const row = target.closest('[data-trait-index]');
-    if (!row) return;
+    // Traverse from button to parent fieldset
+    const fieldset = target.closest('fieldset[data-trait-index]');
+    if (!fieldset) return;
 
-    const nameInput = row.querySelector('.bioclass-trait-name');
-    const descriptionInput = row.querySelector('.bioclass-trait-description');
+    const nameInput = fieldset.querySelector('input.bioclass-trait-name');
+    const descriptionInput = fieldset.querySelector('textarea.bioclass-trait-description');
 
     const nextName = String(nameInput?.value ?? '').trim();
     const nextDescription = String(descriptionInput?.value ?? '').trim();
 
-    const traits = foundry.utils.deepClone(bioclass.system.traits ?? []).sort(
-      (a, b) => (a.sort || 0) - (b.sort || 0)
-    );
+    const traits = foundry.utils.deepClone(bioclass.system.traits ?? []);
 
     if (!traits[traitIndex]) return;
 
