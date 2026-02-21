@@ -5,12 +5,12 @@
   data-tab='attributes'
 >
   <div class="modifiers-table">
-    <div class="modifiers-header">Attribute</div>
-    <div class="modifiers-header">Value</div>
-    <div class="modifiers-header">Type</div>
-    <div class="modifiers-header">Condition</div>
-    <div class="modifiers-header">Source</div>
-    <div class="modifiers-header"></div>
+    <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Feature.Attribute'}}</div>
+    <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Feature.Value'}}</div>
+    <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Feature.Type'}}</div>
+    <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Feature.Condition'}}</div>
+    <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Feature.Source'}}</div>
+    <div class="modifiers-header"><button type="button" class="modifiers-add" data-action="addModifier" data-tooltip="SYNTHICIDE.Item.Feature.AddFeature"><i class="fas fa-plus"></i></button></div>
     {{#if system.modifiers.length}}
       {{#each system.modifiers as |mod i|}}
         <div>
@@ -40,32 +40,7 @@
           <a class="modifiers-remove" data-action="removeModifier" data-index="{{i}}" title="Remove Modifier"><i class="fas fa-trash"></i></a>
         </div>
       {{/each}}
-    {{else}}
-      <div>
-        <select name="system.modifiers.0.target">
-          {{#each @root.config.attributes as |label key|}}
-            <option value="{{key}}">{{localize label}}</option>
-          {{/each}}
-        </select>
-      </div>
-      <div>
-        <input type="number" name="system.modifiers.0.value" value="0" step="1"/>
-      </div>
-      <div>
-        <select name="system.modifiers.0.type">
-          <option value="bonus">Bonus</option>
-          <option value="penalty">Penalty</option>
-          <option value="set">Set</option>
-        </select>
-      </div>
-      <div>
-        <input type="text" name="system.modifiers.0.condition" value="" placeholder="Optional"/>
-      </div>
-      <div>
-        <input type="text" name="system.modifiers.0.source" value="" placeholder="Optional"/>
-      </div>
-      <div></div>
     {{/if}}
   </div>
-  <button type="button" class="modifiers-add" data-action="addModifier"><i class="fas fa-plus"></i> Add Modifier</button>
+  
 </section>

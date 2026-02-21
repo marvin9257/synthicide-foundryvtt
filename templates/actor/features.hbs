@@ -8,11 +8,12 @@
   <section class='grid grid-5col'>
     <aside class='sidebar grid-span-2'>
       <div class="attributes-table">
-        <div class="attributes-header">ACTIONS</div>
-        <div class="attributes-header">Level Increase</div>
-        <div class="attributes-header">Current</div>
+        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Features.Actions'}}</div>
+        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Features.LevelIncrease'}}</div>
+        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Features.Current'}}</div>
         {{#each system.attributes as |attribute key|}}
           <div class="attribute-label">
+            {{localize (lookup @root.config.attributeAbbreviations key)}}
             <span
               class="rollable"
               data-action="roll"

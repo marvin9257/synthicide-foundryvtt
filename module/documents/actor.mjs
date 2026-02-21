@@ -8,15 +8,14 @@ export class SynthicideActor extends Actor {
    */
   prepareDerivedData() {
     super.prepareDerivedData();
-    const debugModifiers = Boolean(CONFIG?.debug?.synthicideModifiers);
+    const debugModifiers = true//Boolean(CONFIG?.debug?.synthicideModifiers);
 
-    // --- 1. Aggregate all modifiers from items and effects ---
+    // --- 1. Aggregate modifiers from item-defined custom modifiers ---
     const attributeKeys = Object.keys(CONFIG.SYNTHICIDE.attributes);
     const attributeModifiers = {};
     for (const key of attributeKeys) attributeModifiers[key] = 0;
     const nonAttributeModifiers = [];
     const debugItemContrib = [];
-    const debugEffectContrib = [];
 
     // Gather modifiers from items
     for (const item of this.items) {
@@ -52,48 +51,11 @@ export class SynthicideActor extends Actor {
       }
     }
 
-    // Gather attribute modifiers from Active Effects (actor + item-origin)
-    const applicableEffects = this.allApplicableEffects?.() ?? this.effects ?? [];
-    for (const effect of applicableEffects) {
-      if (effect.disabled) continue;
-      const changes = effect.changes || [];
-      for (const change of changes) {
-        const match = change.key?.match(/^system\.attributes\.(\w+)\.modifier$/);
-        if (match && attributeKeys.includes(match[1])) {
-          const effectType = change.type ?? 'add';
-          if (effectType !== 'add') {
-            if (debugModifiers) {
-              console.warn(
-                `[Synthicide] Ignored non-add AE type on ${effect.name}:`,
-                change.key,
-                effectType,
-                change.value
-              );
-            }
-            continue;
-          }
-          attributeModifiers[match[1]] += Number(change.value ?? 0);
-          if (debugModifiers) {
-            debugEffectContrib.push({
-              effect: effect.name,
-              key: change.key,
-              type: effectType,
-              value: Number(change.value ?? 0),
-              running: attributeModifiers[match[1]],
-            });
-          }
-        }
-      }
-    }
-
-    // --- 2. Apply attribute modifiers ---
+    // --- 2. Apply item attribute modifiers on top of prepared data ---
     for (const key of attributeKeys) {
       if (!this.system?.attributes?.[key]) continue;
-      const sourceModifier = Number(
-        foundry.utils.getProperty(this._source, `system.attributes.${key}.modifier`) ?? 0
-      );
-      this.system.attributes[key].modifier = sourceModifier + Number(attributeModifiers[key] ?? 0);
-      // Optionally, recalculate .current here if not handled by DataModel
+      const existingModifier = Number(this.system.attributes[key].modifier ?? 0);
+      this.system.attributes[key].modifier = existingModifier + Number(attributeModifiers[key] ?? 0);
       this.system.attributes[key].current =
         this.system.attributes[key].base +
         this.system.attributes[key].modifier +
@@ -105,8 +67,8 @@ export class SynthicideActor extends Actor {
       console.table(
         attributeKeys.map((key) => ({
           attribute: key,
-          sourceModifier: Number(
-            foundry.utils.getProperty(this._source, `system.attributes.${key}.modifier`) ?? 0
+          preparedModifier: Number(
+            this.system?.attributes?.[key]?.modifier - Number(attributeModifiers[key] ?? 0)
           ),
           aggregatedDelta: Number(attributeModifiers[key] ?? 0),
           finalModifier: Number(this.system?.attributes?.[key]?.modifier ?? 0),
@@ -114,19 +76,23 @@ export class SynthicideActor extends Actor {
         }))
       );
       if (debugItemContrib.length) console.table(debugItemContrib);
-      if (debugEffectContrib.length) console.table(debugEffectContrib);
       console.groupEnd();
     }
 
     // --- 3. Calculate derived data (base class or your own logic) ---
-    // If you have custom derived data, do it here. Otherwise, rely on DataModel.
+    // Put formula-style derived values here (for example: health.max from attributes/level).
+    // This runs after item attribute modifiers are applied above, so formulas can use final
+    // attribute values. If a derived value should also include direct non-attribute overrides
+    // from item modifiers (section 4), do a final recompute after section 4.
 
     // --- 4. Apply non-attribute modifiers to any system path ---
+    // Use this for direct path mutations like "health.max", "power.value", etc.
+    // These are applied after section 3 and may overwrite/adjust values calculated there.
     for (const mod of nonAttributeModifiers) {
       if (!mod.target) continue;
       // Only operate on system-relative paths
       let path = mod.target;
-      // Support both "health.max" and "system.health.max"
+      // Support both "health.max" and "system.hitPoints.max"
       if (!path.startsWith('system.')) path = `system.${path}`;
       let current = foundry.utils.getProperty(this, path);
       if (current === undefined) current = 0;
