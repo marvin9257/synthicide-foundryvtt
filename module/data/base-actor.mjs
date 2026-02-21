@@ -19,13 +19,15 @@ export default class SynthicideActorBaseData extends foundry.abstract
       }, {})
     );
 
-    schema.health = new fields.SchemaField({
+    schema.hitPoints = new fields.SchemaField({
       value: new fields.NumberField({
         ...requiredInteger,
         initial: 10,
         min: 0,
       }),
-      max: new fields.NumberField({ ...requiredInteger, initial: 10 }),
+      max: new fields.NumberField({ ...requiredInteger, initial: 10 }, {persisted: false}),
+      base: new fields.NumberField({ ...requiredInteger, initial: 20 }),
+      perLevel: new fields.NumberField({ ...requiredInteger, initial: 5 })
     });
 
     schema.power = new fields.SchemaField({
@@ -42,8 +44,8 @@ export default class SynthicideActorBaseData extends foundry.abstract
   // Loop through attribute scores, and add their modifiers to our sheet output.
     super.prepareDerivedData();
     for (const key in this.attributes) {
-      // Calculate the modifier using d20 rules.
-      this.attributes[key].current = this.attributes[key].base + this.attributes[key].modifier + this.attributes[key].increase;
+      // Calculatatio of attributes current handled in actor prepared data to addresess features modifiying.
+      //this.attributes[key].current = this.attributes[key].base + this.attributes[key].modifier + this.attributes[key].increase;
 
       // Handle attribute label localization.
       this.attributes[key].label =

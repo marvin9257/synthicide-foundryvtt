@@ -27,22 +27,23 @@
         and it will add a small amount of padding, a border, and will
         center all of its child elements content and text. }}
       <div class='resource flex-group-center'>
-        <label for='system.health.value' class='resource-label'>
-          {{localize 'SYNTHICIDE.Actor.base.FIELDS.health.value.label'}}
+        <label for='system.hitPoints.value' class='resource-label'>
+          {{localize 'SYNTHICIDE.Actor.base.FIELDS.hitPoints.value.label'}}
         </label>
         <div class='resource-content flexrow flex-center flex-between'>
           <input
             type='text'
-            name='system.health.value'
-            value='{{system.health.value}}'
+            name='system.hitPoints.value'
+            value='{{system.hitPoints.value}}'
             data-dtype='Number'
           />
           <span> / </span>
           <input
             type='text'
-            name='system.health.max'
-            value='{{system.health.max}}'
-            data-dtype='Number'
+            name='system.hitPoints.max'
+            value='{{system.hitPoints.max}}'
+            data-dtype='Number',
+            disabled
           />
         </div>
       </div>
@@ -71,13 +72,13 @@
       <div class='resource flex-group-center'>
         {{#if (eq actor.type 'sharper')}}
           <label class='resource-label'>
-            {{localize 'SYNTHICIDE.Actor.Character.FIELDS.attributes.level.value.label'}}
+            {{localize 'SYNTHICIDE.Actor.Character.FIELDS.level.value.label'}}
           </label>
           <div class='resource-content flexrow flex-center flex-between'>
             <input
               type='text'
-              name='system.attributes.level.value'
-              value='{{system.attributes.level.base}}'
+              name='system.level.value'
+              value='{{system.level.value}}'
               data-dtype='Number'
             />
           </div>
