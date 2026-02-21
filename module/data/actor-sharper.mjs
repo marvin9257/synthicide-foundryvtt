@@ -23,7 +23,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
 
   prepareDerivedData() {
     super.prepareDerivedData();
-    this.hitPoints.max = this.hitPoints.base + this.hitPoints.perLevel * this.level.value
+    this.hitPoints.max = this.hitPoints.base + this.hitPoints.perLevel * Math.max(0, this.level.value - 1)
   }
 
   getRollData() {
