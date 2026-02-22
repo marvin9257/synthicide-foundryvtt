@@ -26,3 +26,6 @@ tmp/
 # Ignore local config files
 foundry-config.yaml
 eslint.config.mjs
+
+# Ignore npm lock file
+package-lock.json
