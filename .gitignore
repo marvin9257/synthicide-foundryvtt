@@ -22,3 +22,7 @@ tmp/
 
 # Ignore environment variables
 .env
+
+# Ignore local config files
+foundry-config.yaml
+eslint.config.mjs
