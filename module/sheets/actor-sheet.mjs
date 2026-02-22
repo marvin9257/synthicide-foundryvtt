@@ -763,43 +763,25 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   }
 
   /**
-   * Handle dropping a bioclass item, including deletion of old bioclass and associated traits, creation of new bioclass and traits.
+   * Handle dropping a bioclass item.
+   * UI only triggers bioclass creation/deletion; trait logic is handled in item hooks.
    * @param {object} bioclassEntry - The bioclass item data
    * @param {object[]} otherEntries - Other item data to create
    * @returns {Promise<Item[]>}
    */
   async _handleBioclassDrop(bioclassEntry, otherEntries) {
-    // Delete old bioclass and its associated traits
-    if (this.actor.itemTypes.bioclass?.length) {
-      for (const oldBioclass of this.actor.itemTypes.bioclass) {
-        const traitIds = oldBioclass.system?.associatedTraitIds || [];
-        const validTraitIds = traitIds.filter(id => this.actor.items.has(id));
-        if (validTraitIds.length) {
-          await this.actor.deleteEmbeddedDocuments('Item', validTraitIds);
-        }
-        await this.actor.deleteEmbeddedDocuments('Item', [oldBioclass.id]);
-      }
-    }
-
-    // Create bioclass item, clear its traits array for actor-owned bioclass
-    const bioclassData = { ...bioclassEntry, system: { ...bioclassEntry.system, traits: [] } };
+    // Create new bioclass item (triggers _onCreate in item.mjs)
+    const bioclassData = { ...bioclassEntry };
     const [createdBioclass] = await this.actor.createEmbeddedDocuments('Item', [bioclassData]);
     const bioclassItem = this.actor.items.get(createdBioclass.id);
-
-    // Create traits from preset, with bioClassLink flag
-    const preset = SYNTHICIDE.getBioclassPreset(bioclassItem.system.bioclassType);
-    if (preset && preset.traits && preset.traits.length) {
-      const traitData = preset.traits.map(trait => ({
-        name: trait.name,
-        type: 'trait',
-        sort: trait.sort,
-        system: { description: trait.description, bioClassLink: true }
-      }));
-      const createdTraits = await this.actor.createEmbeddedDocuments('Item', traitData);
-      const traitIds = createdTraits.map(t => t.id);
-      await bioclassItem.update({ 'system.associatedTraitIds': traitIds });
+    // Delete old bioclass item(s) to trigger _onDelete and trait cleanup in item.mjs
+    const oldBioclassIds = this.actor.itemTypes.bioclass
+      .filter(b => b.id !== bioclassItem.id)
+      .map(b => b.id);
+    if (oldBioclassIds.length) {
+      await this.actor.deleteEmbeddedDocuments('Item', oldBioclassIds);
     }
-
+    // Create other dropped items (non-bioclass)
     if (otherEntries.length) {
       await this.actor.createEmbeddedDocuments('Item', otherEntries);
     }

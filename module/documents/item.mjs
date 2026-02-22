@@ -5,13 +5,51 @@ import SYNTHICIDE from '../helpers/config.mjs';
  * @extends {Item}
  */
 export class SynthicideItem extends Item {
+    /**
+     * Central method for bioclass application to actor.
+     * Handles trait creation and attribute sync. UI should never call trait logic directly.
+     * @param {Actor} actor - The actor to apply bioclass traits and attributes to.
+     */
+    async applyBioclassToActor(actor) {
+      if (!(actor instanceof Actor)) return;
+      // --- Bioclass trait creation ---
+      const traits = this.system?.traits ?? [];
+      if (Array.isArray(traits) && traits.length) {
+        const traitDocs = traits.map(trait => ({
+          type: 'trait',
+          name: trait.name || 'Trait',
+          system: { ...trait, bioClassLink: true }
+        }));
+        // Ensure bioClassLink is always true for bioclass traits
+        traitDocs.forEach(doc => doc.system.bioClassLink = true);
+        await actor.createEmbeddedDocuments('Item', traitDocs);
+      }
+      // --- Attribute sync ---
+      const starting = this.system?.startingAttributes ?? {};
+      const updates = {};
+      const actorAttributes = actor.system?.attributes ?? {};
+      for (const [key, value] of Object.entries(starting)) {
+        const mappedKey =
+          key in actorAttributes
+            ? key
+            : SYNTHICIDE.bioclassToActorAttributeMap?.[key];
+        if (!mappedKey || !(mappedKey in actorAttributes)) continue;
+        updates[`system.attributes.${mappedKey}.base`] = Number(value ?? 0);
+      }
+      if (Object.prototype.hasOwnProperty.call(starting, 'hp')) {
+        updates['system.hitPoints.base'] = Number(starting.hp ?? 0);
+      }
+      if (Object.prototype.hasOwnProperty.call(starting, 'hpPerLevel')) {
+        updates['system.hitPoints.perLevel'] = Number(starting.hpPerLevel ?? 0);
+      }
+      if (Object.keys(updates).length) await actor.update(updates);
+    }
   /** @override */
   async _preCreate(data, options, user) {
+    // Only allow one bioclass per actor. UI should warn if duplicate is attempted.
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
-
     if (this.type !== 'bioclass') return;
-
     if (this.actor?.itemTypes.bioclass?.length) {
       if (game.userId === user) {
         ui.notifications.warn(
@@ -20,14 +58,13 @@ export class SynthicideItem extends Item {
       }
       return false;
     }
-
+    // Fill missing bioclass fields from preset
     const bioclassType =
       foundry.utils.getProperty(data, 'system.bioclassType') ??
       this.system.bioclassType ??
       'skinbag';
     const preset = SYNTHICIDE.getBioclassPreset(bioclassType);
     const updateData = {};
-
     if (!foundry.utils.hasProperty(data, 'system.bioclassType')) {
       updateData['system.bioclassType'] = bioclassType;
     }
@@ -45,7 +82,6 @@ export class SynthicideItem extends Item {
     if (!foundry.utils.hasProperty(data, 'system.traits')) {
       updateData['system.traits'] = foundry.utils.deepClone(preset.traits);
     }
-
     if (Object.keys(updateData).length > 0) {
       this.updateSource(updateData);
     }
@@ -53,37 +89,47 @@ export class SynthicideItem extends Item {
 
   /** @override */
   _onCreate(data, options, userId) {
+    // Only apply bioclass traits if actor is clean (no other bioclass)
     super._onCreate(data, options, userId);
     if (this.type !== 'bioclass') return;
     if (userId !== game.userId) return;
-    void this._syncActorFromBioclass(this.actor, this);
+    const bioclassCount = this.actor?.itemTypes?.bioclass?.length || 0;
+    if (bioclassCount <= 1) {
+      void this.applyBioclassToActor(this.actor);
+    }
   }
 
   /** @override */
   _onUpdate(changed, options, userId) {
+    // Re-apply bioclass traits if starting attributes or bioclass type change
     super._onUpdate(changed, options, userId);
     if (this.type !== 'bioclass') return;
     if (userId !== game.userId) return;
-
     const touchesStartingAttributes =
       foundry.utils.hasProperty(changed, 'system.startingAttributes') ||
       foundry.utils.hasProperty(changed, 'system.bioclassType');
     if (!touchesStartingAttributes) return;
-
-    void this._syncActorFromBioclass(this.actor, this);
+    void this.applyBioclassToActor(this.actor);
   }
 
   /** @override */
-  _onDelete(options, userId) {
+  async _onDelete(options, userId) {
+    // Remove bioclass-linked traits and re-apply if replacement bioclass exists
     super._onDelete(options, userId);
     if (this.type !== 'bioclass') return;
     if (userId !== game.userId) return;
     if (!(this.parent instanceof Actor)) return;
-
-    // If a replacement bioclass exists (direct API usage), sync from that.
+    // --- Remove bioclass-linked traits ---
+    const bioclassTraits = this.parent.items.filter(i => i.type === 'trait' && i.system?.bioClassLink === true);
+    const validTraitIds = bioclassTraits.map(i => i.id).filter(id => this.parent.items.has(id));
+    if (validTraitIds.length) {
+      await this.parent.deleteEmbeddedDocuments('Item', validTraitIds);
+    }
+    // --- Re-apply traits if replacement bioclass exists ---
     const replacement = this.parent.itemTypes.bioclass?.[0];
-    if (!replacement) return;
-    void this._syncActorFromBioclass(this.parent, replacement);
+    if (replacement && typeof replacement.applyBioclassToActor === 'function') {
+      void replacement.applyBioclassToActor(this.parent);
+    }
   }
 
   /**
@@ -93,49 +139,9 @@ export class SynthicideItem extends Item {
    * @returns {Promise<void>}
    * @private
    */
-  async _syncActorFromBioclass(actor, bioclassItem) {
-    if (!(actor instanceof Actor)) return;
-    if (!bioclassItem || bioclassItem.type !== 'bioclass') return;
-
-    // 1. Sync base attributes and HP
-    const starting = bioclassItem.system?.startingAttributes ?? {};
-    const updates = {};
-    const actorAttributes = actor.system?.attributes ?? {};
-    for (const [key, value] of Object.entries(starting)) {
-      const mappedKey =
-        key in actorAttributes
-          ? key
-          : SYNTHICIDE.bioclassToActorAttributeMap?.[key];
-      if (!mappedKey || !(mappedKey in actorAttributes)) continue;
-      updates[`system.attributes.${mappedKey}.base`] = Number(value ?? 0);
-    }
-    if (Object.prototype.hasOwnProperty.call(starting, 'hp')) {
-      updates['system.hitPoints.base'] = Number(starting.hp ?? 0);
-    }
-    if (Object.prototype.hasOwnProperty.call(starting, 'hpPerLevel')) {
-      updates['system.hitPoints.perLevel'] = Number(starting.hpPerLevel ?? 0);
-    }
-    if (Object.keys(updates).length) await actor.update(updates);
-
-    // 2. Remove all existing trait items
-    const traitItems = actor.items.filter(i => i.type === 'trait');
-    if (traitItems.length) {
-      await actor.deleteEmbeddedDocuments('Item', traitItems.map(i => i.id));
-    }
-
-    // 3. Create new trait items from bioclass's system.traits array
-    const bioclassTraits = bioclassItem.system?.traits ?? [];
-    if (Array.isArray(bioclassTraits) && bioclassTraits.length) {
-      const traitDocs = bioclassTraits.map(trait => ({
-        type: 'trait',
-        name: trait.name || 'Trait',
-        system: {
-          description: trait.description || '',
-          ...trait
-        }
-      }));
-      await actor.createEmbeddedDocuments('Item', traitDocs);
-    }
+  async _syncActorFromBioclass() {
+    // Deprecated: use applyBioclassToActor instead
+    return;
   }
 
   /**
