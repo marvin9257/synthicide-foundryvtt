@@ -18,8 +18,8 @@
         }
     },
     "Item": {
-        "feature": {
-            "htmlFields": ["description"]
+        "trait": {
+          "htmlFields": ["description"]
         },
         "gear": {
             "htmlFields": ["description"]

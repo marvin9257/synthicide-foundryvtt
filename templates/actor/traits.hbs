@@ -1,4 +1,5 @@
 {{! Traits Tab }}
+{{log this}}
 <section
   class='tab traits scrollable {{tab.cssClass}}'
   data-group='primary'
@@ -12,7 +13,7 @@
           {{#if @root.editable}}
             <a
               class='item-control'
-              data-action='addBioclassTrait'
+              data-action='createDoc' data-document-class='Item' data-type='trait'
               data-tooltip='{{localize "SYNTHICIDE.Item.Bioclass.AddTrait"}}'
             >
               <i class='fas fa-plus'></i>
@@ -21,45 +22,46 @@
         </div>
       </li>
     </ol>
+  {{else}}
+    <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoneAssigned'}}</p>
+  {{/if}}
 
-    {{#if bioclassTraits.length}}
-      <div class='grid grid-1col'>
-        {{#each bioclassTraits as |trait i|}}
-          <fieldset class='resource' data-trait-index='{{i}}'>
-            <div style='display:flex; gap:0.5rem; align-items:flex-end;'>
-              <div style='flex:1;'>
-                <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.TraitName'}}</label>
+  {{#if traits.length}}
+    <div class='grid grid-1col'>
+      {{#each traits as |trait i|}}
+        <fieldset class='resource' data-item-id='{{trait._id}}'>
+          <div style='display:flex; gap:0.5rem; align-items:flex-end;'>
+            <div style='flex:1;'>
+              <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.TraitName'}}</label>
+              <span style='display:flex; align-items:center;'>
                 <input
                   type='text'
                   class='bioclass-trait-name'
                   value='{{trait.name}}'
-                  {{#unless @root.editable}}disabled{{/unless}}
+                  disabled
                 />
-              </div>
-              {{#if @root.editable}}
-                <div style='display:flex; align-items:flex-end; justify-content:flex-end; gap:0.25rem;'>
-                  <button type='button' data-action='saveBioclassTrait' data-trait-index='{{i}}'>
-                    <i class='fas fa-save'></i>
-                  </button>
-                  <button type='button' data-action='deleteBioclassTrait' data-trait-index='{{i}}'>
-                    <i class='fas fa-trash'></i>
-                  </button>
-                </div>
-              {{/if}}
+                {{#if trait.system.bioClassLink}}
+                  <i class='fas fa-link' style='margin-left:0.5em;' title='Bioclass Trait'></i>
+                {{/if}}
+              </span>
             </div>
-            <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.TraitDescription'}}</label>
-            <textarea
-              class='bioclass-trait-description'
-              rows='4'
-              {{#unless @root.editable}}disabled{{/unless}}
-            >{{trait.description}}</textarea>
-          </fieldset>
-        {{/each}}
-      </div>
-    {{else}}
-      <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoTraits'}}</p>
-    {{/if}}
+            <div style='display:flex; align-items:flex-end; justify-content:flex-end; gap:0.25rem;'>
+              <button type='button' data-action='editTraitItem' data-item-id='{{trait._id}}'>
+                <i class='fas fa-edit'></i>
+              </button>
+              <button type='button' data-action='deleteTraitItem' data-item-id='{{trait._id}}'>
+                <i class='fas fa-trash'></i>
+              </button>
+            </div>
+          </div>
+          {{!-- Trait Description --}}
+          <div class="trait-description">
+            {{{trait.enrichedDescription}}}
+          </div>
+        </fieldset>
+      {{/each}}
+    </div>
   {{else}}
-    <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoneAssigned'}}</p>
+    <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoTraits'}}</p>
   {{/if}}
 </section>

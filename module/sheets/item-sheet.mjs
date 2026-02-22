@@ -113,9 +113,9 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     description: {
       template: 'systems/synthicide/templates/item/description.hbs',
     },
-    attributesFeature: {
+    attributesTrait: {
       template:
-        'systems/synthicide/templates/item/attribute-parts/feature.hbs',
+        'systems/synthicide/templates/item/attribute-parts/trait.hbs',
     },
     attributesGear: {
       template: 'systems/synthicide/templates/item/attribute-parts/gear.hbs',
@@ -149,8 +149,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     if (this.document.limited) return;
     // Control which parts show based on document subtype
     switch (this.document.type) {
-      case 'feature':
-        options.parts.push('attributesFeature', 'effects');
+      case 'trait':
+        options.parts.push('attributesTrait', 'effects');
         break;
       case 'gear':
         options.parts.push('attributesGear');
@@ -198,7 +198,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
   /** @override */
   async _preparePartContext(partId, context) {
     switch (partId) {
-      case 'attributesFeature':
+      case 'attributesTrait':
       case 'attributesGear':
       case 'attributesSpell':
       case 'attributesBioclass':
@@ -288,7 +288,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
           tab.label += 'Description';
           tab.icon = 'fa-solid fa-align-left';
           break;
-        case 'attributesFeature':
+        case 'attributesTrait':
         case 'attributesGear':
         case 'attributesSpell':
           tab.id = 'attributes';

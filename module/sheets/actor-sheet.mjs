@@ -25,9 +25,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       viewDoc: this._viewDoc,
       createDoc: this._createDoc,
       deleteDoc: this._deleteDoc,
-      addBioclassTrait: this._addBioclassTrait,
-      saveBioclassTrait: this._saveBioclassTrait,
-      deleteBioclassTrait: this._deleteBioclassTrait,
       toggleEffect: this._toggleEffect,
       roll: this._onRoll,
       increaseAttribute: this._onIncreaseAttribute,
@@ -36,7 +33,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       decreaseResolve: this._onDecreaseResolve,
       increaseCynicism: this._onIncreaseCynicism,
       decreaseCynicism: this._onDecreaseCynicism,
+      editTraitItem: this._editTraitItem,
+      deleteTraitItem: this._deleteTraitItem,
     },
+
     // Custom property that's merged into `this.options`
     // dragDrop: [{ dragSelector: '.draggable', dropSelector: null }],
     form: {
@@ -54,9 +54,13 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       // Foundry-provided generic template
       template: 'templates/generic/tab-navigation.hbs',
     },
+    traits: {
+      template: 'systems/synthicide/templates/actor/traits.hbs',
+      scrollable: [""],
+    },
     features: {
       template: 'systems/synthicide/templates/actor/features.hbs',
-      scrollable: [""],
+      scrollable: [""]
     },
     biography: {
       template: 'systems/synthicide/templates/actor/biography.hbs',
@@ -72,10 +76,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     },
     cybernetics: {
       template: 'systems/synthicide/templates/actor/cybernetics.hbs',
-      scrollable: [""],
-    },
-    traits: {
-      template: 'systems/synthicide/templates/actor/traits.hbs',
       scrollable: [""],
     },
     effects: {
@@ -96,18 +96,19 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       case 'sharper':
         options.parts.push(
           'features',
+          'traits',
           'gear',
           'spells',
           'cybernetics',
-          'traits',
           'biography',
           'effects'
         );
         break;
       case 'npc':
-        options.parts.push('gear', 'biography', 'effects');
+        options.parts.push('features', 'gear', 'biography', 'effects');
         break;
     }
+      
   }
 
   /* -------------------------------------------- */
@@ -135,7 +136,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     };
 
     // Offloading context prep to a helper function
-    this._prepareItems(context);
+    await this._prepareItems(context);
 
     return context;
   }
@@ -143,11 +144,11 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   /** @override */
   async _preparePartContext(partId, context) {
     switch (partId) {
+      case 'traits':
       case 'features':
       case 'spells':
       case 'gear':
       case 'cybernetics':
-      case 'traits':
         context.tab = context.tabs[partId];
         break;
       case 'biography':
@@ -227,7 +228,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           break;
         case 'traits':
           tab.id = 'traits';
-          tab.label += 'Traits';
+          tab.label += 'Bio';
           tab.icon = 'fa-solid fa-dna';
           break;
         case 'biography':
@@ -252,13 +253,13 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    *
    * @param {object} context The context object to mutate
    */
-  _prepareItems(context) {
+  async _prepareItems(context) {
     // Initialize containers.
     // You can just use `this.document.itemTypes` instead
     // if you don't need to subdivide a given type like
     // this sheet does with spells
     const gear = [];
-    const features = [];
+    const traits = [];
     let bioclass = null;
     const spells = {
       0: [],
@@ -279,9 +280,18 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       if (i.type === 'gear') {
         gear.push(i);
       }
-      // Append to features.
-      else if (i.type === 'feature') {
-        features.push(i);
+      // Append to traits.
+      else if (i.type === 'trait') {
+        // Enrich description for display
+        i.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          i.system.description || '',
+          {
+            secrets: this.document.isOwner,
+            rollData: this.actor.getRollData(),
+            relativeTo: this.actor
+          }
+        );
+        traits.push(i);
       }
       // Append to spells.
       else if (i.type === 'spell') {
@@ -301,12 +311,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     // Sort then assign
     context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    context.features = features.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.traits = traits.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.spells = spells;
     context.bioclass = bioclass;
-    context.bioclassTraits = bioclass
-      ? foundry.utils.deepClone(bioclass.system.traits ?? [])
-      : [];
   }
 
   /**
@@ -385,99 +392,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     await doc.delete();
   }
 
-  /**
-   * Add a new trait to the actor's assigned bioclass item.
-   *
-   * @this SynthicideActorSheet
-   * @param {PointerEvent} event
-   * @protected
-   */
-  static async _addBioclassTrait(event) {
-    event.preventDefault();
-    const bioclass = this.actor.itemTypes.bioclass?.[0];
-    if (!bioclass) {
-      ui.notifications.warn(
-        game.i18n.localize('SYNTHICIDE.Actor.Bioclass.NoneAssigned')
-      );
-      return;
-    }
-
-    const traits = foundry.utils.deepClone(bioclass.system.traits ?? []);
-    const maxSort = traits.reduce(
-      (currentMax, trait) => Math.max(currentMax, Number(trait.sort) || 0),
-      -10
-    );
-
-    traits.push({
-      name: game.i18n.localize('SYNTHICIDE.Item.Bioclass.TraitName'),
-      description: '',
-      sort: maxSort + 10,
-    });
-
-    await bioclass.update({ 'system.traits': traits });
-  }
-
-  /**
-   * Save a trait edit from the actor traits tab to the assigned bioclass item.
-   *
-   * @this SynthicideActorSheet
-   * @param {PointerEvent} event
-   * @param {HTMLElement} target
-   * @protected
-   */
-  static async _saveBioclassTrait(event, target) {
-    event.preventDefault();
-    const bioclass = this.actor.itemTypes.bioclass?.[0];
-    if (!bioclass) return;
-
-    const traitIndex = Number(target.dataset.traitIndex);
-    if (!Number.isInteger(traitIndex) || traitIndex < 0) return;
-
-    // Traverse from button to parent fieldset
-    const fieldset = target.closest('fieldset[data-trait-index]');
-    if (!fieldset) return;
-
-    const nameInput = fieldset.querySelector('input.bioclass-trait-name');
-    const descriptionInput = fieldset.querySelector('textarea.bioclass-trait-description');
-
-    const nextName = String(nameInput?.value ?? '').trim();
-    const nextDescription = String(descriptionInput?.value ?? '').trim();
-
-    const traits = foundry.utils.deepClone(bioclass.system.traits ?? []);
-
-    if (!traits[traitIndex]) return;
-
-    traits[traitIndex].name = nextName;
-    traits[traitIndex].description = nextDescription;
-
-    await bioclass.update({ 'system.traits': traits });
-  }
-
-  /**
-   * Delete a trait from the actor's assigned bioclass item.
-   *
-   * @this SynthicideActorSheet
-   * @param {PointerEvent} event
-   * @param {HTMLElement} target
-   * @protected
-   */
-  static async _deleteBioclassTrait(event, target) {
-    event.preventDefault();
-    const bioclass = this.actor.itemTypes.bioclass?.[0];
-    if (!bioclass) return;
-
-    const traitIndex = Number(target.dataset.traitIndex);
-    if (!Number.isInteger(traitIndex) || traitIndex < 0) return;
-
-    const traits = foundry.utils.deepClone(bioclass.system.traits ?? []).sort(
-      (a, b) => (a.sort || 0) - (b.sort || 0)
-    );
-
-    if (!traits[traitIndex]) return;
-
-    traits.splice(traitIndex, 1);
-    await bioclass.update({ 'system.traits': traits });
-  }
 
   /**
    * Handle creating a new Owned Item or ActiveEffect for the actor using initial data defined in the HTML dataset
@@ -631,6 +545,28 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     const current = Number(this.actor.system.cynicism ?? 0);
     await this.actor.update({ 'system.cynicism': Math.max(0, current - 1) });
   }
+  /**
+   * Open the trait item sheet for editing
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async _editTraitItem(event, target) {
+    event.preventDefault();
+    const itemId = target.dataset.itemId;
+    const item = this.actor.items.get(itemId);
+    if (item) item.sheet.render(true);
+  }
+
+  /**
+   * Delete the trait item from the actor
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async _deleteTraitItem(event, target) {
+    event.preventDefault();
+    const itemId = target.dataset.itemId;
+    await this.actor.deleteEmbeddedDocuments('Item', [itemId]);
+  }
 
   /** Helper Functions */
 
@@ -771,6 +707,35 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   }
 
   /**
+   * Generic drop handler for items, folders, actors, and effects
+   * @param {DragEvent} event
+   * @returns {Promise}
+   */
+  async _onDrop(event) {
+    event.preventDefault();
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    if (!data) return;
+    switch (data.type) {
+      case 'ActiveEffect':
+        return this._onDropActiveEffect(event, data);
+      case 'Actor':
+        return this._onDropActor(event, data);
+      case 'Folder':
+        return this._onDropFolder(event, data);
+      case 'Item': {
+        let itemObj = data;
+        if (data.uuid) {
+          const doc = await fromUuid(data.uuid);
+          if (doc) itemObj = doc.toObject();
+        }
+        return this._onDropItemCreate([itemObj], event);
+      }
+      default:
+        return;
+    }
+  }
+
+  /**
    * Handle the final creation of dropped Item data on the Actor.
    * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
    * @param {object[]|object} itemData      The item data requested for creation
@@ -780,35 +745,76 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    */
   async _onDropItemCreate(itemData, _event) {
     itemData = itemData instanceof Array ? itemData : [itemData];
-    const hasExistingBioclass = !!this.actor.itemTypes.bioclass?.length;
-    let hasIncomingBioclass = false;
-    let blockedBioclass = false;
-
-    const filteredItemData = itemData.reduce((items, entry) => {
-      const entryData = entry instanceof Item ? entry.toObject() : entry;
-      if (entryData.type !== 'bioclass') {
-        items.push(entryData);
-        return items;
+    const resolvedData = await Promise.all(itemData.map(async entry => {
+      if (entry.uuid) {
+        const doc = await fromUuid(entry.uuid);
+        return doc ? doc.toObject() : entry;
       }
+      return entry instanceof Item ? entry.toObject() : { ...entry };
+    }));
+    const bioclassEntries = resolvedData.filter(entryData => entryData.type === 'bioclass');
+    const otherEntries = resolvedData.filter(entryData => entryData.type !== 'bioclass');
 
-      if (hasExistingBioclass || hasIncomingBioclass) {
-        blockedBioclass = true;
-        return items;
+    if (bioclassEntries.length) {
+      return await this._handleBioclassDrop(bioclassEntries[0], otherEntries);
+    } else {
+      return await this._handleGenericItemDrop(otherEntries);
+    }
+  }
+
+  /**
+   * Handle dropping a bioclass item, including deletion of old bioclass and associated traits, creation of new bioclass and traits.
+   * @param {object} bioclassEntry - The bioclass item data
+   * @param {object[]} otherEntries - Other item data to create
+   * @returns {Promise<Item[]>}
+   */
+  async _handleBioclassDrop(bioclassEntry, otherEntries) {
+    // Delete old bioclass and its associated traits
+    if (this.actor.itemTypes.bioclass?.length) {
+      for (const oldBioclass of this.actor.itemTypes.bioclass) {
+        const traitIds = oldBioclass.system?.associatedTraitIds || [];
+        const validTraitIds = traitIds.filter(id => this.actor.items.has(id));
+        if (validTraitIds.length) {
+          await this.actor.deleteEmbeddedDocuments('Item', validTraitIds);
+        }
+        await this.actor.deleteEmbeddedDocuments('Item', [oldBioclass.id]);
       }
-
-      hasIncomingBioclass = true;
-      items.push(entryData);
-      return items;
-    }, []);
-
-    if (blockedBioclass) {
-      ui.notifications.warn(
-        game.i18n.localize('SYNTHICIDE.Actor.Bioclass.OnlyOneWarning')
-      );
     }
 
-    if (!filteredItemData.length) return [];
-    return this.actor.createEmbeddedDocuments('Item', filteredItemData);
+    // Create bioclass item, clear its traits array for actor-owned bioclass
+    const bioclassData = { ...bioclassEntry, system: { ...bioclassEntry.system, traits: [] } };
+    const [createdBioclass] = await this.actor.createEmbeddedDocuments('Item', [bioclassData]);
+    const bioclassItem = this.actor.items.get(createdBioclass.id);
+
+    // Create traits from preset, with bioClassLink flag
+    const preset = SYNTHICIDE.getBioclassPreset(bioclassItem.system.bioclassType);
+    if (preset && preset.traits && preset.traits.length) {
+      const traitData = preset.traits.map(trait => ({
+        name: trait.name,
+        type: 'trait',
+        sort: trait.sort,
+        system: { description: trait.description, bioClassLink: true }
+      }));
+      const createdTraits = await this.actor.createEmbeddedDocuments('Item', traitData);
+      const traitIds = createdTraits.map(t => t.id);
+      await bioclassItem.update({ 'system.associatedTraitIds': traitIds });
+    }
+
+    if (otherEntries.length) {
+      await this.actor.createEmbeddedDocuments('Item', otherEntries);
+    }
+    return [bioclassItem];
+  }
+
+  /**
+   * Handle dropping generic items (non-bioclass)
+   * @param {object[]} itemData - Array of item data to create
+   * @returns {Promise<Item[]>}
+   */
+  async _handleGenericItemDrop(itemData) {
+    if (!itemData.length) return [];
+    const created = await this.actor.createEmbeddedDocuments('Item', itemData);
+    return created;
   }
 
   /********************

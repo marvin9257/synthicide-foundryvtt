@@ -46,6 +46,9 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     schema.bodySlots = new fields.NumberField({ required: true, initial: defaultPreset.bodySlots });
     schema.brainSlots = new fields.NumberField({ required: true, initial: defaultPreset.brainSlots });
 
+    // Associated trait IDs (bioclass-linked traits)
+    schema.associatedTraitIds = new fields.ArrayField(new fields.StringField(), { initial: [] });
+
     return schema;
   }
 

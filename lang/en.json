@@ -28,7 +28,8 @@
         "Spells": "Spells",
         "Cybernetics": "Cybernetics",
         "Traits": "Traits",
-        "Effects": "Effects"
+        "Effects": "Effects",
+        "Bio": "Bio"
       },
       "Bioclass": {
         "NoneAssigned": "No bioclass assigned. Drop or create one.",
@@ -86,13 +87,13 @@
           "weight": {"label": "Weight"}
         }
       },
-      "Feature": {
+      "Trait": {
         "Attribute": "Attribute",
         "Value": "Value",
         "Type": "Type",
         "Condition": "Condition",
         "Source": "Source",
-        "AddFeature": "Add Feature"
+        "AddTrait": "Add Trait"
       },
       "Spell": {
         "FIELDS": {
@@ -156,7 +157,8 @@
       "gear": "Gear",
       "feature": "Feature",
       "spell": "Spell",
-      "bioclass": "Bioclass"
+      "bioclass": "Bioclass",
+      "trait": "Trait"
     }
   }
 }

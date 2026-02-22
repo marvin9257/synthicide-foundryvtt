@@ -14,6 +14,9 @@
   --synthicide-c-meter-line: rgba(0, 0, 0, 0.02);
   --synthicide-c-border-subtle: var(--synthicide-c-faint);
   --synthicide-c-hover-glow: red;
+  --synthicide-default-font: "Roboto", sans-serif;
+  --form-field-bg: #e6e4df;
+  --form-field-color: #333;
 }
 
 .theme-dark {
@@ -31,6 +34,7 @@
   --synthicide-c-success: #2f9e44;
   --synthicide-c-hover-glow: red;
 }
+
 /* ============================== */
 /* Theme Tokens                  */
 /* ============================== */
@@ -95,7 +99,7 @@
 
 /* Global styles */
 .window-app {
-  font-family: "Roboto", sans-serif;
+  font-family: var(--synthicide-default-font);
 }
 
 .rollable:hover, .rollable:focus {
@@ -864,4 +868,44 @@ img.actions-img {
   font-size: 2em;
   font-weight: bold;
   margin: 0.25em 0 0.5em 0;
+}
+
+/* Bioclass Trait Description Styling */
+.trait-box {
+  background: none;
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1.5px groove #bdbdbd;
+}
+.trait-name {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+.trait-description {
+  background: none;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 6px;
+  font-size: 1em;
+  color: inherit;
+  border: 1px solid #cfcfcf;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  min-height: 48px;
+}
+
+/* Light mode fallback */
+:root {
+  --form-field-bg: #e6e4df;
+  --form-field-color: #333;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --form-field-bg: #232323;
+    --form-field-color: #e6e4df;
+  }
 }

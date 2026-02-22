@@ -97,9 +97,9 @@ export class SynthicideItem extends Item {
     if (!(actor instanceof Actor)) return;
     if (!bioclassItem || bioclassItem.type !== 'bioclass') return;
 
+    // 1. Sync base attributes and HP
     const starting = bioclassItem.system?.startingAttributes ?? {};
     const updates = {};
-
     const actorAttributes = actor.system?.attributes ?? {};
     for (const [key, value] of Object.entries(starting)) {
       const mappedKey =
@@ -109,16 +109,33 @@ export class SynthicideItem extends Item {
       if (!mappedKey || !(mappedKey in actorAttributes)) continue;
       updates[`system.attributes.${mappedKey}.base`] = Number(value ?? 0);
     }
-
     if (Object.prototype.hasOwnProperty.call(starting, 'hp')) {
       updates['system.hitPoints.base'] = Number(starting.hp ?? 0);
     }
     if (Object.prototype.hasOwnProperty.call(starting, 'hpPerLevel')) {
       updates['system.hitPoints.perLevel'] = Number(starting.hpPerLevel ?? 0);
     }
+    if (Object.keys(updates).length) await actor.update(updates);
 
-    if (!Object.keys(updates).length) return;
-    await actor.update(updates);
+    // 2. Remove all existing trait items
+    const traitItems = actor.items.filter(i => i.type === 'trait');
+    if (traitItems.length) {
+      await actor.deleteEmbeddedDocuments('Item', traitItems.map(i => i.id));
+    }
+
+    // 3. Create new trait items from bioclass's system.traits array
+    const bioclassTraits = bioclassItem.system?.traits ?? [];
+    if (Array.isArray(bioclassTraits) && bioclassTraits.length) {
+      const traitDocs = bioclassTraits.map(trait => ({
+        type: 'trait',
+        name: trait.name || 'Trait',
+        system: {
+          description: trait.description || '',
+          ...trait
+        }
+      }));
+      await actor.createEmbeddedDocuments('Item', traitDocs);
+    }
   }
 
   /**

@@ -1,10 +1,10 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import SynthicideItemBase from './base-item.mjs';
 
-export default class SynthicideFeature extends SynthicideItemBase {
+export default class SynthicideTrait extends SynthicideItemBase {
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
-    'SYNTHICIDE.Item.Feature',
+    'SYNTHICIDE.Item.Trait',
   ];
 
   static defineSchema() {
@@ -20,14 +20,15 @@ export default class SynthicideFeature extends SynthicideItemBase {
         }),
         value: new fields.NumberField({ required: true }),
         type: new fields.StringField({
-          required: false,
-          initial: 'bonus',
+          required: true,
           choices: ['bonus', 'penalty', 'set'],
         }),
-        condition: new fields.StringField({ required: false, blank: true }),
-        source: new fields.StringField({ required: false, blank: true }),
+        condition: new fields.StringField({ required: false }),
       })
     );
+
+    // Bioclass-linked trait flag
+    schema.bioClassLink = new fields.BooleanField({ initial: false });
 
     return schema;
   }

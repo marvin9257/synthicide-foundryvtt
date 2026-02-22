@@ -73,7 +73,7 @@ Hooks.once('init', function () {
   CONFIG.Item.documentClass = SynthicideItem;
   CONFIG.Item.dataModels = {
     gear: models.SynthicideGear,
-    feature: models.SynthicideFeature,
+    trait: models.SynthicideTrait,
     spell: models.SynthicideSpell,
     bioclass: models.SynthicideBioclass,
   };

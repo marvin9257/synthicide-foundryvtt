@@ -1,0 +1,46 @@
+{{! Trait Attributes Tab }}
+<section
+  class='tab attributes {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='attributes'
+>
+  <div class="modifiers-table">
+    <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Trait.Attribute'}}</div>
+    <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Trait.Value'}}</div>
+    <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Trait.Type'}}</div>
+    <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Trait.Condition'}}</div>
+    <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Trait.Source'}}</div>
+    <div class="modifiers-header"><button type="button" class="modifiers-add" data-action="addModifier" data-tooltip="SYNTHICIDE.Item.Trait.AddTrait"><i class="fas fa-plus"></i></button></div>
+    {{#if system.modifiers.length}}
+      {{#each system.modifiers as |mod i|}}
+        <div>
+          <select name="system.modifiers.{{i}}.target">
+            {{#each @root.SYNTHICIDE.attributes as |label key|}}
+              <option value="{{key}}" {{#if (eq key mod.target)}}selected{{/if}}>{{localize label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div>
+          <input type="number" name="system.modifiers.{{i}}.value" value="{{mod.value}}" step="1"/>
+        </div>
+        <div>
+          <select name="system.modifiers.{{i}}.type">
+            <option value="bonus" {{#if (eq mod.type "bonus")}}selected{{/if}}>Bonus</option>
+            <option value="penalty" {{#if (eq mod.type "penalty")}}selected{{/if}}>Penalty</option>
+            <option value="set" {{#if (eq mod.type "set")}}selected{{/if}}>Set</option>
+          </select>
+        </div>
+        <div>
+          <input type="text" name="system.modifiers.{{i}}.condition" value="{{mod.condition}}" placeholder="Optional"/>
+        </div>
+        <div>
+          <input type="text" name="system.modifiers.{{i}}.source" value="{{mod.source}}" placeholder="Optional"/>
+        </div>
+        <div>
+          <a class="modifiers-remove" data-action="removeModifier" data-index="{{i}}" title="Remove Modifier"><i class="fas fa-trash"></i></a>
+        </div>
+      {{/each}}
+    {{/if}}
+  </div>
+  
+</section>
