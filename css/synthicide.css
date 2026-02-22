@@ -32,60 +32,6 @@
   --synthicide-c-hover-glow: red;
 }
 /* ============================== */
-/* Attributes Panel              */
-/* ============================== */
-
-.attribute-block-meter {
-  position: relative;
-  flex: 0 0 10px;
-  width: 10px;
-  height: 30px;
-  border: 1px solid var(--synthicide-c-dark);
-  background-image: repeating-linear-gradient(
-    to top,
-    var(--synthicide-c-meter-line) 0,
-    var(--synthicide-c-meter-line) 4px,
-    var(--synthicide-c-dark) 4px,
-    var(--synthicide-c-dark) 5px
-  );
-  background-color: var(--synthicide-c-white);
-  overflow: hidden;
-}
-.attribute-block-fill {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--synthicide-c-dark);
-}
-
-/* ============================== */
-/* Resolve/Cynicism Controls     */
-/* ============================== */
-
-.synthicide .resource-track {
-  width: 100%;
-  height: 4px;
-  margin-top: 0.2rem;
-  border-radius: 3px;
-  background: var(--synthicide-c-faint);
-  overflow: hidden;
-}
-.synthicide .resource-track .resource-track-fill {
-  height: 100%;
-  width: 0;
-  transition: width 120ms ease-in-out;
-}
-.synthicide .resource-track-cynicism .resource-track-fill {
-  background: var(--synthicide-c-danger);
-}
-.synthicide .resource-track-resolve .resource-track-fill {
-  background: var(--synthicide-c-success);
-}
-
-
-
-/* ============================== */
 /* Theme Tokens                  */
 /* ============================== */
 
@@ -111,12 +57,13 @@
   width: 10px;
   height: 30px;
   border: 1px solid var(--synthicide-c-dark);
+  /* 6 lines for 5 boxes, 30px height, so every 6px */
   background-image: repeating-linear-gradient(
-    to top,
-    var(--synthicide-c-meter-line) 0,
-    var(--synthicide-c-meter-line) 4px,
-    var(--synthicide-c-dark) 4px,
-    var(--synthicide-c-dark) 5px
+    to bottom,
+    var(--synthicide-c-meter-line),
+    var(--synthicide-c-meter-line) 1px,
+    transparent 1px,
+    transparent 6px
   );
 }
 .synthicide .progress-bar.horizontal {
@@ -709,14 +656,15 @@
   position: relative;
   flex: 0 0 10px;
   width: 10px;
-  height: 30px;
+  height: 32px;
+  box-sizing: border-box;
   border: 1px solid var(--synthicide-c-dark);
   background-image: repeating-linear-gradient(
     to top,
-    var(--synthicide-c-meter-line) 0,
-    var(--synthicide-c-meter-line) 4px,
-    var(--synthicide-c-dark) 4px,
-    var(--synthicide-c-dark) 5px
+    transparent 0,
+    transparent 5px,
+    var(--synthicide-c-dark) 5px,
+    var(--synthicide-c-dark) 6px
   );
   background-color: var(--synthicide-c-white);
   overflow: hidden;
@@ -834,4 +782,86 @@ img.actions-img {
 
 .synthicide .resource-track-resolve .resource-track-fill {
   background: var(--synthicide-c-success);
+}
+
+/* Bioclass Header Row Styles */
+.bioclass-header-row {
+  margin-bottom: 0.5rem;
+}
+.bioclass-header-table {
+  display: flex;
+  flex-direction: row;
+  border: 2px solid var(--synthicide-c-border-subtle);
+  border-radius: 4px;
+  overflow: hidden;
+  font-size: 1.05em;
+  background: inherit;
+  align-items: stretch;
+}
+.bioclass-header-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0.25em 0.75em;
+}
+.bioclass-header-main {
+  flex: 2;
+}
+.bioclass-header-divider {
+  width: 0;
+  border-left: 2px solid var(--synthicide-c-border-subtle);
+  margin: 0 0.25em;
+}
+.bioclass-header-side {
+  flex: 1;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.bioclass-header-input {
+  font: inherit;
+  font-weight: bold;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+.bioclass-header-level-input {
+  /*font-size: 1.3em;*/
+  text-align: center;
+  width: 2.5em;
+  /* background: var(--synthicide-c-white, #fff); */
+  /* border: 1px solid var(--synthicide-c-border-subtle, #ccc); */
+  border-radius: 4px;
+  color: inherit;
+  outline: none;
+}
+/* Visually hidden label for accessibility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(0);
+  border: 0;
+}
+.bioclass-header-label {
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  margin-top: 0.25em;
+}
+.bioclass-header-label:first-child {
+  margin-top: 0;
+}
+.bioclass-header-value {
+  margin-bottom: 0.1em;
+}
+.bioclass-header-name {
+  font-size: 1.1em;
+}
+.bioclass-header-level {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.25em 0 0.5em 0;
 }

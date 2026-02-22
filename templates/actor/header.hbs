@@ -10,13 +10,39 @@
     width='100'
   />
   <div class='header-fields'>
-    <div class='document-name'>
-      <input
-        name='name'
-        type='text'
-        value='{{actor.name}}'
-        placeholder='Name'
-      />
+    <!-- Bioclass Info Row (with editable name and level) -->
+    <div class="bioclass-header-row">
+      <div class="bioclass-header-table">
+        <div class="bioclass-header-col bioclass-header-main">
+          <div class="bioclass-header-label">{{localize 'SYNTHICIDE.Actor.Header.CharacterName'}}</div>
+          <div class="bioclass-header-value bioclass-header-name">
+            <input
+              name="name"
+              type="text"
+              value="{{actor.name}}"
+              placeholder="{{localize 'SYNTHICIDE.Actor.Header.CharacterName'}}"
+              class="bioclass-header-input"
+            />
+          </div>
+          <div class="bioclass-header-label">{{localize 'SYNTHICIDE.Actor.Header.Bioclass'}}</div>
+          <div class="bioclass-header-value">{{#if bioclass}}{{bioclass.name}}{{else}}—{{/if}}</div>
+        </div>
+        <div class="bioclass-header-col bioclass-header-side">
+          <div class="bioclass-header-label">{{localize 'SYNTHICIDE.Actor.Header.Level'}}</div>
+
+          <div class="bioclass-header-value bioclass-header-level">
+            <label for="system.level.value" class="visually-hidden">{{localize 'SYNTHICIDE.Actor.Header.Level'}}</label>
+            <input
+              id="system.level.value"
+              type="number"
+              name="system.level.value"
+              value="{{system.level.value}}"
+              class="bioclass-header-level-input"
+              min="1"
+            />
+          </div>
+        </div>
+      </div>
     </div>
     {{! The grid classes are defined in scss/global/_grid.scss. To use,
       use both the "grid" and "grid-Ncol" class where "N" can be any number
@@ -69,21 +95,9 @@
         </div>
       </div>
 
-      <div class='resource flex-group-center header-resource'>
-        {{#if (eq actor.type 'sharper')}}
-          <label class='resource-label'>
-            {{localize 'SYNTHICIDE.Actor.Character.FIELDS.level.value.label'}}
-          </label>
-          <div class='resource-content flexrow flex-center flex-between resource-single'>
-            <input
-              type='text'
-              name='system.level.value'
-              value='{{system.level.value}}'
-              data-dtype='Number'
-            />
-          </div>
-        {{/if}}
-        {{#if (eq actor.type 'npc')}}
+
+      {{#if (eq actor.type 'npc')}}
+        <div class='resource flex-group-center header-resource'>
           <label class='resource-label'>
             {{localize 'SYNTHICIDE.Actor.NPC.FIELDS.cr.label'}} / {{localize 'SYNTHICIDE.Actor.NPC.xp.label'}}
           </label>
@@ -103,9 +117,8 @@
               data-dtype='Number'
             />
           </div>
-        {{/if}}
-      </div>
-
+        </div>
+      {{/if}}
       <div class='resource flex-group-center header-resource'>
         <label class='resource-label'>
           {{localize 'SYNTHICIDE.Actor.base.FIELDS.cynicism.label'}}

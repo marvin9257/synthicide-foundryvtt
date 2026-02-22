@@ -14,6 +14,13 @@
       "Item": "Synthicide Item Sheet"
     },
     "Actor": {
+            "Header": {
+              "CharacterName": "Character Name",
+              "Bioclass": "Bioclass",
+              "BodyType": "Body Type",
+              "Level": "Level",
+              "MindType": "Mind Type"
+            },
       "Tabs": {
         "Biography": "Biography",
         "Features": "Features",
