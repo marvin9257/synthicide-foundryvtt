@@ -1,0 +1,24 @@
+# Ignore node modules
+node_modules/
+
+# Ignore built libraries
+lib/some-lib/
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore log files
+*.log
+
+# Ignore test coverage output
+coverage/
+
+# Ignore build outputs
+dist/
+build/
+
+# Ignore temporary files
+tmp/
+
+# Ignore environment variables
+.env
