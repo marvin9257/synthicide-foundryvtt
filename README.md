@@ -1,5 +1,54 @@
 # Synthicide System
 
+![Synthicide Theme](assets/synthicideTheme.png)
+
+---
+
+## Development & Build Instructions
+
+### Prerequisites
+
+- Node.js (v18 or later recommended)
+
+- npm (comes with Node.js)
+
+### Building the System
+
+To build the system for FoundryVTT:
+
+1. Install dependencies (first time only):
+	```sh
+	npm install
+	```
+2. Build the system:
+	```sh
+	npm run build
+	```
+	This will:
+	- Bundle JavaScript using Rollup
+	- Copy all required files (assets, css, lang, module, templates, system.json, README, LICENSE) into a fresh `dist/` folder
+
+### Live Development with FoundryVTT
+
+To have FoundryVTT use your latest build automatically:
+
+1. Remove or backup any existing `synthicide` folder in your FoundryVTT systems directory:
+	`/Users/USERNAME/Library/Application Support/FoundryVTT/Data/systems/synthicide`
+2. Create a symlink from your local `dist` folder to the FoundryVTT systems directory:
+	```sh
+	ln -sfn "$(pwd)/dist" "/Users/USERNAME/Library/Application Support/FoundryVTT/Data/systems/synthicide"
+	```
+3. Now, every time you run `npm run build`, FoundryVTT will use the latest code and assets.
+
+### Notes
+
+- The build process automatically clears and recreates the `dist` folder each time.
+- Only the contents of `dist` are needed for distribution or installation.
+- For production or release, you can zip the `dist` folder and distribute/upload as needed.
+
+---
+# Synthicide System
+
 ![Foundry v11](https://img.shields.io/badge/foundry-v11-green) ![Foundry v12](https://img.shields.io/badge/foundry-v12-green)
 
 This system is a draft version of a Synthicide system that is based on v13 Boilerplate. It's similar to Simple World-building, but has examples of creating attributes in code rather than dynamically through the UI.
