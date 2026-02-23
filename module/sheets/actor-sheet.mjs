@@ -770,17 +770,15 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @returns {Promise<Item[]>}
    */
   async _handleBioclassDrop(bioclassEntry, otherEntries) {
+    // Delete old bioclass item(s) to trigger _onDelete and trait cleanup in item.mjs
+    const oldBioclassIds = this.actor.itemTypes.bioclass.map(b => b.id);
+    if (oldBioclassIds.length) {
+      await this.actor.deleteEmbeddedDocuments('Item', oldBioclassIds);
+    }
     // Create new bioclass item (triggers _onCreate in item.mjs)
     const bioclassData = { ...bioclassEntry };
     const [createdBioclass] = await this.actor.createEmbeddedDocuments('Item', [bioclassData]);
     const bioclassItem = this.actor.items.get(createdBioclass.id);
-    // Delete old bioclass item(s) to trigger _onDelete and trait cleanup in item.mjs
-    const oldBioclassIds = this.actor.itemTypes.bioclass
-      .filter(b => b.id !== bioclassItem.id)
-      .map(b => b.id);
-    if (oldBioclassIds.length) {
-      await this.actor.deleteEmbeddedDocuments('Item', oldBioclassIds);
-    }
     // Create other dropped items (non-bioclass)
     if (otherEntries.length) {
       await this.actor.createEmbeddedDocuments('Item', otherEntries);

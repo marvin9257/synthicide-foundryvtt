@@ -41,15 +41,14 @@ export default class SynthicideActorBaseData extends foundry.abstract
   }
 
   prepareDerivedData() {
-  // Loop through attribute scores, and add their modifiers to our sheet output.
     super.prepareDerivedData();
     for (const key in this.attributes) {
-      // Calculatation of attributes current handled in actor prepared data to addresess features modifiying.
-      //this.attributes[key].current = this.attributes[key].base + this.attributes[key].modifier + this.attributes[key].increase;
-
-      // Handle attribute label localization.
       this.attributes[key].label =
         game.i18n.localize(SYNTHICIDE.attributes[key]) ?? key;
     }
+    // Calculate max HP from base and perLevel (level - 1)
+    const level = this.system?.level ?? 1;
+    this.hitPoints.max =
+      (this.hitPoints.base ?? 0) + ((level - 1) * (this.hitPoints.perLevel ?? 0));
   }
 }

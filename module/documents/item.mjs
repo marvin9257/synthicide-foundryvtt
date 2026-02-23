@@ -6,43 +6,12 @@ import SYNTHICIDE from '../helpers/config.mjs';
  */
 export class SynthicideItem extends Item {
     /**
-     * Central method for bioclass application to actor.
-     * Handles trait creation and attribute sync. UI should never call trait logic directly.
-     * @param {Actor} actor - The actor to apply bioclass traits and attributes to.
+     * Central method for item application to actor.
+     * Bioclass logic is handled in SynthicideBioclass via typeClasses.
+     * @param {Actor} actor - The actor to apply item effects to.
      */
-    async applyBioclassToActor(actor) {
-      if (!(actor instanceof Actor)) return;
-      // --- Bioclass trait creation ---
-      const traits = this.system?.traits ?? [];
-      if (Array.isArray(traits) && traits.length) {
-        const traitDocs = traits.map(trait => ({
-          type: 'trait',
-          name: trait.name || 'Trait',
-          system: { ...trait, bioClassLink: true }
-        }));
-        // Ensure bioClassLink is always true for bioclass traits
-        traitDocs.forEach(doc => doc.system.bioClassLink = true);
-        await actor.createEmbeddedDocuments('Item', traitDocs);
-      }
-      // --- Attribute sync ---
-      const starting = this.system?.startingAttributes ?? {};
-      const updates = {};
-      const actorAttributes = actor.system?.attributes ?? {};
-      for (const [key, value] of Object.entries(starting)) {
-        const mappedKey =
-          key in actorAttributes
-            ? key
-            : SYNTHICIDE.bioclassToActorAttributeMap?.[key];
-        if (!mappedKey || !(mappedKey in actorAttributes)) continue;
-        updates[`system.attributes.${mappedKey}.base`] = Number(value ?? 0);
-      }
-      if (Object.prototype.hasOwnProperty.call(starting, 'hp')) {
-        updates['system.hitPoints.base'] = Number(starting.hp ?? 0);
-      }
-      if (Object.prototype.hasOwnProperty.call(starting, 'hpPerLevel')) {
-        updates['system.hitPoints.perLevel'] = Number(starting.hpPerLevel ?? 0);
-      }
-      if (Object.keys(updates).length) await actor.update(updates);
+    async applyBioclassToActor(_actor) {
+      // No-op for base item. Bioclass logic is in SynthicideBioclass.
     }
   /** @override */
   async _preCreate(data, options, user) {
@@ -50,13 +19,13 @@ export class SynthicideItem extends Item {
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
     if (this.type !== 'bioclass') return;
+    // If a bioclass already exists, delete it before allowing the new one
     if (this.actor?.itemTypes.bioclass?.length) {
-      if (game.userId === user) {
-        ui.notifications.warn(
-          game.i18n.localize('SYNTHICIDE.Actor.Bioclass.OnlyOneWarning')
-        );
+      const existing = this.actor.itemTypes.bioclass[0];
+      if (existing && existing.id !== this.id) {
+        await existing.delete();
+        console.log('Deleted existing bioclass to allow replacement:', existing);
       }
-      return false;
     }
     // Fill missing bioclass fields from preset
     const bioclassType =
@@ -85,6 +54,32 @@ export class SynthicideItem extends Item {
     if (Object.keys(updateData).length > 0) {
       this.updateSource(updateData);
     }
+      // --- Bioclass trait creation (persisted) ---
+      const traits = data.system?.traits ?? [];
+      if (Array.isArray(traits) && traits.length && this.actor) {
+        const traitItems = traits.map(trait => ({
+          name: trait.name || 'Trait',
+          type: 'trait',
+          system: { ...trait, bioClassLink: true }
+        }));
+        await this.actor.createEmbeddedDocuments('Item', traitItems);
+        console.log('Bioclass: Traits created via createEmbeddedDocuments', traits);
+      }
+      // --- Attribute sync (bulk update) ---
+      const starting = data.system?.startingAttributes ?? {};
+      const actorAttributes = this.actor?.system?.attributes ?? {};
+      const updates = Object.entries(starting).reduce((acc, [key, value]) => {
+        const mappedKey = key in actorAttributes ? key : SYNTHICIDE.bioclassToActorAttributeMap?.[key];
+        if (!mappedKey || !(mappedKey in actorAttributes)) return acc;
+        acc[`system.attributes.${mappedKey}.base`] = Number(value ?? 0);
+        return acc;
+      }, {});
+      if ('hp' in starting) updates['system.hitPoints.base'] = Number(starting.hp ?? 0);
+      if ('hpPerLevel' in starting) updates['system.hitPoints.perLevel'] = Number(starting.hpPerLevel ?? 0);
+      if (Object.keys(updates).length && this.actor) {
+        await this.actor.update(updates);
+        console.log('Bioclass: Actor updated with', updates);
+      }
   }
 
   /** @override */
@@ -121,9 +116,65 @@ export class SynthicideItem extends Item {
     if (!(this.parent instanceof Actor)) return;
     // --- Remove bioclass-linked traits ---
     const bioclassTraits = this.parent.items.filter(i => i.type === 'trait' && i.system?.bioClassLink === true);
-    const validTraitIds = bioclassTraits.map(i => i.id).filter(id => this.parent.items.has(id));
-    if (validTraitIds.length) {
-      await this.parent.deleteEmbeddedDocuments('Item', validTraitIds);
+    if (bioclassTraits.length) {
+      // Only delete traits that still exist in the collection
+      const existingTraitIds = bioclassTraits
+        .map(t => t.id)
+        .filter(id => this.parent.items.has(id));
+      if (existingTraitIds.length) {
+        await this.parent.deleteEmbeddedDocuments('Item', existingTraitIds);
+        console.log('Bioclass: Traits removed via deleteEmbeddedDocuments', existingTraitIds);
+      }
+    }
+    // --- Re-apply traits if replacement bioclass exists ---
+    const replacement = this.parent.itemTypes.bioclass?.[0];
+    if (replacement && typeof replacement.applyBioclassToActor === 'function') {
+      void replacement.applyBioclassToActor(this.parent);
+    }
+  }
+
+  /** @override */
+  async _preUpdate(changed, options, user) {
+    await super._preUpdate(changed, options, user);
+    if (this.type !== 'bioclass') return;
+    // If bioclass traits or starting attributes change, sync actor
+    const touchesTraits = foundry.utils.hasProperty(changed, 'system.traits');
+    const touchesStartingAttributes = foundry.utils.hasProperty(changed, 'system.startingAttributes');
+    if (touchesTraits && this.actor) {
+      // Remove old traits
+      const bioclassTraits = this.actor.items.filter(i => i.type === 'trait' && i.system?.bioClassLink === true);
+      const traitIds = bioclassTraits.map(t => t.id).filter(id => this.actor.items.has(id));
+      if (traitIds.length) {
+        await this.actor.deleteEmbeddedDocuments('Item', traitIds);
+        console.log('Bioclass: Old traits removed via deleteEmbeddedDocuments', traitIds);
+      }
+      // Add new traits
+      const newTraits = changed.system?.traits ?? [];
+      if (Array.isArray(newTraits) && newTraits.length) {
+        const traitItems = newTraits.map(trait => ({
+          name: trait.name || 'Trait',
+          type: 'trait',
+          system: { ...trait, bioClassLink: true }
+        }));
+        await this.actor.createEmbeddedDocuments('Item', traitItems);
+        console.log('Bioclass: New traits created via createEmbeddedDocuments', newTraits);
+      }
+    }
+    if (touchesStartingAttributes && this.actor) {
+      const starting = changed.system?.startingAttributes ?? {};
+      const actorAttributes = this.actor.system?.attributes ?? {};
+      const updates = Object.entries(starting).reduce((acc, [key, value]) => {
+        const mappedKey = key in actorAttributes ? key : SYNTHICIDE.bioclassToActorAttributeMap?.[key];
+        if (!mappedKey || !(mappedKey in actorAttributes)) return acc;
+        acc[`system.attributes.${mappedKey}.base`] = Number(value ?? 0);
+        return acc;
+      }, {});
+      if ('hp' in starting) updates['system.hitPoints.base'] = Number(starting.hp ?? 0);
+      if ('hpPerLevel' in starting) updates['system.hitPoints.perLevel'] = Number(starting.hpPerLevel ?? 0);
+      if (Object.keys(updates).length) {
+        await this.actor.update(updates);
+        console.log('Bioclass: Actor updated with', updates);
+      }
     }
     // --- Re-apply traits if replacement bioclass exists ---
     const replacement = this.parent.itemTypes.bioclass?.[0];

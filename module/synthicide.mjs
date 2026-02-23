@@ -77,6 +77,13 @@ Hooks.once('init', function () {
     spell: models.SynthicideSpell,
     bioclass: models.SynthicideBioclass,
   };
+  CONFIG.Item.typeClasses = {
+    bioclass: models.SynthicideBioclass,
+    gear: models.SynthicideGear,
+    trait: models.SynthicideTrait,
+    spell: models.SynthicideSpell,
+    // Add other item types as needed
+  };
 
   // Active Effects are never copied to the Actor,
   // but will still apply to the Actor from within the Item
