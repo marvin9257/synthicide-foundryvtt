@@ -1,3 +1,4 @@
+  
 import SynthicideItemBase from './base-item.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 
@@ -55,72 +56,83 @@ export default class SynthicideBioclass extends SynthicideItemBase {
   /**
    * Central method for bioclass application to actor.
    * Handles trait creation and attribute sync. UI should never call trait logic directly.
-   * @param {Actor} actor - The actor to apply bioclass traits and attributes to.
+   * @param {Actor} [actor] - (Optional) The actor to apply bioclass traits and attributes to. Defaults to this.parent?.actor.
    */
   async applyBioclassToActor(actor) {
-    console.log('SynthicideBioclass.applyBioclassToActor called', this, actor);
-    if (!(actor instanceof Actor)) return;
+    // Use this.parent.actor for the owning actor
+    const owningActor = actor ?? this.parent?.actor;
+    if (this.parent?.type !== 'bioclass') return;
+    console.log('SynthicideBioclass.applyBioclassToActor called', this, owningActor);
+    if (!owningActor) return;
+
+    // --- Remove old traits by associatedTraitIds ---
+      const associatedIds = Array.isArray(this.associatedTraitIds) ? this.associatedTraitIds : [];
+    if (associatedIds.length > 0) {
+      // Only delete traits that still exist in the collection
+      const toDelete = associatedIds.filter(id => owningActor.items.has(id));
+      if (toDelete.length > 0) {
+        await owningActor.deleteEmbeddedDocuments('Item', toDelete);
+        console.log('SynthicideBioclass: Old associated traits deleted', toDelete);
+      }
+    }
+
     // --- Bioclass trait creation ---
-    if (this.type === 'bioclass') {
-      const traits = this.system?.traits ?? [];
-      if (Array.isArray(traits) && traits.length) {
-        const traitDocs = traits.map(trait => ({
-          type: 'trait',
-          name: trait.name || 'Trait',
-          system: { ...trait, bioClassLink: true }
-        }));
-        traitDocs.forEach(doc => doc.system.bioClassLink = true);
-        await actor.createEmbeddedDocuments('Item', traitDocs);
-        console.log('SynthicideBioclass: Traits created', traitDocs);
-      }
-      // --- Attribute sync ---
-      const starting = this.system?.startingAttributes ?? {};
-      const updates = {};
-      const actorAttributes = actor.system?.attributes ?? {};
-      for (const [key, value] of Object.entries(starting)) {
-        const mappedKey = key in actorAttributes ? key : SYNTHICIDE.bioclassToActorAttributeMap?.[key];
-        if (!mappedKey || !(mappedKey in actorAttributes)) continue;
-        updates[`system.attributes.${mappedKey}.base`] = Number(value ?? 0);
-      }
-      if (Object.prototype.hasOwnProperty.call(starting, 'hp')) {
-        updates['system.hitPoints.base'] = Number(starting.hp ?? 0);
-      }
-      if (Object.prototype.hasOwnProperty.call(starting, 'hpPerLevel')) {
-        updates['system.hitPoints.perLevel'] = Number(starting.hpPerLevel ?? 0);
-      }
-      if (Object.keys(updates).length) {
-        await actor.update(updates);
-        console.log('SynthicideBioclass: Actor updated with', updates);
-      }
+    const traits = this.traits ?? [];
+    if (Array.isArray(traits) && traits.length) {
+      const traitDocs = traits.map(trait => ({
+        type: 'trait',
+        name: trait.name || 'Trait',
+        system: { ...trait, bioClassLink: true }
+      }));
+      const created = await owningActor.createEmbeddedDocuments('Item', traitDocs);
+      const createdTraitIds = Array.isArray(created) ? created.map(t => t.id) : [];
+      // Store new associated trait IDs for future deletion
+        if (this.parent && typeof this.parent.update === 'function') {
+          await this.parent.update({ 'system.associatedTraitIds': createdTraitIds });
+        }
+        this.associatedTraitIds = createdTraitIds;
+      console.log('SynthicideBioclass: Traits created', traitDocs, 'IDs:', createdTraitIds);
+    } else {
+      // If no traits, clear associatedTraitIds
+        if (this.parent && typeof this.parent.update === 'function') {
+          await this.parent.update({ 'system.associatedTraitIds': [] });
+        }
+        this.associatedTraitIds = [];
+    }
+
+    // --- Attribute sync ---
+    const starting = this.startingAttributes ?? {};
+    const updates = {};
+    const actorAttributes = owningActor.system?.attributes ?? {};
+    for (const [key, value] of Object.entries(starting)) {
+      const mappedKey = key in actorAttributes ? key : SYNTHICIDE.bioclassToActorAttributeMap?.[key];
+      if (!mappedKey || !(mappedKey in actorAttributes)) continue;
+      updates[`system.attributes.${mappedKey}.base`] = Number(value ?? 0);
+    }
+    if (foundry.utils.hasProperty(starting, 'hp')) {
+      updates['system.hitPoints.base'] = Number(starting.hp ?? 0);
+    }
+    if (foundry.utils.hasProperty(starting, 'hpPerLevel')) {
+      updates['system.hitPoints.perLevel'] = Number(starting.hpPerLevel ?? 0);
+    }
+    if (Object.keys(updates).length) {
+      await owningActor.update(updates);
+      console.log('SynthicideBioclass: Actor updated with', updates);
     }
   }
 
   /** @override */
   async _onCreate(data, options, userId) {
+    if (game.userId !== userId) return;
     console.log('SynthicideBioclass._onCreate called', this, data, options, userId);
-    // Bioclass logic must run before super._onCreate, or the item may be invalidated
-    // Debug: check prototype and method existence
-    console.log('SynthicideBioclass._onCreate prototype:', Object.getPrototypeOf(this));
-    console.log('SynthicideBioclass._onCreate typeof applyBioclassToActor:', typeof this.applyBioclassToActor);
-    if (!this.actor) {
-      console.warn('SynthicideBioclass._onCreate: actor not ready, delaying trait/attribute update');
-      setTimeout(async () => {
-        if (this.actor) {
-          console.log('SynthicideBioclass._onCreate (delayed): about to call applyBioclassToActor', this.actor, this);
-          try {
-            await this.applyBioclassToActor(this.actor);
-            console.log('SynthicideBioclass._onCreate (delayed): applyBioclassToActor finished');
-          } catch (e) {
-            console.error('SynthicideBioclass._onCreate (delayed): applyBioclassToActor error', e);
-          }
-        } else {
-          console.warn('SynthicideBioclass._onCreate (delayed): this.actor still not set');
-        }
-      }, 100);
+    // Use this.parent.actor for the owning actor
+    const owningActor = this.parent?.actor;
+    if (!owningActor) {
+      console.warn('SynthicideBioclass._onCreate: No parent actor found, cannot apply bioclass logic.');
     } else {
-      console.log('SynthicideBioclass._onCreate: about to call applyBioclassToActor (immediate)', this.actor, this);
+      console.log('SynthicideBioclass._onCreate: about to call applyBioclassToActor (immediate)', owningActor, this);
       try {
-        await this.applyBioclassToActor(this.actor);
+        await this.applyBioclassToActor();
         console.log('SynthicideBioclass._onCreate: applyBioclassToActor finished');
       } catch (e) {
         console.error('SynthicideBioclass._onCreate: applyBioclassToActor error', e);
@@ -131,31 +143,6 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     } catch (e) {
       console.error('SynthicideBioclass._onCreate: super._onCreate error', e);
     }
-    if (this.type !== 'bioclass') return;
-    if (!this.actor) {
-      console.warn('SynthicideBioclass._onCreate: actor not ready, delaying trait/attribute update');
-      setTimeout(async () => {
-        if (this.actor) {
-          console.log('SynthicideBioclass._onCreate (delayed): about to call applyBioclassToActor', this.actor, this);
-          try {
-            await this.applyBioclassToActor(this.actor);
-            console.log('SynthicideBioclass._onCreate (delayed): applyBioclassToActor finished');
-          } catch (e) {
-            console.error('SynthicideBioclass._onCreate (delayed): applyBioclassToActor error', e);
-          }
-        } else {
-          console.warn('SynthicideBioclass._onCreate (delayed): this.actor still not set');
-        }
-      }, 100);
-    } else {
-      console.log('SynthicideBioclass._onCreate: about to call applyBioclassToActor (immediate)', this.actor, this);
-      try {
-        await this.applyBioclassToActor(this.actor);
-        console.log('SynthicideBioclass._onCreate: applyBioclassToActor finished');
-      } catch (e) {
-        console.error('SynthicideBioclass._onCreate: applyBioclassToActor error', e);
-      }
-    }
   }
 
   /**
@@ -164,7 +151,7 @@ export default class SynthicideBioclass extends SynthicideItemBase {
    */
   prepareDerivedData() {
     super.prepareDerivedData && super.prepareDerivedData();
-    const bioclassType = this.system?.bioclassType ?? 'skinbag';
+    const bioclassType = this.bioclassType ?? 'skinbag';
     const preset = SYNTHICIDE.getBioclassPreset(bioclassType);
     const bodyTypeKey = preset.bodyType;
     const brainTypeKey = preset.brainType;
@@ -172,5 +159,24 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     this.brainType = game.i18n.localize(`SYNTHICIDE.Item.BodyType.${brainTypeKey}`);
     this.bioclassTypeLabel = game.i18n.localize(`SYNTHICIDE.Item.Bioclass.${bioclassType.charAt(0).toUpperCase() + bioclassType.slice(1)}`);
     // Add more derived fields as needed for sheet display
+  }
+
+  /** @override */
+  async _onDelete(options, userId) {
+    if (game.userId !== userId) return;
+    // Clean up associated trait items when this bioclass is deleted
+    const owningActor = this.parent?.actor;
+    if (!owningActor) return;
+      const associatedIds = Array.isArray(this.associatedTraitIds) ? this.associatedTraitIds : [];
+    if (associatedIds.length > 0) {
+      // Only delete traits that still exist in the collection
+      const toDelete = associatedIds.filter(id => owningActor.items.has(id));
+      if (toDelete.length > 0) {
+        await owningActor.deleteEmbeddedDocuments('Item', toDelete);
+        console.log('SynthicideBioclass: Associated traits deleted on bioclass delete', toDelete);
+      }
+    }
+    // Call parent delete logic
+    if (super._onDelete) await super._onDelete(options, userId);
   }
 }
