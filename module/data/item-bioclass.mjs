@@ -65,18 +65,17 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     console.log('SynthicideBioclass.applyBioclassToActor called', this, owningActor);
     if (!owningActor) return;
 
-    // --- Remove old traits by associatedTraitIds ---
-      const associatedIds = Array.isArray(this.associatedTraitIds) ? this.associatedTraitIds : [];
-    if (associatedIds.length > 0) {
-      // Only delete traits that still exist in the collection
-      const toDelete = associatedIds.filter(id => owningActor.items.has(id));
-      if (toDelete.length > 0) {
-        await owningActor.deleteEmbeddedDocuments('Item', toDelete);
-        console.log('SynthicideBioclass: Old associated traits deleted', toDelete);
-      }
-    }
+    await this._createBioclassTraits(owningActor);
+    await this._syncBioclassAttributes(owningActor);
+  }
 
-    // --- Bioclass trait creation ---
+  /**
+   * Create and embed trait items for this bioclass on the owning actor.
+   * Updates associatedTraitIds for future cleanup.
+   * @param {Actor} owningActor - The actor to receive the bioclass traits.
+   * @private
+   */
+  async _createBioclassTraits(owningActor) {
     const traits = this.traits ?? [];
     if (Array.isArray(traits) && traits.length) {
       const traitDocs = traits.map(trait => ({
@@ -87,20 +86,26 @@ export default class SynthicideBioclass extends SynthicideItemBase {
       const created = await owningActor.createEmbeddedDocuments('Item', traitDocs);
       const createdTraitIds = Array.isArray(created) ? created.map(t => t.id) : [];
       // Store new associated trait IDs for future deletion
-        if (this.parent && typeof this.parent.update === 'function') {
-          await this.parent.update({ 'system.associatedTraitIds': createdTraitIds });
-        }
-        this.associatedTraitIds = createdTraitIds;
+      if (this.parent && typeof this.parent.update === 'function') {
+        await this.parent.update({ 'system.associatedTraitIds': createdTraitIds });
+      }
+      this.associatedTraitIds = createdTraitIds;
       console.log('SynthicideBioclass: Traits created', traitDocs, 'IDs:', createdTraitIds);
     } else {
       // If no traits, clear associatedTraitIds
-        if (this.parent && typeof this.parent.update === 'function') {
-          await this.parent.update({ 'system.associatedTraitIds': [] });
-        }
-        this.associatedTraitIds = [];
+      if (this.parent && typeof this.parent.update === 'function') {
+        await this.parent.update({ 'system.associatedTraitIds': [] });
+      }
+      this.associatedTraitIds = [];
     }
+  }
 
-    // --- Attribute sync ---
+  /**
+   * Synchronize the actor's base attributes to match this bioclass's starting attributes.
+   * @param {Actor} owningActor - The actor whose attributes will be updated.
+   * @private
+   */
+  async _syncBioclassAttributes(owningActor) {
     const starting = this.startingAttributes ?? {};
     const updates = {};
     const actorAttributes = owningActor.system?.attributes ?? {};
