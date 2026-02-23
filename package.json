@@ -5,9 +5,7 @@
   "scripts": {
     "createSymlinks": "node src/create-symlinks.mjs",
     "lint": "eslint .",
-    "build": "rollup -c",
-    "postbuild": "npm run copy-dist",
-    "copy-dist": "rm -rf dist && mkdir -p dist && cp system.json dist/ && cp -R assets dist/ && cp -R css dist/ && cp -R lang dist/ && cp -R module dist/ && cp -R templates dist/ && cp README.md dist/ && cp LICENSE* dist/"
+    "build": "npx gulp build"
   },
   "type": "module",
   "browserslist": [
@@ -23,9 +21,13 @@
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "eslint": "^10.0.0",
+    "fs-extra": "^11.3.3",
     "globals": "^17.3.0",
     "js-yaml": "^4.1.1",
     "rollup": "^4.59.0",
     "rollup-plugin-import-css": "^4.2.0"
+  },
+  "dependencies": {
+    "gulp": "^5.0.1"
   }
 }

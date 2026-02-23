@@ -340,7 +340,7 @@
   gap: 6px;
   margin-top: 4px;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-between;
 }
 
 .synthicide .header-resource {
@@ -634,16 +634,20 @@
 
 .attributes-table {
   display: grid;
-  grid-template-columns: 30% 35% 35%;
+  grid-template-columns: 19% 14% 19% 28% 19%;
   margin-left: 0;
   align-items: center;
 }
 
 .attributes-header,
-.attribute-label,
 .attribute-input,
 .attribute-current {
   text-align: center;
+  padding: 4px 4px;
+}
+
+.attribute-label {
+  text-align: right;
   padding: 4px 4px;
 }
 
@@ -713,7 +717,7 @@
   padding: 0 4px;
   box-sizing: border-box;
   margin: 0;
-  display: block;
+  /*display: block;*/
   appearance: textfield;
 }
 
@@ -725,6 +729,10 @@
 .attribute-input input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+input.attribute-score {
+    text-align: center;
 }
 
 img.actions-img {

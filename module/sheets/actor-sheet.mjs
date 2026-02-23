@@ -58,8 +58,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       template: 'systems/synthicide/templates/actor/traits.hbs',
       scrollable: [""],
     },
-    features: {
-      template: 'systems/synthicide/templates/actor/features.hbs',
+    attributes: {
+      template: 'systems/synthicide/templates/actor/attributes.hbs',
       scrollable: [""]
     },
     biography: {
@@ -95,7 +95,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     switch (this.document.type) {
       case 'sharper':
         options.parts.push(
-          'features',
+          'attributes',
           'traits',
           'gear',
           'spells',
@@ -105,7 +105,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         );
         break;
       case 'npc':
-        options.parts.push('features', 'gear', 'biography', 'effects');
+        options.parts.push('attributes', 'gear', 'biography', 'effects');
         break;
     }
       
@@ -145,7 +145,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   async _preparePartContext(partId, context) {
     switch (partId) {
       case 'traits':
-      case 'features':
+      case 'attributes':
       case 'spells':
       case 'gear':
       case 'cybernetics':
@@ -190,7 +190,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // If you have sub-tabs this is necessary to change
     const tabGroup = 'primary';
     // Default tab for first time it's rendered this session
-    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'features';
+    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'attributes';
     return parts.reduce((tabs, partId) => {
       const tab = {
         cssClass: '',
@@ -206,9 +206,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         case 'header':
         case 'tabs':
           return tabs;
-        case 'features':
-          tab.id = 'features';
-          tab.label += 'Features';
+        case 'attributes':
+          tab.id = 'attributes';
+          tab.label += 'Attributes';
           tab.icon = 'fa-solid fa-star';
           break;
         case 'gear':
@@ -770,12 +770,12 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @returns {Promise<Item[]>}
    */
   async _handleBioclassDrop(bioclassEntry, otherEntries) {
-    // Delete old bioclass item(s) to trigger _onDelete and trait cleanup in item.mjs
+    // Delete old bioclass item(s) to trigger _onDelete and trait cleanup in item-bioclass.mjs
     const oldBioclassIds = this.actor.itemTypes.bioclass.map(b => b.id);
     if (oldBioclassIds.length) {
       await this.actor.deleteEmbeddedDocuments('Item', oldBioclassIds);
     }
-    // Create new bioclass item (triggers _onCreate in item.mjs)
+    // Create new bioclass item (triggers _onCreate in item-bioclass.mjs)
     const bioclassData = { ...bioclassEntry };
     const [createdBioclass] = await this.actor.createEmbeddedDocuments('Item', [bioclassData]);
     const bioclassItem = this.actor.items.get(createdBioclass.id);

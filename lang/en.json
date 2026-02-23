@@ -22,6 +22,7 @@
               "MindType": "Mind Type"
             },
       "Tabs": {
+        "Attributes": "Attributes",
         "Biography": "Biography",
         "Features": "Features",
         "Gear": "Gear",
@@ -37,8 +38,10 @@
         "NoTraits": "No bioclass traits found.",
         "OnlyOneWarning": "Only one bioclass may be assigned to an actor."
       },
-      "Features": {
+      "Attributes": {
         "Actions": "ACTIONS",
+        "Base": "Base",
+        "Modifier": "Modifier",
         "LevelIncrease": "Level Increase",
         "Current": "Current"
       },

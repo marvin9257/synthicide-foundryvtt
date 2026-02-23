@@ -16,8 +16,6 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     // Level field (if needed)
     schema.level = makeValueField(1);
 
-    
-
     return schema;
   }
 
@@ -27,7 +25,8 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
   }
 
   getRollData() {
-    const data = {};
+    // Start with base class roll data
+    const data = super.getRollData ? super.getRollData() : {};
 
     // Copy the attribute scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.
@@ -36,7 +35,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
         data[k] = foundry.utils.deepClone(v);
       }
     }
-
+    data.lvl = this.level;
     return data;
   }
 }

@@ -1,15 +1,17 @@
-{{! Features Tab }}
+{{! Attributes Tab }}
 <section
-  class='tab features scrollable {{tab.cssClass}}'
+  class='tab attributes scrollable {{tab.cssClass}}'
   data-group='primary'
-  data-tab='features'
+  data-tab='attributes'
 >
-  <section class='grid grid-5col'>
-    <aside class='sidebar grid-span-2'>
+  <section class='grid grid-9col'>
+    <aside class='sidebar grid-span-5'>
       <div class="attributes-table">
-        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Features.Actions'}}</div>
-        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Features.LevelIncrease'}}</div>
-        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Features.Current'}}</div>
+        <div class="attributes-header"></div>
+        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Attributes.Base'}}</div>
+        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Attributes.Modifier'}}</div>
+        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Attributes.LevelIncrease'}}</div>
+        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Attributes.Current'}}</div>
         {{#each system.attributes as |attribute key|}}
           <div class="attribute-label">
             {{localize (lookup @root.SYNTHICIDE.attributeAbbreviations key)}}
@@ -24,7 +26,12 @@
             >
             <img class = "actions-img" src=" {{concat '/systems/synthicide/assets/' key '.png'}}">
             </span>
-            
+          </div>
+          <div class="attribute-input">
+            <input type="number" name="system.attributes.{{key}}.base" value="{{attribute.base}}" class="attribute-score" data-dtype="Number" max="5" step="1">
+          </div>
+          <div class="attribute-input">
+            <input disabled type="number" name="system.attributes.{{key}}.modifier" value="{{attribute.modifier}}" class="attribute-score" data-dtype="Number" step="1">
           </div>
           <div class="attribute-input">
             <div class="attribute-stepper" data-attribute-key="{{key}}">
@@ -38,13 +45,15 @@
               </div>
             </div>
           </div>
-          <div class="attribute-current">{{numberFormat attribute.current decimals=0 sign=true}}</div>
+          <div class="attribute-current">
+            <input disabled type="text" name="system.attributes.{{key}}.current" value="{{numberFormat attribute.current decimals=0 sign=true}}" class="attribute-score" data-dtype="Number" step="1">
+          </div>
         {{/each}}
       </div>
     </aside>
 
     {{! For the main features list, span the right two columns }}
-    <section class='main grid-span-3'>
+    <section class='main grid-span-4'>
       <!-- Features area intentionally left blank for future use -->
     </section>
   </section>
