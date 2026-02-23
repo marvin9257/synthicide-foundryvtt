@@ -5,17 +5,16 @@
 ![Foundry v14](https://img.shields.io/badge/foundry-v14-green)
 
 This system is a draft version of a Synthicide system that is based on v13 Boilerplate. It's similar to Simple World-building, but has examples of creating attributes in code rather than dynamically through the UI.
----
 
-## Development & Build Instructions
+# Development & Build Instructions
 
-### Prerequisites
+## Prerequisites
 
 - Node.js (v18 or later recommended)
 
 - npm (comes with Node.js)
 
-### Building the System
+## Building the System
 
 To build the system for FoundryVTT:
 
@@ -31,7 +30,7 @@ To build the system for FoundryVTT:
 	- Bundle JavaScript using Rollup
 	- Copy all required files (assets, css, lang, module, templates, system.json, README, LICENSE) into a fresh `dist/` folder
 
-### Live Development with FoundryVTT
+## Live Development with FoundryVTT
 
 To have FoundryVTT use your latest build automatically:
 
@@ -43,7 +42,7 @@ To have FoundryVTT use your latest build automatically:
 	```
 3. Now, every time you run `npm run build`, FoundryVTT will use the latest code and assets.
 
-### Notes
+## Notes
 
 - The build process automatically clears and recreates the `dist` folder each time.
 - Only the contents of `dist` are needed for distribution or installation.
@@ -52,14 +51,13 @@ To have FoundryVTT use your latest build automatically:
 ---
 
 
-
-### Getting Help
+# Getting Help
 
 Check out the [Official Foundry VTT Discord](https://discord.gg/foundryvtt)! The #system-development channel has helpful pins and is a good place to ask questions about any part of the foundry application.
 
 For more static references, the [Knowledge Base](https://foundryvtt.com/kb/) and [API Documentation](https://foundryvtt.com/api/) provide different levels of detail. For the most detail, you can find the client side code in your foundry installation location. Classes are documented in individual files under `resources/app/client` and `resources/app/common`, and the code is collated into a single file at `resources/app/public/scripts/foundry.js`.
 
-#### Tutorial
+## Tutorial
 
 For much more information on how to use this system as a starting point for making your own, see the [full tutorial on the Foundry Wiki](https://foundryvtt.wiki/en/development/guides/SD-tutorial)!
 
