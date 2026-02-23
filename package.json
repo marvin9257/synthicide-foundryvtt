@@ -4,7 +4,10 @@
   "description": "Compiler for the Synthicide system",
   "scripts": {
     "createSymlinks": "node src/create-symlinks.mjs",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build": "rollup -c",
+    "postbuild": "npm run copy-dist",
+    "copy-dist": "rm -rf dist && mkdir -p dist && cp system.json dist/ && cp -R assets dist/ && cp -R css dist/ && cp -R lang dist/ && cp -R module dist/ && cp -R templates dist/ && cp README.md dist/ && cp LICENSE* dist/"
   },
   "type": "module",
   "browserslist": [
@@ -17,8 +20,12 @@
     "@eslint/css": "^0.14.1",
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^1.0.1",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "eslint": "^10.0.0",
     "globals": "^17.3.0",
-    "js-yaml": "^4.1.1"
+    "js-yaml": "^4.1.1",
+    "rollup": "^4.59.0",
+    "rollup-plugin-import-css": "^4.2.0"
   }
 }
