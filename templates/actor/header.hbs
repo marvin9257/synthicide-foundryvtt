@@ -44,6 +44,7 @@
         <div class="header-info-levelcol">
           <div class="header-info-label header-info-label-level" style="text-align: center; width: 100%;">{{localize 'SYNTHICIDE.Actor.Header.Level'}}</div>
           <div class="header-info-value header-info-level" style="display: flex; justify-content: center; width: 100%;">
+
             <input
               id="system.level.value"
               type="number"
@@ -56,11 +57,11 @@
         </div>
       </div>
     </div>
-    {{! The grid classes are defined in scss/global/_grid.scss. To use,
+  </div>
+  {{! The grid classes are defined in scss/global/_grid.scss. To use,
       use both the "grid" and "grid-Ncol" class where "N" can be any number
       from 1 to 12 and will create that number of columns.  }}
-    <div class='resources header-resource-grid'>
-
+  <div class="synthicide header-resource-flex">
       {{! "flex-group-center" is also defined in the _grid.scss file
         and it will add a small amount of padding, a border, and will
         center all of its child elements content and text. }}
@@ -109,27 +110,7 @@
 
 
       {{#if (eq actor.type 'npc')}}
-        <div class='resource flex-group-center header-resource'>
-          <label class='resource-label'>
-            {{localize 'SYNTHICIDE.Actor.NPC.FIELDS.cr.label'}} / {{localize 'SYNTHICIDE.Actor.NPC.xp.label'}}
-          </label>
-          <div class='resource-content flexrow flex-center flex-between resource-pair'>
-            <input
-              type='text'
-              name='system.cr'
-              value='{{system.cr}}'
-              data-dtype='Number'
-            />
-            <span></span>
-            <input
-              type='text'
-              disabled='true'
-              name='system.xp'
-              value='{{system.xp}}'
-              data-dtype='Number'
-            />
-          </div>
-        </div>
+
       {{/if}}
       <div class='resource flex-group-center header-resource'>
         <label class='resource-label'>
@@ -206,6 +187,46 @@
           <div class='resource-track-fill' style='width: calc(({{system.resolve}} / 5) * 100%);'></div>
         </div>
       </div>
+        <!-- Food Days Resource -->
+        <div class='resource flex-group-center header-resource'>
+          <label class='resource-label'>
+            {{#if (lt system.foodDays.value 0)}}
+            <span style="color: red;">{{localize 'SYNTHICIDE.Actor.base.FIELDS.foodDays.without'}}</span>
+            {{else}}
+            {{localize 'SYNTHICIDE.Actor.base.FIELDS.foodDays.label'}}
+            {{/if}}
+          </label>
+          <div class='resource-content flexrow flex-center flex-between resource-counter'>
+            
+            <div class='resource-stepper' data-counter-key='foodDays'>
+            
+
+              {{#if @root.editable}}
+                <button
+                  type='button'
+                  class='resource-step-btn'
+                  data-action='decreaseFoodDays'
+                  aria-label='Decrease food days'
+                >-</button>
+              {{/if}}
+              <input
+                type='number'
+                name='system.foodDays.value'
+                value='{{system.foodDays.value}}'
+                data-dtype='Number'
+                min='{{system.foodDays.min}}'
+                step='1'
+              />
+              {{#if @root.editable}}
+                <button
+                  type='button'
+                  class='resource-step-btn'
+                  data-action='increaseFoodDays'
+                  aria-label='Increase food days'
+                >+</button>
+              {{/if}}
+            </div>
+          </div>
+        </div>
     </div>
-  </div>
 </header>

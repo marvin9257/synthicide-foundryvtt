@@ -31,6 +31,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       decreaseAttribute: this._onDecreaseAttribute,
       increaseResolve: this._onIncreaseResolve,
       decreaseResolve: this._onDecreaseResolve,
+      increaseFoodDays: this._onIncreaseFoodDays,
+      decreaseFoodDays: this._onDecreaseFoodDays,
       increaseCynicism: this._onIncreaseCynicism,
       decreaseCynicism: this._onDecreaseCynicism,
       editTraitItem: this._editTraitItem,
@@ -531,6 +533,14 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     await this.actor.update({ 'system.resolve': Math.min(5, current + 1) });
   }
 
+    /** @protected */
+    static async _onIncreaseFoodDays(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const current = this.actor.system.foodDays.value ?? 0;
+      await this.actor.update({ 'system.foodDays.value': current + 1 });
+    }
+
   /** @protected */
   static async _onDecreaseResolve(event) {
     event.preventDefault();
@@ -538,6 +548,16 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     const current = Number(this.actor.system.resolve ?? 0);
     await this.actor.update({ 'system.resolve': Math.max(0, current - 1) });
   }
+
+    /** @protected */
+    static async _onDecreaseFoodDays(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const current = this.actor.system.foodDays.value ?? 0;
+      // Minimum is -(6 + toughness.current)
+      const min = this.actor.system.foodDays.min;
+      await this.actor.update({ 'system.foodDays.value': Math.max(min, current - 1) });
+    }
 
   /** @protected */
   static async _onIncreaseCynicism(event) {

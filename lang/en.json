@@ -88,6 +88,10 @@
           "power": {
             "value": {"label": "Power"},
             "max": {"label": "Maximum Power"}
+          },
+          "foodDays": {
+            "label": "Food Days",
+            "without": "Days w/o Food"
           }
         }
       },

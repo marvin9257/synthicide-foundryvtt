@@ -103,7 +103,10 @@ export class SynthicideActor extends Actor {
     // This runs after item attribute modifiers are applied above, so formulas can use final
     // attribute values. If a derived value should also include direct non-attribute overrides
     // from item modifiers (section 4), do a final recompute after section 4.
-
+    if (this.type === "sharper") {
+      this.system.foodDays.min = -(6 + (this.system.attributes.toughness.current ?? 0));
+    }
+    
     // --- 4. Apply non-attribute modifiers to any system path ---
     // Use this for direct path mutations like "health.max", "power.value", etc.
     // These are applied after section 3 and may overwrite/adjust values calculated there.

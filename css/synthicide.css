@@ -1,5 +1,4 @@
 
-/* Header Info Flex Layout (no inline styles) */
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 :root {
@@ -360,13 +359,13 @@
   font-size: 1.25rem;
   font-weight: 700;
 }
-.synthicide .header-resource-grid {
+.synthicide .header-resource-flex {
   display: flex;
-  /* grid-template-columns: repeat(5, minmax(0, 1fr)); */
   gap: 6px;
   margin-top: 4px;
   flex-direction: row;
   justify-content: space-between;
+  width: 100%
 }
 
 .synthicide .header-resource {
