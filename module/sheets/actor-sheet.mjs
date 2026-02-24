@@ -135,6 +135,15 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       systemFields: this.document.system.schema.fields,
     };
 
+    // Motivation selectOptions and behaviors
+    context.config = context.config || {};
+    context.config.motivationOptions = Object.fromEntries(
+      Object.entries(SYNTHICIDE.motivations).map(([k, v]) => [k, v.label])
+    );
+    context.config.motivationBehaviors = Object.fromEntries(
+      Object.entries(SYNTHICIDE.motivations).map(([k, v]) => [k, v.behavior])
+    );
+
     // Offloading context prep to a helper function
     await this._prepareItems(context);
 

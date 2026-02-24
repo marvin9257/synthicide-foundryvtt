@@ -1,6 +1,7 @@
 import SynthicideActorBaseData from './base-actor.mjs';
 import {makeValueField} from './commonSchemaUtils.mjs'
-//const fields = foundry.data.fields;
+import SYNTHICIDE from '../helpers/config.mjs';
+const fields = foundry.data.fields;
 //const requiredInteger = { required: true, nullable: false, integer: true };
 
 export default class SynthicideSharperData extends SynthicideActorBaseData {
@@ -15,6 +16,11 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
 
     // Level field (if needed)
     schema.level = makeValueField(1);
+    schema.motivation = new fields.StringField({ 
+      required: true, 
+      choices: Object.keys(SYNTHICIDE.motivations),
+      initial: "proveStrength"
+    }); 
 
     return schema;
   }

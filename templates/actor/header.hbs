@@ -26,10 +26,15 @@
           </div>
           <div class="bioclass-header-label">{{localize 'SYNTHICIDE.Actor.Header.Bioclass'}}</div>
           <div class="bioclass-header-value">{{#if bioclass}}{{bioclass.name}}{{else}}—{{/if}}</div>
+          <div class="bioclass-header-label">{{localize 'SYNTHICIDE.Actor.Motivation.label'}}</div>
+          <div class="bioclass-header-value bioclass-header-motivation">
+            <select name="system.motivation" class="bioclass-header-motivation-select" data-tooltip="{{localize (lookup @root.config.motivationBehaviors system.motivation)}}">
+              {{selectOptions @root.config.motivationOptions selected=system.motivation localize=true}}
+            </select>
+          </div>
         </div>
         <div class="bioclass-header-col bioclass-header-side">
           <div class="bioclass-header-label">{{localize 'SYNTHICIDE.Actor.Header.Level'}}</div>
-
           <div class="bioclass-header-value bioclass-header-level">
             <label for="system.level.value" class="visually-hidden">{{localize 'SYNTHICIDE.Actor.Header.Level'}}</label>
             <input

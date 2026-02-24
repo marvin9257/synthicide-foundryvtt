@@ -158,3 +158,39 @@ SYNTHICIDE.attributeAbbreviations = {
   speed: 'SYNTHICIDE.Attribute.Speed.abbr',
 };
 
+// Motivation choices for actors, referencing localization keys.
+SYNTHICIDE.motivations = {
+  proveStrength: {
+    label: 'SYNTHICIDE.Actor.Motivation.proveStrength.label',
+    behavior: 'SYNTHICIDE.Actor.Motivation.proveStrength.behavior',
+  },
+  spreadWisdom: {
+    label: 'SYNTHICIDE.Actor.Motivation.spreadWisdom.label',
+    behavior: 'SYNTHICIDE.Actor.Motivation.spreadWisdom.behavior',
+  },
+  forgiveness: {
+    label: 'SYNTHICIDE.Actor.Motivation.forgiveness.label',
+    behavior: 'SYNTHICIDE.Actor.Motivation.forgiveness.behavior',
+  },
+  getEven: {
+    label: 'SYNTHICIDE.Actor.Motivation.getEven.label',
+    behavior: 'SYNTHICIDE.Actor.Motivation.getEven.behavior',
+  },
+  makeFriends: {
+    label: 'SYNTHICIDE.Actor.Motivation.makeFriends.label',
+    behavior: 'SYNTHICIDE.Actor.Motivation.makeFriends.behavior',
+  },
+  knowUniverse: {
+    label: 'SYNTHICIDE.Actor.Motivation.knowUniverse.label',
+    behavior: 'SYNTHICIDE.Actor.Motivation.knowUniverse.behavior',
+  },
+  liveFast: {
+    label: 'SYNTHICIDE.Actor.Motivation.liveFast.label',
+    behavior: 'SYNTHICIDE.Actor.Motivation.liveFast.behavior',
+  },
+};
+
+// Example derivation for selectOptions and behaviors:
+// const motivationOptions = Object.fromEntries(Object.entries(SYNTHICIDE.motivations).map(([k, v]) => [k, v.label]));
+// const motivationBehaviors = Object.fromEntries(Object.entries(SYNTHICIDE.motivations).map(([k, v]) => [k, v.behavior]));
+

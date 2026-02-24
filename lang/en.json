@@ -14,13 +14,44 @@
       "Item": "Synthicide Item Sheet"
     },
     "Actor": {
-            "Header": {
-              "CharacterName": "Character Name",
-              "Bioclass": "Bioclass",
-              "BodyType": "Body Type",
-              "Level": "Level",
-              "MindType": "Mind Type"
-            },
+      "Header": {
+        "CharacterName": "Character Name",
+        "Bioclass": "Bioclass",
+        "BodyType": "Body Type",
+        "Level": "Level",
+        "MindType": "Mind Type"
+      },
+      "Motivation": {
+        "label": "Motivation",
+        "proveStrength": {
+          "label": "Prove your Strength",
+          "behavior": "If you personally dominate a worthy adversary, gain 1 Resolve."
+        },
+        "spreadWisdom": {
+          "label": "Spread your Wisdom",
+          "behavior": "Whenever you convince someone to believe an important part of your world-view, gain 1 Resolve."
+        },
+        "forgiveness": {
+          "label": "Forgiveness is Powerful",
+          "behavior": "If you let fleeing enemies escape, or forgive a substantial debt, gain 1 Resolve."
+        },
+        "getEven": {
+          "label": "Don’t Get Mad, Get Even",
+          "behavior": "If you balance a debt owed to you, or deny mercy to an opponent, gain 1 Resolve."
+        },
+        "makeFriends": {
+          "label": "Make Friends and Allies",
+          "behavior": "If you gain the trust of new people, or make sacrifices to preserve that trust, gain 1 Resolve."
+        },
+        "knowUniverse": {
+          "label": "Know the Universe",
+          "behavior": "If you discover significant information, or learn the answer to a mystery, gain 1 Resolve."
+        },
+        "liveFast": {
+          "label": "Live Fast, Die Young",
+          "behavior": "If you take unnecessary risks for the thrill, or abandon a long-term goal for immediate gratification, gain 1 Resolve."
+        }
+      },
       "Tabs": {
         "Attributes": "Attributes",
         "Biography": "Biography",
