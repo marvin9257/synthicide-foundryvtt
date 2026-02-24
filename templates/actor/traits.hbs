@@ -30,10 +30,10 @@
     <div class='grid grid-1col'>
       {{#each traits as |trait i|}}
         <fieldset class='resource' data-item-id='{{trait._id}}'>
-          <div style='display:flex; gap:0.5rem; align-items:flex-end;'>
-            <div style='flex:1;'>
+          <div class='bioclass-trait-row'>
+            <div class='bioclass-trait-main'>
               <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.TraitName'}}</label>
-              <span style='display:flex; align-items:center;'>
+              <span class='bioclass-trait-name-row'>
                 <input
                   type='text'
                   class='bioclass-trait-name'
@@ -41,11 +41,11 @@
                   disabled
                 />
                 {{#if trait.system.bioClassLink}}
-                  <i class='fas fa-link' style='margin-left:0.5em;' title='Bioclass Trait'></i>
+                  <i class='fas fa-link bioclass-trait-link' title='Bioclass Trait'></i>
                 {{/if}}
               </span>
             </div>
-            <div style='display:flex; align-items:flex-end; justify-content:flex-end; gap:0.25rem;'>
+            <div class='bioclass-trait-controls'>
               <button type='button' data-action='editTraitItem' data-item-id='{{trait._id}}'>
                 <i class='fas fa-edit'></i>
               </button>

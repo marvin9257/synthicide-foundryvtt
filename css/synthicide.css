@@ -35,6 +35,20 @@
   --synthicide-c-hover-glow: red;
 }
 
+/* Light mode fallback */
+:root {
+  --form-field-bg: #e6e4df;
+  --form-field-color: #333;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --form-field-bg: #232323;
+    --form-field-color: #e6e4df;
+  }
+}
+
 /* ============================== */
 /* Theme Tokens                  */
 /* ============================== */
@@ -906,16 +920,29 @@ img.actions-img {
   min-height: 48px;
 }
 
-/* Light mode fallback */
-:root {
-  --form-field-bg: #e6e4df;
-  --form-field-color: #333;
+.bioclass-trait-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --form-field-bg: #232323;
-    --form-field-color: #e6e4df;
-  }
+.bioclass-trait-main {
+  flex: 1;
 }
+
+.bioclass-trait-name-row {
+  display: flex;
+  align-items: center;
+}
+
+.bioclass-trait-link {
+  margin-left: 0.5em;
+}
+
+.bioclass-trait-controls {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
