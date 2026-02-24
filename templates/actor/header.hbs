@@ -10,39 +10,46 @@
     width='100'
   />
   <div class='header-fields'>
-    <!-- Bioclass Info Row (with editable name and level) -->
-    <div class="bioclass-header-row">
-      <div class="bioclass-header-table">
-        <div class="bioclass-header-col bioclass-header-main">
-          <div class="bioclass-header-label">{{localize 'SYNTHICIDE.Actor.Header.CharacterName'}}</div>
-          <div class="bioclass-header-value bioclass-header-name">
-            <input
-              name="name"
-              type="text"
-              value="{{actor.name}}"
-              placeholder="{{localize 'SYNTHICIDE.Actor.Header.CharacterName'}}"
-              class="bioclass-header-input"
-            />
+    <!-- Header Info Row (with editable name and level) -->
+    <div class="header-info-row">
+      <div class="header-info-table header-info-flex">
+        <div class="header-info-maincol">
+          <div>
+            <div class="header-info-label">{{localize 'SYNTHICIDE.Actor.Header.CharacterName'}}</div>
+            <div class="header-info-value header-info-name">
+              <input
+                name="name"
+                type="text"
+                value="{{actor.name}}"
+                placeholder="{{localize 'SYNTHICIDE.Actor.Header.CharacterName'}}"
+                class="header-info-input"
+              />
+            </div>
           </div>
-          <div class="bioclass-header-label">{{localize 'SYNTHICIDE.Actor.Header.Bioclass'}}</div>
-          <div class="bioclass-header-value">{{#if bioclass}}{{bioclass.name}}{{else}}—{{/if}}</div>
-          <div class="bioclass-header-label">{{localize 'SYNTHICIDE.Actor.Motivation.label'}}</div>
-          <div class="bioclass-header-value bioclass-header-motivation">
-            <select name="system.motivation" class="bioclass-header-motivation-select" data-tooltip="{{localize (lookup @root.config.motivationBehaviors system.motivation)}}">
-              {{selectOptions @root.config.motivationOptions selected=system.motivation localize=true}}
-            </select>
+          <div class="header-info-row2 header-info-bio-motivation-row">
+            <div class="header-info-bioclass-block">
+              <div class="header-info-label">{{localize 'SYNTHICIDE.Actor.Header.Bioclass'}}</div>
+              <div class="header-info-value bioclass-value">{{#if bioclass}}{{bioclass.name}}{{else}}—{{/if}}</div>
+            </div>
+            <div class="header-info-motivation-block">
+              <div class="header-info-label">{{localize 'SYNTHICIDE.Actor.Motivation.label'}}</div>
+              <div class="header-info-value header-info-motivation">
+                <select name="system.motivation" class="header-info-motivation-select" data-tooltip="{{localize (lookup @root.config.motivationBehaviors system.motivation)}}">
+                  {{selectOptions @root.config.motivationOptions selected=system.motivation localize=true}}
+                </select>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="bioclass-header-col bioclass-header-side">
-          <div class="bioclass-header-label">{{localize 'SYNTHICIDE.Actor.Header.Level'}}</div>
-          <div class="bioclass-header-value bioclass-header-level">
-            <label for="system.level.value" class="visually-hidden">{{localize 'SYNTHICIDE.Actor.Header.Level'}}</label>
+        <div class="header-info-levelcol">
+          <div class="header-info-label header-info-label-level" style="text-align: center; width: 100%;">{{localize 'SYNTHICIDE.Actor.Header.Level'}}</div>
+          <div class="header-info-value header-info-level" style="display: flex; justify-content: center; width: 100%;">
             <input
               id="system.level.value"
               type="number"
               name="system.level.value"
               value="{{system.level.value}}"
-              class="bioclass-header-level-input"
+              class="header-info-level-input"
               min="1"
             />
           </div>

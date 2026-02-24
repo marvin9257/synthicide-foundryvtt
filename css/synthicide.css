@@ -1,3 +1,5 @@
+
+/* Header Info Flex Layout (no inline styles) */
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 :root {
@@ -57,7 +59,9 @@
 /* Theme Tokens                  */
 /* ============================== */
 
-/* Feature Modifier Table Layout */
+/* ============================== */
+/* Feature Modifier Table Layout  */
+/* ============================== */
 .modifiers-table {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr 1fr 1.2fr 1.2fr 0.5fr;
@@ -67,7 +71,9 @@
 }
 
 
-/* Unified vertical and horizontal progress bar styles */
+/* ============================== */
+/* Progress Bar Styles            */
+/* ============================== */
 .synthicide .progress-bar {
   position: relative;
   overflow: hidden;
@@ -115,7 +121,9 @@
 /* App-Wide Utilities            */
 /* ============================== */
 
-/* Global styles */
+/* ============================== */
+/* Global Styles                  */
+/* ============================== */
 .window-app {
   font-family: var(--synthicide-default-font);
 }
@@ -320,7 +328,7 @@
 }
 
 /* ============================== */
-/* Sheet Layout                  */
+/* Sheet Layout                   */
 /* ============================== */
 
 /* Styles limited to synthicide sheets */
@@ -431,7 +439,9 @@
 }
 
 /* ============================== */
-/* Content + Lists               */
+/* ============================== */
+/* Content + Lists                */
+/* ============================== */
 /* ============================== */
 
 .synthicide .tox .tox-editor-container {
@@ -647,7 +657,9 @@
 }
 
 /* ============================== */
-/* Attributes Panel              */
+/* ============================== */
+/* Attributes Panel               */
+/* ============================== */
 /* ============================== */
 
 .attributes-table {
@@ -763,7 +775,7 @@ img.actions-img {
 }
 
 /* ============================== */
-/* Resolve/Cynicism Controls     */
+/* Resolve/Cynicism Controls      */
 /* ============================== */
 
 .synthicide .resource-counter {
@@ -816,40 +828,52 @@ img.actions-img {
   background: var(--synthicide-c-success);
 }
 
-/* Bioclass Header Row Styles */
-.bioclass-header-row {
+
+/* ============================== */
+/* Header Info Block (grouped)    */
+/* ============================== */
+
+.header-info-row {
   margin-bottom: 0.5rem;
 }
-.bioclass-header-table {
+.header-info-flex {
   display: flex;
   flex-direction: row;
-  border: 2px solid var(--synthicide-c-border-subtle);
-  border-radius: 4px;
-  overflow: hidden;
-  font-size: 1.05em;
-  background: inherit;
-  align-items: stretch;
+  gap: 1em;
+  align-items: flex-start;
 }
-.bioclass-header-col {
+.header-info-maincol {
+  flex: 3 1 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding: 0.25em 0.75em;
+  gap: 0.5em;
 }
-.bioclass-header-main {
-  flex: 2;
+.header-info-row2 {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75em;
+  align-items: flex-end;
 }
-.bioclass-header-divider {
-  width: 0;
-  border-left: 2px solid var(--synthicide-c-border-subtle);
-  margin: 0 0.25em;
+.header-info-bioclass-block {
+  flex: 1 1 0;
+  min-width: 4em;
+  max-width: 8em;
 }
-.bioclass-header-side {
-  flex: 1;
+.header-info-motivation-block {
+  flex: 2 1 0;
+  min-width: 10em;
+  max-width: 16em;
+}
+.header-info-levelcol {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
+  min-width: 4em;
+  height: 100%;
 }
-.bioclass-header-input {
+.header-info-input {
   font: inherit;
   font-weight: bold;
   width: 100%;
@@ -857,48 +881,80 @@ img.actions-img {
   margin: 0;
   text-align: left;
 }
-.bioclass-header-level-input {
-  /*font-size: 1.3em;*/
+.header-info-level-input {
   text-align: center;
   width: 2.5em;
-  /* background: var(--synthicide-c-white, #fff); */
-  /* border: 1px solid var(--synthicide-c-border-subtle, #ccc); */
   border-radius: 4px;
   color: inherit;
   outline: none;
+  font-size: 1.2em;
+  min-width: 2.5em;
+  max-width: 3em;
 }
-/* Visually hidden label for accessibility */
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(0);
-  border: 0;
-}
-.bioclass-header-label {
+.header-info-label {
   font-weight: bold;
   letter-spacing: 0.05em;
   margin-top: 0.25em;
+  text-align: left;
 }
-.bioclass-header-label:first-child {
+.header-info-label:first-child {
   margin-top: 0;
 }
-.bioclass-header-value {
+.header-info-value {
   margin-bottom: 0.1em;
 }
-.bioclass-header-name {
+.header-info-name {
   font-size: 1.1em;
 }
-.bioclass-header-level {
-  font-size: 2em;
+.header-info-level {
+  font-size: 1.5em;
   font-weight: bold;
   margin: 0.25em 0 0.5em 0;
 }
+.header-info-value.bioclass-value {
+  max-width: 8em;
+  min-width: 4em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.header-info-motivation select,
+.header-info-motivation-select {
+  min-width: 10em;
+  max-width: 16em;
+}
+.header-info-maincol .header-info-bio-motivation-row {
+  align-items: center;
+}
+.header-info-bioclass-block, .header-info-motivation-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.header-info-value.bioclass-value, .header-info-value.header-info-motivation {
+  display: flex;
+  align-items: center;
+  min-height: 2.5em;
+}
 
-/* Bioclass Trait Description Styling */
+/* Ensure Bioclass and Motivation are top-aligned in their row */
+.header-info-maincol .header-info-bio-motivation-row {
+  align-items: center;
+}
+.header-info-bioclass-block, .header-info-motivation-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.header-info-value.bioclass-value, .header-info-value.header-info-motivation {
+  display: flex;
+  align-items: center;
+  min-height: 2.5em;
+}
+
+/* ============================== */
+/* Bioclass Trait Description     */
+/* ============================== */
 .trait-box {
   background: none;
   border-radius: 8px;
@@ -949,4 +1005,3 @@ img.actions-img {
   justify-content: flex-end;
   gap: 0.25rem;
 }
-
