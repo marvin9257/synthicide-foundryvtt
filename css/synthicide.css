@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 :root {
+  --synthicide-border-groove: #bdbdbd;
+  --synthicide-shadow: 0 1px 2px rgba(0,0,0,0.04);
   --synthicide-c-dark: #191813;
   --synthicide-c-faint: #c9c7b8;
   --synthicide-c-beige: #b5b3a4;
@@ -20,6 +22,8 @@
 }
 
 .theme-dark {
+  --synthicide-border-groove: #444;
+  --synthicide-shadow: 0 1px 2px rgba(255,255,255,0.06);
   --synthicide-c-dark: #c9c7b8;
   --synthicide-c-faint: #191813;
   --synthicide-c-beige: #444444;
@@ -901,7 +905,7 @@ img.actions-img {
   box-shadow: none;
   padding: 12px;
   margin-bottom: 12px;
-  border: 1.5px groove #bdbdbd;
+  border: 1.5px groove var(--synthicide-border-groove);
 }
 .trait-name {
   font-size: 1.1em;
@@ -914,9 +918,9 @@ img.actions-img {
   padding: 10px;
   margin-top: 6px;
   font-size: 1em;
-  color: inherit;
-  border: 1px solid #cfcfcf;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  color: var(--color-form-label, var(--form-field-color));
+  border: 1px solid var(--color-form-label, var(--form-field-color));
+  box-shadow: var(--synthicide-shadow);
   min-height: 48px;
 }
 
