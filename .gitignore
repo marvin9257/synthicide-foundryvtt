@@ -29,5 +29,8 @@ tmp/
 foundry-config.yaml
 eslint.config.mjs
 
+# Ignore symlinked Foundry files
+foundry/
+
 # Ignore npm lock file
 package-lock.json
