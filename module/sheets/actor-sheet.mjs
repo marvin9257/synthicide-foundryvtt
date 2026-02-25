@@ -29,12 +29,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       roll: this._onRoll,
       increaseAttribute: this._onIncreaseAttribute,
       decreaseAttribute: this._onDecreaseAttribute,
-      increaseResolve: this._onIncreaseResolve,
-      decreaseResolve: this._onDecreaseResolve,
-      increaseFoodDays: this._onIncreaseFoodDays,
-      decreaseFoodDays: this._onDecreaseFoodDays,
-      increaseCynicism: this._onIncreaseCynicism,
-      decreaseCynicism: this._onDecreaseCynicism,
+      increaseCounter: this._onIncreaseCounter,
+      decreaseCounter: this._onDecreaseCounter,
       editTraitItem: this._editTraitItem,
       deleteTraitItem: this._deleteTraitItem,
     },
@@ -526,53 +522,63 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   }
 
   /** @protected */
-  static async _onIncreaseResolve(event) {
+  static async _onIncreaseCounter(event, target) {
     event.preventDefault();
     event.stopPropagation();
-    const current = Number(this.actor.system.resolve ?? 0);
-    await this.actor.update({ 'system.resolve': Math.min(5, current + 1) });
-  }
-
-    /** @protected */
-    static async _onIncreaseFoodDays(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      const current = this.actor.system.foodDays.value ?? 0;
-      await this.actor.update({ 'system.foodDays.value': current + 1 });
+    const key = target.dataset.counterKey || target.closest('[data-counter-key]')?.dataset.counterKey;
+    let path, current, max;
+    switch (key) {
+      case "resolve":
+        path = "system.resolve";
+        current = Number(this.actor.system.resolve ?? 0);
+        max = 5;
+        break;
+      case "cynicism":
+        path = "system.cynicism";
+        current = Number(this.actor.system.cynicism ?? 0);
+        max = 10;
+        break;
+      case "foodDays":
+        path = "system.foodDays.value";
+        current = Number(this.actor.system.foodDays.value ?? 0);
+        max = undefined;
+        break;
+      // Add more cases as needed
+      default:
+        return;
     }
-
-  /** @protected */
-  static async _onDecreaseResolve(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const current = Number(this.actor.system.resolve ?? 0);
-    await this.actor.update({ 'system.resolve': Math.max(0, current - 1) });
+    const next = max !== undefined ? Math.min(max, current + 1) : current + 1;
+    await this.actor.update({ [path]: next });
   }
 
-    /** @protected */
-    static async _onDecreaseFoodDays(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      const current = this.actor.system.foodDays.value ?? 0;
-      // Minimum is -(6 + toughness.current)
-      const min = this.actor.system.foodDays.min;
-      await this.actor.update({ 'system.foodDays.value': Math.max(min, current - 1) });
+  /** @protected */
+  static async _onDecreaseCounter(event, target) {
+    event.preventDefault();
+    event.stopPropagation();
+    const key = target.dataset.counterKey || target.closest('[data-counter-key]')?.dataset.counterKey;
+    let path, current, min;
+    switch (key) {
+      case "resolve":
+        path = "system.resolve";
+        current = Number(this.actor.system.resolve ?? 0);
+        min = 0;
+        break;
+      case "cynicism":
+        path = "system.cynicism";
+        current = Number(this.actor.system.cynicism ?? 0);
+        min = 0;
+        break;
+      case "foodDays":
+        path = "system.foodDays.value";
+        current = Number(this.actor.system.foodDays.value ?? 0);
+        min = this.actor.system.foodDays.min;
+        break;
+      // Add more cases as needed
+      default:
+        return;
     }
-
-  /** @protected */
-  static async _onIncreaseCynicism(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const current = Number(this.actor.system.cynicism ?? 0);
-    await this.actor.update({ 'system.cynicism': Math.min(10, current + 1) });
-  }
-
-  /** @protected */
-  static async _onDecreaseCynicism(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const current = Number(this.actor.system.cynicism ?? 0);
-    await this.actor.update({ 'system.cynicism': Math.max(0, current - 1) });
+    const next = Math.max(min, current - 1);
+    await this.actor.update({ [path]: next });
   }
   /**
    * Open the trait item sheet for editing
