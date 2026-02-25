@@ -37,10 +37,19 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     schema.traits = new fields.ArrayField(
       new fields.SchemaField({
         sort: new fields.NumberField({ required: true, integer: true, initial: 0 }),
-        name: new fields.StringField({ required: true }),
-        description: new fields.HTMLField({ required: true }),
+        name: new fields.StringField({ required: true, initial: "" }),
+        description: new fields.HTMLField({ required: true, initial: "" }),
       }),
-      { initial: foundry.utils.deepClone(defaultPreset.traits) }
+      {
+        initial: foundry.utils.deepClone(
+          defaultPreset.traits.map(trait => ({
+            sort: trait.sort,
+            key: trait.key ?? "",
+            name: trait.key ? game.i18n.localize(`SYNTHICIDE.Item.Bioclass.Trait.${trait.key}.Name`) : "",
+            description: trait.key ? game.i18n.localize(`SYNTHICIDE.Item.Bioclass.Trait.${trait.key}.Description`) : ""
+          }))
+        )
+      }
     );
 
     // Bioclass slots
@@ -56,6 +65,7 @@ export default class SynthicideBioclass extends SynthicideItemBase {
   /**
    * Central method for bioclass application to actor.
    * Handles trait creation and attribute sync. UI should never call trait logic directly.
+   * @this {SynthicideBioclass}
    * @param {Actor} [actor] - (Optional) The actor to apply bioclass traits and attributes to. Defaults to this.parent?.actor.
    */
   async applyBioclassToActor(actor) {
@@ -97,6 +107,7 @@ export default class SynthicideBioclass extends SynthicideItemBase {
   /**
    * Create and embed trait items for this bioclass on the owning actor.
    * Updates associatedTraitIds for future cleanup.
+   * @this {SynthicideBioclass}
    * @param {Actor} owningActor - The actor to receive the bioclass traits.
    * @private
    */
@@ -159,6 +170,7 @@ export default class SynthicideBioclass extends SynthicideItemBase {
 
   /**
    * Synchronize the actor's base attributes to match this bioclass's starting attributes.
+   * @this {SynthicideBioclass}
    * @param {Actor} owningActor - The actor whose attributes will be updated.
    * @private
    */
@@ -194,7 +206,10 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     }
   }
 
-  /** @override */
+  /** 
+  * @override
+  * @this {SynthicideBioclass}
+  */
   async _onCreate(data, options, userId) {
     if (game.userId !== userId) return;
     // Use this.parent.actor for the owning actor
@@ -210,18 +225,19 @@ export default class SynthicideBioclass extends SynthicideItemBase {
       }
     }
     try {
-      await super._onCreate(data, options, userId);
+      super._onCreate(data, options, userId);
     } catch (e) {
       if (SYNTHICIDE.debug?.synthicideBioclass) console.error('super._onCreate error', e);
     }
   }
 
   /**
+   * @this {SynthicideBioclass}
    * Prepare derived data for bioclass item.
    * Sets localized labels and slot types for display and sheet use.
    */
   prepareDerivedData() {
-    super.prepareDerivedData && super.prepareDerivedData();
+    super.prepareDerivedData();
     const bioclassType = this.bioclassType ?? 'skinbag';
     const preset = SYNTHICIDE.getBioclassPreset(bioclassType);
     this.bodyType = `SYNTHICIDE.Item.BodyType.${preset.bodyType}`;
@@ -230,7 +246,14 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     // Add more derived fields as needed for sheet display
   }
 
-  /** @override */
+  /**
+ * @override
+ * @this {SynthicideBioclass}
+ * Custom deletion logic for SynthicideBioclass.
+ * IMPORTANT: Accesses this.associatedTraitIds before calling super._onDelete.
+ * @param {object} options - Deletion options
+ * @param {string} userId - The user performing the deletion
+ */
   async _onDelete(options, userId) {
     const debugBioclass = Boolean(SYNTHICIDE.debug?.synthicideBioclass);
     if (game.userId !== userId) return;
@@ -244,13 +267,30 @@ export default class SynthicideBioclass extends SynthicideItemBase {
       if (toDelete.length > 0) {
         await owningActor.deleteEmbeddedDocuments('Item', toDelete);
         if (debugBioclass) {
-          console.groupCollapsed(`[Synthicide] Bioclass traits deleted: ${this.name}`);
+          console.groupCollapsed(`[Synthicide] Bioclass traits deleted: ${this.parent.name}`);
           console.table(toDelete);
           console.groupEnd();
         }
       }
     }
     // Call parent delete logic
-    if (super._onDelete) await super._onDelete(options, userId);
+    super._onDelete(options, userId);
+  }
+
+  async _preUpdate(changes, options, user) {
+    const allowed = await super._preUpdate?.(changes, options, user);
+    if (allowed === false) return false;
+    // Check if bioclassType is being changed
+    if (changes.system?.bioclassType) {
+      const newType = changes.system.bioclassType;
+      const preset = SYNTHICIDE.getBioclassPreset(newType);
+      changes.system.traits = preset.traits.map(trait => ({
+        sort: trait.sort,
+        key: trait.key ?? "",
+        name: trait.key ? game.i18n.localize(`SYNTHICIDE.Item.Bioclass.Trait.${trait.key}.Name`) : "",
+        description: trait.key ? game.i18n.localize(`SYNTHICIDE.Item.Bioclass.Trait.${trait.key}.Description`) : ""
+      }));
+    }
+    return allowed;
   }
 }

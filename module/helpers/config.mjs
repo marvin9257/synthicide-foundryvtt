@@ -125,8 +125,17 @@ SYNTHICIDE.bioclassPresets = {
   },
 };
 
-SYNTHICIDE.getBioclassPreset = (bioclassType) =>
-  SYNTHICIDE.bioclassPresets[bioclassType] ?? SYNTHICIDE.bioclassPresets.skinbag;
+SYNTHICIDE.getBioclassPreset = (bioclassType) => {
+  const preset = SYNTHICIDE.bioclassPresets[bioclassType] ?? SYNTHICIDE.bioclassPresets.skinbag;
+  // Ensure traits have name and description fields for schema validation
+  const traits = (preset.traits || []).map(trait => ({
+    sort: trait.sort,
+    key: trait.key ?? '',
+    name: trait.name ?? '',
+    description: trait.description ?? ''
+  }));
+  return { ...preset, traits };
+};
 
 SYNTHICIDE.bioclassToActorAttributeMap = {
   actions: 'operation',
