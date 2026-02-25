@@ -9,18 +9,7 @@ export class SynthicideActor extends Actor {
   async _preUpdate(changed, options, user) {
     const allowed = await super._preUpdate(changed, options, user);
     if (allowed === false) return false;
-
-    const cynicismPath = 'system.cynicism';
-    if (foundry.utils.hasProperty(changed, cynicismPath)) {
-      const nextCynicism = Number(foundry.utils.getProperty(changed, cynicismPath) ?? 0);
-      foundry.utils.setProperty(changed, cynicismPath, Math.max(0, Math.min(10, nextCynicism)));
-    }
-
-    const resolvePath = 'system.resolve';
-    if (foundry.utils.hasProperty(changed, resolvePath)) {
-      const nextResolve = Number(foundry.utils.getProperty(changed, resolvePath) ?? 0);
-      foundry.utils.setProperty(changed, resolvePath, Math.max(0, Math.min(5, nextResolve)));
-    }
+    return allowed;
   }
 
   /**

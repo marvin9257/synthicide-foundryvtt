@@ -133,6 +133,11 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       systemFields: this.document.system.schema.fields,
     };
 
+    // Calculate hpPercent for hit points bar coloring
+    const hpValue = Number(context.system.hitPoints?.value ?? 0);
+    const hpMax = Number(context.system.hitPoints?.max ?? 1);
+    context.hpPercent = hpMax > 0 ? hpValue / hpMax : 0;
+
     // Motivation selectOptions and behaviors
     context.config = context.config || {};
     context.config.motivationOptions = Object.fromEntries(
@@ -142,7 +147,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       Object.entries(SYNTHICIDE.motivations).map(([k, v]) => [k, v.behavior])
     );
 
-    // Offloading context prep to a helper function
+    // Offloading item context prep to a helper function
     await this._prepareItems(context);
 
     return context;

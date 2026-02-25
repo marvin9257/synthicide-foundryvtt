@@ -72,36 +72,50 @@
         </label>
         <div class='resource-content flexrow flex-center flex-between resource-pair'>
           <input
-            type='text'
+            type='number'
             name='system.hitPoints.value'
             value='{{system.hitPoints.value}}'
             data-dtype='Number'
+            min='0'
+            max='{{system.hitPoints.max}}'
+            step='1'
           />
           <span> / </span>
           <input
-            type='text'
+            type='number'
             name='system.hitPoints.max'
             value='{{system.hitPoints.max}}'
             data-dtype='Number'
             disabled
           />
         </div>
+        <div class='resource-track'>
+          <div class=
+            {{#if (gte hpPercent 0.5)}}
+              'resource-track-fill resource-track-fill-green'
+            {{else if (gte hpPercent 0.25)}}
+              'resource-track-fill resource-track-fill-yellow'
+            {{else}}
+              'resource-track-fill resource-track-fill-red'
+            {{/if}}
+            style='width: calc(({{system.hitPoints.value}} / {{system.hitPoints.max}}) * 100%);'></div>
+        </div>
       </div>
-      <!-- Hit Power Resource -->
+      <!-- Power Resource -->
       <div class='resource flex-group-center header-resource'>
         <label for='system.power.value' class='resource-label'>
           {{localize 'SYNTHICIDE.Actor.base.FIELDS.power.value.label'}}
         </label>
         <div class='resource-content flexrow flex-center flex-between resource-pair'>
           <input
-            type='text'
+            type='number'
             name='system.power.value'
             value='{{system.power.value}}'
             data-dtype='Number'
           />
           <span> / </span>
           <input
-            type='text'
+            type='number'
             name='system.power.max'
             value='{{system.power.max}}'
             data-dtype='Number'

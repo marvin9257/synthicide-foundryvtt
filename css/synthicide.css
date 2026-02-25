@@ -12,6 +12,7 @@
   --synthicide-c-black: #000000;
   --synthicide-c-groove: #eeede0;
   --synthicide-c-danger: #b42318;
+  --synthicide-c-warning: yellow;
   --synthicide-c-success: #2f9e44;
   --synthicide-c-panel-bg: rgba(0, 0, 0, 0.05);
   --synthicide-c-meter-line: rgba(0, 0, 0, 0.02);
@@ -36,6 +37,7 @@
   --synthicide-c-meter-line: rgba(255, 255, 255, 0.08);
   --synthicide-c-border-subtle: var(--synthicide-c-faint);
   --synthicide-c-danger: #b42318;
+  --synthicide-c-warning: yellow;
   --synthicide-c-success: #2f9e44;
   --synthicide-c-hover-glow: red;
 }
@@ -72,6 +74,15 @@
 
 /* ============================== */
 /* Progress Bar Styles            */
+.resource-track-fill-green {
+  background: var(--synthicide-c-success);
+}
+.resource-track-fill-yellow {
+  background: var(--synthicide-c-warning);
+}
+.resource-track-fill-red {
+  background: var(--synthicide-c-danger);
+}
 /* ============================== */
 .synthicide .progress-bar {
   position: relative;
@@ -438,9 +449,7 @@
 }
 
 /* ============================== */
-/* ============================== */
 /* Content + Lists                */
-/* ============================== */
 /* ============================== */
 
 .synthicide .tox .tox-editor-container {
@@ -656,9 +665,7 @@
 }
 
 /* ============================== */
-/* ============================== */
 /* Attributes Panel               */
-/* ============================== */
 /* ============================== */
 
 .attributes-table {
