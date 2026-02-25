@@ -27,7 +27,7 @@ export class SynthicideActor extends Actor {
    */
   prepareDerivedData() {
     super.prepareDerivedData();
-    const debugModifiers = true//Boolean(CONFIG?.debug?.synthicideModifiers);
+    const debugModifiers = Boolean(SYNTHICIDE.debug?.synthicideModifiers);
 
     // --- 1. Aggregate modifiers from item-defined custom modifiers ---
     const attributeKeys = Object.keys(SYNTHICIDE.attributes);

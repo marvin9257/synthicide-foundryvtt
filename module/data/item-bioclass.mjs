@@ -60,13 +60,38 @@ export default class SynthicideBioclass extends SynthicideItemBase {
    */
   async applyBioclassToActor(actor) {
     // Use this.parent.actor for the owning actor
+    const debugBioclass = Boolean(SYNTHICIDE.debug?.synthicideBioclass);
+    const debugReport = [];
     const owningActor = actor ?? this.parent?.actor;
     if (this.parent?.type !== 'bioclass') return;
-    console.log('SynthicideBioclass.applyBioclassToActor called', this, owningActor);
-    if (!owningActor) return;
-
-    await this._createBioclassTraits(owningActor);
-    await this._syncBioclassAttributes(owningActor);
+    const itemName = this.parent?.name ?? '(unnamed item)';
+    if (!owningActor) {
+      if (debugBioclass) {
+        debugReport.push({
+          stage: 'applyBioclassToActor',
+          item: itemName,
+          actor: null,
+          message: 'No owning actor found, cannot apply bioclass.'
+        });
+        console.groupCollapsed(`[Synthicide] Bioclass apply: (no actor)`);
+        console.table(debugReport);
+        console.groupEnd();
+      }
+      return;
+    }
+    debugReport.push({
+      stage: 'applyBioclassToActor',
+      item: itemName,
+      actor: owningActor?.name,
+      message: 'Starting bioclass application.'
+    });
+    await this._createBioclassTraits(owningActor, debugReport);
+    await this._syncBioclassAttributes(owningActor, debugReport);
+    if (debugBioclass) {
+      console.groupCollapsed(`[Synthicide] Bioclass apply: ${owningActor.name ?? '(unnamed actor)'}`);
+      console.table(debugReport);
+      console.groupEnd();
+    }
   }
 
   /**
@@ -76,6 +101,9 @@ export default class SynthicideBioclass extends SynthicideItemBase {
    * @private
    */
   async _createBioclassTraits(owningActor) {
+    // Accept debugReport array for consolidated reporting
+    const debugBioclass = Boolean(SYNTHICIDE.debug?.synthicideBioclass);
+    const itemName = this.parent?.name ?? '(unnamed item)';
     const traits = this.traits ?? [];
     if (Array.isArray(traits) && traits.length) {
       const traitDocs = traits.map(trait => ({
@@ -90,13 +118,32 @@ export default class SynthicideBioclass extends SynthicideItemBase {
         await this.parent.update({ 'system.associatedTraitIds': createdTraitIds });
       }
       this.associatedTraitIds = createdTraitIds;
-      console.log('SynthicideBioclass: Traits created', traitDocs, 'IDs:', createdTraitIds);
+      if (debugBioclass && arguments.length > 1 && Array.isArray(arguments[1])) {
+        arguments[1].push({
+          stage: '_createBioclassTraits',
+          item: itemName,
+          actor: owningActor?.name,
+          traits: traitDocs.map(t => t.name).join(', '),
+          traitIds: createdTraitIds.join(', '),
+          message: 'Traits created and associated.'
+        });
+      }
     } else {
       // If no traits, clear associatedTraitIds
       if (this.parent && typeof this.parent.update === 'function') {
         await this.parent.update({ 'system.associatedTraitIds': [] });
       }
       this.associatedTraitIds = [];
+      if (debugBioclass && arguments.length > 1 && Array.isArray(arguments[1])) {
+        arguments[1].push({
+          stage: '_createBioclassTraits',
+          item: itemName,
+          actor: owningActor?.name,
+          traits: 'none',
+          traitIds: '',
+          message: 'No traits found, associatedTraitIds cleared.'
+        });
+      }
     }
   }
 
@@ -106,6 +153,9 @@ export default class SynthicideBioclass extends SynthicideItemBase {
    * @private
    */
   async _syncBioclassAttributes(owningActor) {
+    // Accept debugReport array for consolidated reporting
+    const debugBioclass = Boolean(SYNTHICIDE.debug?.synthicideBioclass);
+    const itemName = this.parent?.name ?? '(unnamed item)';
     const starting = this.startingAttributes ?? {};
     const updates = {};
     const actorAttributes = owningActor.system?.attributes ?? {};
@@ -122,31 +172,37 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     }
     if (Object.keys(updates).length) {
       await owningActor.update(updates);
-      console.log('SynthicideBioclass: Actor updated with', updates);
+      if (debugBioclass && arguments.length > 1 && Array.isArray(arguments[1])) {
+        arguments[1].push({
+          stage: '_syncBioclassAttributes',
+          item: itemName,
+          actor: owningActor?.name,
+          updates: JSON.stringify(updates),
+          message: 'Actor updated with bioclass attributes.'
+        });
+      }
     }
   }
 
   /** @override */
   async _onCreate(data, options, userId) {
     if (game.userId !== userId) return;
-    console.log('SynthicideBioclass._onCreate called', this, data, options, userId);
     // Use this.parent.actor for the owning actor
     const owningActor = this.parent?.actor;
     if (!owningActor) {
-      console.warn('SynthicideBioclass._onCreate: No parent actor found, cannot apply bioclass logic.');
+      // Optionally keep a minimal warning for missing actor
+      if (SYNTHICIDE.debug?.synthicideBioclass) console.warn('No parent actor found, cannot apply bioclass logic.');
     } else {
-      console.log('SynthicideBioclass._onCreate: about to call applyBioclassToActor (immediate)', owningActor, this);
       try {
         await this.applyBioclassToActor();
-        console.log('SynthicideBioclass._onCreate: applyBioclassToActor finished');
       } catch (e) {
-        console.error('SynthicideBioclass._onCreate: applyBioclassToActor error', e);
+        if (SYNTHICIDE.debug?.synthicideBioclass) console.error('applyBioclassToActor error', e);
       }
     }
     try {
       await super._onCreate(data, options, userId);
     } catch (e) {
-      console.error('SynthicideBioclass._onCreate: super._onCreate error', e);
+      if (SYNTHICIDE.debug?.synthicideBioclass) console.error('super._onCreate error', e);
     }
   }
 
@@ -168,17 +224,22 @@ export default class SynthicideBioclass extends SynthicideItemBase {
 
   /** @override */
   async _onDelete(options, userId) {
+    const debugBioclass = Boolean(SYNTHICIDE.debug?.synthicideBioclass);
     if (game.userId !== userId) return;
     // Clean up associated trait items when this bioclass is deleted
     const owningActor = this.parent?.actor;
     if (!owningActor) return;
-      const associatedIds = Array.isArray(this.associatedTraitIds) ? this.associatedTraitIds : [];
+    const associatedIds = Array.isArray(this.associatedTraitIds) ? this.associatedTraitIds : [];
     if (associatedIds.length > 0) {
       // Only delete traits that still exist in the collection
       const toDelete = associatedIds.filter(id => owningActor.items.has(id));
       if (toDelete.length > 0) {
         await owningActor.deleteEmbeddedDocuments('Item', toDelete);
-        console.log('SynthicideBioclass: Associated traits deleted on bioclass delete', toDelete);
+        if (debugBioclass) {
+          console.groupCollapsed(`[Synthicide] Bioclass traits deleted: ${this.name}`);
+          console.table(toDelete);
+          console.groupEnd();
+        }
       }
     }
     // Call parent delete logic

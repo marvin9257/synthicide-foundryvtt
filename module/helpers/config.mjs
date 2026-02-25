@@ -1,5 +1,14 @@
 const SYNTHICIDE = {};
 
+// Centralized debug flags for system modules
+SYNTHICIDE.debug = {
+  /** Enable detailed modifier aggregation debugging in Actor */
+  synthicideModifiers: true,
+  /** Enable detailed bioclass application debugging in Item-Bioclass */
+  synthicideBioclass: true,
+  // Add more debug flags as needed
+};
+
 export default SYNTHICIDE;
 /**
  * Bioclass type choices used in the system.
@@ -10,6 +19,8 @@ SYNTHICIDE.bioclassTypes = [
   'hardshell',
   'rigfiend'
 ];
+
+
 
 SYNTHICIDE.bioclassPresets = {
   skinbag: {
