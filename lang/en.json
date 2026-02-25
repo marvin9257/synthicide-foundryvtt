@@ -151,6 +151,32 @@
         "Scraphead": "Scraphead",
         "Hardshell": "Hardshell",
         "Rigfiend": "Rigfiend",
+        "Trait": {
+          "TechlessWill": {
+            "Name": "Techless Will",
+            "Description": "Three times per day, add +3 to any attribute check (including Speed). In battle this lasts 1 round; in roleplay it applies to one check."
+          },
+          "GeneticLegacy": {
+            "Name": "Genetic Legacy",
+            "Description": "Choose one: Mutant Dog or Dying Breed. Mutant Dog grants 4 mutation-only trait points and -2 Nerve. Dying Breed grants milestone attribute and trait bonuses as described by the bioclass."
+          },
+          "HardBrain": {
+            "Name": "Hard Brain",
+            "Description": "You may not purchase psychic powers with trait points."
+          },
+          "StarterSoftware": {
+            "Name": "Starter Software",
+            "Description": "Choose a knowledge focus and gain 2 of its powers, as listed in character traits and powers."
+          },
+          "StarterHardware": {
+            "Name": "Starter Hardware",
+            "Description": "Choose one permanent increase: Cyber Eyes (+1 Awareness) or Servo Limbs (+1 Combat)."
+          },
+          "ModFocused": {
+            "Name": "Mod Focused",
+            "Description": "You cannot gain psychic powers and cannot permanently mutate through traits. General traits cost 3 TP instead of 2."
+          }
+        },
         "FIELDS": {
           "bodySlots": {"label": "Body Slots"},
           "brainSlots": {"label": "Brain Slots"},

@@ -8,7 +8,7 @@
   {{#if bioclass}}
     <ol class='items-list'>
       <li class='item flexrow items-header'>
-        <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}}</div>
+        <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}} ({{localize bioclass.system.bioclassTypeLabel}})</div>
         <div class='item-controls'>
           {{#if @root.editable}}
             <a

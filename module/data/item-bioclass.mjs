@@ -106,11 +106,21 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     const itemName = this.parent?.name ?? '(unnamed item)';
     const traits = this.traits ?? [];
     if (Array.isArray(traits) && traits.length) {
-      const traitDocs = traits.map(trait => ({
-        type: 'trait',
-        name: trait.name || 'Trait',
-        system: { ...trait, bioClassLink: true }
-      }));
+      // Localize trait name/description on creation if key is present
+      const traitDocs = traits.map(trait => {
+        let name = trait.name;
+        let description = trait.description;
+        // If this trait has a key (from preset), localize
+        if (trait.key) {
+          name = game.i18n.localize(`SYNTHICIDE.Item.Bioclass.Trait.${trait.key}.Name`);
+          description = game.i18n.localize(`SYNTHICIDE.Item.Bioclass.Trait.${trait.key}.Description`);
+        }
+        return {
+          type: 'trait',
+          name: name || 'Trait',
+          system: { ...trait, name, description, bioClassLink: true }
+        };
+      });
       const created = await owningActor.createEmbeddedDocuments('Item', traitDocs);
       const createdTraitIds = Array.isArray(created) ? created.map(t => t.id) : [];
       // Store new associated trait IDs for future deletion
@@ -214,11 +224,9 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     super.prepareDerivedData && super.prepareDerivedData();
     const bioclassType = this.bioclassType ?? 'skinbag';
     const preset = SYNTHICIDE.getBioclassPreset(bioclassType);
-    const bodyTypeKey = preset.bodyType;
-    const brainTypeKey = preset.brainType;
-    this.bodyType = game.i18n.localize(`SYNTHICIDE.Item.BodyType.${bodyTypeKey}`);
-    this.brainType = game.i18n.localize(`SYNTHICIDE.Item.BodyType.${brainTypeKey}`);
-    this.bioclassTypeLabel = game.i18n.localize(`SYNTHICIDE.Item.Bioclass.${bioclassType.charAt(0).toUpperCase() + bioclassType.slice(1)}`);
+    this.bodyType = `SYNTHICIDE.Item.BodyType.${preset.bodyType}`;
+    this.brainType = `SYNTHICIDE.Item.BodyType.${preset.brainType}`;
+    this.bioclassTypeLabel = `SYNTHICIDE.Item.Bioclass.${bioclassType.charAt(0).toUpperCase() + bioclassType.slice(1)}`;
     // Add more derived fields as needed for sheet display
   }
 

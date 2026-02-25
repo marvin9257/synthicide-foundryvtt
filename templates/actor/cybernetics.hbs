@@ -7,7 +7,7 @@
   {{#if bioclass}}
     <ol class='items-list'>
       <li class='item flexrow items-header' data-item-id='{{bioclass._id}}' data-document-class='Item'>
-        <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}}</div>
+        <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}} ({{localize bioclass.system.bioclassTypeLabel}})</div>
         <div class='item-controls'>
           <a class='item-control item-edit' data-action='viewDoc' data-tooltip='{{localize "DOCUMENT.Update" type='bioclass'}}'>
             <i class='fas fa-edit'></i>
@@ -24,12 +24,12 @@
     <div class='grid grid-2col'>
       <div class='resource flex-group-center'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.BodyType'}}</label>
-        <div>{{bioclass.system.bodyType}}</div>
+        <div>{{localize bioclass.system.bodyType}}</div>
       </div>
 
       <div class='resource flex-group-center'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.BrainType'}}</label>
-        <div>{{bioclass.system.brainType}}</div>
+        <div>{{localize bioclass.system.brainType}}</div>
       </div>
 
       <div class='resource flex-group-center'>
