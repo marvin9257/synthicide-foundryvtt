@@ -30,10 +30,11 @@ export default class SynthicideActorBaseData extends foundry.abstract
 
   prepareDerivedData() {
     super.prepareDerivedData();
-    for (const key in this.attributes) {
-      this.attributes[key].label =
-        game.i18n.localize(SYNTHICIDE.attributes[key]) ?? key;
+    if (this.attributes) {
+      for (const key in this.attributes) {
+        this.attributes[key].label =
+          game.i18n.localize(SYNTHICIDE.attributes[key]) ?? key;
+      }
     }
-   
   }
 }

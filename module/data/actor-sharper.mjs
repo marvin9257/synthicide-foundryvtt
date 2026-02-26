@@ -1,3 +1,8 @@
+/**
+ * DataModel for Sharper (player character) actors in the Synthicide system.
+ * Defines schema, derived data, and roll data preparation for sharper actors.
+ * @extends {SynthicideActorBaseData}
+ */
 import SynthicideActorBaseData from './base-actor.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 const fields = foundry.data.fields;
@@ -42,6 +47,15 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     return schema;
   }
 
+  /**
+   * Clamp certain system values before update (e.g., cynicism, resolve, hitPoints.value).
+   * @override
+   * @this {SynthicideSharperData}
+   * @param {Object} changed - The changed data.
+   * @param {Object} options - Update options.
+   * @param {string} user - The user ID performing the update.
+   * @returns {Promise<boolean|undefined>} False to prevent update, otherwise undefined.
+   */
   async _preUpdate(changed, options, user) {
     const allowed = await super._preUpdate?.(changed, options, user);
     if (allowed === false) return false;
@@ -66,14 +80,33 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     return allowed;
   }
 
+  /**
+   * Calculate and assign derived data for sharper actors (e.g., .current, foodDays.min, hitPoints.max).
+   * @override
+   * @this {SynthicideSharperData}
+   */
   prepareDerivedData() {
-    // note attribute.X.current is updated as part of actor document, so no derived data based on current 
     super.prepareDerivedData();
-    
+    // For sharper actors, .current is always derived
+    if (this.attributes) {
+      for (const attr of Object.values(this.attributes)) {
+        attr.current = (attr.base ?? 0) + (attr.modifier ?? 0) + (attr.increase ?? 0);
+      }
+    }
+    // Calculate foodDays.min as derived data for sharper actors
+    if (this.foodDays && this.attributes?.toughness) {
+      this.foodDays.min = -(6 + (this.attributes.toughness.current ?? 0));
+    }
     const level = this.level.value ?? 1;
     this.hitPoints.max = (this.hitPoints.base ?? 0) + (this.hitPoints.perLevel ?? 0) * Math.max(0, level - 1);
   }
 
+  /**
+   * Prepare flattened roll data for sharper actors, exposing attributes at the top level.
+   * @override
+   * @this {SynthicideSharperData}
+   * @returns {Object} The roll data object.
+   */
   getRollData() {
     // Start with base class roll data
     const data = super.getRollData ? super.getRollData() : {};
@@ -82,7 +115,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     // formulas like `@str.mod + 4`.
     if (this.attributes) {
       for (let [k, v] of Object.entries(this.attributes)) {
-        data[k] = foundry.utils.deepClone(v);
+        data[k] = foundry.utils.duplicate(v);
       }
     }
     data.lvl = this.level.value;

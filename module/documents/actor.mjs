@@ -17,23 +17,69 @@ export class SynthicideActor extends Actor {
    */
   prepareDerivedData() {
     super.prepareDerivedData();
-    const debugModifiers = Boolean(SYNTHICIDE.debug?.synthicideModifiers);
+    // Only calculate derived data here; aggregation is triggered by item changes
+    // Derived data for sharper actors is now handled in the data model.
+    // ...existing code for other derived data...
+  }
 
+  /**
+   * Aggregate all item modifiers and apply to this actor.
+   *
+   * This method sums up all attribute and non-attribute modifiers from the actor's owned items,
+   * applies the aggregated attribute modifiers to the actor's attributes (persisting .modifier if changed),
+   * recalculates .current in memory, and applies non-attribute modifiers to arbitrary system paths.
+   *
+   * This should be called from item data model hooks (e.g., _onCreate, _onUpdate, _onDelete) when item changes
+   * may affect actor attributes or other system data.
+   *
+   * @async
+   * @param {Object} [options] - Options for aggregation.
+   * @param {boolean} [options.debug=false] - If true, collects and outputs debug information about modifier aggregation.
+   * @returns {Promise<void>} Resolves when aggregation and updates are complete.
+   */
+  async aggregateAndApplyItemModifiers({ debug = false } = {}) {
     const attributeKeys = Object.keys(SYNTHICIDE.attributes);
-    const debugItemContrib = [];
-    const { attributeModifiers, nonAttributeModifiers } = this.aggregateAttributeModifiers(this.items, attributeKeys, debugItemContrib, debugModifiers);
-
-    this.applyAttributeModifiers(attributeKeys, attributeModifiers);
-
-    if (debugModifiers) {
+    let debugItemContrib = [];
+    const attributeModifiers = Object.fromEntries(attributeKeys.map(key => [key, 0]));
+    const nonAttributeModifiers = [];
+    for (const item of this.items) {
+      const dataModel = item?.system;
+      if (!dataModel?.aggregateAttributeModifiers) continue;
+      const debugArr = debug ? [] : undefined;
+      const { attributeModifiers: itemAttrMods, nonAttributeModifiers: itemNonAttrMods } = dataModel.aggregateAttributeModifiers(attributeKeys);
+      for (const key of attributeKeys) {
+        attributeModifiers[key] += Number(itemAttrMods[key] ?? 0);
+      }
+      if (Array.isArray(itemNonAttrMods)) nonAttributeModifiers.push(...itemNonAttrMods);
+      if (debugArr && debugArr.length) debugItemContrib.push(...debugArr);
+    }
+    // Prepare update object for changed modifiers/current
+    const updatedAttributes = {};
+    for (const key of attributeKeys) {
+      if (!this.system?.attributes?.[key]) continue;
+      const newModifier = Number(attributeModifiers[key] ?? 0);
+      const oldModifier = Number(this.system.attributes[key].modifier ?? 0);
+      if (oldModifier !== newModifier) {
+        updatedAttributes[key] = {
+          ...this.system.attributes[key],
+          modifier: newModifier
+        };
+      }
+    }
+    if (Object.keys(updatedAttributes).length > 0) {
+      await this.update({ "system.attributes": updatedAttributes });
+    }
+    // Always recalculate current in memory after aggregation
+    for (const key of attributeKeys) {
+      if (!this.system?.attributes?.[key]) continue;
+      this.system.attributes[key].current =
+        this.system.attributes[key].base +
+        this.system.attributes[key].modifier +
+        this.system.attributes[key].increase;
+    }
+    if (debug) {
       this.debugModifierAggregation(attributeKeys, attributeModifiers, debugItemContrib);
     }
-
-    // --- 3. Calculate derived data (base class or your own logic) ---
-    if (this.type === "sharper") {
-      this.system.foodDays.min = -(6 + (this.system.attributes.toughness.current ?? 0));
-    }
-
     this.applyNonAttributeModifiers(nonAttributeModifiers);
   }
 
@@ -46,55 +92,6 @@ export class SynthicideActor extends Actor {
    */
   getRollData() {
     return { ...super.getRollData(), ...(this.system.getRollData?.() ?? null) };
-  }
-
-  // --- Helper functions for prepareDerivedData ---
-  /**
-   * Aggregate attribute and non-attribute modifiers from items.
-   * @param {Array} items - The items to aggregate modifiers from.
-   * @param {Array<string>} attributeKeys - The list of attribute keys.
-   * @param {Array<Object>} debugItemContrib - Array to collect debug info.
-   * @param {boolean} debugModifiers - Whether to collect debug info.
-   * @returns {{ attributeModifiers: Object, nonAttributeModifiers: Array }}
-   */
-  aggregateAttributeModifiers(items, attributeKeys, debugItemContrib, debugModifiers) {
-    const attributeModifiers = Object.fromEntries(attributeKeys.map(key => [key, 0]));
-    const nonAttributeModifiers = [];
-    for (const item of items) {
-      if (!Array.isArray(item.system?.modifiers)) continue;
-      for (const mod of item.system.modifiers) {
-        if (!mod || !mod.target) continue;
-        const normalizedTarget = String(mod.target).replace(/^system\./, '');
-        const attrKey = normalizedTarget.replace(/^attributes\./, '');
-        if (attributeKeys.includes(attrKey)) {
-          const modValue = Number(mod.value ?? 0);
-          if (mod.type === 'set') attributeModifiers[attrKey] = modValue;
-          else if (mod.type === 'penalty') attributeModifiers[attrKey] -= modValue;
-          else attributeModifiers[attrKey] += modValue;
-          if (debugModifiers) debugItemContrib.push({ item: item.name, target: attrKey, type: mod.type ?? 'bonus', value: modValue, running: attributeModifiers[attrKey] });
-        } else {
-          nonAttributeModifiers.push(mod);
-        }
-      }
-    }
-    return { attributeModifiers, nonAttributeModifiers };
-  }
-
-  /**
-   * Apply aggregated attribute modifiers to the actor's system attributes.
-   * @param {Array<string>} attributeKeys - The list of attribute keys.
-   * @param {Object} attributeModifiers - The aggregated attribute modifiers.
-   */
-  applyAttributeModifiers(attributeKeys, attributeModifiers) {
-    for (const key of attributeKeys) {
-      if (!this.system?.attributes?.[key]) continue;
-      const existingModifier = Number(this.system.attributes[key].modifier ?? 0);
-      this.system.attributes[key].modifier = existingModifier + Number(attributeModifiers[key] ?? 0);
-      this.system.attributes[key].current =
-        this.system.attributes[key].base +
-        this.system.attributes[key].modifier +
-        this.system.attributes[key].increase;
-    }
   }
 
   /**

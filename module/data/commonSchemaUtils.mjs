@@ -29,19 +29,6 @@ export function makeValueField(initialValue = 0, schemaOptions={}) {
 }
 
 /**
- * Produce the schema field for a secondary armor block used by animals/robots.
- * It matches the explicit schema used in `characters.ts` for animals and robots.
- * @param {number} initialValue
- * @param {object} schemaOptions
- */
-export function makeSecondaryArmorField(initialValue = 0, schemaOptions={}) {
-  return new fields.SchemaField({
-    value: new fields.NumberField({required: true, integer: false, initial: initialValue}),
-    protectionTypes: new fields.ArrayField(new fields.StringField({blank: false}))
-  }, schemaOptions);
-}
-
-/**
  * Convert field from string to number respecting local number format, if necessary.
  * @param {any} source data source (document.system)
  * @param {string} field  system field to convert.
