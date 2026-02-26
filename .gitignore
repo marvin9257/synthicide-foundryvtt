@@ -27,6 +27,7 @@ tmp/
 
 # Ignore local config files
 foundry-config.yaml
+foundryconfig.json
 eslint.config.mjs
 
 # Ignore symlinked Foundry files
