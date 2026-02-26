@@ -142,6 +142,5 @@ export class SynthicideActor extends Actor {
       foundry.utils.setProperty(this, path, newValue);
     }
   }
-
   
 }
