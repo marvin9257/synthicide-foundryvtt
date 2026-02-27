@@ -839,46 +839,55 @@ img.actions-img {
 /* Header Info Block (grouped)    */
 /* ============================== */
 
-.header-info-row {
-  margin-bottom: 0.5rem;
+.header-info-grid {
+  display: grid;
+  grid-template-columns: 2fr 4fr 6rem;
+  grid-template-rows: auto auto;
+  gap: 0.5rem 1rem;
+  align-items: start;                    /* labels start at top */
 }
-.header-info-flex {
+
+.header-info-name-block {
+  grid-column: 1 / span 2;              /* cover left two columns */
+  grid-row: 1;
+  width: 100%;
+}
+
+.header-info-level-block,
+.header-info-lurans-block {
+  grid-column: 3;
+  text-align: center; /* center labels and inline values */
+}
+
+.header-info-level-block {
+  grid-row: 1;
+}
+
+.header-info-lurans-block {
+  grid-row: 2;
+}
+
+.header-info-bioclass-block {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.header-info-motivation-block {
+  grid-column: 2;                       /* middle column only */
+  grid-row: 2;
+}
+
+/* ensure every cell stacks children and keeps labels at top */
+.header-info-grid > div {
   display: flex;
-  flex-direction: row;
-  gap: 1em;
+  flex-direction: column;
   align-items: flex-start;
 }
-.header-info-maincol {
-  flex: 3 1 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
+.header-info-grid > .header-info-level-block,
+.header-info-grid > .header-info-lurans-block {
+  display: block;
 }
-.header-info-row2 {
-  display: flex;
-  flex-direction: row;
-  gap: 0.75em;
-  align-items: flex-end;
-}
-.header-info-bioclass-block {
-  flex: 1 1 0;
-  min-width: 4em;
-  max-width: 8em;
-}
-.header-info-motivation-block {
-  flex: 2 1 0;
-  min-width: 10em;
-  max-width: 16em;
-}
-.header-info-levelcol {
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 4em;
-  height: 100%;
-}
+
 .header-info-input {
   font: inherit;
   font-weight: bold;
@@ -887,36 +896,65 @@ img.actions-img {
   margin: 0;
   text-align: left;
 }
-.header-info-level-input {
+
+/* make sure name block value container stretches completely */
+.header-info-name-block .header-info-value {
+  width: 100%;
+}
+
+/* centre inputs and values in narrow right column */
+.header-info-level-block .header-info-value,
+.header-info-lurans-block .header-info-value {
+  display: flex;
+  justify-content: center;
+}
+.header-info-level-block .header-info-label,
+.header-info-lurans-block .header-info-label {
+  width: 100%;
+  text-align: center; /* override generic left-align */
+}
+
+.header-info-level-input,
+.header-info-lurans-input {
   text-align: center;
-  width: 2.5em;
+  width: auto;
   border-radius: 4px;
   color: inherit;
   outline: none;
   font-size: 1.2em;
   min-width: 2.5em;
-  max-width: 3em;
+  max-width: 5rem;
 }
+
+.header-info-motivation-block .header-info-value select {
+  width: 100%;
+}
+
 .header-info-label {
   font-weight: bold;
   letter-spacing: 0.05em;
   margin-top: 0.25em;
   text-align: left;
 }
+
 .header-info-label:first-child {
   margin-top: 0;
 }
+
 .header-info-value {
   margin-bottom: 0.1em;
 }
+
 .header-info-name {
   font-size: 1.1em;
 }
+
 .header-info-level {
   font-size: 1.5em;
   font-weight: bold;
-  margin: 0.25em 0 0.5em 0;
+  margin: 0 0 0.5em 0;
 }
+
 .header-info-value.bioclass-value {
   max-width: 8em;
   min-width: 4em;
@@ -924,38 +962,13 @@ img.actions-img {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.header-info-motivation select,
-.header-info-motivation-select {
-  min-width: 10em;
-  max-width: 16em;
-}
-.header-info-maincol .header-info-bio-motivation-row {
-  align-items: center;
-}
-.header-info-bioclass-block, .header-info-motivation-block {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.header-info-value.bioclass-value, .header-info-value.header-info-motivation {
-  display: flex;
-  align-items: center;
-  min-height: 2.5em;
-}
 
-/* Ensure Bioclass and Motivation are top-aligned in their row */
-.header-info-maincol .header-info-bio-motivation-row {
-  align-items: center;
-}
-.header-info-bioclass-block, .header-info-motivation-block {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.header-info-value.bioclass-value, .header-info-value.header-info-motivation {
-  display: flex;
-  align-items: center;
-  min-height: 2.5em;
+.header-info-value.header-info-motivation,
+.header-info-motivation-select {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  width: -webkit-fill-available;
 }
 
 /* ============================== */

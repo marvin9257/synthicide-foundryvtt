@@ -44,6 +44,8 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       min: new fields.NumberField({ ...requiredInteger, initial: 0}, {persisted: false})
 
     });
+
+    schema.lurans = new fields.NumberField({ ...requiredInteger, initial: 0 });
     return schema;
   }
 
