@@ -956,7 +956,6 @@ img.actions-img {
 }
 
 .header-info-value.bioclass-value {
-  max-width: 8em;
   min-width: 4em;
   overflow: hidden;
   text-overflow: ellipsis;
