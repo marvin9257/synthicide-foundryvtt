@@ -39,43 +39,44 @@ export class SynthicideActor extends Actor {
    */
   async aggregateAndApplyItemModifiers({ debug = false } = {}) {
     const attributeKeys = Object.keys(SYNTHICIDE.attributes);
-    let debugItemContrib = [];
     const attributeModifiers = Object.fromEntries(attributeKeys.map(key => [key, 0]));
     const nonAttributeModifiers = [];
+    let debugItemContrib = [];
+
     for (const item of this.items) {
-      const dataModel = item?.system;
-      if (!dataModel?.aggregateAttributeModifiers) continue;
+      const { system: dataModel } = item || {};
+      if (typeof dataModel?.aggregateAttributeModifiers !== "function") continue;
       const debugArr = debug ? [] : undefined;
-      const { attributeModifiers: itemAttrMods, nonAttributeModifiers: itemNonAttrMods } = dataModel.aggregateAttributeModifiers(attributeKeys);
-      for (const key of attributeKeys) {
-        attributeModifiers[key] += Number(itemAttrMods[key] ?? 0);
+      const { attributeModifiers: itemAttrMods, nonAttributeModifiers: itemNonAttrMods } =
+        dataModel.aggregateAttributeModifiers(attributeKeys, debugArr);
+
+      for (const [key, val] of Object.entries(itemAttrMods)) {
+        attributeModifiers[key] += Number(val ?? 0);
       }
       if (Array.isArray(itemNonAttrMods)) nonAttributeModifiers.push(...itemNonAttrMods);
       if (debugArr && debugArr.length) debugItemContrib.push(...debugArr);
     }
+
     // Prepare update object for changed modifiers/current
     const updatedAttributes = {};
     for (const key of attributeKeys) {
-      if (!this.system?.attributes?.[key]) continue;
+      const attr = this.system?.attributes?.[key];
+      if (!attr) continue;
       const newModifier = Number(attributeModifiers[key] ?? 0);
-      const oldModifier = Number(this.system.attributes[key].modifier ?? 0);
+      const oldModifier = Number(attr.modifier ?? 0);
       if (oldModifier !== newModifier) {
-        updatedAttributes[key] = {
-          ...this.system.attributes[key],
-          modifier: newModifier
-        };
+        updatedAttributes[key] = { ...attr, modifier: newModifier };
       }
     }
     if (Object.keys(updatedAttributes).length > 0) {
       await this.update({ "system.attributes": updatedAttributes });
     }
+
     // Always recalculate current in memory after aggregation
     for (const key of attributeKeys) {
-      if (!this.system?.attributes?.[key]) continue;
-      this.system.attributes[key].current =
-        this.system.attributes[key].base +
-        this.system.attributes[key].modifier +
-        this.system.attributes[key].increase;
+      const attr = this.system?.attributes?.[key];
+      if (!attr) continue;
+      attr.current = attr.base + attr.modifier + attr.increase;
     }
     if (debug) {
       this.debugModifierAggregation(attributeKeys, attributeModifiers, debugItemContrib);

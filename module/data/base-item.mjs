@@ -12,23 +12,37 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
   /**
    * Aggregate attribute modifiers from this item's modifiers.
    * @param {Array<string>} attributeKeys - The list of attribute keys.
+   * @param {Array<Object>} [debugArr] - Optional array that will be pushed with debug entries when debugging.
    * @returns {{ attributeModifiers: Object, nonAttributeModifiers: Array }}
    */
-  aggregateAttributeModifiers(attributeKeys) {
-    const attributeModifiers = Object.fromEntries(attributeKeys.map(key => [key, 0]));
+  aggregateAttributeModifiers(attributeKeys, debugArr) {
+    const attributeModifiers = Object.fromEntries(attributeKeys.map(k => [k, 0]));
     const nonAttributeModifiers = [];
-    if (!Array.isArray(this.modifiers)) return { attributeModifiers, nonAttributeModifiers };
-    for (const mod of this.modifiers) {
-      if (!mod || !mod.target) continue;
-      const normalizedTarget = String(mod.target).replace(/^system\./, '');
+    const mods = this.modifiers;
+    if (!Array.isArray(mods)) return { attributeModifiers, nonAttributeModifiers };
+
+    for (const { target, value = 0, type } of mods) {
+      if (!target) continue;
+      const normalizedTarget = String(target).replace(/^system\./, '');
       const attrKey = normalizedTarget.replace(/^attributes\./, '');
       if (attributeKeys.includes(attrKey)) {
-        const modValue = Number(mod.value ?? 0);
-        if (mod.type === 'set') attributeModifiers[attrKey] = modValue;
-        else if (mod.type === 'penalty') attributeModifiers[attrKey] -= modValue;
-        else attributeModifiers[attrKey] += modValue;
+        const modValue = Number(value);
+        switch (type) {
+          case 'set':
+            attributeModifiers[attrKey] = modValue;
+            break;
+          case 'penalty':
+            attributeModifiers[attrKey] -= modValue;
+            break;
+          default:
+            attributeModifiers[attrKey] += modValue;
+        }
       } else {
-        nonAttributeModifiers.push(mod);
+        nonAttributeModifiers.push({ target, value, type });
+      }
+
+      if (debugArr) {
+        debugArr.push({ target, value, type, attrKey });
       }
     }
     return { attributeModifiers, nonAttributeModifiers };
@@ -51,8 +65,8 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
    * Foundry hook: Called when the item is created.
    */
   async _onCreate(data, options, userId) {
+    super._onCreate(data, options, userId);
     if (game.userId !== userId) return;
-    await super._onCreate(data, options, userId);
     this.triggerActorModifierAggregation();
   }
 
@@ -61,8 +75,8 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
    * Foundry hook: Called when the item is updated.
    */
   async _onUpdate(changed, options, userId) {
+    super._onUpdate(changed, options, userId);
     if (game.userId !== userId) return;
-    await super._onUpdate(changed, options, userId);
     // Only trigger aggregation if system.modifiers changed
     if (changed?.system?.modifiers) {
       this.triggerActorModifierAggregation();
@@ -74,8 +88,8 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
    * Foundry hook: Called when the item is deleted.
    */
   async _onDelete(options, userId) {
+    super._onDelete(options, userId);
     if (game.userId !== userId) return;
-    await super._onDelete(options, userId);
     this.triggerActorModifierAggregation();
   }
 }

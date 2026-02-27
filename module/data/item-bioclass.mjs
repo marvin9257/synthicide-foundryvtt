@@ -211,7 +211,12 @@ export default class SynthicideBioclass extends SynthicideItemBase {
   * @this {SynthicideBioclass}
   */
   async _onCreate(data, options, userId) {
+    // First allow the base model to handle creation for every client.
+    super._onCreate(data, options, userId);
+
+    // Only execute our custom bioclass logic on the originating client.
     if (game.userId !== userId) return;
+
     // Use this.parent.actor for the owning actor
     const owningActor = this.parent?.actor;
     if (!owningActor) {
@@ -223,11 +228,6 @@ export default class SynthicideBioclass extends SynthicideItemBase {
       } catch (e) {
         if (SYNTHICIDE.debug?.synthicideBioclass) console.error('applyBioclassToActor error', e);
       }
-    }
-    try {
-      super._onCreate(data, options, userId);
-    } catch (e) {
-      if (SYNTHICIDE.debug?.synthicideBioclass) console.error('super._onCreate error', e);
     }
   }
 
@@ -255,8 +255,13 @@ export default class SynthicideBioclass extends SynthicideItemBase {
  * @param {string} userId - The user performing the deletion
  */
   async _onDelete(options, userId) {
-    const debugBioclass = Boolean(SYNTHICIDE.debug?.synthicideBioclass);
+    // Always run the base delete logic so Foundry clears the object everywhere.
+    super._onDelete(options, userId);
+
+    // Only perform our cleanup on the originating client.
     if (game.userId !== userId) return;
+    const debugBioclass = Boolean(SYNTHICIDE.debug?.synthicideBioclass);
+
     // Clean up associated trait items when this bioclass is deleted
     const owningActor = this.parent?.actor;
     if (!owningActor) return;
@@ -273,8 +278,6 @@ export default class SynthicideBioclass extends SynthicideItemBase {
         }
       }
     }
-    // Call parent delete logic
-    super._onDelete(options, userId);
   }
 
   async _preUpdate(changes, options, user) {
