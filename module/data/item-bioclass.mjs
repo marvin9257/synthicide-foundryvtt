@@ -56,8 +56,6 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     schema.bodySlots = new fields.NumberField({ required: true, initial: defaultPreset.bodySlots });
     schema.brainSlots = new fields.NumberField({ required: true, initial: defaultPreset.brainSlots });
 
-    // Associated trait IDs (bioclass-linked traits)
-    schema.associatedTraitIds = new fields.ArrayField(new fields.StringField(), { initial: [] });
 
     return schema;
   }
@@ -106,7 +104,6 @@ export default class SynthicideBioclass extends SynthicideItemBase {
 
   /**
    * Create and embed trait items for this bioclass on the owning actor.
-   * Updates associatedTraitIds for future cleanup.
    * @this {SynthicideBioclass}
    * @param {Actor} owningActor - The actor to receive the bioclass traits.
    * @private
@@ -129,32 +126,29 @@ export default class SynthicideBioclass extends SynthicideItemBase {
         return {
           type: 'trait',
           name: name || 'Trait',
-          system: { ...trait, name, description, bioClassLink: true }
+          system: {
+            ...trait,
+            name,
+            description,
+            traitType: 'bioclass',
+            // level is intentionally left undefined
+            bioClassLink: true // keep for backwards compatibility
+          }
         };
       });
-      const created = await owningActor.createEmbeddedDocuments('Item', traitDocs);
-      const createdTraitIds = Array.isArray(created) ? created.map(t => t.id) : [];
-      // Store new associated trait IDs for future deletion
-      if (this.parent && typeof this.parent.update === 'function') {
-        await this.parent.update({ 'system.associatedTraitIds': createdTraitIds });
-      }
-      this.associatedTraitIds = createdTraitIds;
+      await owningActor.createEmbeddedDocuments('Item', traitDocs);
+      // no longer track associated ids explicitly
       if (debugBioclass && arguments.length > 1 && Array.isArray(arguments[1])) {
         arguments[1].push({
           stage: '_createBioclassTraits',
           item: itemName,
           actor: owningActor?.name,
           traits: traitDocs.map(t => t.name).join(', '),
-          traitIds: createdTraitIds.join(', '),
           message: 'Traits created and associated.'
         });
       }
     } else {
-      // If no traits, clear associatedTraitIds
-      if (this.parent && typeof this.parent.update === 'function') {
-        await this.parent.update({ 'system.associatedTraitIds': [] });
-      }
-      this.associatedTraitIds = [];
+      // no traits to create; nothing to track
       if (debugBioclass && arguments.length > 1 && Array.isArray(arguments[1])) {
         arguments[1].push({
           stage: '_createBioclassTraits',
@@ -162,7 +156,7 @@ export default class SynthicideBioclass extends SynthicideItemBase {
           actor: owningActor?.name,
           traits: 'none',
           traitIds: '',
-          message: 'No traits found, associatedTraitIds cleared.'
+          message: 'No traits found.'
         });
       }
     }
@@ -250,7 +244,7 @@ export default class SynthicideBioclass extends SynthicideItemBase {
  * @override
  * @this {SynthicideBioclass}
  * Custom deletion logic for SynthicideBioclass.
- * IMPORTANT: Accesses this.associatedTraitIds before calling super._onDelete.
+ * IMPORTANT: Cleanup logic runs before super._onDelete.
  * @param {object} options - Deletion options
  * @param {string} userId - The user performing the deletion
  */
@@ -262,20 +256,18 @@ export default class SynthicideBioclass extends SynthicideItemBase {
     if (game.userId !== userId) return;
     const debugBioclass = Boolean(SYNTHICIDE.debug?.synthicideBioclass);
 
-    // Clean up associated trait items when this bioclass is deleted
+    // Clean up any bioclass trait items on the actor
     const owningActor = this.parent?.actor;
     if (!owningActor) return;
-    const associatedIds = Array.isArray(this.associatedTraitIds) ? this.associatedTraitIds : [];
-    if (associatedIds.length > 0) {
-      // Only delete traits that still exist in the collection
-      const toDelete = associatedIds.filter(id => owningActor.items.has(id));
-      if (toDelete.length > 0) {
-        await owningActor.deleteEmbeddedDocuments('Item', toDelete);
-        if (debugBioclass) {
-          console.groupCollapsed(`[Synthicide] Bioclass traits deleted: ${this.parent.name}`);
-          console.table(toDelete);
-          console.groupEnd();
-        }
+    const toDelete = owningActor.items
+      .filter(i => i.type === 'trait' && i.system.traitType === 'bioclass')
+      .map(i => i.id);
+    if (toDelete.length > 0) {
+      await owningActor.deleteEmbeddedDocuments('Item', toDelete);
+      if (debugBioclass) {
+        console.groupCollapsed(`[Synthicide] Bioclass traits deleted: ${this.parent.name}`);
+        console.table(toDelete);
+        console.groupEnd();
       }
     }
   }

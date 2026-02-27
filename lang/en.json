@@ -62,7 +62,8 @@
         "Cybernetics": "Cybernetics",
         "Traits": "Traits",
         "Effects": "Effects",
-        "Bio": "Bio"
+        "Bio": "Bio",
+        "Bioclass": "Bioclass"
       },
       "Bioclass": {
         "NoneAssigned": "No bioclass assigned. Drop or create one.",
@@ -114,6 +115,8 @@
         "Cybernetics": "Cybernetics",
         "Traits": "Traits",
         "Description": "Description",
+        "Information": "Information",
+        "General": "General",
         "Effects": "Effects"
       },
       "Gear": {
@@ -132,7 +135,24 @@
         "Type": "Type",
         "Condition": "Condition",
         "Source": "Source",
-        "AddTrait": "Add Trait"
+        "AddTrait": "Add Trait",
+        "FIELDS": {
+          "level": {"label": "Trait Level"},
+          "traitType": {"label": "Trait Type"}
+        },
+        "TraitLVL": "Level {level} Traits",
+        "AddLVL": "Add LVL {level} Trait",
+        "Types": {
+          "bioclass": "Bioclass",
+          "attackSkill": "Attack Skill",
+          "knowledgeFocus": "Knowledge Focus",
+          "psychicPower": "Psychic Power",
+          "tacticalPower": "Tactical Power",
+          "mutation": "Mutation",
+          "generalTalent": "General Talent",
+          "naturalTalent": "Natural Talent",
+          "spell": "Spell (legacy)"
+        }
       },
       "Spell": {
         "FIELDS": {

@@ -74,13 +74,15 @@ Hooks.once('init', function () {
   CONFIG.Item.dataModels = {
     gear: models.SynthicideGear,
     trait: models.SynthicideTrait,
-    spell: models.SynthicideSpell,
     bioclass: models.SynthicideBioclass,
+    // legacy: spell items inherit from trait
+    spell: models.SynthicideSpell,
   };
   CONFIG.Item.typeClasses = {
     bioclass: models.SynthicideBioclass,
     gear: models.SynthicideGear,
     trait: models.SynthicideTrait,
+    // legacy
     spell: models.SynthicideSpell,
     // Add other item types as needed
   };
@@ -118,7 +120,28 @@ Handlebars.registerHelper('toLowerCase', function (str) {
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
 
-Hooks.once('ready', function () {
+Hooks.once('ready', async function () {
+  // Conversion of legacy spell items to traits
+  if (game.user.isGM) {
+    const convertItem = async item => {
+      if (item.type === 'spell') {
+        const updates = { type: 'trait', 'system.traitType': 'spell' };
+        if (item.system?.spellLevel !== undefined) updates['system.level'] = item.system.spellLevel;
+        await item.update(updates);
+      }
+    };
+    // World-level items
+    for (const item of game.items.filter(i => i.type === 'spell')) {
+      await convertItem(item);
+    }
+    // Actor-owned items
+    for (const actor of game.actors) {
+      for (const item of actor.items.filter(i => i.type === 'spell')) {
+        await actor.updateEmbeddedDocuments('Item', [{ _id: item.id, type: 'trait', 'system.traitType': 'spell', 'system.level': item.system?.spellLevel }]);
+      }
+    }
+  }
+
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on('hotbarDrop', (bar, data, slot) => createDocMacro(data, slot));
 });

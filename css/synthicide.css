@@ -432,14 +432,19 @@
 }
 .synthicide .sheet-tabs {
   flex: 0;
+  margin-bottom: 0.75rem;       /* spacing beneath the tab buttons */
+  /*padding-bottom: 0.25rem;*/
+  /*border-bottom: 1px solid var(--synthicide-c-black); /* match top header line */
 }
 .synthicide .sheet-body,
 .synthicide .sheet-body .tab,
 .synthicide .sheet-body .tab .editor {
   height: 100%;
 }
+/* allow tabs to size to their contents instead of enforcing a large max height */
 .synthicide .tab {
-  max-height: 400px;
+  max-height: none;
+  overflow: auto;
 }
 .synthicide .tab.biography {
   flex: 1;
@@ -457,6 +462,26 @@
 }
 .synthicide .tox .tox-edit-area {
   padding: 0 8px;
+}
+
+/* trait description enhancements */
+.synthicide .trait-top-fields {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+.synthicide .trait-top-fields .resource {
+  flex: 1;
+}
+
+.synthicide .trait-description-editor {
+  border: 1px solid var(--synthicide-c-border-subtle);
+  padding: 4px;
+  border-radius: 4px;
+}
+.synthicide .description-header {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
 }
 .synthicide .resource-label {
   font-weight: bold;

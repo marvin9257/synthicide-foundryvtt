@@ -1,0 +1,3 @@
+# ignore foundry build files and dependencies
+foundry/**
+node_modules/**

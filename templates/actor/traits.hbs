@@ -1,67 +1,72 @@
-{{! Traits Tab }}
-{{log this}}
+{{! Traits Tab – leveled traits section (replaces former spells implementation) }}
 <section
-  class='tab traits scrollable {{tab.cssClass}}'
+  class='tab spells scrollable {{tab.cssClass}}'
   data-group='primary'
-  data-tab='traits'
+  data-tab='spells'
 >
-  {{#if bioclass}}
-    <ol class='items-list'>
+  <ol class='items-list'>
+    {{#each traitsByLevel as |traits level|}}
       <li class='item flexrow items-header'>
-        <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}} ({{localize bioclass.system.bioclassTypeLabel}})</div>
+        <div class='item-name'>
+          {{localize 'SYNTHICIDE.Item.Trait.TraitLVL' level=level}}
+        </div>
         <div class='item-controls'>
           {{#if @root.editable}}
             <a
-              class='item-control'
-              data-action='createDoc' data-document-class='Item' data-type='trait'
-              data-tooltip='{{localize "SYNTHICIDE.Item.Bioclass.AddTrait"}}'
+              class='item-control item-create'
+              data-tooltip='{{localize "DOCUMENT.Create" type='Trait'}}'
+              data-action='createDoc'
+              data-document-class='Item'
+              data-type='trait'
+              data-system.level='{{level}}'
+              data-system.traitType='generalTalent'
             >
               <i class='fas fa-plus'></i>
+              {{localize 'SYNTHICIDE.Item.Trait.AddLVL' level=level}}
             </a>
           {{/if}}
         </div>
       </li>
-    </ol>
-  {{else}}
-    <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoneAssigned'}}</p>
-  {{/if}}
-
-  {{#if traits.length}}
-    <div class='grid grid-1col'>
-      {{#each traits as |trait i|}}
-        <fieldset class='resource' data-item-id='{{trait._id}}'>
-          <div class='bioclass-trait-row'>
-            <div class='bioclass-trait-main'>
-              <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.TraitName'}}</label>
-              <span class='bioclass-trait-name-row'>
-                <input
-                  type='text'
-                  class='bioclass-trait-name'
-                  value='{{trait.name}}'
-                  disabled
+      {{#each traits as |item id|}}
+        <li
+          class='item flexrow draggable'
+          data-item-id='{{item._id}}'
+          data-document-class='Item'
+        >
+          <div class='item-name flexrow'>
+            <div class='item-image'>
+              <a class='rollable' data-roll-type='item' data-action='roll'>
+                <img
+                  src='{{item.img}}'
+                  data-tooltip='{{item.name}}'
+                  width='24'
+                  height='24'
                 />
-                {{#if trait.system.bioClassLink}}
-                  <i class='fas fa-link bioclass-trait-link' title='Bioclass Trait'></i>
-                {{/if}}
-              </span>
+              </a>
             </div>
-            <div class='bioclass-trait-controls'>
-              <button type='button' data-action='editTraitItem' data-item-id='{{trait._id}}'>
-                <i class='fas fa-edit'></i>
-              </button>
-              <button type='button' data-action='deleteTraitItem' data-item-id='{{trait._id}}'>
+            <div>{{item.name}}</div>
+          </div>
+          <div class='item-controls'>
+            <a
+              class='item-control item-edit'
+              data-tooltip='{{localize "DOCUMENT.Update" type='Trait'}}'
+              data-action='viewDoc'
+            >
+              <i class='fas fa-edit'></i>
+            </a>
+            {{#if @root.editable}}
+              <a
+                class='item-control item-delete'
+                data-tooltip='{{localize "DOCUMENT.Delete" type='Trait'}}'
+                data-action='deleteDoc'
+              >
                 <i class='fas fa-trash'></i>
-              </button>
-            </div>
+              </a>
+            {{/if}}
           </div>
-          {{!-- Trait Description --}}
-          <div class="trait-description">
-            {{{trait.enrichedDescription}}}
-          </div>
-        </fieldset>
+        </li>
       {{/each}}
-    </div>
-  {{else}}
-    <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoTraits'}}</p>
-  {{/if}}
+    {{/each}}
+  </ol>
+
 </section>

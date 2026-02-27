@@ -110,8 +110,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       // Foundry-provided generic template
       template: 'templates/generic/tab-navigation.hbs',
     },
-    description: {
-      template: 'systems/synthicide/templates/item/description.hbs',
+    general: {
+      template: 'systems/synthicide/templates/item/general.hbs',
     },
     attributesTrait: {
       template:
@@ -120,6 +120,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     attributesGear: {
       template: 'systems/synthicide/templates/item/attribute-parts/gear.hbs',
     },
+    // Legacy spell patch; new items should use trait template.
     attributesSpell: {
       template: 'systems/synthicide/templates/item/attribute-parts/spell.hbs',
     },
@@ -144,19 +145,21 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
     // Not all parts always render
-    options.parts = ['header', 'tabs', 'description'];
+    options.parts = ['header', 'tabs', 'general'];
     // Don't show the other tabs if only limited view
     if (this.document.limited) return;
     // Control which parts show based on document subtype
     switch (this.document.type) {
       case 'trait':
-        options.parts.push('attributesTrait', 'effects');
+        options.parts.push('attributesTrait');
         break;
       case 'gear':
         options.parts.push('attributesGear');
         break;
       case 'spell':
-        options.parts.push('attributesSpell');
+        // treat legacy spells as traits for the sheet so users can edit
+        // the new fields; a migration should convert the type later.
+        options.parts.push('attributesTrait');
         break;
       case 'bioclass':
         options.parts.push(
@@ -166,6 +169,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         );
         break;
     }
+    // every item type can have effects
+    options.parts.push('effects');
   }
 
   /* -------------------------------------------- */
@@ -191,6 +196,10 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       fields: this.document.schema.fields,
       systemFields: this.document.system.schema.fields,
     };
+    // Build traitTypeOptions for select helper
+    context.config = context.config || {};
+    // traitTypes is already a key->loc-key map; the template can localize it
+    context.config.traitTypeOptions = SYNTHICIDE.traitTypes;
 
     return context;
   }
@@ -207,7 +216,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         // Necessary for preserving active tab on re-render
         context.tab = context.tabs[partId];
         break;
-      case 'description':
+      case 'general':
         context.tab = context.tabs[partId];
         // Enrich description info for display
         // Enrichment turns text like `[[/r 1d20]]` into buttons
@@ -267,7 +276,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     // If you have sub-tabs this is necessary to change
     const tabGroup = 'primary';
     // Default tab for first time it's rendered this session
-    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'description';
+    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'general';
     return parts.reduce((tabs, partId) => {
       const tab = {
         cssClass: '',
@@ -283,22 +292,23 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         case 'header':
         case 'tabs':
           return tabs;
-        case 'description':
-          tab.id = 'description';
-          tab.label += 'Description';
-          tab.icon = 'fa-solid fa-align-left';
+        case 'general':
+          tab.id = 'general';
+            // all items use a General tab instead of Description/Information
+            tab.label += 'General';
+            tab.icon = 'fa-solid fa-info-circle'; // Changed to info icon for better distinction
           break;
         case 'attributesTrait':
         case 'attributesGear':
         case 'attributesSpell':
           tab.id = 'attributes';
-          tab.label += 'Attributes';
-          tab.icon = 'fa-solid fa-list';
+            tab.label += 'Attributes';
+            tab.icon = 'fa-solid fa-sliders'; // Changed to sliders icon for better distinction
           break;
         case 'attributesBioclass':
           tab.id = 'attributes';
-          tab.label += 'Attributes';
-          tab.icon = 'fa-solid fa-list';
+            tab.label += 'Attributes';
+            tab.icon = 'fa-solid fa-sliders'; // Changed to sliders icon for better distinction
           break;
         case 'cyberneticsBioclass':
           tab.id = 'cybernetics';
@@ -434,8 +444,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       // These data attributes are reserved for the action handling
       if (['action', 'documentClass'].includes(dataKey)) continue;
       // Nested properties require dot notation in the HTML, e.g. anything with `system`
-      // An example exists in spells.hbs, with `data-system.spell-level`
-      // which turns into the dataKey 'system.spellLevel'
+      // An example exists in trait-level templates, with `data-system.level`
+      // which turns into the dataKey 'system.level'
       foundry.utils.setProperty(effectData, dataKey, value);
     }
 

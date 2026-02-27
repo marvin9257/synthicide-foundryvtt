@@ -1,0 +1,68 @@
+{{! Bioclass Traits Tab -- previously actor/traits.hbs }}
+{{log this}}
+<section
+  class='tab traits scrollable {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='traits'
+>
+  {{#if bioclass}}
+    <ol class='items-list'>
+      <li class='item flexrow items-header'>
+        <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}} ({{localize bioclass.system.bioclassTypeLabel}})</div>
+        <div class='item-controls'>
+          {{#if @root.editable}}
+            <a
+              class='item-control'
+              data-action='createDoc' data-document-class='Item' data-type='trait'
+              data-system.traitType='bioclass'
+              data-tooltip='{{localize "SYNTHICIDE.Item.Bioclass.AddTrait"}}'
+            >
+              <i class='fas fa-plus'></i>
+            </a>
+          {{/if}}
+        </div>
+      </li>
+    </ol>
+  {{else}}
+    <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoneAssigned'}}</p>
+  {{/if}}
+
+  {{#if bioclassTraits.length}}
+    <div class='grid grid-1col'>
+      {{#each bioclassTraits as |trait i|}}
+        <fieldset class='resource' data-item-id='{{trait._id}}'>
+          <div class='bioclass-trait-row'>
+            <div class='bioclass-trait-main'>
+              <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.TraitName'}}</label>
+              <span class='bioclass-trait-name-row'>
+                <input
+                  type='text'
+                  class='bioclass-trait-name'
+                  value='{{trait.name}}'
+                  disabled
+                />
+                {{#if (or (eq trait.system.traitType 'bioclass') trait.system.bioClassLink)}}
+                  <i class='fas fa-link bioclass-trait-link' title='Bioclass Trait'></i>
+                {{/if}}
+              </span>
+            </div>
+            <div class='bioclass-trait-controls'>
+              <button type='button' data-action='editTraitItem' data-item-id='{{trait._id}}'>
+                <i class='fas fa-edit'></i>
+              </button>
+              <button type='button' data-action='deleteTraitItem' data-item-id='{{trait._id}}'>
+                <i class='fas fa-trash'></i>
+              </button>
+            </div>
+          </div>
+          {{!-- Trait Description --}}
+          <div class="trait-description">
+            {{{trait.enrichedDescription}}}
+          </div>
+        </fieldset>
+      {{/each}}
+    </div>
+  {{else}}
+    <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoTraits'}}</p>
+  {{/if}}
+</section>

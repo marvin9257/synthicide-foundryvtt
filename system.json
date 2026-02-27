@@ -24,9 +24,6 @@
         "gear": {
             "htmlFields": ["description"]
         },
-        "spell": {
-            "htmlFields": ["description"]
-        },
         "bioclass": {
           "htmlFields": ["description"]
         }

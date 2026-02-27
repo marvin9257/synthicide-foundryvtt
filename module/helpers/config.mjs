@@ -167,6 +167,23 @@ SYNTHICIDE.attributeAbbreviations = {
   speed: 'SYNTHICIDE.Attribute.Speed.abbr',
 };
 
+// Trait type choices for items.  We store an object mapping the type
+// key to the corresponding localization key.  This lets callers simply
+// iterate the entries or derive the list of valid types with
+// `Object.keys(SYNTHICIDE.traitTypes)` when constructing schemas.
+// The `'spell'` entry remains to handle legacy items.
+SYNTHICIDE.traitTypes = {
+  bioclass: 'SYNTHICIDE.Item.Trait.Types.bioclass',
+  attackSkill: 'SYNTHICIDE.Item.Trait.Types.attackSkill',
+  knowledgeFocus: 'SYNTHICIDE.Item.Trait.Types.knowledgeFocus',
+  psychicPower: 'SYNTHICIDE.Item.Trait.Types.psychicPower',
+  tacticalPower: 'SYNTHICIDE.Item.Trait.Types.tacticalPower',
+  mutation: 'SYNTHICIDE.Item.Trait.Types.mutation',
+  generalTalent: 'SYNTHICIDE.Item.Trait.Types.generalTalent',
+  naturalTalent: 'SYNTHICIDE.Item.Trait.Types.naturalTalent',
+  spell: 'SYNTHICIDE.Item.Trait.Types.spell' // legacy
+};
+
 // Motivation choices for actors, referencing localization keys.
 SYNTHICIDE.motivations = {
   proveStrength: {

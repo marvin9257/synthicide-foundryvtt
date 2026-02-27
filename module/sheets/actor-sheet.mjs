@@ -52,8 +52,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       // Foundry-provided generic template
       template: 'templates/generic/tab-navigation.hbs',
     },
+    // Bioclass traits tab (bioclass data and associated traits)
     traits: {
-      template: 'systems/synthicide/templates/actor/traits.hbs',
+      template: 'systems/synthicide/templates/actor/bioclass-traits.hbs',
       scrollable: [""],
     },
     attributes: {
@@ -68,8 +69,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       template: 'systems/synthicide/templates/actor/gear.hbs',
       scrollable: [""],
     },
+    // Leveled traits (formerly spells) -- now the main Trait tab
     spells: {
-      template: 'systems/synthicide/templates/actor/spells.hbs',
+      template: 'systems/synthicide/templates/actor/traits.hbs',
       scrollable: [""],
     },
     cybernetics: {
@@ -230,8 +232,13 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           break;
         case 'spells':
           tab.id = 'spells';
-          tab.label += 'Spells';
-          tab.icon = 'fa-solid fa-wand-magic-sparkles';
+          tab.label += 'Traits';
+          tab.icon = 'fa-solid fa-certificate';
+          break;
+        case 'traits':
+          tab.id = 'traits';
+          tab.label += 'Bioclass';
+          tab.icon = 'fa-solid fa-dna';
           break;
         case 'cybernetics':
           tab.id = 'cybernetics';
@@ -267,13 +274,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    */
   async _prepareItems(context) {
     // Initialize containers.
-    // You can just use `this.document.itemTypes` instead
-    // if you don't need to subdivide a given type like
-    // this sheet does with spells
     const gear = [];
-    const traits = [];
-    let bioclass = null;
-    const spells = {
+    let bioclass = null; // reassigned when a bioclass item is found
+    const bioclassTraits = [];
+    const traitsByLevel = {
       0: [],
       1: [],
       2: [],
@@ -288,11 +292,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     // Iterate through items, allocating to containers
     for (let i of this.document.items) {
-      // Append to gear.
       if (i.type === 'gear') {
         gear.push(i);
       }
-      // Append to traits.
       else if (i.type === 'trait') {
         // Enrich description for display
         i.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
@@ -303,28 +305,29 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
             relativeTo: this.actor
           }
         );
-        traits.push(i);
-      }
-      // Append to spells.
-      else if (i.type === 'spell') {
-        if (i.system.spellLevel != undefined) {
-          spells[i.system.spellLevel].push(i);
+        // Separate bioclass traits from those that have levels
+        if (i.system.traitType === 'bioclass') {
+          bioclassTraits.push(i);
+        } else {
+          const lvl = Number(i.system.level ?? 0);
+          if (!traitsByLevel[lvl]) traitsByLevel[lvl] = [];
+          traitsByLevel[lvl].push(i);
         }
       }
-      // Capture at most one bioclass for display.
       else if (i.type === 'bioclass' && !bioclass) {
         bioclass = i;
       }
     }
 
-    for (const s of Object.values(spells)) {
+    // Sort each level list
+    for (const s of Object.values(traitsByLevel)) {
       s.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     }
 
     // Sort then assign
     context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    context.traits = traits.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    context.spells = spells;
+    context.bioclassTraits = bioclassTraits.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.traitsByLevel = traitsByLevel;
     context.bioclass = bioclass;
   }
 
