@@ -1,23 +1,30 @@
 {{! Bioclass Traits Tab -- previously actor/traits.hbs }}
 {{log this}}
 <section
-  class='tab traits scrollable {{tab.cssClass}}'
+  class='tab bioclass scrollable {{tab.cssClass}}'
   data-group='primary'
-  data-tab='traits'
+  data-tab='bioclass'
 >
   {{#if bioclass}}
     <ol class='items-list'>
-      <li class='item flexrow items-header'>
+      <li class='item flexrow items-header' data-document-class="Item" data-item-id="{{bioclass.id}}">
         <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}} ({{localize bioclass.system.bioclassTypeLabel}})</div>
         <div class='item-controls'>
+          {{!-- Info button always shown --}}
+          <a class='item-control item-info' data-action='showInfo' data-tooltip='{{{bioclass.system.description}}}'>
+            <i class='fas fa-info-circle'></i>
+          </a>
           {{#if @root.editable}}
             <a
               class='item-control'
               data-action='createDoc' data-document-class='Item' data-type='trait'
-              data-system.traitType='bioclass'
+              data-system.trait-type='bioclass'
               data-tooltip='{{localize "SYNTHICIDE.Item.Bioclass.AddTrait"}}'
             >
               <i class='fas fa-plus'></i>
+            </a>
+            <a class='item-control item-delete' data-action='deleteDoc' data-tooltip='{{localize "DOCUMENT.Delete" type='bioclass'}}'>
+              <i class='fas fa-trash'></i>
             </a>
           {{/if}}
         </div>
@@ -41,9 +48,6 @@
                   value='{{trait.name}}'
                   disabled
                 />
-                {{#if (or (eq trait.system.traitType 'bioclass') trait.system.bioClassLink)}}
-                  <i class='fas fa-link bioclass-trait-link' title='Bioclass Trait'></i>
-                {{/if}}
               </span>
             </div>
             <div class='bioclass-trait-controls'>

@@ -6,8 +6,8 @@
 >
   {{! Editors must receive enriched text data from getData to properly handle rolls, UUID links, etc. }}
 
-  {{!-- On traits (and legacy spells) show type/level above description --}}
-  {{#if (or (eq item.type 'trait') (eq item.type 'spell'))}}
+  {{!-- On traits show type/level above description --}}
+  {{#if (eq item.type 'trait')}}
     <div class='trait-top-fields'>
       <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.traitType.label'}}</label>
@@ -23,6 +23,16 @@
           value='{{system.level}}'
           data-dtype='Number'
           min='0' max='9'
+        />
+      </div>
+    </div>
+    <div class='trait-top-fields'>
+      <div class='resource resource-pair'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.requirements.label'}}</label>
+        <input
+          type='text'
+          name='system.requirements'
+          value='{{system.requirements}}'
         />
       </div>
     </div>

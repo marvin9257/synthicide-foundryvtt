@@ -21,10 +21,11 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       icon: "fa-solid fa-person"
     },
     actions: {
-      onEditImage: this._onEditImage,
+      //onEditImage: this._onEditImage,
       viewDoc: this._viewDoc,
       createDoc: this._createDoc,
       deleteDoc: this._deleteDoc,
+      showInfo: this._showInfo,
       toggleEffect: this._toggleEffect,
       roll: this._onRoll,
       increaseAttribute: this._onIncreaseAttribute,
@@ -52,8 +53,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       // Foundry-provided generic template
       template: 'templates/generic/tab-navigation.hbs',
     },
-    // Bioclass traits tab (bioclass data and associated traits)
-    traits: {
+    // Bioclass tab (bioclass data and associated traits)
+    bioclass: {
       template: 'systems/synthicide/templates/actor/bioclass-traits.hbs',
       scrollable: [""],
     },
@@ -69,8 +70,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       template: 'systems/synthicide/templates/actor/gear.hbs',
       scrollable: [""],
     },
-    // Leveled traits (formerly spells) -- now the main Trait tab
-    spells: {
+    // Traits tab (leveled traits)
+    traits: {
       template: 'systems/synthicide/templates/actor/traits.hbs',
       scrollable: [""],
     },
@@ -96,9 +97,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       case 'sharper':
         options.parts.push(
           'attributes',
-          'traits',
+          'bioclass',
           'gear',
-          'spells',
+          'traits',
           'cybernetics',
           'biography',
           'effects'
@@ -158,9 +159,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   /** @override */
   async _preparePartContext(partId, context) {
     switch (partId) {
-      case 'traits':
+      case 'bioclass':
       case 'attributes':
-      case 'spells':
+      case 'traits':
       case 'gear':
       case 'cybernetics':
         context.tab = context.tabs[partId];
@@ -230,13 +231,13 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           tab.label += 'Gear';
           tab.icon = 'fa-solid fa-toolbox';
           break;
-        case 'spells':
-          tab.id = 'spells';
+        case 'traits':
+          tab.id = 'traits';
           tab.label += 'Traits';
           tab.icon = 'fa-solid fa-certificate';
           break;
-        case 'traits':
-          tab.id = 'traits';
+        case 'bioclass':
+          tab.id = 'bioclass';
           tab.label += 'Bioclass';
           tab.icon = 'fa-solid fa-dna';
           break;
@@ -244,11 +245,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           tab.id = 'cybernetics';
           tab.label += 'Cybernetics';
           tab.icon = 'fa-solid fa-microchip';
-          break;
-        case 'traits':
-          tab.id = 'traits';
-          tab.label += 'Bio';
-          tab.icon = 'fa-solid fa-dna';
           break;
         case 'biography':
           tab.id = 'biography';
@@ -362,7 +358,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @returns {Promise}
    * @protected
    */
-  static async _onEditImage(event, target) {
+  /*static async _onEditImage(event, target) {
     const attr = target.dataset.edit;
     const current = foundry.utils.getProperty(this.document, attr);
     const { img } =
@@ -379,7 +375,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       left: this.position.left + 10,
     });
     return fp.browse();
-  }
+  }*/
 
   /**
    * Renders an embedded document's sheet
@@ -407,6 +403,35 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     await doc.delete();
   }
 
+  /**
+   * Show a simple dialog containing the description of an embedded document.
+   * This is used by the read‑only info buttons on the various actor tabs.
+   *
+   * @this SynthicideActorSheet
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   * @private
+   */
+  static async _showInfo(event, target) {
+    const doc = this._getEmbeddedDocument(target);
+    if (!doc) return;
+    const desc = doc.system?.description || '';
+    const title = doc.name || game.i18n.localize('SYNTHICIDE.Info');
+
+    try {
+      await foundry.applications.api.DialogV2.prompt({
+        window: { title },
+        content: `<div class="synthicide-info">${desc}</div>`,
+        ok: {
+          label: game.i18n.localize('OK'),
+          callback: () => true
+        }
+      });
+    } catch {
+      // user closed the dialog without clicking OK – ignore
+    }
+  }
+
 
   /**
    * Handle creating a new Owned Item or ActiveEffect for the actor using initial data defined in the HTML dataset
@@ -430,7 +455,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // Loop through the dataset and add it to our docData
     for (const [dataKey, value] of Object.entries(target.dataset)) {
       // These data attributes are reserved for the action handling
-      if (['action', 'documentClass'].includes(dataKey)) continue;
+      if (['action', 'documentClass', 'tooltip'].includes(dataKey)) continue;
       // Nested properties require dot notation in the HTML, e.g. anything with `system`
       // An example exists in spells.hbs, with `data-system.spell-level`
       // which turns into the dataKey 'system.spellLevel'

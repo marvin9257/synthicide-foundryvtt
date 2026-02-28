@@ -3,7 +3,7 @@
     class='profile-img'
     src='{{item.img}}'
     data-edit='img'
-    data-action='onEditImage'
+    data-action='editImage'
     data-tooltip='{{item.name}}'
   />
   <div class='header-fields'>
@@ -12,7 +12,7 @@
     </div>
     {{#if (eq item.type 'bioclass')}}
       <div class='resource'>
-        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.Type'}}</label>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.Label'}}</label>
         <select name='system.bioclassType'>
           <option value='skinbag' {{#if (eq system.bioclassType 'skinbag')}}selected{{/if}}>{{localize 'SYNTHICIDE.Item.Bioclass.Skinbag'}}</option>
           <option value='scraphead' {{#if (eq system.bioclassType 'scraphead')}}selected{{/if}}>{{localize 'SYNTHICIDE.Item.Bioclass.Scraphead'}}</option>

@@ -9,39 +9,42 @@
       <li class='item flexrow items-header' data-item-id='{{bioclass._id}}' data-document-class='Item'>
         <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}} ({{localize bioclass.system.bioclassTypeLabel}})</div>
         <div class='item-controls'>
-          <a class='item-control item-edit' data-action='viewDoc' data-tooltip='{{localize "DOCUMENT.Update" type='bioclass'}}'>
-            <i class='fas fa-edit'></i>
+          {{!-- info icon now has an action to show the description dialog --}}
+          <a class='item-control item-info' data-action='showInfo' data-tooltip='{{{bioclass.system.description}}}'>
+            <i class='fas fa-info-circle'></i>
           </a>
-          {{#if @root.editable}}
-            <a class='item-control item-delete' data-action='deleteDoc' data-tooltip='{{localize "DOCUMENT.Delete" type='bioclass'}}'>
-              <i class='fas fa-trash'></i>
-            </a>
-          {{/if}}
         </div>
       </li>
     </ol>
+    <div class="grid-2col">
+    <fieldset class="cybernetics">
+      <legend>{{localize 'SYNTHICIDE.Item.Bioclass.Body'}}</legend>
+        <div class="grid-2col">
+          <div class='resource flex-group-center'>
+            <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.Type'}}</label>
+            <div>{{localize bioclass.system.bodyType}}</div>
+          </div>
+          <div class='resource flex-group-center'>
+            <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.FIELDS.Slots.label'}}</label>
+            <div>{{bioclass.system.bodySlots}}</div>
+          </div>
+        </div>
+    </fieldset>
+    <fieldset class="cybernetics">
+      <legend>{{localize 'SYNTHICIDE.Item.Bioclass.Brain'}}</legend>
+      <div class="grid-2col">
+        <div class='resource flex-group-center'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.Type'}}</label>
+          <div>{{localize bioclass.system.brainType}}</div>
+        </div>
 
-    <div class='grid grid-2col'>
-      <div class='resource flex-group-center'>
-        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.BodyType'}}</label>
-        <div>{{localize bioclass.system.bodyType}}</div>
+        <div class='resource flex-group-center'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.FIELDS.Slots.label'}}</label>
+          <div>{{bioclass.system.brainSlots}}</div>
+        </div>
       </div>
-
-      <div class='resource flex-group-center'>
-        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.BrainType'}}</label>
-        <div>{{localize bioclass.system.brainType}}</div>
-      </div>
-
-      <div class='resource flex-group-center'>
-        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.FIELDS.bodySlots.label'}}</label>
-        <div>{{bioclass.system.bodySlots}}</div>
-      </div>
-
-      <div class='resource flex-group-center'>
-        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.FIELDS.brainSlots.label'}}</label>
-        <div>{{bioclass.system.brainSlots}}</div>
-      </div>
-    </div>
+    </fieldset>
+  </div>
   {{else}}
     <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoneAssigned'}}</p>
     {{#if @root.editable}}

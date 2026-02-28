@@ -56,6 +56,10 @@
   }
 }
 
+body.theme-light input:disabled, body.theme-light select:disabled, body.theme-light textarea:disabled, body.theme-light code-mirror:disabled, body.theme-light formula-input:disabled {
+    --input-border-color: var(--color-dark-6);
+}
+
 /* ============================== */
 /* Theme Tokens                  */
 /* ============================== */
@@ -499,20 +503,27 @@
 .synthicide .effects-header,
 .synthicide .items-list .items-header,
 .synthicide .effects-list .effects-header {
-  height: 28px;
-  margin: 2px 0;
-  padding: 0;
+  min-height: 28px;               /* allow content to grow if needed */
+  margin: 2px 0; /* spacing handled on items themselves */
+  padding: 4px 2px;               /* vertical padding for inner controls */
+  display: flex;
   align-items: center;
   background: var(--synthicide-c-panel-bg);
   border: 2px groove var(--synthicide-c-groove);
   font-weight: bold;
 }
+/* ensure all items except headers are separated from previous row */
+.synthicide .items-list .item:not(.items-header) {
+  margin-top: 4px;
+}
+
 .synthicide .items-header > *,
 .synthicide .effects-header > *,
 .synthicide .items-list .items-header > *,
 .synthicide .effects-list .effects-header > * {
   font-size: 14px;
   text-align: center;
+  line-height: 1.2;
 }
 .synthicide .items-header .item-name,
 .synthicide .items-list .items-header .item-name,
@@ -523,6 +534,7 @@
   text-align: left;
   display: flex;
 }
+
 .synthicide .items-list {
   list-style: none;
   margin: 0;
@@ -565,28 +577,34 @@
 .synthicide .items-list .item-controls {
   display: flex;
   flex: 0 0 100px;
-  justify-content: flex-end;
+  justify-content: center;
 }
 .synthicide .items-list .item-controls a {
   font-size: 12px;
   text-align: center;
   margin: 0 6px;
 }
-.synthicide .items-list .item {
+.synthicide .items-list .item:not(.items-header) {
   align-items: center;
-  padding: 0 2px;
+  padding: 1px 2px; /* even tighter vertical spacing */
+  /* only apply bottom border to real items */
   border-bottom: 1px solid var(--synthicide-c-faint);
 }
-.synthicide .items-list .item:last-child {
+.synthicide .items-list .item .item-name .item-image {
+  flex: 0 0 20px;
+  height: 20px;
+  background-size: 20px;
+}
+.synthicide .items-list .item:not(.items-header):last-child {
   border-bottom: none;
 }
 .synthicide .items-list .item .item-name {
   color: var(--synthicide-c-dark);
 }
 .synthicide .items-list .item .item-name .item-image {
-  flex: 0 0 30px;
-  height: 30px;
-  background-size: 30px;
+  flex: 0 0 20px;
+  height: 20px;
+  background-size: 20px;
   border: none;
   margin-right: 5px;
 }

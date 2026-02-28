@@ -17,7 +17,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
   static DEFAULT_OPTIONS = {
     classes: ['synthicide', 'item'],
     actions: {
-      onEditImage: this._onEditImage,
+      //onEditImage: this._onEditImage,
       viewDoc: this._viewEffect,
       createDoc: this._createEffect,
       deleteDoc: this._deleteEffect,
@@ -374,7 +374,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
    * @returns {Promise}
    * @protected
    */
-  static async _onEditImage(event, target) {
+  /*static async _onEditImage(event, target) {
     const attr = target.dataset.edit;
     const current = foundry.utils.getProperty(this.document, attr);
     const { img } =
@@ -391,7 +391,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       left: this.position.left + 10,
     });
     return fp.browse();
-  }
+  }*/
 
   /**
    * Renders an embedded document's sheet

@@ -1,8 +1,8 @@
 {{! Traits Tab – leveled traits section (replaces former spells implementation) }}
 <section
-  class='tab spells scrollable {{tab.cssClass}}'
+  class='tab traits scrollable {{tab.cssClass}}'
   data-group='primary'
-  data-tab='spells'
+  data-tab='traits'
 >
   <ol class='items-list'>
     {{#each traitsByLevel as |traits level|}}
@@ -19,7 +19,7 @@
               data-document-class='Item'
               data-type='trait'
               data-system.level='{{level}}'
-              data-system.traitType='generalTalent'
+              data-system.trait-type='generalTalent'
             >
               <i class='fas fa-plus'></i>
               {{localize 'SYNTHICIDE.Item.Trait.AddLVL' level=level}}

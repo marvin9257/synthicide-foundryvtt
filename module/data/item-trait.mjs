@@ -1,6 +1,7 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import SynthicideItemBase from './base-item.mjs';
 
+
 export default class SynthicideTrait extends SynthicideItemBase {
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
@@ -9,6 +10,8 @@ export default class SynthicideTrait extends SynthicideItemBase {
 
   static defineSchema() {
     const fields = foundry.data.fields;
+    const requiredBlankString = { required: true, blank: true, initial: "" };
+    const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = super.defineSchema();
 
     // Modifiers: array of { target, value, type, condition }
@@ -58,23 +61,20 @@ export default class SynthicideTrait extends SynthicideItemBase {
       max: 9,
     });
 
-    // (legacy) Bioclass-linked trait flag – kept for backward compatibility
-    // but will be inferred from traitType === 'bioclass'.
-    schema.bioClassLink = new fields.BooleanField({ initial: false });
+    schema.requirements = new fields.StringField({...requiredBlankString});
+    schema.apCost = new fields.StringField({...requiredBlankString});
+    schema.range = new fields.NumberField({...requiredInteger, initial: 0});
+    schema.usesLimit = new fields.NumberField({...requiredInteger, initial: 0}, {persisted: false});
+    schema.overchargeCost = new fields.NumberField({...requiredInteger, initial: 0}, {persisted: false});
 
     return schema;
   }
 
   /**
-   * When the traitType changes, update the legacy bioClassLink flag so
-   * existing code that still checks it continues to work.
    * @override
    */
   async _preUpdate(changed, options, user) {
-    if (changed.system?.traitType !== undefined) {
-      changed.system = changed.system || {};
-      changed.system.bioClassLink = changed.system.traitType === 'bioclass';
-    }
+    // bioClassLink logic removed; traitType now fully determines bioclass linkage
     return super._preUpdate(changed, options, user);
   }
 }
