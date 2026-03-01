@@ -48,6 +48,41 @@ To have FoundryVTT use your latest build automatically:
 - Only the contents of `dist` are needed for distribution or installation.
 - For production or release, you can zip the `dist` folder and distribute/upload as needed.
 
+## Developer Notes: Item Sheet Part/Tab Maps
+
+The item sheet uses data maps instead of long switch statements to decide which UI parts render.
+
+Relevant constants live in `module/sheets/item-sheet.mjs`:
+
+- `ITEM_BASE_PARTS_BY_TYPE`
+- `ITEM_TAB_MAP`
+
+### Render flow
+
+In `_configureRenderOptions`:
+
+1. The sheet always starts with: `['header', 'tabs', 'general']`
+2. It appends base parts from `ITEM_BASE_PARTS_BY_TYPE[this.document.type]`
+3. It always appends `effects`
+
+`ITEM_BASE_PARTS_BY_TYPE` is now the single source of part mappings.
+
+### Practical example
+
+- If document type is `bioclass`:
+	- Parts come from `ITEM_BASE_PARTS_BY_TYPE.bioclass`
+
+### How to add a new item tab/part
+
+1. Add the template in `static PARTS`
+2. Add the part id to `ITEM_BASE_PARTS_BY_TYPE`
+3. Add tab metadata in `ITEM_TAB_MAP`
+4. Add localization key(s) under `SYNTHICIDE.Item.Tabs.*`
+
+### Quick rule of thumb
+
+- Use `ITEM_BASE_PARTS_BY_TYPE` as the single source of part mappings
+
 ---
 
 

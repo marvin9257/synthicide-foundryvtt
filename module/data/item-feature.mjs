@@ -281,10 +281,11 @@ export default class SynthicideFeature extends SynthicideItemBase {
     await this._removeFeatureTraits(actor);
     await this._cleanupOnDelete(actor);
 
-    if (typeof actor.aggregateAndApplyItemModifiers === 'function') {
-      await actor.aggregateAndApplyItemModifiers({
-        debug: Boolean(SYNTHICIDE.debug?.synthicideModifiers)
-      });
+    const debug = Boolean(SYNTHICIDE.debug?.synthicideModifiers);
+    if (typeof actor.scheduleModifierAggregation === 'function') {
+      await actor.scheduleModifierAggregation({ debug });
+    } else if (typeof actor.aggregateAndApplyItemModifiers === 'function') {
+      await actor.aggregateAndApplyItemModifiers({ debug });
     }
   }
 

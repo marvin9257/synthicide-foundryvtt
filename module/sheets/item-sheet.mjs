@@ -1,8 +1,58 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
+import { assignTabContext, buildBaseSheetContext, buildTabs } from './sheet-context.mjs';
 
 const { api, sheets } = foundry.applications;
 const DragDrop = foundry.applications.ux.DragDrop;
+
+const BIOCLASS_PARTS = ['attributesBioclass', 'cyberneticsBioclass', 'traitsBioclass'];
+const ASPECT_PARTS = ['abilitiesAspect', 'traitsBioclass'];
+
+/**
+ * Base parts enabled directly from document.type.
+ *
+ * Usage:
+ * - _configureRenderOptions always starts with ['header', 'tabs', 'general'].
+ * - Then it appends ITEM_BASE_PARTS_BY_TYPE[this.document.type].
+ * - Keep keys aligned with actual item document types.
+ *
+ * Important: this map answers "what parts should render for this.item.type?"
+ *
+ * This map is the single source of truth for item sheet part selection.
+ */
+const ITEM_BASE_PARTS_BY_TYPE = {
+  trait: ['attributesTrait'],
+  gear: ['attributesGear'],
+  spell: ['attributesTrait'],
+  bioclass: BIOCLASS_PARTS,
+  aspect: ASPECT_PARTS,
+};
+
+/**
+ * Tab metadata map for item sheet parts.
+ *
+ * Rules:
+ * - Key must match a render part id.
+ * - id is the logical tab id shown/activated by tab-navigation.hbs.
+ * - Multiple parts can share one id (for example all attribute part variants).
+ *
+ * To add a new item tab or part:
+ * 1) Add part template in static PARTS.
+ * 2) Add part id in ITEM_BASE_PARTS_BY_TYPE.
+ * 3) Add matching entry here in ITEM_TAB_MAP.
+ * 4) Add localization key under SYNTHICIDE.Item.Tabs.<Label>.
+ */
+const ITEM_TAB_MAP = {
+  general: { id: 'general', icon: 'fa-solid fa-info-circle', label: 'General' },
+  attributesTrait: { id: 'attributes', icon: 'fa-solid fa-sliders', label: 'Attributes' },
+  attributesGear: { id: 'attributes', icon: 'fa-solid fa-sliders', label: 'Attributes' },
+  attributesSpell: { id: 'attributes', icon: 'fa-solid fa-sliders', label: 'Attributes' },
+  attributesBioclass: { id: 'attributes', icon: 'fa-solid fa-sliders', label: 'Attributes' },
+  cyberneticsBioclass: { id: 'cybernetics', icon: 'fa-solid fa-microchip', label: 'Cybernetics' },
+  traitsBioclass: { id: 'traits', icon: 'fa-solid fa-dna', label: 'Traits' },
+  abilitiesAspect: { id: 'abilities', icon: 'fa-solid fa-star', label: 'Abilities' },
+  effects: { id: 'effects', icon: 'fa-solid fa-bolt', label: 'Effects' },
+};
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -183,42 +233,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     // Don't show the other tabs if only limited view
     if (this.document.limited) return;
     // Control which parts show based on document subtype
-    switch (this.document.type) {
-      case 'trait':
-        options.parts.push('attributesTrait');
-        break;
-      case 'gear':
-        options.parts.push('attributesGear');
-        break;
-      case 'spell':
-        // treat legacy spells as traits for the sheet so users can edit
-        // the new fields; a migration should convert the type later.
-        options.parts.push('attributesTrait');
-        break;
-      case 'bioclass':
-        options.parts.push(
-          'attributesBioclass',
-          'cyberneticsBioclass',
-          'traitsBioclass'
-        );
-        break;
-      case 'feature': {
-        if (this.item.system.featureType === 'bioclass') {
-          options.parts.push(
-            'attributesBioclass',
-            'cyberneticsBioclass',
-            'traitsBioclass'
-          );
-        } else if (this.item.system.featureType === 'aspect') {
-          options.parts.push('abilitiesAspect','traitsBioclass');
-        }
-        break;
-      }
-      case 'aspect':
-        // treat aspect like a feature/aspect hybrid
-        options.parts.push('abilitiesAspect','traitsBioclass');
-        break;
-    }
+    options.parts.push(...(ITEM_BASE_PARTS_BY_TYPE[this.document.type] ?? []));
     // every item type can have effects
     options.parts.push('effects');
   }
@@ -227,28 +242,17 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
 
   /** @override */
   async _prepareContext(options) {
-    const context = {
-      // Validates both permissions and compendium status
-      editable: this.isEditable,
-      owner: this.document.isOwner,
-      limited: this.document.limited,
-      // Add the item document.
-      item: this.item,
-      // Adding system and flags for easier access
-      system: this.item.system,
-      flags: this.item.flags,
-      // convenience booleans for templates
-      isBioclass: this.item.system.featureType === 'bioclass',
-      isAspect: this.item.system.featureType === 'aspect',
-      // Adding a pointer to SYNTHICIDE
-      SYNTHICIDE: SYNTHICIDE,
-      //config: CONFIG,
-      // You can factor out context construction to helper functions
-      tabs: this._getTabs(options.parts),
-      // Necessary for formInput and formFields helpers
-      fields: this.document.schema.fields,
-      systemFields: this.document.system.schema.fields,
-    };
+    const context = buildBaseSheetContext({
+      sheet: this,
+      document: this.item,
+      documentKey: 'item',
+      extra: {
+        isBioclass: this.item.system.featureType === 'bioclass',
+        isAspect: this.item.system.featureType === 'aspect',
+        SYNTHICIDE,
+        tabs: this._getTabs(options.parts),
+      },
+    });
     // Build traitTypeOptions for select helper
     context.config = context.config || {};
     // traitTypes is already a key->loc-key map; the template can localize it
@@ -259,19 +263,10 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
 
   /** @override */
   async _preparePartContext(partId, context) {
+    assignTabContext(partId, context);
+
     switch (partId) {
-      case 'attributesTrait':
-      case 'attributesGear':
-      case 'attributesSpell':
-      case 'attributesBioclass':
-      case 'cyberneticsBioclass':
-      case 'traitsBioclass':
-      case 'abilitiesAspect':
-        // Necessary for preserving active tab on re-render
-        context.tab = context.tabs[partId];
-        break;
       case 'general':
-        context.tab = context.tabs[partId];
         // Enrich description info for display
         // Enrichment turns text like `[[/r 1d20]]` into buttons
         context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
@@ -287,7 +282,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         );
         break;
       case 'effects':
-        context.tab = context.tabs[partId];
         // Prepare active effects for easier access
         context.effects = prepareActiveEffectCategories(this.item.effects);
         break;
@@ -309,70 +303,13 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
    * @protected
    */
   _getTabs(parts) {
-    // If you have sub-tabs this is necessary to change
-    const tabGroup = 'primary';
-    // Default tab for first time it's rendered this session
-    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'general';
-    return parts.reduce((tabs, partId) => {
-      const tab = {
-        cssClass: '',
-        group: tabGroup,
-        // Matches tab property to
-        id: '',
-        // FontAwesome Icon, if you so choose
-        icon: '',
-        // Run through localization
-        label: 'SYNTHICIDE.Item.Tabs.',
-      };
-      switch (partId) {
-        case 'header':
-        case 'tabs':
-          return tabs;
-        case 'general':
-          tab.id = 'general';
-            // all items use a General tab instead of Description/Information
-            tab.label += 'General';
-            tab.icon = 'fa-solid fa-info-circle'; // Changed to info icon for better distinction
-          break;
-        case 'attributesTrait':
-        case 'attributesGear':
-        case 'attributesSpell':
-          tab.id = 'attributes';
-            tab.label += 'Attributes';
-            tab.icon = 'fa-solid fa-sliders'; // Changed to sliders icon for better distinction
-          break;
-        case 'attributesBioclass':
-          tab.id = 'attributes';
-            tab.label += 'Attributes';
-            tab.icon = 'fa-solid fa-sliders'; // Changed to sliders icon for better distinction
-          break;
-        case 'cyberneticsBioclass':
-          tab.id = 'cybernetics';
-          tab.label += 'Cybernetics';
-          tab.icon = 'fa-solid fa-microchip';
-          break;
-        case 'traitsBioclass':
-          tab.id = 'traits';
-          tab.label += 'Traits';
-          tab.icon = 'fa-solid fa-dna';
-          break;
-        case 'abilitiesAspect':
-          tab.id = 'abilities';
-          tab.label += 'Abilities';
-          tab.icon = 'fa-solid fa-star';
-          break;
-        case 'effects':
-          tab.id = 'effects';
-          tab.label += 'Effects';
-          tab.icon = 'fa-solid fa-bolt';
-          break;
-      }
-      if (this.tabGroups[tabGroup] === tab.id) tab.cssClass = 'active';
-      // translate label now that it's been built
-      //tab.label = game.i18n.localize(tab.label);
-      tabs[partId] = tab;
-      return tabs;
-    }, {});
+    return buildTabs({
+      parts,
+      tabGroups: this.tabGroups,
+      defaultTab: 'general',
+      labelPrefix: 'SYNTHICIDE.Item.Tabs.',
+      tabMap: ITEM_TAB_MAP,
+    });
   }
 
   /**

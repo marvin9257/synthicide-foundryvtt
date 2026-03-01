@@ -253,7 +253,6 @@
     },
     "Item": {
       "gear": "Gear",
-      "feature": "Feature",
       "spell": "Spell",
       "bioclass": "Bioclass",
       "aspect": "Aspect",

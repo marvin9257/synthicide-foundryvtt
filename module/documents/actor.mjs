@@ -23,6 +23,42 @@ export class SynthicideActor extends Actor {
   }
 
   /**
+   * Schedule item modifier aggregation so multiple item lifecycle hooks
+   * coalesce into a single actor update cycle.
+   * @param {Object} [options]
+   * @param {boolean} [options.debug=false]
+   * @returns {Promise<void>}
+   */
+  scheduleModifierAggregation({ debug = false } = {}) {
+    this._modifierAggregationDebug = Boolean(this._modifierAggregationDebug || debug);
+    if (this._modifierAggregationPending) return this._modifierAggregationPromise;
+
+    this._modifierAggregationPending = true;
+    this._modifierAggregationPromise = new Promise((resolve) => {
+      this._modifierAggregationResolver = resolve;
+    });
+
+    setTimeout(async () => {
+      try {
+        await this.aggregateAndApplyItemModifiers({
+          debug: this._modifierAggregationDebug,
+        });
+      } catch (error) {
+        console.error('[Synthicide] Modifier aggregation failed', error);
+      } finally {
+        this._modifierAggregationPending = false;
+        this._modifierAggregationDebug = false;
+        const resolve = this._modifierAggregationResolver;
+        this._modifierAggregationResolver = null;
+        this._modifierAggregationPromise = null;
+        resolve?.();
+      }
+    }, 0);
+
+    return this._modifierAggregationPromise;
+  }
+
+  /**
    * Aggregate all item modifiers and apply to this actor.
    *
    * This method sums up all attribute and non-attribute modifiers from the actor's owned items,

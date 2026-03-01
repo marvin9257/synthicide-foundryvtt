@@ -1,6 +1,44 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
+import { assignTabContext, buildBaseSheetContext, buildTabs } from './sheet-context.mjs';
 const { api, sheets } = foundry.applications;
+
+/**
+ * Render parts enabled per actor type.
+ *
+ * Usage:
+ * - _configureRenderOptions starts with ['header', 'tabs']
+ * - Then appends ACTOR_PARTS_BY_TYPE[this.document.type]
+ * - Any part listed here should also exist in static PARTS.
+ */
+const ACTOR_PARTS_BY_TYPE = {
+  sharper: ['attributes', 'bioclass', 'gear', 'traits', 'cybernetics', 'biography', 'effects'],
+  npc: ['attributes', 'gear', 'biography', 'effects'],
+};
+
+/**
+ * Maps render part ids to tab metadata consumed by buildTabs(...).
+ *
+ * Rules:
+ * - Key must match a render part id from static PARTS.
+ * - id is the logical tab id used by tab-navigation.hbs.
+ * - label is appended to 'SYNTHICIDE.Actor.Tabs.' and localized by templates.
+ *
+ * To add a new actor tab:
+ * 1) Add template in static PARTS.
+ * 2) Add part id to ACTOR_PARTS_BY_TYPE for target actor types.
+ * 3) Add matching entry here in ACTOR_TAB_MAP.
+ * 4) Add localization key under SYNTHICIDE.Actor.Tabs.<Label>.
+ */
+const ACTOR_TAB_MAP = {
+  attributes: { id: 'attributes', icon: 'fa-solid fa-star', label: 'Attributes' },
+  gear: { id: 'gear', icon: 'fa-solid fa-toolbox', label: 'Gear' },
+  traits: { id: 'traits', icon: 'fa-solid fa-certificate', label: 'Traits' },
+  bioclass: { id: 'bioclass', icon: 'fa-solid fa-dna', label: 'Bioclass' },
+  cybernetics: { id: 'cybernetics', icon: 'fa-solid fa-microchip', label: 'Cybernetics' },
+  biography: { id: 'biography', icon: 'fa-solid fa-user', label: 'Biography' },
+  effects: { id: 'effects', icon: 'fa-solid fa-bolt', label: 'Effects' },
+};
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -93,22 +131,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // Don't show the other tabs if only limited view
     if (this.document.limited) return;
     // Control which parts show based on document subtype
-    switch (this.document.type) {
-      case 'sharper':
-        options.parts.push(
-          'attributes',
-          'bioclass',
-          'gear',
-          'traits',
-          'cybernetics',
-          'biography',
-          'effects'
-        );
-        break;
-      case 'npc':
-        options.parts.push('attributes', 'gear', 'biography', 'effects');
-        break;
-    }
+    options.parts.push(...(ACTOR_PARTS_BY_TYPE[this.document.type] ?? []));
       
   }
 
@@ -116,25 +139,15 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
   /** @override */
   async _prepareContext(options) {
-    // Output initialization
-    const context = {
-      // Validates both permissions and compendium status
-      editable: this.isEditable,
-      owner: this.document.isOwner,
-      limited: this.document.limited,
-      // Add the actor document.
-      actor: this.actor,
-      // Add the actor's data to context.data for easier access, as well as flags.
-      system: this.actor.system,
-      flags: this.actor.flags,
-      // Add both configs
-      //config: CONFIG, // Foundry's global CONFIG
-      SYNTHICIDE: SYNTHICIDE, // Your local config
-      tabs: this._getTabs(options.parts),
-      // Necessary for formInput and formFields helpers
-      fields: this.document.schema.fields,
-      systemFields: this.document.system.schema.fields,
-    };
+    const context = buildBaseSheetContext({
+      sheet: this,
+      document: this.actor,
+      documentKey: 'actor',
+      extra: {
+        SYNTHICIDE,
+        tabs: this._getTabs(options.parts),
+      },
+    });
 
     // Calculate hpPercent for hit points bar coloring
     const hpValue = Number(context.system.hitPoints?.value ?? 0);
@@ -158,16 +171,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
   /** @override */
   async _preparePartContext(partId, context) {
+    assignTabContext(partId, context);
+
     switch (partId) {
-      case 'bioclass':
-      case 'attributes':
-      case 'traits':
-      case 'gear':
-      case 'cybernetics':
-        context.tab = context.tabs[partId];
-        break;
       case 'biography':
-        context.tab = context.tabs[partId];
         // Enrich biography info for display
         // Enrichment turns text like `[[/r 1d20]]` into buttons
         context.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
@@ -183,7 +190,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         );
         break;
       case 'effects':
-        context.tab = context.tabs[partId];
         // Prepare active effects
         context.effects = prepareActiveEffectCategories(
           // A generator that returns all effects stored on the actor
@@ -202,65 +208,13 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @protected
    */
   _getTabs(parts) {
-    // If you have sub-tabs this is necessary to change
-    const tabGroup = 'primary';
-    // Default tab for first time it's rendered this session
-    if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = 'attributes';
-    return parts.reduce((tabs, partId) => {
-      const tab = {
-        cssClass: '',
-        group: tabGroup,
-        // Matches tab property to
-        id: '',
-        // FontAwesome Icon, if you so choose
-        icon: '',
-        // Run through localization
-        label: 'SYNTHICIDE.Actor.Tabs.',
-      };
-      switch (partId) {
-        case 'header':
-        case 'tabs':
-          return tabs;
-        case 'attributes':
-          tab.id = 'attributes';
-          tab.label += 'Attributes';
-          tab.icon = 'fa-solid fa-star';
-          break;
-        case 'gear':
-          tab.id = 'gear';
-          tab.label += 'Gear';
-          tab.icon = 'fa-solid fa-toolbox';
-          break;
-        case 'traits':
-          tab.id = 'traits';
-          tab.label += 'Traits';
-          tab.icon = 'fa-solid fa-certificate';
-          break;
-        case 'bioclass':
-          tab.id = 'bioclass';
-          tab.label += 'Bioclass';
-          tab.icon = 'fa-solid fa-dna';
-          break;
-        case 'cybernetics':
-          tab.id = 'cybernetics';
-          tab.label += 'Cybernetics';
-          tab.icon = 'fa-solid fa-microchip';
-          break;
-        case 'biography':
-          tab.id = 'biography';
-          tab.label += 'Biography';
-          tab.icon = 'fa-solid fa-user';
-          break;
-        case 'effects':
-          tab.id = 'effects';
-          tab.label += 'Effects';
-          tab.icon = 'fa-solid fa-bolt';
-          break;
-      }
-      if (this.tabGroups[tabGroup] === tab.id) tab.cssClass = 'active';
-      tabs[partId] = tab;
-      return tabs;
-    }, {});
+    return buildTabs({
+      parts,
+      tabGroups: this.tabGroups,
+      defaultTab: 'attributes',
+      labelPrefix: 'SYNTHICIDE.Actor.Tabs.',
+      tabMap: ACTOR_TAB_MAP,
+    });
   }
 
   /**
@@ -311,10 +265,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           traitsByLevel[lvl].push(i);
         }
       }
-      else if ((i.type === 'bioclass' || (i.type === 'feature' && i.system.featureType === 'bioclass')) && !bioclass) {
+      else if (i.type === 'bioclass' && !bioclass) {
         bioclass = i;
       }
-      else if (i.type === 'feature' && i.system.featureType === 'aspect' && !aspect) {
+      else if (i.type === 'aspect' && !aspect) {
         aspect = i;
       }
     }
@@ -843,11 +797,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @private
    */
   _isFeatureEntry(entryData) {
-    if (entryData.type === 'bioclass' || entryData.type === 'aspect') return true;
-    if (entryData.type === 'feature') {
-      return ['bioclass', 'aspect'].includes(entryData.system?.featureType);
-    }
-    return false;
+    return entryData.type === 'bioclass' || entryData.type === 'aspect';
   }
 
   /**
@@ -881,7 +831,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @returns {Promise<Item[]>}
    */
   async _handleFeatureDrop(entry, others) {
-    const type = entry.type === 'feature' ? entry.system?.featureType : entry.type;
+    const type = entry.type;
     switch (type) {
       case 'bioclass':
         return this._handleBioclassDrop(entry, others);
@@ -900,12 +850,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @param {object[]} otherEntries
    */
   async _handleAspectDrop(aspectEntry, otherEntries) {
-    const oldAspectIds = [...new Set([
-      ...this.actor.itemTypes.feature
-        .filter(f => f.system?.featureType === 'aspect')
-        .map(f => f.id),
-      ...this.actor.itemTypes.aspect.map(a => a.id)
-    ])];
+    const oldAspectIds = this.actor.itemTypes.aspect.map(a => a.id);
     if (oldAspectIds.length) {
       await this.actor.deleteEmbeddedDocuments('Item', oldAspectIds);
     }
@@ -928,12 +873,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @returns {Promise<Item[]>}
    */
   async _handleBioclassDrop(bioclassEntry, otherEntries) {
-    const oldBioclassIds = [...new Set([
-      ...this.actor.itemTypes.bioclass.map(b => b.id),
-      ...this.actor.itemTypes.feature
-        .filter(f => f.system?.featureType === 'bioclass')
-        .map(f => f.id)
-    ])];
+    const oldBioclassIds = this.actor.itemTypes.bioclass.map(b => b.id);
     if (oldBioclassIds.length) {
       await this.actor.deleteEmbeddedDocuments('Item', oldBioclassIds);
     }

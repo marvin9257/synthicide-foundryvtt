@@ -55,9 +55,15 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
    */
   triggerActorModifierAggregation() {
     const actor = this.parent?.actor;
-    if (!actor || typeof actor.aggregateAndApplyItemModifiers !== "function") return;
+    if (!actor) return;
     const debug = Boolean(SYNTHICIDE.debug?.synthicideModifiers);
-    actor.aggregateAndApplyItemModifiers({ debug });
+    if (typeof actor.scheduleModifierAggregation === 'function') {
+      actor.scheduleModifierAggregation({ debug });
+      return;
+    }
+    if (typeof actor.aggregateAndApplyItemModifiers === 'function') {
+      actor.aggregateAndApplyItemModifiers({ debug });
+    }
   }
 
 
