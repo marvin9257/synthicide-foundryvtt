@@ -75,6 +75,8 @@ Hooks.once('init', function () {
     gear: models.SynthicideGear,
     trait: models.SynthicideTrait,
     bioclass: models.SynthicideBioclass,
+    feature: models.SynthicideFeature,
+    aspect: models.SynthicideAspect,
     // legacy: spell items inherit from trait
     spell: models.SynthicideSpell,
   };
@@ -82,6 +84,8 @@ Hooks.once('init', function () {
     bioclass: models.SynthicideBioclass,
     gear: models.SynthicideGear,
     trait: models.SynthicideTrait,
+    feature: models.SynthicideFeature,
+    aspect: models.SynthicideAspect,
     // legacy
     spell: models.SynthicideSpell,
     // Add other item types as needed
@@ -130,10 +134,12 @@ Hooks.once('ready', async function () {
         await item.update(updates);
       }
     };
+
     // World-level items
     for (const item of game.items.filter(i => i.type === 'spell')) {
       await convertItem(item);
     }
+
     // Actor-owned items
     for (const actor of game.actors) {
       for (const item of actor.items.filter(i => i.type === 'spell')) {

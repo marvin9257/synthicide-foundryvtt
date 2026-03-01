@@ -10,7 +10,12 @@
     <div class='document-name'>
       <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
     </div>
-    {{#if (eq item.type 'bioclass')}}
+    {{!-- bioclass or aspect selector for feature‑type items --}}
+    {{!-- show bioclass selector only when the item is actually a bioclass feature --}}
+    {{#if (or
+          (eq item.type 'bioclass')
+          (and (eq item.type 'feature') (eq system.featureType 'bioclass'))
+        )}}
       <div class='resource'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.Label'}}</label>
         <select name='system.bioclassType'>
@@ -18,6 +23,16 @@
           <option value='scraphead' {{#if (eq system.bioclassType 'scraphead')}}selected{{/if}}>{{localize 'SYNTHICIDE.Item.Bioclass.Scraphead'}}</option>
           <option value='hardshell' {{#if (eq system.bioclassType 'hardshell')}}selected{{/if}}>{{localize 'SYNTHICIDE.Item.Bioclass.Hardshell'}}</option>
           <option value='rigfiend' {{#if (eq system.bioclassType 'rigfiend')}}selected{{/if}}>{{localize 'SYNTHICIDE.Item.Bioclass.Rigfiend'}}</option>
+        </select>
+      </div>
+    {{/if}}
+    {{#if (or (eq item.type 'aspect') (and (eq item.type 'feature') (eq system.featureType 'aspect')))}}
+      <div class='resource'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Aspect.Label'}}</label>
+        <select name='system.aspectType'>
+          {{#each SYNTHICIDE.aspectTypes as |atype|}}
+            <option value='{{atype}}' {{#if (eq system.aspectType atype)}}selected{{/if}}>{{atype}}</option>
+          {{/each}}
         </select>
       </div>
     {{/if}}

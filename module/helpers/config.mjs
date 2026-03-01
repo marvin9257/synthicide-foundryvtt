@@ -137,6 +137,21 @@ SYNTHICIDE.getBioclassPreset = (bioclassType) => {
   return { ...preset, traits };
 };
 
+// Unified preset getter for any feature subtype.  `type` should be
+// "bioclass" or "aspect" and `subtype` the specific category value.
+// Returns an object containing at least `traits` (and for bioclasses,
+// `startingAttributes`, `bodySlots`, `brainSlots`, etc).
+SYNTHICIDE.getFeaturePreset = (type, subtype) => {
+  switch (type) {
+    case 'bioclass':
+      return SYNTHICIDE.getBioclassPreset(subtype);
+    case 'aspect':
+      return SYNTHICIDE.aspectPresets[subtype] || { traits: [] };
+    default:
+      return { traits: [] };
+  }
+};
+
 SYNTHICIDE.bioclassToActorAttributeMap = {
   actions: 'operation',
   will: 'influence',
@@ -182,6 +197,59 @@ SYNTHICIDE.traitTypes = {
   generalTalent: 'SYNTHICIDE.Item.Trait.Types.generalTalent',
   naturalTalent: 'SYNTHICIDE.Item.Trait.Types.naturalTalent',
   spell: 'SYNTHICIDE.Item.Trait.Types.spell' // legacy
+};
+
+// Aspects are handled by the new Feature class but we provide a
+// registry here for future presets and helpers.
+SYNTHICIDE.aspectTypes = [
+  'brainiac',
+  'bulbhead',
+  'leader',
+  'scoundrel',
+  'thug'
+];
+
+// A minimal placeholder for aspect presets.  Actual data will be
+// fleshed out as the schema for aspects is determined.
+SYNTHICIDE.aspectPresets = {
+  brainiac: {
+    abilities: [
+      'Select 3 knowledge focuses and gain 2 powers from each',
+      'After creation purchase new knowledge focuses for 1 less TP'
+    ],
+    traits: [
+      { sort: 10, name: 'Gifted with prodigal intellect', description: '' }
+    ]
+  },
+  bulbhead: {
+    abilities: [
+      'Gain any 2 psychic powers (requirements permitting)',
+      'Purchasing new psychic powers costs 1 less TP'
+    ],
+    traits: []
+  },
+  leader: {
+    abilities: [
+      'Gain any 2 tactical powers (requirements permitting)',
+      'New tactical powers cost 1 less TP'
+    ],
+    traits: []
+  },
+  scoundrel: {
+    abilities: [
+      'Gain access to any 1 knowledge focus you meet requirements for',
+      'Battle Opportunist ability (free move when gaining advantage/setup)'
+    ],
+    traits: []
+  },
+  thug: {
+    abilities: [
+      'Gain 1 weapon proficiency and 1 battle power',
+      'Extra max HP equal to HP per level',
+      'New battle powers cost 1 less TP'
+    ],
+    traits: []
+  }
 };
 
 // Motivation choices for actors, referencing localization keys.

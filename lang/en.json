@@ -114,6 +114,7 @@
         "Attributes": "Attributes",
         "Cybernetics": "Cybernetics",
         "Traits": "Traits",
+        "Abilities": "Abilities",
         "Description": "Description",
         "Information": "Information",
         "General": "General",
@@ -212,8 +213,18 @@
             "will": {"label": "Will"},
             "hp": {"label": "HP"},
             "hpPerLevel": {"label": "HP / Level"}
-          }
-        }
+          },
+          "bodySlots": {"label": "Body Slots"},
+          "brainSlots": {"label": "Brain Slots"}
+        },
+        "BodyType": "Body Type",
+        "BrainType": "Brain Type"
+      },
+      "Aspect": {
+        "Label": "Aspect",
+        "Abilities": "Abilities",
+        "AddAbility": "Add Ability",
+        "NoAbilities": "No abilities found."
       },
       "BodyType": {
         "Organic": "Organic",
@@ -226,12 +237,6 @@
       "Temporary": "Temporary Effects",
       "Passive": "Passive Effects",
       "Inactive": "Inactive Effects"
-    },
-    "Bioclass": {
-      "Skinbag": "Skinbag",
-      "Scraphead": "Scraphead",
-      "Hardshell": "Hardshell",
-      "Rigfiend": "Rigfiend"
     }
   },
   "TYPES": {
@@ -244,6 +249,7 @@
       "feature": "Feature",
       "spell": "Spell",
       "bioclass": "Bioclass",
+      "aspect": "Aspect",
       "trait": "Trait"
     }
   }

@@ -26,7 +26,11 @@
         },
         "bioclass": {
           "htmlFields": ["description"]
-        }
+        },
+        "feature": {
+          "htmlFields": ["description"]        },
+        "aspect": {
+          "htmlFields": ["description"]        }
     }
   },
   "flags": {

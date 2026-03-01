@@ -1,0 +1,28 @@
+{{! Abilities Tab for aspects (simple vertical list) }}
+<section
+  class='tab abilities {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='abilities'
+>
+  <div class='resource' style='margin-bottom:0.5rem;'>
+    <button type='button' data-action='addAbility'>
+      <i class='fas fa-plus'></i>
+      {{localize 'SYNTHICIDE.Item.Aspect.AddAbility'}}
+    </button>
+  </div>
+
+  <ul class='ability-list'>
+    {{#if system.abilities.length}}
+      {{#each system.abilities as |ability i|}}
+        <li class='ability-row' style='display:flex; align-items:center; gap:0.5rem;'>
+          <input type='text' name='system.abilities.{{i}}' value='{{ability}}' style='flex:1;' />
+          <button type='button' data-action='removeAbility' data-index='{{i}}'>
+            <i class='fas fa-trash'></i>
+          </button>
+        </li>
+      {{/each}}
+    {{else}}
+      <li><em>{{localize 'SYNTHICIDE.Item.Aspect.NoAbilities'}}</em></li>
+    {{/if}}
+  </ul>
+</section>
