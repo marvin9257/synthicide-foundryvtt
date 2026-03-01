@@ -224,7 +224,14 @@
         "Label": "Aspect",
         "Abilities": "Abilities",
         "AddAbility": "Add Ability",
-        "NoAbilities": "No abilities found."
+        "NoAbilities": "No abilities found.",
+        "Types": {
+          "brainiac": "Brainiac",
+          "bulbhead": "Bulbhead",
+          "leader": "Leader",
+          "scoundrel": "Scoundrel",
+          "thug": "Thug"
+        }
       },
       "BodyType": {
         "Organic": "Organic",

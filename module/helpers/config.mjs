@@ -13,12 +13,12 @@ export default SYNTHICIDE;
 /**
  * Bioclass type choices used in the system.
  */
-SYNTHICIDE.bioclassTypes = [
-  'skinbag',
-  'scraphead',
-  'hardshell',
-  'rigfiend'
-];
+SYNTHICIDE.bioclassTypes = {
+  skinbag: 'SYNTHICIDE.Item.Bioclass.Skinbag',
+  scraphead: 'SYNTHICIDE.Item.Bioclass.Scraphead',
+  hardshell: 'SYNTHICIDE.Item.Bioclass.Hardshell',
+  rigfiend: 'SYNTHICIDE.Item.Bioclass.Rigfiend',
+};
 
 
 
@@ -201,13 +201,13 @@ SYNTHICIDE.traitTypes = {
 
 // Aspects are handled by the new Feature class but we provide a
 // registry here for future presets and helpers.
-SYNTHICIDE.aspectTypes = [
-  'brainiac',
-  'bulbhead',
-  'leader',
-  'scoundrel',
-  'thug'
-];
+SYNTHICIDE.aspectTypes = {
+  brainiac: 'SYNTHICIDE.Item.Aspect.Types.brainiac',
+  bulbhead: 'SYNTHICIDE.Item.Aspect.Types.bulbhead',
+  leader: 'SYNTHICIDE.Item.Aspect.Types.leader',
+  scoundrel: 'SYNTHICIDE.Item.Aspect.Types.scoundrel',
+  thug: 'SYNTHICIDE.Item.Aspect.Types.thug',
+};
 
 // A minimal placeholder for aspect presets.  Actual data will be
 // fleshed out as the schema for aspects is determined.

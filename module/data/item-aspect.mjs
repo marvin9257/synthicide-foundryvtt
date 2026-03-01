@@ -9,6 +9,8 @@ import SYNTHICIDE from '../helpers/config.mjs';
  * translation keys that may be added later.
  */
 export default class SynthicideAspect extends SynthicideFeature {
+  static DEFAULT_ASPECT = Object.keys(SYNTHICIDE.aspectTypes ?? {})[0] ?? 'brainiac';
+
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
     'SYNTHICIDE.Item.Aspect'
@@ -27,13 +29,13 @@ export default class SynthicideAspect extends SynthicideFeature {
     schema.aspectType = new fields.StringField({
       required: true,
       choices: SYNTHICIDE.aspectTypes,
-      initial: SYNTHICIDE.aspectTypes[0]
+      initial: this.DEFAULT_ASPECT
     });
 
     // default trait list corresponding to the chosen aspect subtype
     const aspectDefaults = this.getDefaultTraits({
       featureType: 'aspect',
-      aspectType: schema.aspectType.initial
+      aspectType: this.DEFAULT_ASPECT
     });
     schema.traits.initial = foundry.utils.deepClone(aspectDefaults);
 
@@ -44,9 +46,6 @@ export default class SynthicideAspect extends SynthicideFeature {
       new fields.StringField({ required: true, initial: '' }),
       { initial: [] }
     );
-
-
-
 
     return schema;
   }

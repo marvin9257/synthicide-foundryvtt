@@ -19,10 +19,7 @@
       <div class='resource'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.Label'}}</label>
         <select name='system.bioclassType'>
-          <option value='skinbag' {{#if (eq system.bioclassType 'skinbag')}}selected{{/if}}>{{localize 'SYNTHICIDE.Item.Bioclass.Skinbag'}}</option>
-          <option value='scraphead' {{#if (eq system.bioclassType 'scraphead')}}selected{{/if}}>{{localize 'SYNTHICIDE.Item.Bioclass.Scraphead'}}</option>
-          <option value='hardshell' {{#if (eq system.bioclassType 'hardshell')}}selected{{/if}}>{{localize 'SYNTHICIDE.Item.Bioclass.Hardshell'}}</option>
-          <option value='rigfiend' {{#if (eq system.bioclassType 'rigfiend')}}selected{{/if}}>{{localize 'SYNTHICIDE.Item.Bioclass.Rigfiend'}}</option>
+          {{selectOptions SYNTHICIDE.bioclassTypes selected=system.bioclassType localize=true}}
         </select>
       </div>
     {{/if}}
@@ -30,9 +27,7 @@
       <div class='resource'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Aspect.Label'}}</label>
         <select name='system.aspectType'>
-          {{#each SYNTHICIDE.aspectTypes as |atype|}}
-            <option value='{{atype}}' {{#if (eq system.aspectType atype)}}selected{{/if}}>{{atype}}</option>
-          {{/each}}
+          {{selectOptions SYNTHICIDE.aspectTypes selected=system.aspectType localize=true}}
         </select>
       </div>
     {{/if}}

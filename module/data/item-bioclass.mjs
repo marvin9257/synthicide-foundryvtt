@@ -1,7 +1,7 @@
 import SynthicideFeature from './item-feature.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 
-const BIOCLASS_TYPES = SYNTHICIDE.bioclassTypes || ['skinbag'];
+const BIOCLASS_TYPES = SYNTHICIDE.bioclassTypes || { skinbag: 'SYNTHICIDE.Item.Bioclass.Skinbag' };
 const DEFAULT_BIOCLASS = 'skinbag';
 
 export default class SynthicideBioclass extends SynthicideFeature {
