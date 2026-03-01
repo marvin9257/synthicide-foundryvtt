@@ -23,32 +23,45 @@ export class SynthicideActor extends Actor {
   }
 
   /**
-   * Schedule item modifier aggregation so multiple item lifecycle hooks
-   * coalesce into a single actor update cycle.
+   * Queue item-modifier aggregation on the next event-loop turn.
+   *
+   * Why this exists:
+   * - Item hooks (_onCreate/_onUpdate/_onDelete) can fire several times in a row.
+   * - Running aggregation for each hook causes redundant actor updates.
+   *
+   * What this does:
+   * 1) First call creates one scheduled aggregation task and one shared Promise.
+   * 2) Additional calls before that task runs DO NOT schedule again.
+   * 3) All callers receive the same Promise.
+   * 4) Debug mode is sticky for the queued run: if any caller requests debug,
+   *    the queued execution runs with debug enabled.
+   *
+   * This is a coalescing/debouncing boundary (0ms timeout), not a long delay.
    * @param {Object} [options]
    * @param {boolean} [options.debug=false]
    * @returns {Promise<void>}
    */
   scheduleModifierAggregation({ debug = false } = {}) {
+    // Once debug is requested for the pending run, keep it enabled.
     this._modifierAggregationDebug = Boolean(this._modifierAggregationDebug || debug);
-    if (this._modifierAggregationPending) return this._modifierAggregationPromise;
 
-    this._modifierAggregationPending = true;
+    // If already queued, return the same promise to all callers.
+    if (this._modifierAggregationPromise) return this._modifierAggregationPromise;
+
     this._modifierAggregationPromise = new Promise((resolve) => {
       this._modifierAggregationResolver = resolve;
     });
 
+    // Queue for the next task so multiple synchronous hook calls collapse.
     setTimeout(async () => {
+      const shouldDebug = this._modifierAggregationDebug;
       try {
-        await this.aggregateAndApplyItemModifiers({
-          debug: this._modifierAggregationDebug,
-        });
+        await this.aggregateAndApplyItemModifiers({ debug: shouldDebug });
       } catch (error) {
         console.error('[Synthicide] Modifier aggregation failed', error);
       } finally {
-        this._modifierAggregationPending = false;
-        this._modifierAggregationDebug = false;
         const resolve = this._modifierAggregationResolver;
+        this._modifierAggregationDebug = false;
         this._modifierAggregationResolver = null;
         this._modifierAggregationPromise = null;
         resolve?.();
