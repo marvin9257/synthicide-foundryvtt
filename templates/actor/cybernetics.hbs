@@ -47,11 +47,5 @@
   </div>
   {{else}}
     <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoneAssigned'}}</p>
-    {{#if @root.editable}}
-      <a class='item-control item-create' data-action='createDoc' data-document-class='Item' data-type='bioclass'>
-        <i class='fas fa-plus'></i>
-        {{localize 'SYNTHICIDE.Actor.Bioclass.Create'}}
-      </a>
-    {{/if}}
   {{/if}}
 </section>

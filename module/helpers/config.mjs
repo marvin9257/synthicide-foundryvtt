@@ -29,13 +29,13 @@ SYNTHICIDE.bioclassPresets = {
     bodySlots: 0,
     brainSlots: 0,
     startingAttributes: {
-      actions: 2,
-      awareness: 0,
-      combat: -1,
+      awareness: 2,
+      combat: 0,
+      toughness: -1,
+      influence: 1,
+      operation: 0,
       nerve: 1,
-      speed: 0,
-      toughness: 1,
-      will: 1,
+      speed: 1,
       hp: 35,
       hpPerLevel: 5,
     },
@@ -56,13 +56,13 @@ SYNTHICIDE.bioclassPresets = {
     bodySlots: 0,
     brainSlots: 1,
     startingAttributes: {
-      actions: 0,
       awareness: 0,
-      combat: -1,
-      nerve: -1,
-      speed: 3,
-      toughness: 3,
-      will: 1,
+      combat: 0,
+      toughness: -1,
+      influence: -1,
+      operation: 3,
+      nerve: 3,
+      speed: 1,
       hp: 35,
       hpPerLevel: 5,
     },
@@ -83,13 +83,13 @@ SYNTHICIDE.bioclassPresets = {
     bodySlots: 2,
     brainSlots: 0,
     startingAttributes: {
-      actions: 2,
-      awareness: 0,
+      awareness: 2,
       combat: 0,
+      toughness: 0,
+      influence: 1,
+      operation: 0,
       nerve: 1,
-      speed: 0,
-      toughness: 1,
-      will: 1,
+      speed: 1,
       hp: 42,
       hpPerLevel: 6,
     },
@@ -106,13 +106,13 @@ SYNTHICIDE.bioclassPresets = {
     bodySlots: 4,
     brainSlots: 2,
     startingAttributes: {
-      actions: 1,
       awareness: 1,
-      combat: 0,
-      nerve: -1,
-      speed: 2,
-      toughness: 2,
-      will: 1,
+      combat: 1,
+      toughness: 0,
+      influence: -1,
+      operation: 2,
+      nerve: 2,
+      speed: 1,
       hp: 42,
       hpPerLevel: 6,
     },
@@ -150,11 +150,6 @@ SYNTHICIDE.getFeaturePreset = (type, subtype) => {
     default:
       return { traits: [] };
   }
-};
-
-SYNTHICIDE.bioclassToActorAttributeMap = {
-  actions: 'operation',
-  will: 'influence',
 };
 
 /**

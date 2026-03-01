@@ -104,10 +104,9 @@ export default class SynthicideBioclass extends SynthicideFeature {
     const updates = {};
 
     for (const [key, value] of Object.entries(starting)) {
-      const mappedKey = key in actorAttributes ? key : SYNTHICIDE.bioclassToActorAttributeMap?.[key];
-      if (!mappedKey || !(mappedKey in actorAttributes)) continue;
+      if (!(key in actorAttributes)) continue;
       const num = Number(value ?? 0);
-      updates[`system.attributes.${mappedKey}.base`] = num;
+      updates[`system.attributes.${key}.base`] = num;
     }
     if (foundry.utils.hasProperty(starting, 'hp')) {
       const num = Number(starting.hp ?? 0);
@@ -139,16 +138,28 @@ export default class SynthicideBioclass extends SynthicideFeature {
   async _cleanupOnDelete(owningActor) {
     if (!owningActor) return;
 
-    const updates = {
-      'system.hitPoints.base': 0,
-      'system.hitPoints.perLevel': 0,
-    };
-    const attributeMap = SYNTHICIDE.bioclassToActorAttributeMap ?? {};
-    for (const mappedKey of Object.values(attributeMap)) {
-      if (owningActor.system?.attributes?.[mappedKey]) {
-        updates[`system.attributes.${mappedKey}.base`] = 0;
-      }
+    const updates = {};
+    const actorAttributes = owningActor.system?.attributes || {};
+    const sourceStarting = this.startingAttributes || {};
+    const type = this.bioclassType || DEFAULT_BIOCLASS;
+    const presetStarting = SYNTHICIDE.getFeaturePreset('bioclass', type).startingAttributes || {};
+    const starting = Object.keys(sourceStarting).length ? sourceStarting : presetStarting;
+
+    for (const key of Object.keys(starting)) {
+      if (!(key in actorAttributes)) continue;
+      updates[`system.attributes.${key}.base`] = 0;
     }
+
+    updates['system.hitPoints.base'] = 0;
+    updates['system.hitPoints.perLevel'] = 0;
+
+    if (foundry.utils.hasProperty(owningActor.system, 'bodySlots')) {
+      updates['system.bodySlots'] = 0;
+    }
+    if (foundry.utils.hasProperty(owningActor.system, 'brainSlots')) {
+      updates['system.brainSlots'] = 0;
+    }
+
     await owningActor.update(updates);
   }
 

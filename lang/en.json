@@ -204,13 +204,13 @@
         "FIELDS": {
           "Slots": {"label": "Slots"},
           "startingAttributes": {
-            "actions": {"label": "Actions"},
             "awareness": {"label": "Awareness"},
             "combat": {"label": "Combat"},
+            "toughness": {"label": "Toughness"},
+            "influence": {"label": "Influence"},
+            "operation": {"label": "Operation"},
             "nerve": {"label": "Nerve"},
             "speed": {"label": "Speed"},
-            "toughness": {"label": "Toughness"},
-            "will": {"label": "Will"},
             "hp": {"label": "HP"},
             "hpPerLevel": {"label": "HP / Level"}
           },
