@@ -1,6 +1,7 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
+import { getItemIcon, ICON_MAP } from '../helpers/icons.mjs';
 
 const { api, sheets } = foundry.applications;
 const DragDrop = foundry.applications.ux.DragDrop;
@@ -42,14 +43,14 @@ const ITEM_BASE_PARTS_BY_TYPE = {
  * 4) Add localization key under SYNTHICIDE.Item.Tabs.<Label>.
  */
 const ITEM_TAB_MAP = {
-  general: { id: 'general', icon: 'fa-solid fa-info-circle', label: 'General' },
-  attributesTrait: { id: 'attributes', icon: 'fa-solid fa-sliders', label: 'Attributes' },
-  attributesGear: { id: 'attributes', icon: 'fa-solid fa-sliders', label: 'Attributes' },
-  attributesBioclass: { id: 'attributes', icon: 'fa-solid fa-sliders', label: 'Attributes' },
-  cyberneticsBioclass: { id: 'cybernetics', icon: 'fa-solid fa-microchip', label: 'Cybernetics' },
-  traitsBioclass: { id: 'traits', icon: 'fa-solid fa-dna', label: 'Traits' },
-  abilitiesAspect: { id: 'abilities', icon: 'fa-solid fa-star', label: 'Abilities' },
-  effects: { id: 'effects', icon: 'fa-solid fa-bolt', label: 'Effects' },
+  general: { id: 'general', icon: ICON_MAP.general, label: 'General' },
+  attributesTrait: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
+  attributesGear: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
+  attributesBioclass: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
+  cyberneticsBioclass: { id: 'cybernetics', icon: ICON_MAP.cybernetics, label: 'Cybernetics' },
+  traitsBioclass: { id: 'traits', icon: ICON_MAP.trait, label: 'Traits' },
+  abilitiesAspect: { id: 'abilities', icon: ICON_MAP.abilities, label: 'Abilities' },
+  effects: { id: 'effects', icon: ICON_MAP.effects, label: 'Effects' },
 };
 
 /**
@@ -78,103 +79,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     },
     dragDrop: [{ dragSelector: '.draggable', dropSelector: null }],
   };
-  /**
-   * Handle adding a new modifier row to the feature item.
-   * @param {PointerEvent} event
-   * @param {HTMLElement} target
-   */
-  static async _onAddModifier(event, _target) {
-    event.preventDefault();
-    const item = this.item;
-    const modifiers = Array.isArray(item.system.modifiers) ? foundry.utils.deepClone(item.system.modifiers) : [];
-    const defaultTarget = Object.keys(SYNTHICIDE.attributes)[0] ?? 'awareness';
-    // Add a blank modifier
-    modifiers.push({ target: defaultTarget, value: 0, type: 'bonus', condition: '', source: '' });
-    await item.update({ 'system.modifiers': modifiers });
-  }
-
-  /**
-   * Handle removing a modifier row from the feature item.
-   * @param {PointerEvent} event
-   * @param {HTMLElement} target
-   */
-  static async _onRemoveModifier(event, target) {
-    event.preventDefault();
-    const item = this.item;
-    const index = Number(target.dataset.index);
-    let modifiers = Array.isArray(item.system.modifiers) ? foundry.utils.deepClone(item.system.modifiers) : [];
-    if (index >= 0 && index < modifiers.length) {
-      modifiers.splice(index, 1);
-      await item.update({ 'system.modifiers': modifiers });
-    }
-  }
-
-  /**
-   * Handle adding a new trait row to the bioclass item.
-   * @param {PointerEvent} event
-   */
-  static async _onAddTrait(event) {
-    event.preventDefault();
-    const item = this.item;
-    const traits = Array.isArray(item.system.traits)
-      ? foundry.utils.deepClone(item.system.traits)
-      : [];
-    const maxSort = traits.reduce(
-      (max, trait) => Math.max(max, Number(trait?.sort ?? 0)),
-      0
-    );
-    traits.push({ sort: maxSort + 10, name: '', description: '' });
-    await item.update({ 'system.traits': traits });
-  }
-
-  /**
-   * Handle removing a trait row from the bioclass item.
-   * @param {PointerEvent} event
-   * @param {HTMLElement} target
-   */
-  static async _onRemoveTrait(event, target) {
-    event.preventDefault();
-    const item = this.item;
-    const index = Number(target.dataset.index);
-    const traits = Array.isArray(item.system.traits)
-      ? foundry.utils.deepClone(item.system.traits)
-      : [];
-    if (index >= 0 && index < traits.length) {
-      traits.splice(index, 1);
-      await item.update({ 'system.traits': traits });
-    }
-  }
-
-  /**
-   * Handle adding an ability row to an aspect.
-   */
-  static async _onAddAbility(event) {
-    event.preventDefault();
-    const item = this.item;
-    const abilities = Array.isArray(item.system.abilities)
-      ? foundry.utils.deepClone(item.system.abilities)
-      : [];
-    abilities.push('');
-    await item.update({ 'system.abilities': abilities });
-  }
-
-  /**
-   * Handle removing an ability row from an aspect.
-   */
-  static async _onRemoveAbility(event, target) {
-    event.preventDefault();
-    const item = this.item;
-    const index = Number(target.dataset.index);
-    const abilities = Array.isArray(item.system.abilities)
-      ? foundry.utils.deepClone(item.system.abilities)
-      : [];
-    if (index >= 0 && index < abilities.length) {
-      abilities.splice(index, 1);
-      await item.update({ 'system.abilities': abilities });
-    }
-  }
-
-  /* -------------------------------------------- */
+  
 
   /** @override */
   static PARTS = {
@@ -226,6 +131,14 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     options.parts.push(...(ITEM_BASE_PARTS_BY_TYPE[this.document.type] ?? []));
     // every item type can have effects
     options.parts.push('effects');
+  }
+
+  /** @inheritDoc */
+  _initializeApplicationOptions(options) {
+    const applicationOptions = super._initializeApplicationOptions(options);
+    // Use shared helper so icon logic is consistent across sheets.
+    applicationOptions.window.icon = getItemIcon(applicationOptions.document);
+    return applicationOptions;
   }
 
   /* -------------------------------------------- */
@@ -430,6 +343,104 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     await effect.update({ disabled: !effect.disabled });
   }
 
+  /**
+   * Handle adding a new modifier row to the feature item.
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async _onAddModifier(event, _target) {
+    event.preventDefault();
+    const item = this.item;
+    const modifiers = Array.isArray(item.system.modifiers) ? foundry.utils.deepClone(item.system.modifiers) : [];
+    const defaultTarget = Object.keys(SYNTHICIDE.attributes)[0] ?? 'awareness';
+    // Add a blank modifier
+    modifiers.push({ target: defaultTarget, value: 0, type: 'bonus', condition: '', source: '' });
+    await item.update({ 'system.modifiers': modifiers });
+  }
+
+  /**
+   * Handle removing a modifier row from the feature item.
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async _onRemoveModifier(event, target) {
+    event.preventDefault();
+    const item = this.item;
+    const index = Number(target.dataset.index);
+    let modifiers = Array.isArray(item.system.modifiers) ? foundry.utils.deepClone(item.system.modifiers) : [];
+    if (index >= 0 && index < modifiers.length) {
+      modifiers.splice(index, 1);
+      await item.update({ 'system.modifiers': modifiers });
+    }
+  }
+
+  /**
+   * Handle adding a new trait row to the bioclass item.
+   * @param {PointerEvent} event
+   */
+  static async _onAddTrait(event) {
+    event.preventDefault();
+    const item = this.item;
+    const traits = Array.isArray(item.system.traits)
+      ? foundry.utils.deepClone(item.system.traits)
+      : [];
+    const maxSort = traits.reduce(
+      (max, trait) => Math.max(max, Number(trait?.sort ?? 0)),
+      0
+    );
+    traits.push({ sort: maxSort + 10, name: '', description: '' });
+    await item.update({ 'system.traits': traits });
+  }
+
+  /**
+   * Handle removing a trait row from the bioclass item.
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async _onRemoveTrait(event, target) {
+    event.preventDefault();
+    const item = this.item;
+    const index = Number(target.dataset.index);
+    const traits = Array.isArray(item.system.traits)
+      ? foundry.utils.deepClone(item.system.traits)
+      : [];
+    if (index >= 0 && index < traits.length) {
+      traits.splice(index, 1);
+      await item.update({ 'system.traits': traits });
+    }
+  }
+
+  /**
+   * Handle adding an ability row to an aspect.
+   */
+  static async _onAddAbility(event) {
+    event.preventDefault();
+    const item = this.item;
+    const abilities = Array.isArray(item.system.abilities)
+      ? foundry.utils.deepClone(item.system.abilities)
+      : [];
+    abilities.push('');
+    await item.update({ 'system.abilities': abilities });
+  }
+
+  /**
+   * Handle removing an ability row from an aspect.
+   */
+  static async _onRemoveAbility(event, target) {
+    event.preventDefault();
+    const item = this.item;
+    const index = Number(target.dataset.index);
+    const abilities = Array.isArray(item.system.abilities)
+      ? foundry.utils.deepClone(item.system.abilities)
+      : [];
+    if (index >= 0 && index < abilities.length) {
+      abilities.splice(index, 1);
+      await item.update({ 'system.abilities': abilities });
+    }
+  }
+
+  /* -------------------------------------------- */
+
   /** Helper Functions */
 
   /**
@@ -631,3 +642,5 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     if (!this.item.isOwner) return [];
   }
 }
+
+// Icon resolution is provided by module/helpers/icons.mjs (getItemIcon).

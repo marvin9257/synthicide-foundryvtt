@@ -1,6 +1,7 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
+import { ICON_MAP } from '../helpers/icons.mjs';
 const { api, sheets } = foundry.applications;
 
 /**
@@ -31,13 +32,13 @@ const ACTOR_PARTS_BY_TYPE = {
  * 4) Add localization key under SYNTHICIDE.Actor.Tabs.<Label>.
  */
 const ACTOR_TAB_MAP = {
-  attributes: { id: 'attributes', icon: 'fa-solid fa-star', label: 'Attributes' },
-  gear: { id: 'gear', icon: 'fa-solid fa-toolbox', label: 'Gear' },
-  traits: { id: 'traits', icon: 'fa-solid fa-certificate', label: 'Traits' },
-  bioclass: { id: 'bioclass', icon: 'fa-solid fa-dna', label: 'Bioclass' },
-  cybernetics: { id: 'cybernetics', icon: 'fa-solid fa-microchip', label: 'Cybernetics' },
-  biography: { id: 'biography', icon: 'fa-solid fa-user', label: 'Biography' },
-  effects: { id: 'effects', icon: 'fa-solid fa-bolt', label: 'Effects' },
+  attributes: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
+  gear: { id: 'gear', icon: ICON_MAP.gear, label: 'Gear' },
+  traits: { id: 'traits', icon: ICON_MAP.trait, label: 'Traits' },
+  bioclass: { id: 'bioclass', icon: ICON_MAP.bioclass, label: 'Bioclass' },
+  cybernetics: { id: 'cybernetics', icon: ICON_MAP.cybernetics, label: 'Cybernetics' },
+  biography: { id: 'biography', icon: ICON_MAP.biography, label: 'Biography' },
+  effects: { id: 'effects', icon: ICON_MAP.effects, label: 'Effects' },
 };
 
 /**
@@ -56,7 +57,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     },
     window: {
       resizable: true,
-      icon: "fa-solid fa-person"
+      icon: ICON_MAP.person
     },
     actions: {
       //onEditImage: this._onEditImage,

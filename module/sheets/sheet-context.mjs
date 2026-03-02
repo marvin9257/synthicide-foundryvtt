@@ -76,7 +76,7 @@ export function assignTabContext(partId, context) {
  * @returns {Record<string, Partial<ApplicationTab>>}
  *
  * Example descriptor entry in tabMap:
- *   general: { id: 'general', icon: 'fa-solid fa-info-circle', label: 'General' }
+ *   general: { id: 'general', icon: ICON_MAP.general, label: 'General' }
  */
 export function buildTabs({
   parts,
