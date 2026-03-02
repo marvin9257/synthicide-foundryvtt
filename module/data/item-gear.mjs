@@ -1,5 +1,13 @@
 import SynthicideItemBase from './base-item.mjs';
 
+/**
+ * Gear item system model.
+ *
+ * DataModel context: instance methods execute on the gear system model
+ * (`item.system`), not on the Item document.
+ *
+ * @extends {SynthicideItemBase}
+ */
 export default class SynthicideGear extends SynthicideItemBase {
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
@@ -42,6 +50,11 @@ export default class SynthicideGear extends SynthicideItemBase {
     return schema;
   }
 
+  /**
+   * Compose the derived roll formula from structured roll fields.
+   * @this {SynthicideGear}
+   * @returns {void}
+   */
   prepareDerivedData() {
     // Build the formula dynamically using string interpolation
     const roll = this.roll;

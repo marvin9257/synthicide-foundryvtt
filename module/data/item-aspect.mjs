@@ -7,6 +7,11 @@ import SYNTHICIDE from '../helpers/config.mjs';
  * need to ensure the discriminator field is set appropriately and
  * provide a distinct localization prefix for any aspect-specific
  * translation keys that may be added later.
+ *
+ * DataModel context: instance methods execute on the aspect system model
+ * (`item.system`), not on the Item document.
+ *
+ * @extends {SynthicideFeature}
  */
 export default class SynthicideAspect extends SynthicideFeature {
   static DEFAULT_ASPECT = Object.keys(SYNTHICIDE.aspectTypes ?? {})[0] ?? 'brainiac';
@@ -64,6 +69,7 @@ export default class SynthicideAspect extends SynthicideFeature {
 
   /**
    * Resolve effective preset for the current or provided aspect type.
+   * @this {SynthicideAspect}
    * @param {{aspectType?: string}} [options]
    * @returns {{abilities?: object[], description?: string}}
    */
@@ -76,6 +82,13 @@ export default class SynthicideAspect extends SynthicideFeature {
    * When the aspect type changes we need to repopulate traits and
    * abilities from the preset.  Keeping this in the data model means
    * sheets stay simple.
+    *
+    * @this {SynthicideAspect}
+    * @param {object} changes
+    * @param {object} options
+    * @param {string} user
+    * @returns {Promise<boolean|void>}
+    * @override
    */
   async _preUpdate(changes, options, user) {
     const allowed = await super._preUpdate?.(changes, options, user);

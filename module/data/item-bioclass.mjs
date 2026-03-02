@@ -4,6 +4,14 @@ import SYNTHICIDE from '../helpers/config.mjs';
 const BIOCLASS_TYPES = SYNTHICIDE.bioclassTypes || { skinbag: 'SYNTHICIDE.Item.Bioclass.Skinbag' };
 const DEFAULT_BIOCLASS = 'skinbag';
 
+/**
+ * Bioclass feature system model.
+ *
+ * DataModel context: instance methods execute on the bioclass system model
+ * (`item.system`), not on the Item document.
+ *
+ * @extends {SynthicideFeature}
+ */
 export default class SynthicideBioclass extends SynthicideFeature {
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
@@ -56,6 +64,11 @@ export default class SynthicideBioclass extends SynthicideFeature {
    * selected bioclass type whenever that field changes.  This moves logic out
    * of the sheet and into the data model, simplifying the UI code.
    *
+    * @this {SynthicideBioclass}
+    * @param {object} changes
+    * @param {object} options
+    * @param {string} user
+    * @returns {Promise<boolean|void>}
    * @override
    */
   async _preUpdate(changes, options, user) {
@@ -89,6 +102,7 @@ export default class SynthicideBioclass extends SynthicideFeature {
    * This keeps apply (`_syncSubtypeAttributes`) and delete cleanup
    * (`_cleanupOnDelete`) aligned on the same source of truth.
    *
+   * @this {SynthicideBioclass}
    * @returns {object} Effective starting-attribute map for this bioclass.
    * @private
    */
@@ -99,13 +113,15 @@ export default class SynthicideBioclass extends SynthicideFeature {
     return SYNTHICIDE.getFeaturePreset('bioclass', type).startingAttributes || {};
   }
 
-  
   /**
    * Bioclass‑specific attribute sync.  We maintain a separate method so that
    * the generic feature class stays small (calling this only when needed).
    * This more closely mirrors the old implementation the user provided.
    *
+   * @this {SynthicideBioclass}
    * @param {Actor} owningActor
+   * @param {{render?: boolean}} [options]
+   * @returns {Promise<void>}
    */
   async _syncSubtypeAttributes(owningActor, { render = true } = {}) {
     if (!owningActor) return;
@@ -143,7 +159,10 @@ export default class SynthicideBioclass extends SynthicideFeature {
   /**
    * Bioclass-specific delete cleanup: clear the actor base values that were
    * sourced from this bioclass.
+   * @this {SynthicideBioclass}
    * @param {Actor} owningActor
+   * @param {{render?: boolean}} [options]
+   * @returns {Promise<void>}
    * @protected
    */
   async _cleanupOnDelete(owningActor, { render = true } = {}) {

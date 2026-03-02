@@ -20,8 +20,6 @@ SYNTHICIDE.bioclassTypes = {
   rigfiend: 'SYNTHICIDE.Item.Bioclass.Rigfiend',
 };
 
-
-
 SYNTHICIDE.bioclassPresets = {
   skinbag: {
     description: 'SYNTHICIDE.Item.Bioclass.PresetDescriptions.skinbag',

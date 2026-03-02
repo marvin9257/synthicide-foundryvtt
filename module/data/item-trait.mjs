@@ -1,7 +1,14 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import SynthicideItemBase from './base-item.mjs';
 
-
+/**
+ * Trait item system model.
+ *
+ * DataModel context: instance methods execute on the trait system model
+ * (`item.system`), not on the Item document.
+ *
+ * @extends {SynthicideItemBase}
+ */
 export default class SynthicideTrait extends SynthicideItemBase {
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
@@ -72,6 +79,12 @@ export default class SynthicideTrait extends SynthicideItemBase {
   }
 
   /**
+   * DataModel pre-update hook for trait normalization logic.
+   * @this {SynthicideTrait}
+   * @param {object} changed
+   * @param {object} options
+   * @param {string} user
+   * @returns {Promise<boolean|void>}
    * @override
    */
   async _preUpdate(changed, options, user) {

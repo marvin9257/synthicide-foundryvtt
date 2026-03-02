@@ -5,6 +5,12 @@ import { FEATURE_TYPE, FEATURE_TYPES } from '../helpers/feature-types.mjs';
 /**
  * Shared logic for any item that occupies the single‑feature slot on an actor.
  * Bioclass and Aspect are thin subclasses that provide their own subtype data.
+ *
+ * Important DataModel context: in instance methods, `this` is the system
+ * DataModel object (equivalent to `item.system`), not the parent Item document.
+ * Access parent document data via `this.parent` as needed.
+ *
+ * @extends {SynthicideItemBase}
  */
 export default class SynthicideFeature extends SynthicideItemBase {
   static OPERATION_OPTIONS = Object.freeze({
@@ -315,6 +321,12 @@ export default class SynthicideFeature extends SynthicideItemBase {
     *   when true, skip automatic applyToActor.
     *   Used by actor-sheet replacement drop handlers so they can explicitly
     *   await applyToActor once and render only after all side effects complete.
+    *
+    * @this {SynthicideFeature}
+    * @param {object} data
+    * @param {object} options
+    * @param {string} userId
+    * @returns {Promise<void>}
    */
   async _onCreate(data, options, userId) {
     super._onCreate(data, options, userId);
@@ -332,6 +344,11 @@ export default class SynthicideFeature extends SynthicideItemBase {
 
   /**
    * Foundry hook: update may require re-applying traits/attributes.
+    * @this {SynthicideFeature}
+    * @param {object} changed
+    * @param {object} options
+    * @param {string} userId
+    * @returns {Promise<void>}
    */
   async _onUpdate(changed, options, userId) {
     super._onUpdate(changed, options, userId);
@@ -349,6 +366,10 @@ export default class SynthicideFeature extends SynthicideItemBase {
   /**
    * Capture actor before embedded item is removed so post-delete logic still
    * has access to the owning document.
+    * @this {SynthicideFeature}
+    * @param {object} options
+    * @param {string} userId
+    * @returns {Promise<boolean|void>}
    */
   async _preDelete(options, userId) {
     const allowed = await super._preDelete?.(options, userId);
@@ -365,6 +386,11 @@ export default class SynthicideFeature extends SynthicideItemBase {
     *   when true, skip old-feature cleanup during replacement drops. The new
     *   feature's apply pass is the single authoritative remove+create flow for
     *   generated traits.
+    *
+    * @this {SynthicideFeature}
+    * @param {object} options
+    * @param {string} userId
+    * @returns {Promise<void>}
    */
   async _onDelete(options, userId) {
     super._onDelete(options, userId);
@@ -387,16 +413,42 @@ export default class SynthicideFeature extends SynthicideItemBase {
     actor.aggregateAndApplyItemModifiers({ debug, render: options?.render ?? true });
   }
 
+  /**
+   * Keep trait defaults aligned when a feature subtype changes.
+   *
+   * DataModel hook context: `this` is the feature system model
+   * (`item.system`), not the parent Item document.
+   *
+   * @this {SynthicideFeature}
+   * @param {object} changes
+   * @param {object} options
+   * @param {string} user
+   * @returns {Promise<boolean|void>}
+   * @override
+   */
   async _preUpdate(changes, options, user) {
     const allowed = await super._preUpdate?.(changes, options, user);
     if (allowed === false) return false;
 
-    if (changes.system) {
-      const subtypeChanged = !changes.system.traits && this._didSubtypeChange(changes.system);
-      if (subtypeChanged) {
-        const sample = {...this.system, ...changes.system};
-        changes.system.traits = SynthicideFeature.getDefaultTraits(sample);
-      }
+    const systemChanges = changes?.system;
+    if (!systemChanges) return allowed;
+
+    const subtypeChanged = this._didSubtypeChange(systemChanges);
+    if (subtypeChanged) {
+      const featureType = systemChanges.featureType ?? this.featureType;
+      const bioclassType = systemChanges.bioclassType ?? this.bioclassType;
+      const aspectType = systemChanges.aspectType ?? this.aspectType;
+      const traits = this.constructor.getDefaultTraits({
+        featureType,
+        bioclassType,
+        aspectType
+      });
+
+      foundry.utils.setProperty(
+        changes,
+        'system.traits',
+        foundry.utils.deepClone(traits || [])
+      );
     }
     return allowed;
   }
