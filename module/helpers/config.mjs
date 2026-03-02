@@ -3,9 +3,9 @@ const SYNTHICIDE = {};
 // Centralized debug flags for system modules
 SYNTHICIDE.debug = {
   /** Enable detailed modifier aggregation debugging in Actor */
-  synthicideModifiers: true,
+  synthicideModifiers: false,
   /** Enable detailed bioclass application debugging in Item-Bioclass */
-  synthicideBioclass: true,
+  synthicideBioclass: false,
   // Add more debug flags as needed
 };
 
@@ -181,7 +181,7 @@ SYNTHICIDE.attributeAbbreviations = {
 // key to the corresponding localization key.  This lets callers simply
 // iterate the entries or derive the list of valid types with
 // `Object.keys(SYNTHICIDE.traitTypes)` when constructing schemas.
-// The `'spell'` entry remains to handle legacy items.
+// `spell` remains as a valid trait subtype (spells are represented as traits).
 SYNTHICIDE.traitTypes = {
   bioclass: 'SYNTHICIDE.Item.Trait.Types.bioclass',
   attackSkill: 'SYNTHICIDE.Item.Trait.Types.attackSkill',
@@ -191,7 +191,7 @@ SYNTHICIDE.traitTypes = {
   mutation: 'SYNTHICIDE.Item.Trait.Types.mutation',
   generalTalent: 'SYNTHICIDE.Item.Trait.Types.generalTalent',
   naturalTalent: 'SYNTHICIDE.Item.Trait.Types.naturalTalent',
-  spell: 'SYNTHICIDE.Item.Trait.Types.spell' // legacy
+  spell: 'SYNTHICIDE.Item.Trait.Types.spell'
 };
 
 // Aspects are handled by the new Feature class but we provide a

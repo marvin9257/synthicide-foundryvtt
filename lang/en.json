@@ -153,15 +153,8 @@
           "mutation": "Mutation",
           "generalTalent": "General Talent",
           "naturalTalent": "Natural Talent",
-          "spell": "Spell (legacy)"
+          "spell": "Spell"
         }
-      },
-      "Spell": {
-        "FIELDS": {
-          "level": {"label": "Spell Level"}
-        },
-        "SpellLVL": "Level {level} Spells",
-        "AddLVL": "Add LVL {level}"
       },
       "Bioclass": {
         "Label": "Bioclass",
@@ -253,7 +246,6 @@
     },
     "Item": {
       "gear": "Gear",
-      "spell": "Spell",
       "bioclass": "Bioclass",
       "aspect": "Aspect",
       "trait": "Trait"

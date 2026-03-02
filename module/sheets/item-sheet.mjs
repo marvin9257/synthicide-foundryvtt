@@ -1,6 +1,6 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
-import { assignTabContext, buildBaseSheetContext, buildTabs } from './sheet-context.mjs';
+import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
 
 const { api, sheets } = foundry.applications;
 const DragDrop = foundry.applications.ux.DragDrop;
@@ -23,7 +23,6 @@ const ASPECT_PARTS = ['abilitiesAspect', 'traitsBioclass'];
 const ITEM_BASE_PARTS_BY_TYPE = {
   trait: ['attributesTrait'],
   gear: ['attributesGear'],
-  spell: ['attributesTrait'],
   bioclass: BIOCLASS_PARTS,
   aspect: ASPECT_PARTS,
 };
@@ -46,7 +45,6 @@ const ITEM_TAB_MAP = {
   general: { id: 'general', icon: 'fa-solid fa-info-circle', label: 'General' },
   attributesTrait: { id: 'attributes', icon: 'fa-solid fa-sliders', label: 'Attributes' },
   attributesGear: { id: 'attributes', icon: 'fa-solid fa-sliders', label: 'Attributes' },
-  attributesSpell: { id: 'attributes', icon: 'fa-solid fa-sliders', label: 'Attributes' },
   attributesBioclass: { id: 'attributes', icon: 'fa-solid fa-sliders', label: 'Attributes' },
   cyberneticsBioclass: { id: 'cybernetics', icon: 'fa-solid fa-microchip', label: 'Cybernetics' },
   traitsBioclass: { id: 'traits', icon: 'fa-solid fa-dna', label: 'Traits' },
@@ -59,10 +57,6 @@ const ITEM_TAB_MAP = {
  * @extends {ItemSheetV2}
  */
 export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2) {
-  constructor(options = {}) {
-    super(options);
-  }
-
   /** @override */
   static DEFAULT_OPTIONS = {
     classes: ['synthicide', 'item'],
@@ -201,10 +195,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     attributesGear: {
       template: 'systems/synthicide/templates/item/attribute-parts/gear.hbs',
     },
-    // Legacy spell patch; new items should use trait template.
-    attributesSpell: {
-      template: 'systems/synthicide/templates/item/attribute-parts/spell.hbs',
-    },
     attributesBioclass: {
       template:
         'systems/synthicide/templates/item/attribute-parts/bioclass-attributes.hbs',
@@ -267,19 +257,13 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
 
     switch (partId) {
       case 'general':
-        // Enrich description info for display
-        // Enrichment turns text like `[[/r 1d20]]` into buttons
-        context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          this.item.system.description,
-          {
-            // Whether to show secret blocks in the finished html
-            secrets: this.document.isOwner,
-            // Data to fill in for inline rolls
-            rollData: this.item.getRollData(),
-            // Relative UUID resolution
-            relativeTo: this.item,
-          }
-        );
+        // Use shared helper to keep enrich options consistent across sheets.
+        context.enrichedDescription = await enrichSheetHtml({
+          html: this.item.system.description,
+          document: this.item,
+          isOwner: this.document.isOwner,
+          rollData: this.item.getRollData(),
+        });
         break;
       case 'effects':
         // Prepare active effects for easier access

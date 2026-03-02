@@ -84,25 +84,18 @@ export default class SynthicideFeature extends SynthicideItemBase {
   }
 
   /**
-   * Treat either a typed feature or a legacy bioclass item as a bioclass.
+   * Whether this data model represents a bioclass feature subtype.
+   * Also returns true when attached to a concrete `bioclass` item.
    */
   get isBioclass() {
     return this.featureType === 'bioclass' || this.parent?.type === 'bioclass';
   }
   /**
-   * Likewise recognise the new "aspect" item type in addition to
-   * the feature/subtype form.
+   * Whether this data model represents an aspect feature subtype.
+   * Also returns true when attached to a concrete `aspect` item.
    */
   get isAspect() {
     return this.featureType === 'aspect' || this.parent?.type === 'aspect';
-  }
-
-  /**
-   * Retrieve a localized title for this feature depending on subtype.
-   */
-  get localizedTitle() {
-    const key = `SYNTHICIDE.Item.Feature.Title.${this.featureType}`;
-    return game.i18n.localize(key);
   }
 
   /**
@@ -282,11 +275,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
     await this._cleanupOnDelete(actor);
 
     const debug = Boolean(SYNTHICIDE.debug?.synthicideModifiers);
-    if (typeof actor.scheduleModifierAggregation === 'function') {
-      await actor.scheduleModifierAggregation({ debug });
-    } else if (typeof actor.aggregateAndApplyItemModifiers === 'function') {
-      await actor.aggregateAndApplyItemModifiers({ debug });
-    }
+    actor.aggregateAndApplyItemModifiers({ debug });
   }
 
   async _preUpdate(changes, options, user) {

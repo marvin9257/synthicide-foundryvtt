@@ -36,7 +36,8 @@ export default class SynthicideGear extends SynthicideItemBase {
       }),
     });
 
-    schema.formula = new fields.StringField({ blank: true });
+    // Derived in prepareDerivedData — never needs to be stored in the database.
+    schema.formula = new fields.StringField({ blank: true, initial: '' }, { persisted: false });
 
     return schema;
   }

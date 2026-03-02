@@ -104,3 +104,26 @@ export function buildTabs({
     return tabs;
   }, {});
 }
+
+/**
+ * Enrich HTML for sheet display with consistent defaults.
+ *
+ * @param {object} params
+ * @param {string} [params.html]
+ * @param {Document} params.document
+ * @param {boolean} params.isOwner
+ * @param {Record<string, unknown>} [params.rollData]
+ * @returns {Promise<string>}
+ */
+export async function enrichSheetHtml({
+  html = '',
+  document,
+  isOwner,
+  rollData,
+}) {
+  return foundry.applications.ux.TextEditor.implementation.enrichHTML(html, {
+    secrets: isOwner,
+    rollData,
+    relativeTo: document,
+  });
+}

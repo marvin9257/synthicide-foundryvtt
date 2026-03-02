@@ -62,16 +62,9 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     const allowed = await super._preUpdate?.(changed, options, user);
     if (allowed === false) return false;
 
-    // Clamp cynicism and resolve values for sharper actors
-    if (foundry.utils.hasProperty(changed, 'system.cynicism')) {
-      const nextCynicism = Number(foundry.utils.getProperty(changed, 'system.cynicism') ?? 0);
-      foundry.utils.setProperty(changed, 'system.cynicism', Math.max(0, Math.min(10, nextCynicism)));
-    }
-    if (foundry.utils.hasProperty(changed, 'system.resolve')) {
-      const nextResolve = Number(foundry.utils.getProperty(changed, 'system.resolve') ?? 0);
-      foundry.utils.setProperty(changed, 'system.resolve', Math.max(0, Math.min(5, nextResolve)));
-    }
     // Clamp hitPoints.value to hitPoints.max
+    // (cynicism/resolve are clamped by their schema field min/max; hitPoints.max
+    //  is persisted:false so Foundry can't enforce it at update time, hence manual clamp)
     if (foundry.utils.hasProperty(changed, 'system.hitPoints.value')) {
       const nextHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.value') ?? 0);
       // Try to get max from changed or from this

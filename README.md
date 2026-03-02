@@ -83,6 +83,16 @@ In `_configureRenderOptions`:
 
 - Use `ITEM_BASE_PARTS_BY_TYPE` as the single source of part mappings
 
+### Shared HTML enrichment helper
+
+For sheet text enrichment, use `enrichSheetHtml(...)` from `module/sheets/sheet-context.mjs` instead of calling `TextEditor.implementation.enrichHTML(...)` directly in each sheet.
+
+Why:
+
+- Keeps `secrets`, `rollData`, and `relativeTo` handling consistent.
+- Reduces duplication in actor/item sheet part preparation.
+- Makes future tabs easier to add without repeating boilerplate.
+
 ## Developer Notes: Modifier Aggregation Queue
 
 The actor modifier pipeline is intentionally queued so bursts of item lifecycle hooks produce one aggregation pass.

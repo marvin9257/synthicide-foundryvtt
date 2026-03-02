@@ -1,6 +1,6 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
-import { assignTabContext, buildBaseSheetContext, buildTabs } from './sheet-context.mjs';
+import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
 const { api, sheets } = foundry.applications;
 
 /**
@@ -175,19 +175,13 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     switch (partId) {
       case 'biography':
-        // Enrich biography info for display
-        // Enrichment turns text like `[[/r 1d20]]` into buttons
-        context.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          this.actor.system.biography,
-          {
-            // Whether to show secret blocks in the finished html
-            secrets: this.document.isOwner,
-            // Data to fill in for inline rolls
-            rollData: this.actor.getRollData(),
-            // Relative UUID resolution
-            relativeTo: this.actor,
-          }
-        );
+        // Use shared helper to keep enrich options consistent across sheets.
+        context.enrichedBiography = await enrichSheetHtml({
+          html: this.actor.system.biography,
+          document: this.actor,
+          isOwner: this.document.isOwner,
+          rollData: this.actor.getRollData(),
+        });
         break;
       case 'effects':
         // Prepare active effects
@@ -241,21 +235,21 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       9: [],
     };
 
+    const actorRollData = this.actor.getRollData();
+
     // Iterate through items, allocating to containers
     for (let i of this.document.items) {
       if (i.type === 'gear') {
         gear.push(i);
       }
       else if (i.type === 'trait') {
-        // Enrich description for display
-        i.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          i.system.description || '',
-          {
-            secrets: this.document.isOwner,
-            rollData: this.actor.getRollData(),
-            relativeTo: this.actor
-          }
-        );
+        // Use shared helper to keep enrich options consistent across sheets.
+        i.enrichedDescription = await enrichSheetHtml({
+          html: i.system.description || '',
+          document: this.actor,
+          isOwner: this.document.isOwner,
+          rollData: actorRollData,
+        });
         // Separate bioclass traits from those that have levels
         if (i.system.traitType === 'bioclass') {
           bioclassTraits.push(i);
@@ -417,8 +411,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       // These data attributes are reserved for the action handling
       if (['action', 'documentClass', 'tooltip'].includes(dataKey)) continue;
       // Nested properties require dot notation in the HTML, e.g. anything with `system`
-      // An example exists in spells.hbs, with `data-system.spell-level`
-      // which turns into the dataKey 'system.spellLevel'
+      // For example, `data-system.level` becomes the dataKey 'system.level'.
       foundry.utils.setProperty(docData, dataKey, value);
     }
 
@@ -932,3 +925,5 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     }
   }
 }
+
+

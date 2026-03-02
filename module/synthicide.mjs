@@ -77,16 +77,12 @@ Hooks.once('init', function () {
     trait: models.SynthicideTrait,
     bioclass: models.SynthicideBioclass,
     aspect: models.SynthicideAspect,
-    // legacy: spell items inherit from trait
-    spell: models.SynthicideSpell,
   };
   CONFIG.Item.typeClasses = {
     bioclass: models.SynthicideBioclass,
     gear: models.SynthicideGear,
     trait: models.SynthicideTrait,
     aspect: models.SynthicideAspect,
-    // legacy
-    spell: models.SynthicideSpell,
     // Add other item types as needed
   };
 
@@ -102,7 +98,7 @@ Hooks.once('init', function () {
   collections.Actors.unregisterSheet('core', sheets.ActorSheet);
   collections.Actors.unregisterSheet('core', foundry.applications.sheets.ActorSheetV2)
   collections.Actors.registerSheet('synthicide', SynthicideActorSheet, {
-    types:["sharper", "NPC"],
+    types:["sharper", "npc"],
     makeDefault: true,
     label: 'SYNTHICIDE.SheetLabels.Actor',
   });

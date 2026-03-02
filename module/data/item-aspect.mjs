@@ -82,14 +82,6 @@ export default class SynthicideAspect extends SynthicideFeature {
     return allowed;
   }
 
-  /**
-   * Convenience getter used throughout the codebase when the specific
-   * flavour of feature is needed.
-   */
-  get aspectType() {
-    return this.system?.featureType;
-  }
-
   // future custom logic (default attributes, trait presets, etc.)
   // can be added here without touching the shared base.
 }
