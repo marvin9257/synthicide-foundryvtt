@@ -25,6 +25,7 @@ export default class SynthicideAspect extends SynthicideFeature {
   static defineSchema() {
     const fields = foundry.data.fields;
     const schema = super.defineSchema();
+    const defaultPreset = SYNTHICIDE.getFeaturePreset('aspect', this.DEFAULT_ASPECT);
 
     schema.featureType = new fields.StringField({
       required: true,
@@ -45,15 +46,30 @@ export default class SynthicideAspect extends SynthicideFeature {
     });
     schema.traits.initial = foundry.utils.deepClone(aspectDefaults);
 
-    // A list of special abilities granted by this aspect.  Stored as simple
-    // strings for now; the UI may later render these as more structured
-    // entries or link to power documents.
+    // A list of special abilities granted by this aspect. Each is an object with a description property.
     schema.abilities = new fields.ArrayField(
-      new fields.StringField({ required: true, initial: '' }),
-      { initial: [] }
+      new fields.SchemaField({
+        description: new fields.StringField({ required: true, initial: '' })
+      }),
+      { initial: foundry.utils.deepClone(defaultPreset.abilities || []) }
     );
 
+    const description = defaultPreset?.description || '';
+    schema.description.initial = description.startsWith('SYNTHICIDE.')
+      ? game.i18n.localize(description)
+      : description;
+
     return schema;
+  }
+
+  /**
+   * Resolve effective preset for the current or provided aspect type.
+   * @param {{aspectType?: string}} [options]
+   * @returns {{abilities?: object[], description?: string}}
+   */
+  _getEffectiveAspectPreset({ aspectType } = {}) {
+    const type = aspectType || this.aspectType || this.constructor.DEFAULT_ASPECT;
+    return SYNTHICIDE.getFeaturePreset('aspect', type) || { abilities: [], description: '' };
   }
 
   /**
@@ -67,8 +83,14 @@ export default class SynthicideAspect extends SynthicideFeature {
 
     const nextAspectType = changes.system?.aspectType;
     if (nextAspectType && nextAspectType !== this.aspectType) {
-      const preset = SYNTHICIDE.getFeaturePreset('aspect', nextAspectType);
+      const preset = this._getEffectiveAspectPreset({ aspectType: nextAspectType });
       foundry.utils.setProperty(changes, 'system.abilities', foundry.utils.deepClone(preset.abilities || []));
+      const description = preset.description || '';
+      foundry.utils.setProperty(
+        changes,
+        'system.description',
+        description.startsWith('SYNTHICIDE.') ? game.i18n.localize(description) : description
+      );
     }
     return allowed;
   }

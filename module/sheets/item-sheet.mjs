@@ -372,7 +372,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
   static async _onAddAbility(event) {
     event.preventDefault();
     await mutateSystemArray(this.item, 'abilities', abilities => {
-      abilities.push('');
+      abilities.push({ description: '' });
     });
   }
 

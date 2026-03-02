@@ -15,7 +15,7 @@
     {{#if system.abilities.length}}
       {{#each system.abilities as |ability i|}}
         <li class='ability-row' style='display:flex; align-items:center; gap:0.5rem;'>
-          <input type='text' name='system.abilities.{{i}}' value='{{ability}}' style='flex:1;' />
+          <textarea name='system.abilities.{{i}}.description' rows='4' cols="25">{{~ability.description~}}</textarea>
           <button type='button' data-action='removeAbility' data-index='{{i}}'>
             <i class='fas fa-trash'></i>
           </button>

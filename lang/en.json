@@ -79,7 +79,8 @@
         "Abilities": "Abilities",
         "NoAbilities": "No abilities found.",
         "TraitName": "Trait Name",
-        "CreateAbility": "Add Ability"
+        "CreateAbility": "Add Ability",
+        "Traits": "Traits"
       },
       "Attributes": {
         "Actions": "ACTIONS",
@@ -179,6 +180,12 @@
         "Scraphead": "Scraphead",
         "Hardshell": "Hardshell",
         "Rigfiend": "Rigfiend",
+        "PresetDescriptions": {
+          "skinbag": "[Placeholder] Skinbag bioclass description.",
+          "scraphead": "[Placeholder] Scraphead bioclass description.",
+          "hardshell": "[Placeholder] Hardshell bioclass description.",
+          "rigfiend": "[Placeholder] Rigfiend bioclass description."
+        },
         "Trait": {
           "TechlessWill": {
             "Name": "Techless Will",
@@ -230,6 +237,13 @@
         "AddAbility": "Add Ability",
         "NoAbilities": "No abilities found.",
         "TraitName": "Trait Name",
+        "PresetDescriptions": {
+          "brainiac": "Gifted with prodigal intellect, you take great pride in your research and talent.",
+          "bulbhead": "You are a psychic that struggles to function without Illuminix, an addictive and illegal substance traded underground.",
+          "leader": "You empower everyone around you; the universe just can't keep you down.",
+          "scoundrel": "You are a tricky individual who favors the element of surprise. ",
+          "thug": "Death has visited you more times than you can count, yet your innate martial prowess has kept you alive."
+        },
         "Types": {
           "brainiac": "Brainiac",
           "bulbhead": "Bulbhead",

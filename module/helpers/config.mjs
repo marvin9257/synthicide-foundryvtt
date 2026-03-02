@@ -24,6 +24,7 @@ SYNTHICIDE.bioclassTypes = {
 
 SYNTHICIDE.bioclassPresets = {
   skinbag: {
+    description: 'SYNTHICIDE.Item.Bioclass.PresetDescriptions.skinbag',
     bodyType: 'Organic', // key, localize at display
     brainType: 'Organic', // key, localize at display
     bodySlots: 0,
@@ -51,6 +52,7 @@ SYNTHICIDE.bioclassPresets = {
     ],
   },
   scraphead: {
+    description: 'SYNTHICIDE.Item.Bioclass.PresetDescriptions.scraphead',
     bodyType: 'Organic', // key, localize at display
     brainType: 'Rigged', // key, localize at display
     bodySlots: 0,
@@ -78,6 +80,7 @@ SYNTHICIDE.bioclassPresets = {
     ],
   },
   hardshell: {
+    description: 'SYNTHICIDE.Item.Bioclass.PresetDescriptions.hardshell',
     bodyType: 'Rigged', // key, localize at display
     brainType: 'Organic', // key, localize at display
     bodySlots: 2,
@@ -101,6 +104,7 @@ SYNTHICIDE.bioclassPresets = {
     ],
   },
   rigfiend: {
+    description: 'SYNTHICIDE.Item.Bioclass.PresetDescriptions.rigfiend',
     bodyType: 'Rigged', // key, localize at display
     brainType: 'Rigged', // key, localize at display
     bodySlots: 4,
@@ -127,6 +131,7 @@ SYNTHICIDE.bioclassPresets = {
 
 SYNTHICIDE.getBioclassPreset = (bioclassType) => {
   const preset = SYNTHICIDE.bioclassPresets[bioclassType] ?? SYNTHICIDE.bioclassPresets.skinbag;
+  const description = preset.description ?? '';
   // Ensure traits have name and description fields for schema validation
   const traits = (preset.traits || []).map(trait => ({
     sort: trait.sort,
@@ -134,7 +139,23 @@ SYNTHICIDE.getBioclassPreset = (bioclassType) => {
     name: trait.name ?? '',
     description: trait.description ?? ''
   }));
-  return { ...preset, traits };
+  return { ...preset, description, traits };
+};
+
+// Returns a normalized aspect preset for a given aspect type
+SYNTHICIDE.getAspectPreset = (aspectType) => {
+  const preset = SYNTHICIDE.aspectPresets[aspectType] ?? { traits: [], abilities: [] };
+  const description = preset.description ?? '';
+  // Ensure abilities are always objects with a description property
+  const abilities = (preset.abilities || []).map(a =>
+    typeof a === 'string' ? { description: a } : (a.description ? a : { description: String(a) })
+  );
+  const traits = (preset.traits || []).map(trait => ({
+    sort: trait.sort,
+    name: trait.name ?? '',
+    description: trait.description ?? ''
+  }));
+  return { ...preset, description, abilities, traits };
 };
 
 // Unified preset getter for any feature subtype.  `type` should be
@@ -146,7 +167,7 @@ SYNTHICIDE.getFeaturePreset = (type, subtype) => {
     case 'bioclass':
       return SYNTHICIDE.getBioclassPreset(subtype);
     case 'aspect':
-      return SYNTHICIDE.aspectPresets[subtype] || { traits: [] };
+      return SYNTHICIDE.getAspectPreset(subtype) || { traits: [] };
     default:
       return { traits: [] };
   }
@@ -208,42 +229,61 @@ SYNTHICIDE.aspectTypes = {
 // fleshed out as the schema for aspects is determined.
 SYNTHICIDE.aspectPresets = {
   brainiac: {
+    description: 'SYNTHICIDE.Item.Aspect.PresetDescriptions.brainiac',
     abilities: [
-      'Select 3 knowledge focuses and gain 2 powers from each',
-      'After creation purchase new knowledge focuses for 1 less TP'
+      { description: 'So long as requirements are met, select 3 knowledge focuses and gain 2 powers from each.'},
+      { description: 'After character creation, you may purchase new knowledge focuses with 1 less trait point.'}
     ],
     traits: [
-      { sort: 10, name: 'Gifted with prodigal intellect', description: '' }
+      { sort: 10, name: 'Attribute Increase', description: '+2 Operation' },
+      { sort: 20, name: 'Attribute Penalty (Mandatory)', description: '-1 to any one attribute except Operation'}
     ]
   },
   bulbhead: {
+    description: 'SYNTHICIDE.Item.Aspect.PresetDescriptions.bulbhead',
     abilities: [
-      'Gain any 2 psychic powers (requirements permitting)',
-      'Purchasing new psychic powers costs 1 less TP'
+      { description: 'Gain any 2 psychic powers, so long as you meet the requirements.'},
+      { description: 'You are a psychic that struggles to function without Illuminix, an addictive and illegal substance traded underground. Every day you must consume doses of Illuminix equal to the highest level psychic power you want to use (1 dose to access 1st level powers, 4 doses for 4th level powers, etc). A Bulbhead who fails to score a dose of Illuminix is wracked with withdrawal, unable to access psychic powers and suffering -2 to every attribute. A single dose lifts the penalty.'},
+      { description: 'After character creation, you may purchase new psychic powers with 1 less trait point.'}
     ],
-    traits: []
+    traits: [
+      { sort: 10, name: 'Attribute Increase', description: '+2 Influence' },
+      { sort: 20, name: 'Attribute Penalty (Mandatory)', description: '-1 to any one attribute except Influence' }
+    ]
   },
   leader: {
+    description: 'SYNTHICIDE.Item.Aspect.PresetDescriptions.leader',
     abilities: [
-      'Gain any 2 tactical powers (requirements permitting)',
-      'New tactical powers cost 1 less TP'
+      { description: 'Gain any 2 tactical powers for which you meet the requirements.' },
+      { description: 'New tactical powers cost 1 less TP' }
     ],
-    traits: []
+    traits: [
+      { sort: 10, name: 'Attribute Increase', description: '+2 Awareness' },
+      { sort: 20, name: 'Attribute Penalty (Mandatory)', description: '-1 to any one attribute except Awareness or Nerve' }
+    ]
   },
   scoundrel: {
+    description: 'SYNTHICIDE.Item.Aspect.PresetDescriptions.scoundrel',
     abilities: [
-      'Gain access to any 1 knowledge focus you meet requirements for',
-      'Battle Opportunist ability (free move when gaining advantage/setup)'
+      { description: 'Gain access to any 1 knowledge focus you meet requirements for' },
+      { description: 'Battle Opportunist ability:  You also gain the Battle Opportunist ability, which grants the following: 1) Add +2 DMG to attacks against overpowered and unaware targets, 2) After or just before you gain advantage, you may move 4 squares at no AP cost, 3) If you choose the attack bonus effect from gain advantage add +3 ATT to your attack roll instead of +2., and 4) Battle Opportunist can be improved via general traits purchased at 4th and 7th level.'}
     ],
-    traits: []
+    traits: [
+      { sort: 10, name: 'Attribute Increase', description: '+1 Influence, +1 Speed' },
+      { sort: 20, name: 'Attribute Penalty (Mandatory)', description: '-1 to any one attribute except Influence, Operation, or Speed' }
+    ]
   },
   thug: {
+    description: 'SYNTHICIDE.Item.Aspect.PresetDescriptions.thug',
     abilities: [
-      'Gain 1 weapon proficiency and 1 battle power',
-      'Extra max HP equal to HP per level',
-      'New battle powers cost 1 less TP'
+      { description: 'You gain 1 weapon proficiency and 1 attack skill.' },
+      { description: 'You also gain an extra 4 maximum hit points.' },
+      { description: 'After character creation, you may purchase new attack skills with 1 less trait point.' }
     ],
-    traits: []
+    traits: [
+      { sort: 10, name: 'Attribute Increase', description: '+1 Combat, +1 Toughness' },
+      { sort: 20, name: 'Attribute Penalty (Mandatory)', description: '-1 to any one attribute except Combat or Toughness' }
+    ]
   }
 };
 

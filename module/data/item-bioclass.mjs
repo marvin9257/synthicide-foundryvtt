@@ -43,6 +43,11 @@ export default class SynthicideBioclass extends SynthicideFeature {
     schema.bodySlots = new fields.NumberField({ required: true, initial: defaultPreset.bodySlots });
     schema.brainSlots = new fields.NumberField({ required: true, initial: defaultPreset.brainSlots });
 
+    const description = defaultPreset?.description || '';
+    schema.description.initial = description.startsWith('SYNTHICIDE.')
+      ? game.i18n.localize(description)
+      : description;
+
     return schema;
   }
 
@@ -63,6 +68,12 @@ export default class SynthicideBioclass extends SynthicideFeature {
       foundry.utils.setProperty(changes, 'system.startingAttributes', foundry.utils.deepClone(preset.startingAttributes));
       foundry.utils.setProperty(changes, 'system.bodySlots', preset.bodySlots);
       foundry.utils.setProperty(changes, 'system.brainSlots', preset.brainSlots);
+      const description = preset.description || '';
+      foundry.utils.setProperty(
+        changes,
+        'system.description',
+        description.startsWith('SYNTHICIDE.') ? game.i18n.localize(description) : description
+      );
     }
     return allowed;
   }
