@@ -37,6 +37,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
       required: true,
       choices: [
         'bioclass',
+        'aspect',
         'attackSkill',
         'knowledgeFocus',
         'psychicPower',

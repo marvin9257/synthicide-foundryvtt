@@ -53,11 +53,11 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
    * Trigger aggregation and application of all item modifiers on the parent actor.
    * This should be called in item hooks when an item changes.
    */
-  triggerActorModifierAggregation() {
+  triggerActorModifierAggregation({ render = true } = {}) {
     const actor = this.parent?.actor;
     if (!actor) return;
     const debug = Boolean(SYNTHICIDE.debug?.synthicideModifiers);
-    actor.aggregateAndApplyItemModifiers({ debug });
+    actor.aggregateAndApplyItemModifiers({ debug, render });
   }
 
 
@@ -67,7 +67,7 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
   async _onCreate(data, options, userId) {
     super._onCreate(data, options, userId);
     if (game.userId !== userId) return;
-    this.triggerActorModifierAggregation();
+    this.triggerActorModifierAggregation({ render: options?.render ?? true });
   }
 
 
@@ -79,7 +79,7 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
     if (game.userId !== userId) return;
     // Only trigger aggregation if system.modifiers changed
     if (changed?.system?.modifiers) {
-      this.triggerActorModifierAggregation();
+      this.triggerActorModifierAggregation({ render: options?.render ?? true });
     }
   }
 
@@ -90,6 +90,6 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
   async _onDelete(options, userId) {
     super._onDelete(options, userId);
     if (game.userId !== userId) return;
-    this.triggerActorModifierAggregation();
+    this.triggerActorModifierAggregation({ render: options?.render ?? true });
   }
 }

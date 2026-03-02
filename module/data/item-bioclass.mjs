@@ -57,16 +57,16 @@ export default class SynthicideBioclass extends SynthicideFeature {
     const allowed = await super._preUpdate?.(changes, options, user);
     if (allowed === false) return false;
 
-    const bioclassType = changes.system?.bioclassType;
-    if (bioclassType) {
-      const preset = SYNTHICIDE.getFeaturePreset('bioclass', bioclassType);
+    const nextBioclassType = changes.system?.bioclassType;
+    if (nextBioclassType && nextBioclassType !== this.bioclassType) {
+      const preset = SYNTHICIDE.getFeaturePreset('bioclass', nextBioclassType);
       foundry.utils.setProperty(changes, 'system.startingAttributes', foundry.utils.deepClone(preset.startingAttributes));
       foundry.utils.setProperty(changes, 'system.bodySlots', preset.bodySlots);
       foundry.utils.setProperty(changes, 'system.brainSlots', preset.brainSlots);
 
       const traitDefaults = SynthicideFeature.getDefaultTraits({
         featureType: 'bioclass',
-        bioclassType
+        bioclassType: nextBioclassType
       });
       foundry.utils.setProperty(changes, 'system.traits', foundry.utils.deepClone(traitDefaults));
     }
@@ -90,7 +90,7 @@ export default class SynthicideBioclass extends SynthicideFeature {
    * @param {Actor} owningActor
    * @param {Array} [debugReport] Optional array to push debug entries into.
    */
-  async _syncBioclassAttributes(owningActor, debugReport) {
+  async _syncBioclassAttributes(owningActor, debugReport, { render = true } = {}) {
     if (!owningActor) return;
 
     const debugBioclass = Boolean(SYNTHICIDE.debug?.synthicideBioclass);
@@ -116,7 +116,7 @@ export default class SynthicideBioclass extends SynthicideFeature {
       updates['system.hitPoints.perLevel'] = Number(starting.hpPerLevel ?? 0);
     }
     if (Object.keys(updates).length) {
-      await owningActor.update(updates);
+      await owningActor.update(updates, { render });
       if (debugBioclass && Array.isArray(debugReport)) {
         debugReport.push({
           stage: '_syncBioclassAttributes',
@@ -135,7 +135,7 @@ export default class SynthicideBioclass extends SynthicideFeature {
    * @param {Actor} owningActor
    * @protected
    */
-  async _cleanupOnDelete(owningActor) {
+  async _cleanupOnDelete(owningActor, { render = true } = {}) {
     if (!owningActor) return;
 
     const updates = {};
@@ -160,7 +160,7 @@ export default class SynthicideBioclass extends SynthicideFeature {
       updates['system.brainSlots'] = 0;
     }
 
-    await owningActor.update(updates);
+    await owningActor.update(updates, { render });
   }
 
   /**

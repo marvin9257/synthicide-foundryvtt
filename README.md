@@ -93,6 +93,26 @@ Why:
 - Reduces duplication in actor/item sheet part preparation.
 - Makes future tabs easier to add without repeating boilerplate.
 
+### Feature Replacement Flags (Bioclass / Aspect)
+
+Actor-sheet replacement drop handlers use two custom operation flags passed
+through Foundry document operations:
+
+- `synthicideSkipFeatureCleanup`
+	- Applied when deleting the outgoing feature during replacement.
+	- Prevents old-feature `_onDelete` cleanup from racing with incoming feature apply.
+- `synthicideSkipFeatureApply`
+	- Applied when creating the incoming feature during replacement.
+	- Prevents automatic `_onCreate` apply so the handler can explicitly `await`
+		one `applyToActor(...)` pass before the final render.
+
+Why this exists:
+
+- Without these flags, replacement can trigger duplicate lifecycle side effects
+	(old cleanup + new apply) and produce transient stale trait UI timing.
+- With these flags, replacement has a single deterministic apply flow and one
+	final render after data is fully synchronized.
+
 
 # Getting Help
 

@@ -26,6 +26,12 @@ export default class SynthicideAspect extends SynthicideFeature {
     const fields = foundry.data.fields;
     const schema = super.defineSchema();
 
+    schema.featureType = new fields.StringField({
+      required: true,
+      choices: ['aspect'],
+      initial: 'aspect'
+    });
+
     schema.aspectType = new fields.StringField({
       required: true,
       choices: SYNTHICIDE.aspectTypes,
@@ -51,16 +57,6 @@ export default class SynthicideAspect extends SynthicideFeature {
   }
 
   /**
-   * Ensure newly created aspects default to the correct subtype.
-   * The legacy `bioclass` class relied on a separate item type; here
-   * we simply enforce the `featureType` field value.
-   */
-  static async create(data = {}, options = {}) {
-    data = foundry.utils.mergeObject({ system: { featureType: 'aspect' } }, data, { inplace: false });
-    return super.create(data, options);
-  }
-
-  /**
    * When the aspect type changes we need to repopulate traits and
    * abilities from the preset.  Keeping this in the data model means
    * sheets stay simple.
@@ -69,12 +65,13 @@ export default class SynthicideAspect extends SynthicideFeature {
     const allowed = await super._preUpdate?.(changes, options, user);
     if (allowed === false) return false;
 
-    if (changes.system?.aspectType) {
-      const preset = SYNTHICIDE.getFeaturePreset('aspect', changes.system.aspectType);
+    const nextAspectType = changes.system?.aspectType;
+    if (nextAspectType && nextAspectType !== this.aspectType) {
+      const preset = SYNTHICIDE.getFeaturePreset('aspect', nextAspectType);
       // refresh traits using shared helper
       const traitDefaults = SynthicideFeature.getDefaultTraits({
         featureType: 'aspect',
-        aspectType: changes.system.aspectType
+        aspectType: nextAspectType
       });
       foundry.utils.setProperty(changes, 'system.traits', foundry.utils.deepClone(traitDefaults));
       foundry.utils.setProperty(changes, 'system.abilities', foundry.utils.deepClone(preset.abilities || []));

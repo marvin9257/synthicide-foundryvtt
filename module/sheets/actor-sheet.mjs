@@ -13,7 +13,7 @@ const { api, sheets } = foundry.applications;
  * - Any part listed here should also exist in static PARTS.
  */
 const ACTOR_PARTS_BY_TYPE = {
-  sharper: ['attributes', 'bioclass', 'gear', 'traits', 'cybernetics', 'biography', 'effects'],
+  sharper: ['attributes', 'bioclass', 'aspect', 'gear', 'traits', 'cybernetics', 'biography', 'effects'],
   npc: ['attributes', 'gear', 'biography', 'effects'],
 };
 
@@ -36,6 +36,7 @@ const ACTOR_TAB_MAP = {
   gear: { id: 'gear', icon: ICON_MAP.gear, label: 'Gear' },
   traits: { id: 'traits', icon: ICON_MAP.trait, label: 'Traits' },
   bioclass: { id: 'bioclass', icon: ICON_MAP.bioclass, label: 'Bioclass' },
+  aspect: { id: 'aspect', icon: ICON_MAP.aspect, label: 'Aspect' },
   cybernetics: { id: 'cybernetics', icon: ICON_MAP.cybernetics, label: 'Cybernetics' },
   biography: { id: 'biography', icon: ICON_MAP.biography, label: 'Biography' },
   effects: { id: 'effects', icon: ICON_MAP.effects, label: 'Effects' },
@@ -113,6 +114,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     traits: {
       template: 'systems/synthicide/templates/actor/traits.hbs',
       scrollable: [""],
+    },
+    aspect: {
+      template: 'systems/synthicide/templates/actor/aspect-abilities.hbs',
+      scrollable: [""]
     },
     cybernetics: {
       template: 'systems/synthicide/templates/actor/cybernetics.hbs',
@@ -222,6 +227,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     const gear = [];
     let bioclass = null; // reassigned when a bioclass item is found
     let aspect = null;   // assigned when an aspect item is present
+    const aspectTraits = [];
     const bioclassTraits = [];
     const traitsByLevel = {
       0: [],
@@ -254,6 +260,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         // Separate bioclass traits from those that have levels
         if (i.system.traitType === 'bioclass') {
           bioclassTraits.push(i);
+        } else if (i.system.traitType === 'aspect') {
+          aspectTraits.push(i);
         } else {
           const lvl = Number(i.system.level ?? 0);
           if (!traitsByLevel[lvl]) traitsByLevel[lvl] = [];
@@ -279,6 +287,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     context.traitsByLevel = traitsByLevel;
     context.bioclass = bioclass;
     context.aspect = aspect;
+    context.aspectTraits = aspectTraits.sort((a, b) => (a.sort || 0) - (b.sort || 0));
   }
 
   /**
@@ -414,6 +423,14 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       // Nested properties require dot notation in the HTML, e.g. anything with `system`
       // For example, `data-system.level` becomes the dataKey 'system.level'.
       foundry.utils.setProperty(docData, dataKey, value);
+    }
+
+    // Ensure feature subtypes are explicitly stamped when creating from actor controls.
+    // This keeps creation deterministic and avoids relying on inherited defaults.
+    if (docData.type === 'bioclass' && !foundry.utils.getProperty(docData, 'system.featureType')) {
+      foundry.utils.setProperty(docData, 'system.featureType', 'bioclass');
+    } else if (docData.type === 'aspect' && !foundry.utils.getProperty(docData, 'system.featureType')) {
+      foundry.utils.setProperty(docData, 'system.featureType', 'aspect');
     }
 
     // Finally, create the embedded document!
@@ -840,28 +857,50 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   /**
    * Handle dropping an aspect feature.  We treat aspects much like
    * bioclasses but ensure only one aspect may exist at a time.
+    *
+    * Operation flags used here:
+    * - synthicideSkipFeatureCleanup: skip cleanup on the outgoing feature delete
+    * - synthicideSkipFeatureApply: skip automatic apply on incoming feature create
+    *
+    * We then explicitly await applyToActor once to avoid duplicate side effects
+    * and to keep one final sheet refresh with fully up-to-date trait data.
    * @param {object} aspectEntry
    * @param {object[]} otherEntries
    */
   async _handleAspectDrop(aspectEntry, otherEntries) {
     const oldAspectIds = this.actor.itemTypes.aspect.map(a => a.id);
     if (oldAspectIds.length) {
-      await this.actor.deleteEmbeddedDocuments('Item', oldAspectIds);
+      await this.actor.deleteEmbeddedDocuments('Item', oldAspectIds, {
+        synthicideSkipFeatureCleanup: true,
+        render: false,
+      });
     }
 
     const aspectData = this._coerceFeatureEntry(aspectEntry, 'aspect');
-    const [createdAspect] = await this.actor.createEmbeddedDocuments('Item', [aspectData]);
+    const [createdAspect] = await this.actor.createEmbeddedDocuments('Item', [aspectData], {
+      render: false,
+      synthicideSkipFeatureApply: true,
+    });
     const aspectItem = this.actor.items.get(createdAspect.id);
 
-    if (otherEntries.length) {
-      await this.actor.createEmbeddedDocuments('Item', otherEntries);
+    const aspectModel = aspectItem?.system;
+    if (typeof aspectModel?.applyToActor === 'function') {
+      await aspectModel.applyToActor(this.actor, { render: false });
     }
+
+    if (otherEntries.length) {
+      await this.actor.createEmbeddedDocuments('Item', otherEntries, { render: false });
+    }
+    await this.render({ force: true });
     return [aspectItem];
   }
 
   /**
    * Handle dropping a bioclass item.
    * UI only triggers bioclass creation/deletion; trait logic is handled in item hooks.
+    *
+    * See notes in _handleAspectDrop for synthicideSkipFeatureCleanup /
+    * synthicideSkipFeatureApply rationale.
    * @param {object} bioclassEntry - The bioclass item data
    * @param {object[]} otherEntries - Other item data to create
    * @returns {Promise<Item[]>}
@@ -869,16 +908,28 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   async _handleBioclassDrop(bioclassEntry, otherEntries) {
     const oldBioclassIds = this.actor.itemTypes.bioclass.map(b => b.id);
     if (oldBioclassIds.length) {
-      await this.actor.deleteEmbeddedDocuments('Item', oldBioclassIds);
+      await this.actor.deleteEmbeddedDocuments('Item', oldBioclassIds, {
+        synthicideSkipFeatureCleanup: true,
+        render: false,
+      });
     }
 
     const bioclassData = this._coerceFeatureEntry(bioclassEntry, 'bioclass');
-    const [createdBioclass] = await this.actor.createEmbeddedDocuments('Item', [bioclassData]);
+    const [createdBioclass] = await this.actor.createEmbeddedDocuments('Item', [bioclassData], {
+      render: false,
+      synthicideSkipFeatureApply: true,
+    });
     const bioclassItem = this.actor.items.get(createdBioclass.id);
 
-    if (otherEntries.length) {
-      await this.actor.createEmbeddedDocuments('Item', otherEntries);
+    const bioclassModel = bioclassItem?.system;
+    if (typeof bioclassModel?.applyToActor === 'function') {
+      await bioclassModel.applyToActor(this.actor, { render: false });
     }
+
+    if (otherEntries.length) {
+      await this.actor.createEmbeddedDocuments('Item', otherEntries, { render: false });
+    }
+    await this.render({ force: true });
     return [bioclassItem];
   }
 
@@ -889,7 +940,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    */
   async _handleGenericItemDrop(itemData) {
     if (!itemData.length) return [];
-    return this.actor.createEmbeddedDocuments('Item', itemData);
+    const created = await this.actor.createEmbeddedDocuments('Item', itemData, { render: false });
+    await this.render({ force: true });
+    return created;
   }
 
   /********************

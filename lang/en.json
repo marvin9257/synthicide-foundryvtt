@@ -62,6 +62,7 @@
         "Cybernetics": "Cybernetics",
         "Traits": "Traits",
         "Effects": "Effects",
+        "Aspect": "Aspect",
         "Bio": "Bio",
         "Bioclass": "Bioclass"
       },
@@ -70,6 +71,15 @@
         "Create": "Create Bioclass",
         "NoTraits": "No bioclass traits found.",
         "OnlyOneWarning": "Only one bioclass may be assigned to an actor."
+      },
+      "Aspect": {
+        "NoneAssigned": "No aspect assigned. Drop or create one.",
+        "Create": "Create Aspect",
+        "NoTraits": "No aspect traits found.",
+        "Abilities": "Abilities",
+        "NoAbilities": "No abilities found.",
+        "TraitName": "Trait Name",
+        "CreateAbility": "Add Ability"
       },
       "Attributes": {
         "Actions": "ACTIONS",
@@ -146,6 +156,7 @@
         "AddLVL": "Add LVL {level} Trait",
         "Types": {
           "bioclass": "Bioclass",
+          "aspect": "Aspect",
           "attackSkill": "Attack Skill",
           "knowledgeFocus": "Knowledge Focus",
           "psychicPower": "Psychic Power",
@@ -218,6 +229,7 @@
         "Abilities": "Abilities",
         "AddAbility": "Add Ability",
         "NoAbilities": "No abilities found.",
+        "TraitName": "Trait Name",
         "Types": {
           "brainiac": "Brainiac",
           "bulbhead": "Bulbhead",

@@ -37,7 +37,7 @@ export class SynthicideActor extends Actor {
    * @param {boolean} [options.debug=false] - If true, collects and outputs debug information about modifier aggregation.
    * @returns {Promise<void>} Resolves when aggregation and updates are complete.
    */
-  async aggregateAndApplyItemModifiers({ debug = false } = {}) {
+  async aggregateAndApplyItemModifiers({ debug = false, render = true } = {}) {
     const attributeKeys = Object.keys(SYNTHICIDE.attributes);
     const attributeModifiers = Object.fromEntries(attributeKeys.map(key => [key, 0]));
     const nonAttributeModifiers = [];
@@ -69,7 +69,7 @@ export class SynthicideActor extends Actor {
       }
     }
     if (Object.keys(updatedAttributes).length > 0) {
-      await this.update({ "system.attributes": updatedAttributes });
+      await this.update({ "system.attributes": updatedAttributes }, { render });
     }
 
     // Always recalculate current in memory after aggregation
