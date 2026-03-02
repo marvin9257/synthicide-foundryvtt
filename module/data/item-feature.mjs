@@ -40,6 +40,75 @@ export default class SynthicideFeature extends SynthicideItemBase {
   }
 
   /**
+   * Normalize dropped feature source data to include an explicit featureType.
+   * @param {object} entry
+   * @param {'bioclass'|'aspect'} featureType
+   * @returns {object}
+   */
+  static coerceFeatureEntry(entry, featureType) {
+    const existingType = entry?.system?.featureType;
+    if (existingType && existingType !== featureType) {
+      console.warn(
+        `[Synthicide] Dropped feature type mismatch for "${entry?.name ?? '(unnamed item)'}": ` +
+        `entry.system.featureType="${existingType}" but handler expected "${featureType}". Coercing to expected type.`
+      );
+    }
+
+    return foundry.utils.mergeObject(
+      foundry.utils.deepClone(entry),
+      { system: { featureType } },
+      { inplace: false }
+    );
+  }
+
+  /**
+   * Replace the actor's current feature of a given type with the provided
+   * feature data and then apply feature side effects in one deterministic pass.
+   *
+   * This is the authoritative orchestration path used by UI drop handlers.
+   *
+   * @param {Actor} actor
+   * @param {'bioclass'|'aspect'} featureType
+   * @param {object} featureEntry
+   * @param {object[]} [otherEntries=[]]
+   * @param {{render?: boolean}} [options]
+   * @returns {Promise<Item[]>}
+   */
+  static async replaceOnActor(actor, featureType, featureEntry, otherEntries = [], { render = true } = {}) {
+    if (!actor) return [];
+
+    const existingIds = actor.itemTypes?.[featureType]?.map(i => i.id) ?? [];
+    if (existingIds.length) {
+      await actor.deleteEmbeddedDocuments('Item', existingIds, {
+        synthicideSkipFeatureCleanup: true,
+        render: false,
+      });
+    }
+
+    const featureData = this.coerceFeatureEntry(featureEntry, featureType);
+    const [createdFeature] = await actor.createEmbeddedDocuments('Item', [featureData], {
+      render: false,
+      synthicideSkipFeatureApply: true,
+    });
+
+    const featureItem = actor.items.get(createdFeature.id);
+    const featureModel = featureItem?.system;
+    if (typeof featureModel?.applyToActor === 'function') {
+      await featureModel.applyToActor(actor, { render: false });
+    }
+
+    if (otherEntries.length) {
+      await actor.createEmbeddedDocuments('Item', otherEntries, { render: false });
+    }
+
+    if (render && actor.sheet) {
+      await actor.sheet.render({ force: true });
+    }
+
+    return featureItem ? [featureItem] : [];
+  }
+
+  /**
    * Return a default trait array for a feature based on its system data.
    * Subclasses or presets supply the actual values.
    * @param {object} system - the system data being created/updated

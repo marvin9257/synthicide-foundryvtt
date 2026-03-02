@@ -1,5 +1,6 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
+import SynthicideFeature from '../data/item-feature.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
 import { ICON_MAP } from '../helpers/icons.mjs';
 const { api, sheets } = foundry.applications;
@@ -812,29 +813,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   }
 
   /**
-   * Ensure dropped feature data has an explicit featureType on system.
-   * @param {object} entry
-   * @param {'bioclass'|'aspect'} featureType
-   * @returns {object}
-   * @private
-   */
-  _coerceFeatureEntry(entry, featureType) {
-    const existingType = entry?.system?.featureType;
-    if (existingType && existingType !== featureType) {
-      console.warn(
-        `[Synthicide] Dropped feature type mismatch for "${entry?.name ?? '(unnamed item)'}": ` +
-        `entry.system.featureType="${existingType}" but handler expected "${featureType}". Coercing to expected type.`
-      );
-    }
-
-    return foundry.utils.mergeObject(
-      foundry.utils.deepClone(entry),
-      { system: { featureType } },
-      { inplace: false }
-    );
-  }
-
-  /**
    * Route a feature drop (either bioclass or aspect) to the appropriate
    * handler.  This prevents duplicating the "remove old feature" logic.
    * @param {object} entry     The feature item data being dropped
@@ -868,31 +846,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @param {object[]} otherEntries
    */
   async _handleAspectDrop(aspectEntry, otherEntries) {
-    const oldAspectIds = this.actor.itemTypes.aspect.map(a => a.id);
-    if (oldAspectIds.length) {
-      await this.actor.deleteEmbeddedDocuments('Item', oldAspectIds, {
-        synthicideSkipFeatureCleanup: true,
-        render: false,
-      });
-    }
-
-    const aspectData = this._coerceFeatureEntry(aspectEntry, 'aspect');
-    const [createdAspect] = await this.actor.createEmbeddedDocuments('Item', [aspectData], {
-      render: false,
-      synthicideSkipFeatureApply: true,
-    });
-    const aspectItem = this.actor.items.get(createdAspect.id);
-
-    const aspectModel = aspectItem?.system;
-    if (typeof aspectModel?.applyToActor === 'function') {
-      await aspectModel.applyToActor(this.actor, { render: false });
-    }
-
-    if (otherEntries.length) {
-      await this.actor.createEmbeddedDocuments('Item', otherEntries, { render: false });
-    }
-    await this.render({ force: true });
-    return [aspectItem];
+    return SynthicideFeature.replaceOnActor(this.actor, 'aspect', aspectEntry, otherEntries, { render: true });
   }
 
   /**
@@ -906,31 +860,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @returns {Promise<Item[]>}
    */
   async _handleBioclassDrop(bioclassEntry, otherEntries) {
-    const oldBioclassIds = this.actor.itemTypes.bioclass.map(b => b.id);
-    if (oldBioclassIds.length) {
-      await this.actor.deleteEmbeddedDocuments('Item', oldBioclassIds, {
-        synthicideSkipFeatureCleanup: true,
-        render: false,
-      });
-    }
-
-    const bioclassData = this._coerceFeatureEntry(bioclassEntry, 'bioclass');
-    const [createdBioclass] = await this.actor.createEmbeddedDocuments('Item', [bioclassData], {
-      render: false,
-      synthicideSkipFeatureApply: true,
-    });
-    const bioclassItem = this.actor.items.get(createdBioclass.id);
-
-    const bioclassModel = bioclassItem?.system;
-    if (typeof bioclassModel?.applyToActor === 'function') {
-      await bioclassModel.applyToActor(this.actor, { render: false });
-    }
-
-    if (otherEntries.length) {
-      await this.actor.createEmbeddedDocuments('Item', otherEntries, { render: false });
-    }
-    await this.render({ force: true });
-    return [bioclassItem];
+    return SynthicideFeature.replaceOnActor(this.actor, 'bioclass', bioclassEntry, otherEntries, { render: true });
   }
 
   /**

@@ -73,15 +73,7 @@ export default class SynthicideBioclass extends SynthicideFeature {
     return allowed;
   }
 
-  /**
-   * Convenience wrapper retained for backwards compatibility.  The
-   * base class now exposes generic `applyToActor` which handles traits
-   * and attributes for any feature type.
-   */
-  async applyBioclassToActor(actor) {
-    return this.applyToActor(actor);
-  }
-
+  
   /**
    * Bioclass‑specific attribute sync.  We maintain a separate method so that
    * the generic feature class stays small (calling this only when needed).
