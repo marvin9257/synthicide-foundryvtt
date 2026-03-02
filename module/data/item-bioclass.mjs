@@ -13,7 +13,7 @@ export default class SynthicideBioclass extends SynthicideFeature {
   static defineSchema() {
     const { fields } = foundry.data;
     const schema = super.defineSchema();
-    const defaultPreset = SYNTHICIDE.getBioclassPreset(DEFAULT_BIOCLASS);
+    const defaultPreset = SYNTHICIDE.getFeaturePreset('bioclass', DEFAULT_BIOCLASS);
 
     schema.featureType = new fields.StringField({
       required: true,
@@ -63,14 +63,29 @@ export default class SynthicideBioclass extends SynthicideFeature {
       foundry.utils.setProperty(changes, 'system.startingAttributes', foundry.utils.deepClone(preset.startingAttributes));
       foundry.utils.setProperty(changes, 'system.bodySlots', preset.bodySlots);
       foundry.utils.setProperty(changes, 'system.brainSlots', preset.brainSlots);
-
-      const traitDefaults = SynthicideFeature.getDefaultTraits({
-        featureType: 'bioclass',
-        bioclassType: nextBioclassType
-      });
-      foundry.utils.setProperty(changes, 'system.traits', foundry.utils.deepClone(traitDefaults));
     }
     return allowed;
+  }
+
+  /**
+   * Resolve the effective bioclass starting attributes.
+   *
+   * Precedence:
+   * 1) Use explicit attributes stored on this item (`this.startingAttributes`)
+   *    when present.
+   * 2) Otherwise, fall back to the current bioclass preset defaults.
+   *
+   * This keeps apply (`_syncSubtypeAttributes`) and delete cleanup
+   * (`_cleanupOnDelete`) aligned on the same source of truth.
+   *
+   * @returns {object} Effective starting-attribute map for this bioclass.
+   * @private
+   */
+  _getEffectiveStartingAttributes() {
+    const sourceStarting = this.startingAttributes || {};
+    if (Object.keys(sourceStarting).length) return sourceStarting;
+    const type = this.bioclassType || DEFAULT_BIOCLASS;
+    return SYNTHICIDE.getFeaturePreset('bioclass', type).startingAttributes || {};
   }
 
   
@@ -80,17 +95,13 @@ export default class SynthicideBioclass extends SynthicideFeature {
    * This more closely mirrors the old implementation the user provided.
    *
    * @param {Actor} owningActor
-   * @param {Array} [debugReport] Optional array to push debug entries into.
    */
-  async _syncBioclassAttributes(owningActor, debugReport, { render = true } = {}) {
+  async _syncSubtypeAttributes(owningActor, { render = true } = {}) {
     if (!owningActor) return;
 
     const debugBioclass = Boolean(SYNTHICIDE.debug?.synthicideBioclass);
     const itemName = this.parent?.name ?? '(unnamed item)';
-    const sourceStarting = this.startingAttributes || {};
-    const type = this.bioclassType || DEFAULT_BIOCLASS;
-    const presetStarting = SYNTHICIDE.getFeaturePreset('bioclass', type).startingAttributes || {};
-    const starting = Object.keys(sourceStarting).length ? sourceStarting : presetStarting;
+    const starting = this._getEffectiveStartingAttributes();
 
     const actorAttributes = owningActor.system?.attributes || {};
     const updates = {};
@@ -109,14 +120,11 @@ export default class SynthicideBioclass extends SynthicideFeature {
     }
     if (Object.keys(updates).length) {
       await owningActor.update(updates, { render });
-      if (debugBioclass && Array.isArray(debugReport)) {
-        debugReport.push({
-          stage: '_syncBioclassAttributes',
-          item: itemName,
-          actor: owningActor?.name,
-          updates: JSON.stringify(updates),
-          message: 'Actor updated with bioclass attributes.'
-        });
+      if (debugBioclass) {
+        console.groupCollapsed(`[Synthicide] bioclass actor sync: ${itemName}`);
+        console.log('actor:', owningActor?.name);
+        console.log('updates:', updates);
+        console.groupEnd();
       }
     }
   }
@@ -132,10 +140,7 @@ export default class SynthicideBioclass extends SynthicideFeature {
 
     const updates = {};
     const actorAttributes = owningActor.system?.attributes || {};
-    const sourceStarting = this.startingAttributes || {};
-    const type = this.bioclassType || DEFAULT_BIOCLASS;
-    const presetStarting = SYNTHICIDE.getFeaturePreset('bioclass', type).startingAttributes || {};
-    const starting = Object.keys(sourceStarting).length ? sourceStarting : presetStarting;
+    const starting = this._getEffectiveStartingAttributes();
 
     for (const key of Object.keys(starting)) {
       if (!(key in actorAttributes)) continue;

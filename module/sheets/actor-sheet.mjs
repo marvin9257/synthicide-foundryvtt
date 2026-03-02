@@ -1,6 +1,7 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 import SynthicideFeature from '../data/item-feature.mjs';
+import { FEATURE_TYPE, isFeatureType } from '../helpers/feature-types.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
 import { ICON_MAP } from '../helpers/icons.mjs';
 const { api, sheets } = foundry.applications;
@@ -54,7 +55,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   static DEFAULT_OPTIONS = {
     classes: ['synthicide', 'actor'],
     position: {
-      width: 600,
+      width: 700,
       height: 600,
     },
     window: {
@@ -259,9 +260,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           rollData: actorRollData,
         });
         // Separate bioclass traits from those that have levels
-        if (i.system.traitType === 'bioclass') {
+        if (i.system.traitType === FEATURE_TYPE.BIOCLASS) {
           bioclassTraits.push(i);
-        } else if (i.system.traitType === 'aspect') {
+        } else if (i.system.traitType === FEATURE_TYPE.ASPECT) {
           aspectTraits.push(i);
         } else {
           const lvl = Number(i.system.level ?? 0);
@@ -269,10 +270,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           traitsByLevel[lvl].push(i);
         }
       }
-      else if (i.type === 'bioclass' && !bioclass) {
+      else if (i.type === FEATURE_TYPE.BIOCLASS && !bioclass) {
         bioclass = i;
       }
-      else if (i.type === 'aspect' && !aspect) {
+      else if (i.type === FEATURE_TYPE.ASPECT && !aspect) {
         aspect = i;
       }
     }
@@ -428,10 +429,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     // Ensure feature subtypes are explicitly stamped when creating from actor controls.
     // This keeps creation deterministic and avoids relying on inherited defaults.
-    if (docData.type === 'bioclass' && !foundry.utils.getProperty(docData, 'system.featureType')) {
-      foundry.utils.setProperty(docData, 'system.featureType', 'bioclass');
-    } else if (docData.type === 'aspect' && !foundry.utils.getProperty(docData, 'system.featureType')) {
-      foundry.utils.setProperty(docData, 'system.featureType', 'aspect');
+    if (docData.type === FEATURE_TYPE.BIOCLASS && !foundry.utils.getProperty(docData, 'system.featureType')) {
+      foundry.utils.setProperty(docData, 'system.featureType', FEATURE_TYPE.BIOCLASS);
+    } else if (docData.type === FEATURE_TYPE.ASPECT && !foundry.utils.getProperty(docData, 'system.featureType')) {
+      foundry.utils.setProperty(docData, 'system.featureType', FEATURE_TYPE.ASPECT);
     }
 
     // Finally, create the embedded document!
@@ -809,7 +810,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @private
    */
   _isFeatureEntry(entryData) {
-    return entryData.type === 'bioclass' || entryData.type === 'aspect';
+    return isFeatureType(entryData?.type);
   }
 
   /**
@@ -822,9 +823,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   async _handleFeatureDrop(entry, others) {
     const type = entry.type;
     switch (type) {
-      case 'bioclass':
+      case FEATURE_TYPE.BIOCLASS:
         return this._handleBioclassDrop(entry, others);
-      case 'aspect':
+      case FEATURE_TYPE.ASPECT:
         return this._handleAspectDrop(entry, others);
       default:
         // Fallback if something unexpected slips through
@@ -836,9 +837,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * Handle dropping an aspect feature.  We treat aspects much like
    * bioclasses but ensure only one aspect may exist at a time.
     *
-    * Operation flags used here:
-    * - synthicideSkipFeatureCleanup: skip cleanup on the outgoing feature delete
-    * - synthicideSkipFeatureApply: skip automatic apply on incoming feature create
+    * Operation flags used by SynthicideFeature.replaceOnActor:
+    * - SynthicideFeature.OPERATION_OPTIONS.SKIP_FEATURE_CLEANUP
+    * - SynthicideFeature.OPERATION_OPTIONS.SKIP_FEATURE_APPLY
     *
     * We then explicitly await applyToActor once to avoid duplicate side effects
     * and to keep one final sheet refresh with fully up-to-date trait data.
@@ -846,21 +847,20 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @param {object[]} otherEntries
    */
   async _handleAspectDrop(aspectEntry, otherEntries) {
-    return SynthicideFeature.replaceOnActor(this.actor, 'aspect', aspectEntry, otherEntries, { render: true });
+    return SynthicideFeature.replaceOnActor(this.actor, FEATURE_TYPE.ASPECT, aspectEntry, otherEntries, { render: true });
   }
 
   /**
    * Handle dropping a bioclass item.
    * UI only triggers bioclass creation/deletion; trait logic is handled in item hooks.
     *
-    * See notes in _handleAspectDrop for synthicideSkipFeatureCleanup /
-    * synthicideSkipFeatureApply rationale.
+    * See notes in _handleAspectDrop for operation option rationale.
    * @param {object} bioclassEntry - The bioclass item data
    * @param {object[]} otherEntries - Other item data to create
    * @returns {Promise<Item[]>}
    */
   async _handleBioclassDrop(bioclassEntry, otherEntries) {
-    return SynthicideFeature.replaceOnActor(this.actor, 'bioclass', bioclassEntry, otherEntries, { render: true });
+    return SynthicideFeature.replaceOnActor(this.actor, FEATURE_TYPE.BIOCLASS, bioclassEntry, otherEntries, { render: true });
   }
 
   /**

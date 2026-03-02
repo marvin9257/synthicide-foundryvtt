@@ -1,13 +1,17 @@
 import SynthicideItemBase from './base-item.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
-
-const FEATURE_TYPES = ['bioclass','aspect'];
+import { FEATURE_TYPE, FEATURE_TYPES } from '../helpers/feature-types.mjs';
 
 /**
  * Shared logic for any item that occupies the single‑feature slot on an actor.
  * Bioclass and Aspect are thin subclasses that provide their own subtype data.
  */
 export default class SynthicideFeature extends SynthicideItemBase {
+  static OPERATION_OPTIONS = Object.freeze({
+    SKIP_FEATURE_CLEANUP: 'synthicideSkipFeatureCleanup',
+    SKIP_FEATURE_APPLY: 'synthicideSkipFeatureApply',
+  });
+
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
     'SYNTHICIDE.Item.Feature'
@@ -80,7 +84,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
     const existingIds = actor.itemTypes?.[featureType]?.map(i => i.id) ?? [];
     if (existingIds.length) {
       await actor.deleteEmbeddedDocuments('Item', existingIds, {
-        synthicideSkipFeatureCleanup: true,
+        [this.OPERATION_OPTIONS.SKIP_FEATURE_CLEANUP]: true,
         render: false,
       });
     }
@@ -88,7 +92,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
     const featureData = this.coerceFeatureEntry(featureEntry, featureType);
     const [createdFeature] = await actor.createEmbeddedDocuments('Item', [featureData], {
       render: false,
-      synthicideSkipFeatureApply: true,
+      [this.OPERATION_OPTIONS.SKIP_FEATURE_APPLY]: true,
     });
 
     const featureItem = actor.items.get(createdFeature.id);
@@ -116,8 +120,8 @@ export default class SynthicideFeature extends SynthicideItemBase {
    */
   static getDefaultTraits({ featureType, bioclassType, aspectType } = {}) {
     switch (featureType) {
-      case 'bioclass': {
-        const preset = SYNTHICIDE.getBioclassPreset(bioclassType || 'skinbag');
+      case FEATURE_TYPE.BIOCLASS: {
+        const preset = SYNTHICIDE.getFeaturePreset('bioclass', bioclassType || 'skinbag');
         return preset.traits.map(t => ({
           sort: t.sort,
           key: t.key || '',
@@ -127,8 +131,8 @@ export default class SynthicideFeature extends SynthicideItemBase {
             : ''
         }));
       }
-      case 'aspect': {
-        const preset = SYNTHICIDE.aspectPresets[aspectType] || {};
+      case FEATURE_TYPE.ASPECT: {
+        const preset = SYNTHICIDE.getFeaturePreset('aspect', aspectType);
         return (preset.traits || []).map(t => ({
           sort: t.sort,
           name: t.name || '',
@@ -154,21 +158,6 @@ export default class SynthicideFeature extends SynthicideItemBase {
   }
 
   /**
-   * Whether this data model represents a bioclass feature subtype.
-   * Also returns true when attached to a concrete `bioclass` item.
-   */
-  get isBioclass() {
-    return this.featureType === 'bioclass' || this.parent?.type === 'bioclass';
-  }
-  /**
-   * Whether this data model represents an aspect feature subtype.
-   * Also returns true when attached to a concrete `aspect` item.
-   */
-  get isAspect() {
-    return this.featureType === 'aspect' || this.parent?.type === 'aspect';
-  }
-
-  /**
    * Resolve the owning actor from this embedded item data model.
    * @returns {Actor|null}
    * @private
@@ -188,6 +177,26 @@ export default class SynthicideFeature extends SynthicideItemBase {
    */
   _isCurrentUser(userId) {
     return !userId || game.userId === userId;
+  }
+
+  /**
+   * Determine whether a payload changes the effective feature subtype.
+   * @param {object} [systemChanges={}]
+   * @returns {boolean}
+   * @private
+   */
+  _didSubtypeChange(systemChanges = {}) {
+    if (!systemChanges) return false;
+    const featureTypeChanged =
+      Object.hasOwn(systemChanges, 'featureType') &&
+      systemChanges.featureType !== this.featureType;
+    const bioclassTypeChanged =
+      Object.hasOwn(systemChanges, 'bioclassType') &&
+      systemChanges.bioclassType !== this.bioclassType;
+    const aspectTypeChanged =
+      Object.hasOwn(systemChanges, 'aspectType') &&
+      systemChanges.aspectType !== this.aspectType;
+    return featureTypeChanged || bioclassTypeChanged || aspectTypeChanged;
   }
 
   // ---------------------------------------------------------------------
@@ -260,7 +269,9 @@ export default class SynthicideFeature extends SynthicideItemBase {
         description,
         traitType: featureType
       };
-      if (this.isBioclass) system.bioClassLink = true;
+      if (this.featureType === FEATURE_TYPE.BIOCLASS || this.parent?.type === FEATURE_TYPE.BIOCLASS) {
+        system.bioClassLink = true;
+      }
       return { type: 'trait', name, system };
     });
 
@@ -268,15 +279,22 @@ export default class SynthicideFeature extends SynthicideItemBase {
   }
 
   /**
-   * Route attribute synchronization to whatever specialised handler exists.
-   * Only bioclasses currently need this behaviour, so the base method is
-   * deliberately lean; subclasses implement the actual work if desired.
+   * Route attribute synchronization to subtype-specific logic.
+   * Subclasses can override `_syncSubtypeAttributes` when needed.
    * @private
    */
   async _syncFeatureAttributes(owningActor, { render = true } = {}) {
-    if (this.isBioclass && typeof this._syncBioclassAttributes === 'function') {
-      await this._syncBioclassAttributes(owningActor, undefined, { render });
-    }
+    await this._syncSubtypeAttributes(owningActor, { render });
+  }
+
+  /**
+   * Subclass extension point for subtype-specific actor synchronization.
+   * @param {Actor} owningActor
+   * @param {{render?: boolean}} _options
+   * @private
+   */
+  async _syncSubtypeAttributes(_owningActor, _options = {}) {
+    // default no-op; bioclass subclass implements actor base stat sync
   }
 
   /**
@@ -293,14 +311,15 @@ export default class SynthicideFeature extends SynthicideItemBase {
    * Foundry hook: creation should apply the feature to its actor.
     *
     * Custom operation option:
-    * - options.synthicideSkipFeatureApply: when true, skip automatic applyToActor.
+    * - options[SynthicideFeature.OPERATION_OPTIONS.SKIP_FEATURE_APPLY]:
+    *   when true, skip automatic applyToActor.
     *   Used by actor-sheet replacement drop handlers so they can explicitly
     *   await applyToActor once and render only after all side effects complete.
    */
   async _onCreate(data, options, userId) {
     super._onCreate(data, options, userId);
     if (!this._isCurrentUser(userId)) return;
-    if (options?.synthicideSkipFeatureApply) return;
+    if (options?.[SynthicideFeature.OPERATION_OPTIONS.SKIP_FEATURE_APPLY]) return;
     const actor = this._getOwningActor(options);
     if (actor) {
       try {
@@ -321,7 +340,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
     if (!actor) return;
 
     const traitUpdate = !!changed?.system?.traits;
-    const subtypeChange = Boolean(changed?.system?.featureType || changed?.system?.bioclassType || changed?.system?.aspectType);
+    const subtypeChange = this._didSubtypeChange(changed?.system);
     if (traitUpdate || subtypeChange) {
       await this.applyToActor(actor, { render: options?.render ?? true });
     }
@@ -342,9 +361,10 @@ export default class SynthicideFeature extends SynthicideItemBase {
    * Foundry hook: deleting a feature should remove any generated traits.
     *
     * Custom operation option:
-    * - options.synthicideSkipFeatureCleanup: when true, skip old-feature
-    *   cleanup during replacement drops. The new feature's apply pass is the
-    *   single authoritative remove+create flow for generated traits.
+    * - options[SynthicideFeature.OPERATION_OPTIONS.SKIP_FEATURE_CLEANUP]:
+    *   when true, skip old-feature cleanup during replacement drops. The new
+    *   feature's apply pass is the single authoritative remove+create flow for
+    *   generated traits.
    */
   async _onDelete(options, userId) {
     super._onDelete(options, userId);
@@ -356,7 +376,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
     // Replacement drops intentionally skip old-feature cleanup because
     // the newly created feature's _onCreate/applyToActor will perform
     // a single authoritative remove+create pass.
-    const skipCleanup = Boolean(options?.synthicideSkipFeatureCleanup);
+    const skipCleanup = Boolean(options?.[SynthicideFeature.OPERATION_OPTIONS.SKIP_FEATURE_CLEANUP]);
     if (!skipCleanup) {
       const render = options?.render ?? true;
       await this._removeFeatureTraits(actor, { render });
@@ -372,19 +392,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
     if (allowed === false) return false;
 
     if (changes.system) {
-      const featureTypeChanged =
-        Object.hasOwn(changes.system, 'featureType') &&
-        changes.system.featureType !== this.featureType;
-      const bioclassTypeChanged =
-        Object.hasOwn(changes.system, 'bioclassType') &&
-        changes.system.bioclassType !== this.bioclassType;
-      const aspectTypeChanged =
-        Object.hasOwn(changes.system, 'aspectType') &&
-        changes.system.aspectType !== this.aspectType;
-
-      const subtypeChanged =
-        !changes.system.traits &&
-        (featureTypeChanged || bioclassTypeChanged || aspectTypeChanged);
+      const subtypeChanged = !changes.system.traits && this._didSubtypeChange(changes.system);
       if (subtypeChanged) {
         const sample = {...this.system, ...changes.system};
         changes.system.traits = SynthicideFeature.getDefaultTraits(sample);

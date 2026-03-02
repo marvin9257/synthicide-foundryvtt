@@ -68,12 +68,6 @@ export default class SynthicideAspect extends SynthicideFeature {
     const nextAspectType = changes.system?.aspectType;
     if (nextAspectType && nextAspectType !== this.aspectType) {
       const preset = SYNTHICIDE.getFeaturePreset('aspect', nextAspectType);
-      // refresh traits using shared helper
-      const traitDefaults = SynthicideFeature.getDefaultTraits({
-        featureType: 'aspect',
-        aspectType: nextAspectType
-      });
-      foundry.utils.setProperty(changes, 'system.traits', foundry.utils.deepClone(traitDefaults));
       foundry.utils.setProperty(changes, 'system.abilities', foundry.utils.deepClone(preset.abilities || []));
     }
     return allowed;

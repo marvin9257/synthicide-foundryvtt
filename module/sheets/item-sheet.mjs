@@ -1,13 +1,12 @@
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
+import { FEATURE_TYPE } from '../helpers/feature-types.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
+import { mutateSystemArray, removeSystemArrayIndex } from './sheet-utils.mjs';
 import { getItemIcon, ICON_MAP } from '../helpers/icons.mjs';
 
 const { api, sheets } = foundry.applications;
 const DragDrop = foundry.applications.ux.DragDrop;
-
-const BIOCLASS_PARTS = ['attributesBioclass', 'cyberneticsBioclass', 'traitsBioclass'];
-const ASPECT_PARTS = ['abilitiesAspect', 'traitsBioclass'];
 
 /**
  * Base parts enabled directly from document.type.
@@ -24,8 +23,8 @@ const ASPECT_PARTS = ['abilitiesAspect', 'traitsBioclass'];
 const ITEM_BASE_PARTS_BY_TYPE = {
   trait: ['attributesTrait'],
   gear: ['attributesGear'],
-  bioclass: BIOCLASS_PARTS,
-  aspect: ASPECT_PARTS,
+  bioclass: ['attributesBioclass', 'cyberneticsBioclass', 'traitsBioclass'],
+  aspect: ['abilitiesAspect', 'traitsBioclass'],
 };
 
 /**
@@ -61,6 +60,10 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
   /** @override */
   static DEFAULT_OPTIONS = {
     classes: ['synthicide', 'item'],
+    position: {
+      width: 520,
+      height: 450,
+    },
     actions: {
       //onEditImage: this._onEditImage,
       viewDoc: this._viewEffect,
@@ -150,8 +153,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       document: this.item,
       documentKey: 'item',
       extra: {
-        isBioclass: this.item.system.featureType === 'bioclass',
-        isAspect: this.item.system.featureType === 'aspect',
+        isBioclass: this.item.system.featureType === FEATURE_TYPE.BIOCLASS,
+        isAspect: this.item.system.featureType === FEATURE_TYPE.ASPECT,
         SYNTHICIDE,
         tabs: this._getTabs(options.parts),
       },
@@ -243,34 +246,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
    **************/
 
   /**
-   * Handle changing a Document's image.
-   *
-   * @this SynthicideItemSheet
-   * @param {PointerEvent} event   The originating click event
-   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
-   * @returns {Promise}
-   * @protected
-   */
-  /*static async _onEditImage(event, target) {
-    const attr = target.dataset.edit;
-    const current = foundry.utils.getProperty(this.document, attr);
-    const { img } =
-      this.document.constructor.getDefaultArtwork?.(this.document.toObject()) ??
-      {};
-    const fp = new FilePicker({
-      current,
-      type: 'image',
-      redirectToRoot: img ? [img] : [],
-      callback: (path) => {
-        this.document.update({ [attr]: path });
-      },
-      top: this.position.top + 40,
-      left: this.position.left + 10,
-    });
-    return fp.browse();
-  }*/
-
-  /**
    * Renders an embedded document's sheet
    *
    * @this SynthicideItemSheet
@@ -350,12 +325,10 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
    */
   static async _onAddModifier(event, _target) {
     event.preventDefault();
-    const item = this.item;
-    const modifiers = Array.isArray(item.system.modifiers) ? foundry.utils.deepClone(item.system.modifiers) : [];
     const defaultTarget = Object.keys(SYNTHICIDE.attributes)[0] ?? 'awareness';
-    // Add a blank modifier
-    modifiers.push({ target: defaultTarget, value: 0, type: 'bonus', condition: '', source: '' });
-    await item.update({ 'system.modifiers': modifiers });
+    await mutateSystemArray(this.item, 'modifiers', modifiers => {
+      modifiers.push({ target: defaultTarget, value: 0, type: 'bonus', condition: '', source: '' });
+    });
   }
 
   /**
@@ -365,13 +338,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
    */
   static async _onRemoveModifier(event, target) {
     event.preventDefault();
-    const item = this.item;
-    const index = Number(target.dataset.index);
-    let modifiers = Array.isArray(item.system.modifiers) ? foundry.utils.deepClone(item.system.modifiers) : [];
-    if (index >= 0 && index < modifiers.length) {
-      modifiers.splice(index, 1);
-      await item.update({ 'system.modifiers': modifiers });
-    }
+    await removeSystemArrayIndex(this.item, 'modifiers', target.dataset.index);
   }
 
   /**
@@ -380,16 +347,13 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
    */
   static async _onAddTrait(event) {
     event.preventDefault();
-    const item = this.item;
-    const traits = Array.isArray(item.system.traits)
-      ? foundry.utils.deepClone(item.system.traits)
-      : [];
-    const maxSort = traits.reduce(
-      (max, trait) => Math.max(max, Number(trait?.sort ?? 0)),
-      0
-    );
-    traits.push({ sort: maxSort + 10, name: '', description: '' });
-    await item.update({ 'system.traits': traits });
+    await mutateSystemArray(this.item, 'traits', traits => {
+      const maxSort = traits.reduce(
+        (max, trait) => Math.max(max, Number(trait?.sort ?? 0)),
+        0
+      );
+      traits.push({ sort: maxSort + 10, name: '', description: '' });
+    });
   }
 
   /**
@@ -399,15 +363,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
    */
   static async _onRemoveTrait(event, target) {
     event.preventDefault();
-    const item = this.item;
-    const index = Number(target.dataset.index);
-    const traits = Array.isArray(item.system.traits)
-      ? foundry.utils.deepClone(item.system.traits)
-      : [];
-    if (index >= 0 && index < traits.length) {
-      traits.splice(index, 1);
-      await item.update({ 'system.traits': traits });
-    }
+    await removeSystemArrayIndex(this.item, 'traits', target.dataset.index);
   }
 
   /**
@@ -415,12 +371,9 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
    */
   static async _onAddAbility(event) {
     event.preventDefault();
-    const item = this.item;
-    const abilities = Array.isArray(item.system.abilities)
-      ? foundry.utils.deepClone(item.system.abilities)
-      : [];
-    abilities.push('');
-    await item.update({ 'system.abilities': abilities });
+    await mutateSystemArray(this.item, 'abilities', abilities => {
+      abilities.push('');
+    });
   }
 
   /**
@@ -428,15 +381,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
    */
   static async _onRemoveAbility(event, target) {
     event.preventDefault();
-    const item = this.item;
-    const index = Number(target.dataset.index);
-    const abilities = Array.isArray(item.system.abilities)
-      ? foundry.utils.deepClone(item.system.abilities)
-      : [];
-    if (index >= 0 && index < abilities.length) {
-      abilities.splice(index, 1);
-      await item.update({ 'system.abilities': abilities });
-    }
+    await removeSystemArrayIndex(this.item, 'abilities', target.dataset.index);
   }
 
   /* -------------------------------------------- */
