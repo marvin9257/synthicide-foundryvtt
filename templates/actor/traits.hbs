@@ -14,7 +14,7 @@
           {{#if @root.editable}}
             <a
               class='item-control item-create'
-              data-tooltip='{{localize "DOCUMENT.Create" type='Trait'}}'
+              data-tooltip='{{localize "DOCUMENT.Create" type=(localize "SYNTHICIDE.Item.Trait.TypeLabel")}}'
               data-action='createDoc'
               data-document-class='Item'
               data-type='trait'
@@ -47,7 +47,7 @@
           <div class='item-controls'>
             <a
               class='item-control item-edit'
-              data-tooltip='{{localize "DOCUMENT.Update" type='Trait'}}'
+              data-tooltip='{{localize "DOCUMENT.Update" type=(localize "SYNTHICIDE.Item.Trait.TypeLabel")}}'
               data-action='viewDoc'
             >
               <i class='fas fa-edit'></i>
@@ -55,7 +55,7 @@
             {{#if @root.editable}}
               <a
                 class='item-control item-delete'
-                data-tooltip='{{localize "DOCUMENT.Delete" type='Trait'}}'
+                data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "SYNTHICIDE.Item.Trait.TypeLabel")}}'
                 data-action='deleteDoc'
               >
                 <i class='fas fa-trash'></i>

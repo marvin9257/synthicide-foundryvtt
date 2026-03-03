@@ -82,8 +82,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // dragDrop: [{ dragSelector: '.draggable', dropSelector: null }],
     form: {
       submitOnChange: true,
-    },
-    sheetType: "SynthecideActorSheet"
+    }
   };
 
   /** @override */
@@ -231,18 +230,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     let aspect = null;   // assigned when an aspect item is present
     const aspectTraits = [];
     const bioclassTraits = [];
-    const traitsByLevel = {
-      0: [],
-      1: [],
-      2: [],
-      3: [],
-      4: [],
-      5: [],
-      6: [],
-      7: [],
-      8: [],
-      9: [],
-    };
+    const traitsByLevel = { 1: [], 4: [], 7: [] };
 
     const actorRollData = this.actor.getRollData();
 
@@ -266,8 +254,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           aspectTraits.push(i);
         } else {
           const lvl = Number(i.system.level ?? 0);
-          if (!traitsByLevel[lvl]) traitsByLevel[lvl] = [];
-          traitsByLevel[lvl].push(i);
+          traitsByLevel[lvl]?.push(i);
         }
       }
       else if (i.type === FEATURE_TYPE.BIOCLASS && !bioclass) {
@@ -288,7 +275,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     context.bioclassTraits = bioclassTraits.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     // Only keep milestone trait levels (1,4,7) for the actor context.
     const ALLOWED_TRAIT_LEVELS = [1, 4, 7];
-    context.traitsByLevel = ALLOWED_TRAIT_LEVELS.map(l => ({ level: l, traits: traitsByLevel[l] || [] }));
+    context.traitsByLevel = ALLOWED_TRAIT_LEVELS.map(l => ({ level: l, traits: traitsByLevel[l] }));
     context.allowedTraitLevels = ALLOWED_TRAIT_LEVELS;
     context.bioclass = bioclass;
     context.aspect = aspect;
@@ -438,7 +425,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       foundry.utils.setProperty(docData, 'system.featureType', FEATURE_TYPE.ASPECT);
     }
 
-    // Finally, create the embedded document!
     await docCls.create(docData, { parent: this.actor });
   }
 
@@ -781,7 +767,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
   /**
    * Handle the final creation of dropped Item data on the Actor.
-   * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
+   * 
    * @param {object[]|object} itemData      The item data requested for creation
    * @param {DragEvent} event               The concluding DragEvent which provided the drop data
    * @returns {Promise<Item[]>}

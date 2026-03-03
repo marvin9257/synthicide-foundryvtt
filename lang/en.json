@@ -70,7 +70,7 @@
         "Gear": "Gear",
         "Spells": "Spells",
         "Cybernetics": "Cybernetics",
-        "Traits": "Traits",
+        "Traits": "Traits & Powers",
         "Effects": "Effects",
         "Aspect": "Aspect",
         "Bio": "Bio",
@@ -163,8 +163,9 @@
           "traitType": {"label": "Trait Type"},
           "requirements": {"label": "Requirements"}
         },
-        "TraitLVL": "Level {level} Traits",
-        "AddLVL": "Add LVL {level} Trait",
+        "TypeLabel": "Trait/Power",
+        "TraitLVL": "Level {level} Traits & Powers",
+        "AddLVL": "Add LVL {level} Trait/Power",
         "LevelLabel": "Level {level}",
         "Types": {
           "bioclass": "Bioclass",
