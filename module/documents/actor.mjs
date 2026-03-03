@@ -57,19 +57,19 @@ export class SynthicideActor extends Actor {
       if (debugArr && debugArr.length) debugItemContrib.push(...debugArr);
     }
 
-    // Prepare update object for changed modifiers/current
-    const updatedAttributes = {};
+    // Persist any modifier values that changed
+    // so Foundry merges individual fields rather than replacing the whole attributes object.
+    const updates = {};
     for (const key of attributeKeys) {
       const attr = this.system?.attributes?.[key];
       if (!attr) continue;
       const newModifier = Number(attributeModifiers[key] ?? 0);
-      const oldModifier = Number(attr.modifier ?? 0);
-      if (oldModifier !== newModifier) {
-        updatedAttributes[key] = { ...attr, modifier: newModifier };
+      if (Number(attr.modifier ?? 0) !== newModifier) {
+        updates[`system.attributes.${key}.modifier`] = newModifier;
       }
     }
-    if (Object.keys(updatedAttributes).length > 0) {
-      await this.update({ "system.attributes": updatedAttributes }, { render });
+    if (Object.keys(updates).length > 0) {
+      await this.update(updates, { render });
     }
 
     // Always recalculate current in memory after aggregation

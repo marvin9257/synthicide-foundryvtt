@@ -165,6 +165,7 @@
         },
         "TraitLVL": "Level {level} Traits",
         "AddLVL": "Add LVL {level} Trait",
+        "LevelLabel": "Level {level}",
         "Types": {
           "bioclass": "Bioclass",
           "aspect": "Aspect",

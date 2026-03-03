@@ -79,7 +79,10 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
   async _onCreate(data, options, userId) {
     super._onCreate(data, options, userId);
     if (game.userId !== userId) return;
-    this.triggerActorModifierAggregation({ render: options?.render ?? true });
+    // render: false because Foundry's item-creation pipeline already re-renders
+    // the owning actor sheet. For explicit drop flows (_handleGenericItemDrop),
+    // aggregation is awaited separately before the sheet is rendered.
+    this.triggerActorModifierAggregation({ render: false });
   }
 
   /**
@@ -93,9 +96,11 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
   async _onUpdate(changed, options, userId) {
     super._onUpdate(changed, options, userId);
     if (game.userId !== userId) return;
-    // Only trigger aggregation if system.modifiers changed
+    // Only trigger aggregation if system.modifiers changed.
+    // render: false for the same reason as _onDelete — Foundry's update pipeline
+    // already re-renders the owning actor sheet.
     if (changed?.system?.modifiers) {
-      this.triggerActorModifierAggregation({ render: options?.render ?? true });
+      this.triggerActorModifierAggregation({ render: false });
     }
   }
 
@@ -109,6 +114,9 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
   async _onDelete(options, userId) {
     super._onDelete(options, userId);
     if (game.userId !== userId) return;
-    this.triggerActorModifierAggregation({ render: options?.render ?? true });
+    // render: false because Foundry's item-deletion pipeline already re-renders
+    // the owning actor sheet; letting the actor.update() also render would cause
+    // a redundant second refresh of the sheet.
+    this.triggerActorModifierAggregation({ render: false });
   }
 }

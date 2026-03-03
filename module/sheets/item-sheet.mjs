@@ -159,12 +159,15 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         tabs: this._getTabs(options.parts),
       },
     });
-    // Build traitTypeOptions for select helper
+    // Build traitTypeOptions and localized trait level options for select helpers
     context.config = context.config || {};
     // traitTypes is already a key->loc-key map; the template can localize it
     context.config.traitTypeOptions = SYNTHICIDE.traitTypes;
-    // Restrict trait level choices to the system's milestone levels
-    context.config.traitLevelOptions = { '1': '1', '4': '4', '7': '7' };
+    // Localized labels for allowed trait levels using a single format string
+    const ALLOWED_TRAIT_LEVELS = [1, 4, 7];
+    context.config.traitLevelOptions = Object.fromEntries(
+      ALLOWED_TRAIT_LEVELS.map(l => [String(l), game.i18n.format('SYNTHICIDE.Item.Trait.LevelLabel', { level: l })])
+    );
 
     return context;
   }
