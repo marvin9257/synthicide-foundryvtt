@@ -17,13 +17,9 @@
       </div>
       <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.level.label'}}</label>
-        <input
-          type='number'
-          name='system.level'
-          value='{{system.level}}'
-          data-dtype='Number'
-          min='0' max='9'
-        />
+        <select name='system.level'>
+          {{selectOptions @root.config.traitLevelOptions selected=system.level}}
+        </select>
       </div>
     </div>
     <div class='trait-top-fields'>

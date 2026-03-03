@@ -75,6 +75,76 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   margin: 10px 0 10px 0;
 }
 
+/* ============================== */
+/* Shared item/effect text labels */
+/* ============================== */
+.item-label,
+.effect-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* ============================== */
+/* Ability list (aspect item)     */
+/* ============================== */
+.ability-add {
+  margin-bottom: 0.5rem;
+}
+
+.ability-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.ability-row textarea {
+  flex: 1;
+  min-width: 0;
+  resize: vertical;
+}
+
+/* ============================== */
+/* Bioclass trait cards           */
+/* ============================== */
+.trait-add-row {
+  margin-bottom: 0.5rem;
+}
+
+.trait-card-header {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+  margin-bottom: 4px;
+}
+
+.trait-card-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.trait-card-actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+/* ============================== */
+/* Modifiers table data cells     */
+/* ============================== */
+.modifiers-cell {
+  display: flex;
+  align-items: center;
+}
+
+.modifiers-cell input,
+.modifiers-cell select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 
 /* ============================== */
 /* Progress Bar Styles            */
@@ -590,11 +660,6 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   /* only apply bottom border to real items */
   border-bottom: 1px solid var(--synthicide-c-faint);
 }
-.synthicide .items-list .item .item-name .item-image {
-  flex: 0 0 20px;
-  height: 20px;
-  background-size: 20px;
-}
 .synthicide .items-list .item:not(.items-header):last-child {
   border-bottom: none;
 }
@@ -602,11 +667,18 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   color: var(--synthicide-c-dark);
 }
 .synthicide .items-list .item .item-name .item-image {
-  flex: 0 0 20px;
-  height: 20px;
-  background-size: 20px;
+  flex: 0 0 22px;
+  height: 22px;
+  background-size: 22px;
   border: none;
   margin-right: 5px;
+  overflow: hidden;
+}
+.synthicide .items-list .item .item-name .item-image img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
 }
 .synthicide .items-list .item-prop {
   text-align: center;
@@ -652,6 +724,20 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   align-items: center;
   display: flex;
 }
+.synthicide .effects-list .effect-source {
+  flex: 0 0 120px;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.synthicide .effects-list .effect-duration {
+  flex: 0 0 100px;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .synthicide .effects-list .effect-name h3, .synthicide .effects-list .effect-name h4 {
   margin: 0;
   white-space: nowrap;
@@ -679,11 +765,14 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   color: var(--synthicide-c-dark);
 }
 .synthicide .effects-list .effect .effect-name .effect-image {
-  flex: 0 0 30px;
-  height: 30px;
-  background-size: 30px;
+  flex: 0 0 22px;
+  height: 22px;
+  width: 22px;
+  background-size: 22px;
+  object-fit: contain;
   border: none;
   margin-right: 5px;
+  display: block;
 }
 .synthicide .effects-list .effect-prop {
   text-align: center;
@@ -711,9 +800,28 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 /* Attributes Panel               */
 /* ============================== */
 
+/* Outer layout: fixed-width table panel + flexible derived panel */
+.tab.attributes .attributes-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px;
+}
+
+.tab.attributes .attributes-panel {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.tab.attributes .attributes-derived {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
 .attributes-table {
   display: grid;
-  grid-template-columns: 19% 14% 19% 28% 19%;
+  /* icon+abbr | base | modifier | level-increase | current */
+  grid-template-columns: 65px 60px 75px 110px 70px;
   margin-left: 0;
   align-items: center;
 }
@@ -726,8 +834,20 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 }
 
 .attribute-label {
-  text-align: right;
-  padding: 4px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  padding: 2px 4px;
+}
+
+.attr-abbr {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .attribute-input {
@@ -764,7 +884,12 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   left: 0;
   right: 0;
   bottom: 0;
+  height: calc(var(--level) * 20%);
   background: var(--synthicide-c-dark);
+}
+
+.text-warning {
+  color: #c0392b;
 }
 
 .attribute-step-buttons {
@@ -818,9 +943,10 @@ img.actions-img {
   height: 4ch;
   width: auto;
   display: inline-flex;
+  vertical-align: middle;
   border: 1px solid var(--synthicide-c-dark);
   border-radius: 4px;
-  vertical-align: middle;
+  object-fit: contain;
 }
 
 /* ============================== */
@@ -887,7 +1013,7 @@ img.actions-img {
   grid-template-columns: 2fr 4fr 6rem;
   grid-template-rows: auto auto;
   gap: 0.5rem 1rem;
-  align-items: start;                    /* labels start at top */
+  align-items: end;                      /* bottom-align so inputs share a baseline */
 }
 
 .header-info-name-block {
@@ -920,7 +1046,7 @@ img.actions-img {
   grid-row: 2;
 }
 
-/* ensure every cell stacks children and keeps labels at top */
+/* every cell: flex column so label is on top, input on bottom */
 .header-info-grid > div {
   display: flex;
   flex-direction: column;
@@ -928,15 +1054,22 @@ img.actions-img {
 }
 .header-info-grid > .header-info-level-block,
 .header-info-grid > .header-info-lurans-block {
-  display: block;
+  align-items: center;                   /* centre label + input horizontally */
+}
+
+.header-info-input,
+.header-info-level-input,
+.header-info-lurans-input {
+  font: inherit;
+  font-weight: bold;
+  padding: 3px 6px;
+  margin: 0;
+  box-sizing: border-box;
+  line-height: 1.4;
 }
 
 .header-info-input {
-  font: inherit;
-  font-weight: bold;
   width: 100%;
-  padding: 0;
-  margin: 0;
   text-align: left;
 }
 
@@ -960,13 +1093,11 @@ img.actions-img {
 .header-info-level-input,
 .header-info-lurans-input {
   text-align: center;
-  width: auto;
+  width: 100%;
   border-radius: 4px;
   color: inherit;
   outline: none;
-  font-size: 1.2em;
   min-width: 2.5em;
-  max-width: 5rem;
 }
 
 .header-info-motivation-block .header-info-value select {
@@ -990,12 +1121,6 @@ img.actions-img {
 
 .header-info-name {
   font-size: 1.1em;
-}
-
-.header-info-level {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin: 0 0 0.5em 0;
 }
 
 .header-info-value.bioclass-value {
@@ -1065,4 +1190,759 @@ img.actions-img {
   align-items: flex-end;
   justify-content: flex-end;
   gap: 0.25rem;
+}
+
+
+/* ============================================================ */
+/* Rulebook Bold Mode – consolidated                            */
+/* All bold-mode rules live here, no duplication or conflicts.  */
+/* Classic mode is completely unaffected.                       */
+/* ============================================================ */
+
+/* ---- Color tokens: light mode ---- */
+body.synthicide-style-bold .synthicide {
+  --rb-accent:        #c42b1c;   /* bright maroon-red                     */
+  --rb-strong:        #7f180f;   /* deep maroon (header bg)                */
+  --rb-alt:           #a33a00;   /* burnt-orange (gradient stop / labels)  */
+  --rb-on-accent:     #ffffff;
+  --rb-line:          color-mix(in srgb, var(--synthicide-c-dark) 55%, transparent);
+  --rb-cell:          color-mix(in srgb, var(--synthicide-c-panel-bg) 90%, transparent);
+  --rb-cell-alt:      color-mix(in srgb, var(--synthicide-c-panel-bg) 160%, transparent);
+}
+
+/* ---- Color tokens: dark mode ---- */
+body.theme-dark.synthicide-style-bold .synthicide {
+  --rb-accent:        #e05c3a;
+  --rb-strong:        #8c2a12;
+  --rb-alt:           #b84a1e;
+  --rb-line:          color-mix(in srgb, var(--synthicide-c-black) 65%, transparent);
+  --rb-cell:          color-mix(in srgb, var(--synthicide-c-panel-bg) 70%, transparent);
+  --rb-cell-alt:      color-mix(in srgb, var(--synthicide-c-panel-bg) 110%, transparent);
+}
+
+/* ============================================================ */
+/* SHEET HEADER                                                 */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .sheet-header {
+  padding-bottom: 6px;
+  margin-bottom: 0;
+}
+
+/* Profile image: accent border */
+body.synthicide-style-bold .synthicide .profile-img {
+  border: 2px solid var(--rb-strong);
+  border-radius: 3px;
+}
+
+/* Header labels (CHARACTER NAME, BIOCLASS, etc.) */
+body.synthicide-style-bold .synthicide .header-info-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--rb-strong);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+/* Dark mode: labels a bit lighter */
+body.theme-dark.synthicide-style-bold .synthicide .header-info-label {
+  color: var(--rb-accent);
+}
+
+/* Header label underline divider */
+body.synthicide-style-bold .synthicide .header-info-label::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin-top: 2px;
+  margin-bottom: 4px;
+  background: color-mix(in srgb, var(--rb-strong) 40%, transparent);
+}
+
+/* Bold text inputs in header */
+body.synthicide-style-bold .synthicide .header-info-input,
+body.synthicide-style-bold .synthicide .header-info-level-input,
+body.synthicide-style-bold .synthicide .header-info-lurans-input {
+  font-weight: 700;
+}
+
+body.synthicide-style-bold .synthicide .header-info-level-input,
+body.synthicide-style-bold .synthicide .header-info-lurans-input {
+  text-align: center;
+}
+
+/* ============================================================ */
+/* TAB BAR                                                      */
+/* One consistent style for both actor and item sheet tabs.     */
+/* ============================================================ */
+
+/* The tab row: top and bottom accent bars frame the tabs */
+body.synthicide-style-bold .synthicide .sheet-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px 0 0;
+  margin-bottom: 8px;
+  border-top: 3px solid var(--rb-strong);
+  border-bottom: 3px solid var(--rb-strong);
+}
+
+/* Every tab pill */
+body.synthicide-style-bold .synthicide .sheet-tabs .item {
+  min-height: 26px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  line-height: 1;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 50%, transparent);
+  border-bottom: 3px solid transparent;
+  border-radius: 3px 3px 0 0;
+  margin-bottom: -3px;      /* overlap so active tab sits flush on the bar */
+  background: color-mix(in srgb, var(--rb-strong) 8%, transparent);
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Active tab: filled like a pressed panel */
+body.synthicide-style-bold .synthicide .sheet-tabs .item.active {
+  background: var(--rb-strong) !important;
+  border-color: var(--rb-strong) !important;
+  border-bottom-color: var(--rb-strong) !important;
+  color: var(--rb-on-accent) !important;
+  box-shadow: none !important;
+}
+
+/* ============================================================ */
+/* ALL TABS: base padding                                       */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .tab {
+  padding-top: 4px;
+}
+
+/* ============================================================ */
+/* SECTION HEADER BARS (items-header, effects-header, etc.)     */
+/* One universal dark-maroon bar rule; specialised tabs can     */
+/* override size but share the same colour language.            */
+/* ============================================================ */
+
+/* Universal header bar */
+body.synthicide-style-bold .synthicide .items-header,
+body.synthicide-style-bold .synthicide .effects-header,
+body.synthicide-style-bold .synthicide .attributes-header,
+body.synthicide-style-bold .synthicide .items-list .items-header,
+body.synthicide-style-bold .synthicide .effects-list .effects-header {
+  background: var(--rb-strong);
+  border: none;
+  border-left: 5px solid var(--rb-accent);
+  color: var(--rb-on-accent);
+  min-height: 30px;
+  padding: 0 8px;
+  /* ensure children are vertically centered */
+  display: flex;
+  align-items: center;
+}
+
+/* All direct children of any header bar: white, small, uppercase */
+body.synthicide-style-bold .synthicide .items-header > *,
+body.synthicide-style-bold .synthicide .effects-header > *,
+body.synthicide-style-bold .synthicide .items-list .items-header > *,
+body.synthicide-style-bold .synthicide .effects-list .effects-header > *,
+body.synthicide-style-bold .synthicide .items-header .item-name,
+body.synthicide-style-bold .synthicide .effects-header .effect-name {
+  color: var(--rb-on-accent) !important;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---- Large section name bars (bioclass / aspect / cybernetics) ---- */
+body.synthicide-style-bold .synthicide .tab.bioclass .items-list > .items-header,
+body.synthicide-style-bold .synthicide .tab.aspect   .items-list > .items-header,
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-header {
+  min-height: 42px;
+  padding: 0 14px;
+  border-left-width: 6px;
+}
+
+body.synthicide-style-bold .synthicide .tab.bioclass .items-list > .items-header .item-name,
+body.synthicide-style-bold .synthicide .tab.aspect   .items-list > .items-header .item-name,
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-header .item-name {
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+}
+
+body.synthicide-style-bold .synthicide .tab.bioclass .items-list > .items-header .item-controls a,
+body.synthicide-style-bold .synthicide .tab.aspect   .items-list > .items-header .item-controls a,
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-header .item-controls a {
+  font-size: 0.9rem;
+  color: var(--rb-on-accent);
+}
+
+/* ============================================================ */
+/* ITEMS LIST & EFFECTS LIST                                    */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .items-list,
+body.synthicide-style-bold .synthicide .effects-list {
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+/* Individual list rows */
+body.synthicide-style-bold .synthicide .items-list .item:not(.items-header),
+body.synthicide-style-bold .synthicide .effects-list .effect {
+  border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  min-height: 32px;
+  padding: 3px 6px;
+}
+
+/* Alternating row stripe */
+body.synthicide-style-bold .synthicide .items-list .item:not(.items-header):nth-child(even),
+body.synthicide-style-bold .synthicide .effects-list .effect:nth-child(even) {
+  background: var(--rb-cell-alt);
+}
+
+/* Row hover */
+body.synthicide-style-bold .synthicide .items-list .item:not(.items-header):hover,
+body.synthicide-style-bold .synthicide .effects-list .effect:hover {
+  background: color-mix(in srgb, var(--rb-accent) 12%, transparent);
+}
+
+/* Item name + effect name text */
+body.synthicide-style-bold .synthicide .items-list .item-name,
+body.synthicide-style-bold .synthicide .effects-list .effect-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+body.synthicide-style-bold .synthicide .items-list .item-name h3,
+body.synthicide-style-bold .synthicide .effects-list .effect-name h4 {
+  font-weight: 700;
+}
+
+/* Control icons */
+body.synthicide-style-bold .synthicide .items-list .item-controls a,
+body.synthicide-style-bold .synthicide .effects-list .effect-controls a {
+  font-size: 0.82rem;
+  margin: 0 4px;
+}
+
+/* ============================================================ */
+/* ATTRIBUTES TABLE                                             */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .attributes-table {
+  display: grid;               /* keep whatever grid base defines columns */
+  gap: 0;
+  align-items: stretch;        /* all cells in a row share equal height    */
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 50%, transparent);
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+/* Header row cells */
+body.synthicide-style-bold .synthicide .attributes-table .attributes-header {
+  background: var(--rb-strong);
+  border-left: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 4px;
+  /* flex centers text; cell height is driven by the tallest cell in the row */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* All cells: full stretch + dividers */
+body.synthicide-style-bold .synthicide .attributes-table > * {
+  box-sizing: border-box;
+  border-right: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 3px;
+}
+
+/* Suppress right border on last column */
+body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(5n) {
+  border-right: none;
+}
+
+/* Even data rows: very light tint */
+body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(10n+6),
+body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(10n+7),
+body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(10n+8),
+body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(10n+9),
+body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(10n+10) {
+  background: var(--rb-cell-alt);
+}
+
+/* Attribute row label cell – bold overrides */
+body.synthicide-style-bold .synthicide .attribute-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  gap: 6px;
+  padding-right: 6px;
+  padding-left: 4px;
+  min-height: 40px;
+}
+
+body.synthicide-style-bold .synthicide .attribute-label img.actions-img {
+  height: 32px;
+  width: 32px;
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-color: color-mix(in srgb, var(--rb-strong) 50%, transparent);
+}
+
+/* Attribute inputs: centered */
+body.synthicide-style-bold .synthicide .attribute-input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.synthicide-style-bold .synthicide .attribute-input input,
+body.synthicide-style-bold .synthicide .attribute-current input {
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
+}
+
+/* ============================================================ */
+/* RESOURCE FIELDSETS (Hit Points, Power, etc.)                 */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide fieldset.resource,
+body.synthicide-style-bold .synthicide .trait-box {
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  border-left: 4px solid var(--rb-accent);
+  border-radius: 2px;
+  padding: 5px 8px;
+}
+
+body.synthicide-style-bold .synthicide fieldset.resource legend {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 0 4px;
+  color: var(--rb-strong);
+}
+
+body.theme-dark.synthicide-style-bold .synthicide fieldset.resource legend {
+  color: var(--rb-accent);
+}
+
+/* Resource labels (inside non-fieldset resource divs) */
+body.synthicide-style-bold .synthicide .resource-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--rb-strong);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+body.theme-dark.synthicide-style-bold .synthicide .resource-label {
+  color: var(--rb-accent);
+}
+
+body.synthicide-style-bold .synthicide .resource-label::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin-top: 2px;
+  margin-bottom: 4px;
+  background: color-mix(in srgb, var(--rb-strong) 35%, transparent);
+}
+
+body.synthicide-style-bold .synthicide .resource-stepper input {
+  font-weight: 700;
+}
+
+/* ============================================================ */
+/* MODIFIERS TABLE                                              */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .modifiers-table {
+  gap: 0;
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  overflow: hidden;
+  border-radius: 2px;
+  padding: 0;
+  align-items: stretch;
+}
+
+body.synthicide-style-bold .synthicide .modifiers-table .modifiers-header {
+  background: var(--rb-strong);
+  color: var(--rb-on-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2px 3px;
+  border: none;
+  border-right: 1px solid color-mix(in srgb, var(--rb-accent) 50%, transparent);
+}
+
+body.synthicide-style-bold .synthicide .modifiers-table > *:not(.modifiers-header),
+body.synthicide-style-bold .synthicide .modifiers-cell {
+  background: var(--rb-cell);
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  padding: 2px 3px;
+  font-size: 0.75rem;
+  line-height: 1.15;
+}
+
+/* ============================================================ */
+/* h3 / h4 SECTION HEADINGS                                    */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide h3,
+body.synthicide-style-bold .synthicide h4 {
+  font-family: var(--synthicide-default-font);
+  font-size: 1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0.7rem 0 0.35rem;
+  padding: 4px 10px;
+  border-left: 4px solid var(--rb-accent);
+  background: color-mix(in srgb, var(--rb-strong) 12%, transparent);
+  border-bottom: none;
+  color: var(--synthicide-c-dark);
+  border-radius: 0 2px 2px 0;
+}
+
+body.theme-dark.synthicide-style-bold .synthicide h3,
+body.theme-dark.synthicide-style-bold .synthicide h4 {
+  color: var(--synthicide-c-black);
+}
+
+/* Aspect tab: h4 is a full-width header bar */
+body.synthicide-style-bold .synthicide .tab.aspect h4 {
+  background: var(--rb-strong);
+  color: var(--rb-on-accent) !important;
+  border-left: 5px solid var(--rb-accent);
+  padding: 6px 14px;
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  border-radius: 0;
+}
+
+/* ============================================================ */
+/* TRAIT DESCRIPTION                                            */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .trait-description {
+  border-left: 4px solid var(--rb-accent);
+  border-radius: 2px;
+  padding: 8px 10px;
+  font-size: 0.86rem;
+  line-height: 1.3;
+}
+
+/* ============================================================ */
+/* CYBERNETICS FIELDSET                                         */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide fieldset.cybernetics {
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  border-left: 4px solid var(--rb-accent);
+  border-radius: 2px;
+}
+
+body.synthicide-style-bold .synthicide fieldset.cybernetics legend {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 0 6px;
+  color: var(--rb-strong);
+}
+
+body.theme-dark.synthicide-style-bold .synthicide fieldset.cybernetics legend {
+  color: var(--rb-accent);
+}
+
+/* ============================================================ */
+/* GEAR TAB: formula display                                    */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .tab.gear .item-formula.item-prop {
+  font-family: "Roboto", monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: var(--rb-cell);
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+/* ============================================================ */
+/* BIOGRAPHY TAB                                               */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .tab.biography {
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  border-left: 4px solid var(--rb-accent);
+  border-radius: 2px;
+  padding: 0;
+  overflow: hidden;
+}
+
+body.synthicide-style-bold .synthicide .tab.biography::before {
+  content: "Biography";
+  display: flex;
+  align-items: center;
+  background: var(--rb-strong);
+  color: var(--rb-on-accent);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  min-height: 42px;
+  padding: 0 14px;
+  border-left: 6px solid var(--rb-accent);
+  margin-bottom: 8px;
+}
+
+/* ============================================================ */
+/* ITEM SHEET – HEADER                                          */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .item-form .sheet-header {
+  padding-bottom: 6px;
+  margin-bottom: 0;
+}
+
+body.synthicide-style-bold .synthicide .item-form .sheet-header .document-name input {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+/* ============================================================ */
+/* ITEM SHEET – GENERAL TAB                                     */
+/* This tab needs full styling treatment to match other tabs.   */
+/* ============================================================ */
+
+/* Trait field rows (type / level / requirements) */
+body.synthicide-style-bold .synthicide .item-form .trait-top-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding: 6px 0 0;
+}
+
+/* "Properties" label bar above first trait-top-fields */
+body.synthicide-style-bold .synthicide .item-form .trait-top-fields:first-of-type::before {
+  content: "Properties";
+  flex: 0 0 100%;
+  display: block;
+  background: var(--rb-strong);
+  color: var(--rb-on-accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 4px 10px;
+  border-left: 5px solid var(--rb-accent);
+  border-radius: 0;
+  margin-bottom: 4px;
+}
+
+/* Each property cell */
+body.synthicide-style-bold .synthicide .item-form .trait-top-fields .resource {
+  flex: 1 1 80px;
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 40%, transparent);
+  border-left: 3px solid var(--rb-accent);
+  border-radius: 2px;
+  padding: 4px 7px;
+  background: var(--rb-cell);
+}
+
+/* Description header bar (all contexts, not just item-form) */
+body.synthicide-style-bold .synthicide .description-header {
+  background: var(--rb-strong);
+  color: var(--rb-on-accent) !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 5px 10px;
+  border-left: 5px solid var(--rb-accent);
+  margin-bottom: 0;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+}
+
+/* Trait prose-mirror editor */
+body.synthicide-style-bold .synthicide .item-form .trait-description-editor {
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  border-top: none;
+  border-left: 4px solid var(--rb-accent);
+  border-radius: 0 0 2px 2px;
+  padding: 8px;
+  min-height: 80px;
+}
+
+/* ============================================================ */
+/* ITEM SHEET – RESOURCE FIELDS (header area + attributes tab) */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .item-form .resource {
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 40%, transparent);
+  border-left: 3px solid var(--rb-accent);
+  border-radius: 2px;
+  padding: 5px 8px;
+  margin-bottom: 4px;
+}
+
+body.synthicide-style-bold .synthicide .item-form .resource .resource-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--rb-strong);
+  margin-bottom: 3px;
+}
+
+body.theme-dark.synthicide-style-bold .synthicide .item-form .resource .resource-label {
+  color: var(--rb-accent);
+}
+
+/* ============================================================ */
+/* ITEM SHEET – ABILITY LIST (aspect item)                      */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .item-form .ability-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+body.synthicide-style-bold .synthicide .item-form .ability-row {
+  border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  padding: 4px 2px;
+}
+
+body.synthicide-style-bold .synthicide .item-form .ability-row:last-child {
+  border-bottom: none;
+}
+
+/* ============================================================ */
+/* ITEM SHEET – MODIFIERS TABLE (trait / feature attributes tab)*/
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .item-form .modifiers-table {
+  margin-top: 6px;
+}
+
+/* ============================================================ */
+/* ITEM SHEET – DEEPER STYLING                                  */
+/* Covers: button-action containers, bioclass/aspect tabs,      */
+/* gear attributes, effects tab on item sheets.                 */
+/* ============================================================ */
+
+/* Button-only action containers (Add Trait / Add Ability rows) */
+body.synthicide-style-bold .synthicide .item-form .ability-add,
+body.synthicide-style-bold .synthicide .item-form .trait-add-row {
+  border: none;
+  background: none;
+  padding: 2px 0 6px;
+}
+
+body.synthicide-style-bold .synthicide .item-form .ability-add > button,
+body.synthicide-style-bold .synthicide .item-form .trait-add-row > button {
+  background: color-mix(in srgb, var(--rb-strong) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 40%, transparent);
+  border-left: 3px solid var(--rb-accent);
+  color: var(--rb-strong);
+  border-radius: 2px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  cursor: pointer;
+  width: 100%;
+}
+
+body.theme-dark.synthicide-style-bold .synthicide .item-form .ability-add > button,
+body.theme-dark.synthicide-style-bold .synthicide .item-form .trait-add-row > button {
+  color: var(--rb-accent);
+}
+
+/* Bioclass traits fieldsets: add spacing between them */
+body.synthicide-style-bold .synthicide .item-form fieldset.resource {
+  margin-bottom: 6px;
+}
+
+/* Resource divs inside item forms: add gap between siblings */
+body.synthicide-style-bold .synthicide .item-form .tab > .resource,
+body.synthicide-style-bold .synthicide .item-form .tab > .grid > .resource {
+  margin-bottom: 6px;
+}
+
+/* Gear attributes: outer resource container top padding */
+body.synthicide-style-bold .synthicide .item-form .tab.attributes > .resource:first-child {
+  padding-top: 8px;
+}
+
+/* Item sheet effects tab: outer ol does not need a border – handled by effects-list */
+body.synthicide-style-bold .synthicide .item-form .tab.effects {
+  padding: 4px 0 0;
+}
+
+/* Item sheet effects list rows: slightly tighter than actor sheet */
+body.synthicide-style-bold .synthicide .item-form .effects-list .effect:not(.effects-header) {
+  min-height: 24px;
+}
+
+/* Bioclass starting-attributes grid: add a section header bar via ::before */
+body.synthicide-style-bold .synthicide .item-form .tab.attributes .grid:first-of-type::before {
+  content: attr(data-section-label);
+  display: none; /* only shown when data-section-label attr is present via template; skip for now */
+}
+
+/* Aspect / bioclass traits tab: add section label via .items-list header styles */
+/* The tab.traits .items-list .items-header already handles actor sheet. */
+/* Item-level traits list (bioclass-traits.hbs) is a raw grid, not an items-list. */
+/* Style fieldset labels inside those trait lists. */
+body.synthicide-style-bold .synthicide .item-form .tab.traits fieldset.resource > div:first-child .resource-label,
+body.synthicide-style-bold .synthicide .item-form .tab.traits fieldset.resource > label.resource-label:first-child {
+  color: var(--rb-strong);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }

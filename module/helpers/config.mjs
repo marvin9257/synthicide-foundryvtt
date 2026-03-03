@@ -202,6 +202,7 @@ SYNTHICIDE.attributeAbbreviations = {
 // `Object.keys(SYNTHICIDE.traitTypes)` when constructing schemas.
 // `spell` remains as a valid trait subtype (spells are represented as traits).
 SYNTHICIDE.traitTypes = {
+  aspect: 'SYNTHICIDE.Item.Trait.Types.aspect',
   bioclass: 'SYNTHICIDE.Item.Trait.Types.bioclass',
   attackSkill: 'SYNTHICIDE.Item.Trait.Types.attackSkill',
   knowledgeFocus: 'SYNTHICIDE.Item.Trait.Types.knowledgeFocus',

@@ -88,7 +88,24 @@ export default class SynthicideTrait extends SynthicideItemBase {
    * @override
    */
   async _preUpdate(changed, options, user) {
-    // bioClassLink logic removed; traitType now fully determines bioclass linkage
+    // Ensure trait levels conform to allowed milestone levels (1,4,7).
+    const allowed = [1, 4, 7];
+    if (changed?.system && Object.prototype.hasOwnProperty.call(changed.system, 'level')) {
+      const lvl = Number(changed.system.level);
+      if (!allowed.includes(lvl)) {
+        // Pick the allowed level nearest to the provided one
+        let nearest = allowed[0];
+        let bestDiff = Math.abs(lvl - nearest);
+        for (const a of allowed) {
+          const d = Math.abs(lvl - a);
+          if (d < bestDiff) {
+            bestDiff = d;
+            nearest = a;
+          }
+        }
+        changed.system.level = nearest;
+      }
+    }
     return super._preUpdate(changed, options, user);
   }
 }

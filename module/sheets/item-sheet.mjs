@@ -163,6 +163,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     context.config = context.config || {};
     // traitTypes is already a key->loc-key map; the template can localize it
     context.config.traitTypeOptions = SYNTHICIDE.traitTypes;
+    // Restrict trait level choices to the system's milestone levels
+    context.config.traitLevelOptions = { '1': '1', '4': '4', '7': '7' };
 
     return context;
   }

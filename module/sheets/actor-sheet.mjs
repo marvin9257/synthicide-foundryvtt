@@ -287,6 +287,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.bioclassTraits = bioclassTraits.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.traitsByLevel = traitsByLevel;
+    // Only expose the allowed trait levels in the UI (system uses 1,4,7)
+    const ALLOWED_TRAIT_LEVELS = [1, 4, 7];
+    context.traitsByLevelOrdered = ALLOWED_TRAIT_LEVELS.map(l => ({ level: l, traits: traitsByLevel[l] || [] }));
+    context.allowedTraitLevels = ALLOWED_TRAIT_LEVELS;
     context.bioclass = bioclass;
     context.aspect = aspect;
     context.aspectTraits = aspectTraits.sort((a, b) => (a.sort || 0) - (b.sort || 0));

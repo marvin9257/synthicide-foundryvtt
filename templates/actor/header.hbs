@@ -228,7 +228,7 @@
         <div class='resource flex-group-center header-resource'>
           <label class='resource-label'>
             {{#if (lt system.foodDays.value 0)}}
-            <span style="color: red;">{{localize 'SYNTHICIDE.Actor.base.FIELDS.foodDays.without'}}</span>
+            <span class="text-warning">{{localize 'SYNTHICIDE.Actor.base.FIELDS.foodDays.without'}}</span>
             {{else}}
             {{localize 'SYNTHICIDE.Actor.base.FIELDS.foodDays.label'}}
             {{/if}}

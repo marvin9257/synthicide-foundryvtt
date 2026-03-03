@@ -4,8 +4,8 @@
   data-group='primary'
   data-tab='attributes'
 >
-  <section class='grid grid-9col'>
-    <aside class='sidebar grid-span-5'>
+  <div class='attributes-layout'>
+    <div class='attributes-panel'>
       <div class="attributes-table">
         <div class="attributes-header"></div>
         <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Attributes.Base'}}</div>
@@ -14,7 +14,7 @@
         <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Attributes.Current'}}</div>
         {{#each system.attributes as |attribute key|}}
           <div class="attribute-label">
-            {{localize (lookup @root.SYNTHICIDE.attributeAbbreviations key)}}
+            <span class="attr-abbr" data-tooltip="{{localize (lookup @root.SYNTHICIDE.attributes key)}}">{{localize (lookup @root.SYNTHICIDE.attributeAbbreviations key)}}</span>
             <span
               class="rollable"
               data-action="roll"
@@ -24,7 +24,7 @@
               role="button"
               data-tooltip="{{localize (lookup @root.SYNTHICIDE.attributes key)}}"
             >
-            <img class = "actions-img" src=" {{concat '/systems/synthicide/assets/' key '.png'}}">
+            <img class="actions-img" src="{{concat '/systems/synthicide/assets/' key '.png'}}">
             </span>
           </div>
           <div class="attribute-input">
@@ -36,7 +36,7 @@
           <div class="attribute-input">
             <div class="attribute-stepper" data-attribute-key="{{key}}">
               <div class="attribute-block-meter" style="--level: {{attribute.increase}};" aria-label="{{localize (lookup @root.SYNTHICIDE.attributes key)}} increase {{attribute.increase}} of 5">
-                <div class="attribute-block-fill" style="height: calc({{attribute.increase}} * 20%);"></div>
+                <div class="attribute-block-fill"></div>
               </div>
               <input type="number" name="system.attributes.{{key}}.increase" value="{{attribute.increase}}" class="attribute-score" data-dtype="Number" min="0" max="5" step="1">
               <div class="attribute-step-buttons">
@@ -50,11 +50,10 @@
           </div>
         {{/each}}
       </div>
-    </aside>
+    </div>
 
-    {{! For the main features list, span the right two columns }}
-    <section class='main grid-span-4'>
-      <!-- Features area intentionally left blank for future use -->
-    </section>
-  </section>
+    <div class='attributes-derived'>
+      {{! Derived stats, secondary data, etc. will go here }}
+    </div>
+  </div>
 </section>

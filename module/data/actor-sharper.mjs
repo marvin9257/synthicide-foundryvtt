@@ -46,6 +46,11 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     });
 
     schema.lurans = new fields.NumberField({ ...requiredInteger, initial: 0 });
+
+    schema.rollModifiers = new fields.SchemaField({
+      starvationPenalty: new fields.NumberField({ ...requiredInteger, initial: 0}, {persisted: false}),
+    });
+    
     return schema;
   }
 
@@ -82,7 +87,9 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
    */
   prepareDerivedData() {
     super.prepareDerivedData();
-    // For sharper actors, .current is always derived
+    
+    this.rollModifiers.starvationPenalty = this.foodDays?.value < 0 ? -2 : 0;
+    // For sharper actors, .current is always derived, add starvation penalty to all attributes
     if (this.attributes) {
       for (const attr of Object.values(this.attributes)) {
         attr.current = (attr.base ?? 0) + (attr.modifier ?? 0) + (attr.increase ?? 0);

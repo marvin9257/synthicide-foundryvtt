@@ -13,6 +13,16 @@
       "Actor": "Sharper Sheet",
       "Item": "Synthicide Item Sheet"
     },
+    "Settings": {
+      "SheetStyleMode": {
+        "Name": "Sheet Style",
+        "Hint": "Choose the visual style for Synthicide sheets.",
+        "Choices": {
+          "Classic": "Classic",
+          "RulebookBold": "Rulebook Bold"
+        }
+      }
+    },
     "Actor": {
       "Header": {
         "CharacterName": "Character Name",
@@ -181,10 +191,10 @@
         "Hardshell": "Hardshell",
         "Rigfiend": "Rigfiend",
         "PresetDescriptions": {
-          "skinbag": "[Placeholder] Skinbag bioclass description.",
-          "scraphead": "[Placeholder] Scraphead bioclass description.",
-          "hardshell": "[Placeholder] Hardshell bioclass description.",
-          "rigfiend": "[Placeholder] Rigfiend bioclass description."
+          "skinbag": "To be totally organic means you can never benefit from cybernetic upgrades, yet you may develop psychic powers. Players who select this bioclass must decide if their character is a mutant or among the few remaining genetically unaltered humans.",
+          "scraphead": "An extensive surgical operation empowered your brain with cybernetic plugs, amplifying your cognitive functiing. This bioclass may benefit from cybernetic brain upgrades, but never body upgrades. Scrapheads cannot develop psychic powers, but they may access mutations.",
+          "hardshell": "Body rigs are specialized for physical tasks. This bioclass may buy cybernetic body upgrades, but not brain upgrades. You have access to mutations and can learn psychic powers.",
+          "rigfiend": "Someone with both a rigged body and rigged mind is entirely dependent on cybernetics. This bioclass may gain any cybernetic upgrade. However, a Rigfiend may not access mutations or psychic powers."
         },
         "Trait": {
           "TechlessWill": {

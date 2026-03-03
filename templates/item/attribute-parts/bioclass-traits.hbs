@@ -4,7 +4,7 @@
   data-group='primary'
   data-tab='traits'
 >
-  <div class='resource' style='margin-bottom: 0.5rem;'>
+  <div class='trait-add-row'>
     <button type='button' data-action='addTrait'>
       <i class='fas fa-plus'></i>
       {{localize 'SYNTHICIDE.Item.Bioclass.AddTrait'}}
@@ -15,12 +15,12 @@
     <div class='grid grid-1col'>
       {{#each system.traits as |trait i|}}
         <fieldset class='resource'>
-          <div style='display:flex; gap:0.5rem; align-items:flex-end;'>
-            <div style='flex:1;'>
+          <div class='trait-card-header'>
+            <div class='trait-card-name'>
               <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.TraitName'}}</label>
               <input type='text' name='system.traits.{{i}}.name' value='{{trait.name}}' />
             </div>
-            <div style='display:flex; align-items:flex-end; justify-content:flex-end;'>
+            <div class='trait-card-actions'>
               <button type='button' data-action='removeTrait' data-index='{{i}}'>
                 <i class='fas fa-trash'></i>
               </button>
