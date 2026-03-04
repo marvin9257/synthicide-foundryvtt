@@ -42,12 +42,6 @@
   --synthicide-c-hover-glow: red;
 }
 
-/* Light mode fallback */
-:root {
-  --form-field-bg: #e6e4df;
-  --form-field-color: #333;
-}
-
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   :root {
@@ -785,14 +779,15 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   padding: 0 8px;
 }
 .synthicide .effects .item .effect-source,
-.synthicide .effects .item .effect-duration,
-.synthicide .effects .item .effect-controls {
+.synthicide .effects .item .effect-duration {
   text-align: center;
   border-left: 1px solid var(--synthicide-c-border-subtle);
   border-right: 1px solid var(--synthicide-c-border-subtle);
   font-size: 12px;
 }
 .synthicide .effects .item .effect-controls {
+  text-align: center;
+  font-size: 12px;
   border: none;
 }
 
