@@ -44,13 +44,12 @@ export default class SynthicideBioclass extends SynthicideFeature {
   }
 
   /**
-   * A small _preUpdate stub if needed
-   *
-    * @this {SynthicideBioclass}
-    * @param {object} changes
-    * @param {object} options
-    * @param {string} user
-    * @returns {Promise<boolean|void>}
+   * Enforce slot constraints when body/brain type changes.
+   * @this {SynthicideBioclass}
+   * @param {object} changes
+   * @param {object} options
+   * @param {string} user
+   * @returns {Promise<boolean|void>}
    * @override
    */
   async _preUpdate(changes, options, user) {
@@ -150,12 +149,4 @@ export default class SynthicideBioclass extends SynthicideFeature {
     await owningActor.update(updates, { render });
   }
 
-  /**
-   * @this {SynthicideBioclass}
-   * Prepare derived data for bioclass item.
-   * Sets localized labels and slot types for display and sheet use.
-   */
-  prepareDerivedData() {
-    super.prepareDerivedData();
-  }
 }

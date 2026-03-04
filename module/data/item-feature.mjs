@@ -4,7 +4,7 @@ import { FEATURE_TYPE, FEATURE_TYPES } from '../helpers/feature-types.mjs';
 
 /**
  * Shared logic for any item that occupies the single‑feature slot on an actor.
- * Bioclass and Aspect are thin subclasses that provide their own subtype data.
+ * Bioclass and Aspect are thin subclasses that provide feature-specific data.
  *
  * Important DataModel context: in instance methods, `this` is the system
  * DataModel object (equivalent to `item.system`), not the parent Item document.
@@ -221,7 +221,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
   }
 
   /**
-   * Route attribute synchronization to subtype-specific logic.
+   * Route attribute synchronization to subclass-specific logic.
    * Subclasses can override `_syncSubtypeAttributes` when needed.
    * @private
    */
@@ -230,7 +230,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
   }
 
   /**
-   * Subclass extension point for subtype-specific actor synchronization.
+   * Subclass extension point for feature-specific actor synchronization.
    * @param {Actor} owningActor
    * @param {{render?: boolean}} _options
    * @private
@@ -240,7 +240,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
   }
 
   /**
-   * Subclass extension point for subtype-specific cleanup when a feature is
+   * Subclass extension point for feature-specific cleanup when a feature is
    * deleted from an actor.
    * @param {Actor} owningActor
    * @private
@@ -349,7 +349,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
   }
 
   /**
-   * Keep trait defaults aligned when a feature subtype changes.
+   * Pass-through pre-update hook for future shared feature logic.
    *
    * DataModel hook context: `this` is the feature system model
    * (`item.system`), not the parent Item document.

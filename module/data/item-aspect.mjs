@@ -2,10 +2,8 @@ import SynthicideFeature from './item-feature.mjs';
 
 /**
  * A concrete subclass representing an "aspect" feature.
- * Most behaviour is inherited from the generic feature class; we only
- * need to ensure the discriminator field is set appropriately and
- * provide a distinct localization prefix for any aspect-specific
- * translation keys that may be added later.
+ * Most behavior is inherited from the generic feature class; this
+ * subclass only defines aspect-specific schema fields.
  *
  * DataModel context: instance methods execute on the aspect system model
  * (`item.system`), not on the Item document.
@@ -19,10 +17,7 @@ export default class SynthicideAspect extends SynthicideFeature {
   ];
 
   /**
-   * Extend the schema with fields that are unique to aspects.  These
-   * correspond roughly to the design notes provided by the user:
-   * attribute increases/penalties, level‑one abilities, and a place to
-   * stash miscellaneous notes or rules text.
+   * Extend the schema with fields that are unique to aspects.
    */
   static defineSchema() {
     const fields = foundry.data.fields;
@@ -47,6 +42,5 @@ export default class SynthicideAspect extends SynthicideFeature {
     return schema;
   }
 
-  // future custom logic (default attributes, trait presets, etc.)
-  // can be added here without touching the shared base.
+  // Future aspect-specific logic can be added here without touching the shared base.
 }
