@@ -296,7 +296,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         parent: this.item,
       }),
     };
-    // Loop through the dataset and add it to our effectData
+    // Loop through the dataset and add it to effectData
     for (const [dataKey, value] of Object.entries(target.dataset)) {
       // These data attributes are reserved for the action handling
       if (['action', 'documentClass'].includes(dataKey)) continue;
@@ -305,8 +305,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       // which turns into the dataKey 'system.level'
       foundry.utils.setProperty(effectData, dataKey, value);
     }
-
-    // Finally, create the embedded document!
     await aeCls.create(effectData, { parent: this.item });
   }
 
