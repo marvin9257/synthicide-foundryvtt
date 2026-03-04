@@ -7,7 +7,7 @@
   {{#if bioclass}}
     <ol class='items-list'>
       <li class='item flexrow items-header' data-item-id='{{bioclass._id}}' data-document-class='Item'>
-        <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}} ({{localize bioclass.system.bioclassTypeLabel}})</div>
+        <div class='item-name'>{{localize 'TYPES.Item.bioclass'}}: {{bioclass.name}}</div>
         <div class='item-controls'>
           {{!-- info icon now has an action to show the description dialog --}}
           <a class='item-control item-info' data-action='showInfo' data-tooltip='{{{bioclass.system.description}}}'>

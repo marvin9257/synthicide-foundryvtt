@@ -126,17 +126,6 @@ export default class SynthicideFeature extends SynthicideItemBase {
    */
   static getDefaultTraits({ featureType, bioclassType, aspectType } = {}) {
     switch (featureType) {
-      case FEATURE_TYPE.BIOCLASS: {
-        const preset = SYNTHICIDE.getFeaturePreset('bioclass', bioclassType || 'skinbag');
-        return preset.traits.map(t => ({
-          sort: t.sort,
-          key: t.key || '',
-          name: t.key ? game.i18n.localize(`SYNTHICIDE.Item.Bioclass.Trait.${t.key}.Name`) : '',
-          description: t.key
-            ? game.i18n.localize(`SYNTHICIDE.Item.Bioclass.Trait.${t.key}.Description`)
-            : ''
-        }));
-      }
       case FEATURE_TYPE.ASPECT: {
         const preset = SYNTHICIDE.getFeaturePreset('aspect', aspectType);
         return (preset.traits || []).map(t => ({

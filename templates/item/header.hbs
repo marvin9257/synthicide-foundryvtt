@@ -10,19 +10,6 @@
     <div class='document-name'>
       <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
     </div>
-    {{!-- bioclass or aspect selector for feature‑type items --}}
-    {{!-- show bioclass selector only when the item is actually a bioclass feature --}}
-    {{#if (or
-          (eq item.type 'bioclass')
-          (and (eq item.type 'feature') (eq system.featureType 'bioclass'))
-        )}}
-      <div class='resource'>
-        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.Label'}}</label>
-        <select name='system.bioclassType'>
-          {{selectOptions SYNTHICIDE.bioclassTypes selected=system.bioclassType localize=true}}
-        </select>
-      </div>
-    {{/if}}
     {{#if (or (eq item.type 'aspect') (and (eq item.type 'feature') (eq system.featureType 'aspect')))}}
       <div class='resource'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Aspect.Label'}}</label>

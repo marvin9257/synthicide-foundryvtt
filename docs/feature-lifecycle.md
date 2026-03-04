@@ -20,8 +20,8 @@ Primary files:
 ### Responsibility Split
 
 - **Config layer (`module/helpers/config.mjs`)**
-  - stores preset data (`bioclassPresets`, `aspectPresets`)
-  - resolves presets (`getFeaturePreset`)
+  - stores aspect preset data (`aspectPresets`)
+  - resolves aspect presets (`getFeaturePreset`)
 - **Feature data models**
   - enforce schemas
   - generate trait items
@@ -72,7 +72,7 @@ sequenceDiagram
 `_onUpdate(...)` re-applies feature side effects when:
 
 - `system.traits` changed, or
-- subtype changed (`featureType`, `bioclassType`, or `aspectType`)
+- subtype changed (`featureType`, `bodyType`, `brainType`, or `aspectType`)
 
 ### Shared pre-update behavior (`SynthicideFeature`)
 
@@ -83,13 +83,12 @@ This prevents stale subtype traits when changing subtype selectors.
 ### Subclass update behavior
 
 - `SynthicideBioclass._preUpdate(...)`
-  - when `bioclassType` changes, syncs:
-    - `system.startingAttributes`
-    - `system.bodySlots`
-    - `system.brainSlots`
+  - when `bodyType` or `brainType` changes, syncs:
+    - if `bodyType` is "Organic", sets `system.bodySlots` to zero
+    - if `brainType` is "Organic", sets `system.brainSlots` to zero
 - `SynthicideAspect._preUpdate(...)`
   - when `aspectType` changes, syncs:
-    - `system.abilities`
+    - `system.abilities` (from aspect preset)
 
 ---
 
@@ -111,26 +110,6 @@ When a feature is deleted:
 - `system.hitPoints.base`
 - `system.hitPoints.perLevel`
 - `system.bodySlots` / `system.brainSlots` (if those properties exist)
-
-### Delete Sequence Diagram
-
-```mermaid
-sequenceDiagram
-  participant Actor as Actor
-  participant Feature as SynthicideFeature
-  participant Bioclass as SynthicideBioclass
-
-  Actor->>Feature: _preDelete(options, userId)
-  Feature->>Feature: capture _deletingActor
-  Actor->>Feature: _onDelete(options, userId)
-  alt cleanup not skipped
-    Feature->>Actor: remove generated feature traits
-    Feature->>Bioclass: _cleanupOnDelete(actor)
-  else replacement flow
-    Feature-->>Actor: skip old cleanup
-  end
-  Feature->>Actor: aggregateAndApplyItemModifiers(...)
-```
 
 ---
 
@@ -157,29 +136,17 @@ This method ensures deterministic replacement order:
 
 This gives one authoritative apply pass and avoids stale intermediate UI states.
 
-### Replacement State Diagram
-
-```mermaid
-stateDiagram-v2
-  [*] --> ExistingFeature
-  ExistingFeature --> DeletingOld: delete with SKIP_FEATURE_CLEANUP
-  DeletingOld --> CreatingNew: create with SKIP_FEATURE_APPLY
-  CreatingNew --> ApplyingOnce: explicit applyToActor()
-  ApplyingOnce --> FinalRender: render(force)
-  FinalRender --> [*]
-```
-
 ---
 
 ## Practical Examples
 
-## Example A: Changing bioclass type on an existing bioclass item
+## Example A: Changing bodyType or brainType on an existing bioclass item
 
-Input update contains `system.bioclassType = 'rigfiend'`.
+Input update contains `system.bodyType = 'Organic'`.
 
 Effects:
 
-1. `SynthicideBioclass._preUpdate` updates `startingAttributes/bodySlots/brainSlots` from preset.
+1. `SynthicideBioclass._preUpdate` sets `system.bodySlots` to zero if bodyType is "Organic".
 2. Shared `_preUpdate` seeds default traits for new subtype if `traits` absent in payload.
 3. `_onUpdate` sees subtype change and calls `applyToActor`.
 4. Actor trait items are recreated for bioclass; actor base stats/hp are synchronized.
@@ -235,7 +202,7 @@ Effects:
 - `SynthicideFeature`
   - `_onCreate`, `_onUpdate`, `_preDelete`, `_onDelete`, `applyToActor`, trait create/remove, replacement orchestration
 - `SynthicideBioclass`
-  - `_preUpdate` (derived schema fields), `_syncSubtypeAttributes`, `_cleanupOnDelete`
+  - `_preUpdate` (bodyType/brainType/slot logic), `_syncSubtypeAttributes`, `_cleanupOnDelete`
 - `SynthicideAspect`
   - `_preUpdate` (abilities refresh), schema defaults
 

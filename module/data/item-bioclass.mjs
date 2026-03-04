@@ -1,9 +1,6 @@
 import SynthicideFeature from './item-feature.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 
-const BIOCLASS_TYPES = SYNTHICIDE.bioclassTypes || { skinbag: 'SYNTHICIDE.Item.Bioclass.Skinbag' };
-const DEFAULT_BIOCLASS = 'skinbag';
-
 /**
  * Bioclass feature system model.
  *
@@ -21,7 +18,6 @@ export default class SynthicideBioclass extends SynthicideFeature {
   static defineSchema() {
     const { fields } = foundry.data;
     const schema = super.defineSchema();
-    const defaultPreset = SYNTHICIDE.getFeaturePreset('bioclass', DEFAULT_BIOCLASS);
 
     schema.featureType = new fields.StringField({
       required: true,
@@ -29,40 +25,26 @@ export default class SynthicideBioclass extends SynthicideFeature {
       initial: 'bioclass'
     });
 
-    // Seed traits so the sheet shows them immediately
-    const defaultTraits = this.getDefaultTraits({
-      featureType: 'bioclass',
-      bioclassType: defaultPreset?.bioclassType || DEFAULT_BIOCLASS
-    });
-    schema.traits.initial = foundry.utils.deepClone(defaultTraits);
 
-    schema.bioclassType = new fields.StringField({
-      required: true,
-      choices: BIOCLASS_TYPES,
-      initial: DEFAULT_BIOCLASS,
-    });
+    schema.bodySlots = new fields.NumberField({ required: true, initial: 0 });
+    schema.brainSlots = new fields.NumberField({ required: true, initial: 0 });
+    schema.bodyType = new fields.StringField({ required: true, initial: 'Organic' });
+    schema.brainType = new fields.StringField({ required: true, initial: 'Organic' });
 
-    schema.startingAttributes = new fields.SchemaField(
-      Object.fromEntries(
-        Object.entries(defaultPreset.startingAttributes).map(([k,v]) => [k, new fields.NumberField({ required: true, initial: v })])
-      )
-    );
-
-    schema.bodySlots = new fields.NumberField({ required: true, initial: defaultPreset.bodySlots });
-    schema.brainSlots = new fields.NumberField({ required: true, initial: defaultPreset.brainSlots });
-
-    const description = defaultPreset?.description || '';
-    schema.description.initial = description.startsWith('SYNTHICIDE.')
-      ? game.i18n.localize(description)
-      : description;
+    // Add startingAttributes for manual entry, using config for core attributes
+    const attrFields = {};
+    for (const key of Object.keys(SYNTHICIDE.attributes)) {
+      attrFields[key] = new fields.NumberField({ required: true, initial: 0 });
+    }
+    attrFields.hp = new fields.NumberField({ required: true, initial: 0 });
+    attrFields.hpPerLevel = new fields.NumberField({ required: true, initial: 0 });
+    schema.startingAttributes = new fields.SchemaField(attrFields);
 
     return schema;
   }
 
   /**
-   * A small _preUpdate hook to keep start attributes/slots in sync with the
-   * selected bioclass type whenever that field changes.  This moves logic out
-   * of the sheet and into the data model, simplifying the UI code.
+   * A small _preUpdate stub if needed
    *
     * @this {SynthicideBioclass}
     * @param {object} changes
@@ -75,48 +57,26 @@ export default class SynthicideBioclass extends SynthicideFeature {
     const allowed = await super._preUpdate?.(changes, options, user);
     if (allowed === false) return false;
 
-    const nextBioclassType = changes.system?.bioclassType;
-    if (nextBioclassType && nextBioclassType !== this.bioclassType) {
-      const preset = SYNTHICIDE.getFeaturePreset('bioclass', nextBioclassType);
-      foundry.utils.setProperty(changes, 'system.startingAttributes', foundry.utils.deepClone(preset.startingAttributes));
-      foundry.utils.setProperty(changes, 'system.bodySlots', preset.bodySlots);
-      foundry.utils.setProperty(changes, 'system.brainSlots', preset.brainSlots);
-      const description = preset.description || '';
-      foundry.utils.setProperty(
-        changes,
-        'system.description',
-        description.startsWith('SYNTHICIDE.') ? game.i18n.localize(description) : description
-      );
+    // If bodyType is being changed to Organic, set bodySlots to zero
+    const nextBodyType = changes.system?.bodyType ?? this.bodyType;
+    if (nextBodyType === 'Organic') {
+      foundry.utils.setProperty(changes, 'system.bodySlots', 0);
     }
+
+    // If brainType is being changed to Organic, set brainSlots to zero
+    const nextBrainType = changes.system?.brainType ?? this.brainType;
+    if (nextBrainType === 'Organic') {
+      foundry.utils.setProperty(changes, 'system.brainSlots', 0);
+    }
+
     return allowed;
   }
 
-  /**
-   * Resolve the effective bioclass starting attributes.
-   *
-   * Precedence:
-   * 1) Use explicit attributes stored on this item (`this.startingAttributes`)
-   *    when present.
-   * 2) Otherwise, fall back to the current bioclass preset defaults.
-   *
-   * This keeps apply (`_syncSubtypeAttributes`) and delete cleanup
-   * (`_cleanupOnDelete`) aligned on the same source of truth.
-   *
-   * @this {SynthicideBioclass}
-   * @returns {object} Effective starting-attribute map for this bioclass.
-   * @private
-   */
-  _getEffectiveStartingAttributes() {
-    const sourceStarting = this.startingAttributes || {};
-    if (Object.keys(sourceStarting).length) return sourceStarting;
-    const type = this.bioclassType || DEFAULT_BIOCLASS;
-    return SYNTHICIDE.getFeaturePreset('bioclass', type).startingAttributes || {};
-  }
+
 
   /**
    * Bioclass‑specific attribute sync.  We maintain a separate method so that
    * the generic feature class stays small (calling this only when needed).
-   * This more closely mirrors the old implementation the user provided.
    *
    * @this {SynthicideBioclass}
    * @param {Actor} owningActor
@@ -128,7 +88,7 @@ export default class SynthicideBioclass extends SynthicideFeature {
 
     const debugBioclass = Boolean(SYNTHICIDE.debug?.synthicideBioclass);
     const itemName = this.parent?.name ?? '(unnamed item)';
-    const starting = this._getEffectiveStartingAttributes();
+    const starting = this.startingAttributes || {};
 
     const actorAttributes = owningActor.system?.attributes || {};
     const updates = {};
@@ -170,7 +130,7 @@ export default class SynthicideBioclass extends SynthicideFeature {
 
     const updates = {};
     const actorAttributes = owningActor.system?.attributes || {};
-    const starting = this._getEffectiveStartingAttributes();
+    const starting = this.startingAttributes || {};
 
     for (const key of Object.keys(starting)) {
       if (!(key in actorAttributes)) continue;
@@ -197,10 +157,5 @@ export default class SynthicideBioclass extends SynthicideFeature {
    */
   prepareDerivedData() {
     super.prepareDerivedData();
-    const type = this.bioclassType || DEFAULT_BIOCLASS;
-    const preset = SYNTHICIDE.getFeaturePreset('bioclass', type);
-    this.bodyType = `SYNTHICIDE.Item.BodyType.${preset.bodyType}`;
-    this.brainType = `SYNTHICIDE.Item.BodyType.${preset.brainType}`;
-    this.bioclassTypeLabel = `SYNTHICIDE.Item.Bioclass.${type.charAt(0).toUpperCase() + type.slice(1)}`;
   }
 }

@@ -6,12 +6,16 @@
 >
   <div class='grid grid-2col'>
     <div class='resource'>
-      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.BodyType'}}</label>
-      <input type='text' value='{{localize system.bodyType}}' disabled />
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.BodyType'}}:</label>
+      <select name='system.bodyType'>
+        {{selectOptions SYNTHICIDE.bodyBrainTypes selected=system.bodyType localize=true}}
+      </select>
     </div>
     <div class='resource'>
-      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.BrainType'}}</label>
-      <input type='text' value='{{localize system.brainType}}' disabled />
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.BrainType'}}:</label>
+      <select name='system.brainType'>
+        {{selectOptions SYNTHICIDE.bodyBrainTypes selected=system.brainType localize=true}}
+      </select>
     </div>
   </div>
 

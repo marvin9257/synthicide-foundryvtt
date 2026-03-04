@@ -1,4 +1,9 @@
 const SYNTHICIDE = {};
+// Shared dropdown options for bodyType and brainType
+SYNTHICIDE.bodyBrainTypes = {
+  Organic: 'SYNTHICIDE.Item.BodyType.Organic',
+  Rigged: 'SYNTHICIDE.Item.BodyType.Rigged'
+};
 
 // Centralized debug flags for system modules
 SYNTHICIDE.debug = {
@@ -10,135 +15,6 @@ SYNTHICIDE.debug = {
 };
 
 export default SYNTHICIDE;
-/**
- * Bioclass type choices used in the system.
- */
-SYNTHICIDE.bioclassTypes = {
-  skinbag: 'SYNTHICIDE.Item.Bioclass.Skinbag',
-  scraphead: 'SYNTHICIDE.Item.Bioclass.Scraphead',
-  hardshell: 'SYNTHICIDE.Item.Bioclass.Hardshell',
-  rigfiend: 'SYNTHICIDE.Item.Bioclass.Rigfiend',
-};
-
-SYNTHICIDE.bioclassPresets = {
-  skinbag: {
-    description: 'SYNTHICIDE.Item.Bioclass.PresetDescriptions.skinbag',
-    bodyType: 'Organic', // key, localize at display
-    brainType: 'Organic', // key, localize at display
-    bodySlots: 0,
-    brainSlots: 0,
-    startingAttributes: {
-      awareness: 2,
-      combat: 0,
-      toughness: -1,
-      influence: 1,
-      operation: 0,
-      nerve: 1,
-      speed: 1,
-      hp: 35,
-      hpPerLevel: 5,
-    },
-    traits: [
-      {
-        sort: 10,
-        key: 'TechlessWill',
-      },
-      {
-        sort: 20,
-        key: 'GeneticLegacy',
-      },
-    ],
-  },
-  scraphead: {
-    description: 'SYNTHICIDE.Item.Bioclass.PresetDescriptions.scraphead',
-    bodyType: 'Organic', // key, localize at display
-    brainType: 'Rigged', // key, localize at display
-    bodySlots: 0,
-    brainSlots: 1,
-    startingAttributes: {
-      awareness: 0,
-      combat: 0,
-      toughness: -1,
-      influence: -1,
-      operation: 3,
-      nerve: 3,
-      speed: 1,
-      hp: 35,
-      hpPerLevel: 5,
-    },
-    traits: [
-      {
-        sort: 10,
-        key: 'HardBrain',
-      },
-      {
-        sort: 20,
-        key: 'StarterSoftware',
-      },
-    ],
-  },
-  hardshell: {
-    description: 'SYNTHICIDE.Item.Bioclass.PresetDescriptions.hardshell',
-    bodyType: 'Rigged', // key, localize at display
-    brainType: 'Organic', // key, localize at display
-    bodySlots: 2,
-    brainSlots: 0,
-    startingAttributes: {
-      awareness: 2,
-      combat: 0,
-      toughness: 0,
-      influence: 1,
-      operation: 0,
-      nerve: 1,
-      speed: 1,
-      hp: 42,
-      hpPerLevel: 6,
-    },
-    traits: [
-      {
-        sort: 10,
-        key: 'StarterHardware',
-      },
-    ],
-  },
-  rigfiend: {
-    description: 'SYNTHICIDE.Item.Bioclass.PresetDescriptions.rigfiend',
-    bodyType: 'Rigged', // key, localize at display
-    brainType: 'Rigged', // key, localize at display
-    bodySlots: 4,
-    brainSlots: 2,
-    startingAttributes: {
-      awareness: 1,
-      combat: 1,
-      toughness: 0,
-      influence: -1,
-      operation: 2,
-      nerve: 2,
-      speed: 1,
-      hp: 42,
-      hpPerLevel: 6,
-    },
-    traits: [
-      {
-        sort: 10,
-        key: 'ModFocused',
-      },
-    ],
-  },
-};
-
-SYNTHICIDE.getBioclassPreset = (bioclassType) => {
-  const preset = SYNTHICIDE.bioclassPresets[bioclassType] ?? SYNTHICIDE.bioclassPresets.skinbag;
-  const description = preset.description ?? '';
-  // Ensure traits have name and description fields for schema validation
-  const traits = (preset.traits || []).map(trait => ({
-    sort: trait.sort,
-    key: trait.key ?? '',
-    name: trait.name ?? '',
-    description: trait.description ?? ''
-  }));
-  return { ...preset, description, traits };
-};
 
 // Returns a normalized aspect preset for a given aspect type
 SYNTHICIDE.getAspectPreset = (aspectType) => {
@@ -163,7 +39,8 @@ SYNTHICIDE.getAspectPreset = (aspectType) => {
 SYNTHICIDE.getFeaturePreset = (type, subtype) => {
   switch (type) {
     case 'bioclass':
-      return SYNTHICIDE.getBioclassPreset(subtype);
+      console.warn("Error in getting to getFeaturePreset")
+      return {};
     case 'aspect':
       return SYNTHICIDE.getAspectPreset(subtype) || { traits: [] };
     default:
