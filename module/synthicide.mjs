@@ -9,6 +9,7 @@ import SYNTHICIDE from './helpers/config.mjs';
 // Import DataModel classes
 import * as models from './data/_module.mjs';
 import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
+import {SynthicideGamePause} from './documents/pause.mjs';
 
 const collections = foundry.documents.collections;
 const sheets = foundry.appv1.sheets;
@@ -141,6 +142,9 @@ Hooks.once('init', function () {
     makeDefault: true,
     label: 'SYNTHICIDE.SheetLabels.Item',
   });
+
+  //Game pause icon change
+  CONFIG.ui.pause = SynthicideGamePause;
 });
 
 /* -------------------------------------------- */

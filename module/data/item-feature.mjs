@@ -38,7 +38,6 @@ export default class SynthicideFeature extends SynthicideItemBase {
 
     schema.traits = new fields.ArrayField(
       new fields.SchemaField({
-        key: new fields.StringField({ required: false, blank: true, initial: '' }),
         sort: new fields.NumberField({ required: true, integer: true, initial: 0 }),
         name: new fields.StringField({ required: true, blank: true, initial: '' }),
         description: new fields.HTMLField({ required: true, initial: '' })
@@ -198,13 +197,8 @@ export default class SynthicideFeature extends SynthicideItemBase {
     if (!traits.length) return;
 
     const docs = traits.map(trait => {
-      const prefix = featureType.charAt(0).toUpperCase() + featureType.slice(1);
-      const name = trait.key
-        ? game.i18n.localize(`SYNTHICIDE.Item.${prefix}.Trait.${trait.key}.Name`)
-        : trait.name || 'Trait';
-      const description = trait.key
-        ? game.i18n.localize(`SYNTHICIDE.Item.${prefix}.Trait.${trait.key}.Description`)
-        : trait.description || '';
+      const name = trait.name || 'Trait';
+      const description = trait.description || '';
       const system = {
         ...trait,
         name,
