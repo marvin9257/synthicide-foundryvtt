@@ -8,20 +8,19 @@ Primary files:
 
 - `module/data/item-feature.mjs` (shared lifecycle + replacement orchestration)
 - `module/data/item-bioclass.mjs` (bioclass-specific sync/cleanup)
-- `module/data/item-aspect.mjs` (aspect-specific schema + preset ability updates)
+- `module/data/item-aspect.mjs` (aspect-specific schema for manual abilities)
 - `module/sheets/actor-sheet.mjs` (drop handlers that call shared replacement orchestration)
 
 ## Architecture at a Glance
 
 - `SynthicideFeature` is the shared base for actor “single-slot feature” items.
 - `SynthicideBioclass` extends `SynthicideFeature` and adds actor-stat synchronization.
-- `SynthicideAspect` extends `SynthicideFeature` and currently only updates aspect abilities/presets.
+- `SynthicideAspect` extends `SynthicideFeature` and defines aspect-specific schema fields.
 
 ### Responsibility Split
 
 - **Config layer (`module/helpers/config.mjs`)**
-  - stores aspect preset data (`aspectPresets`)
-  - resolves aspect presets (`getFeaturePreset`)
+  - stores shared static config (for example body/brain type options)
 - **Feature data models**
   - enforce schemas
   - generate trait items
@@ -69,16 +68,11 @@ sequenceDiagram
 
 ### Shared update behavior (`SynthicideFeature`)
 
-`_onUpdate(...)` re-applies feature side effects when:
-
-- `system.traits` changed, or
-- subtype changed (`featureType`, `bodyType`, `brainType`, or `aspectType`)
+`_onUpdate(...)` re-applies feature side effects when `system.traits` changes.
 
 ### Shared pre-update behavior (`SynthicideFeature`)
 
-`_preUpdate(...)` seeds default trait arrays when subtype changes **and** traits were not explicitly supplied in the update payload.
-
-This prevents stale subtype traits when changing subtype selectors.
+`_preUpdate(...)` does not reseed traits. Traits and abilities are manual-edit fields.
 
 ### Subclass update behavior
 
@@ -86,9 +80,6 @@ This prevents stale subtype traits when changing subtype selectors.
   - when `bodyType` or `brainType` changes, syncs:
     - if `bodyType` is "Organic", sets `system.bodySlots` to zero
     - if `brainType` is "Organic", sets `system.brainSlots` to zero
-- `SynthicideAspect._preUpdate(...)`
-  - when `aspectType` changes, syncs:
-    - `system.abilities` (from aspect preset)
 
 ---
 
@@ -147,9 +138,8 @@ Input update contains `system.bodyType = 'Organic'`.
 Effects:
 
 1. `SynthicideBioclass._preUpdate` sets `system.bodySlots` to zero if bodyType is "Organic".
-2. Shared `_preUpdate` seeds default traits for new subtype if `traits` absent in payload.
-3. `_onUpdate` sees subtype change and calls `applyToActor`.
-4. Actor trait items are recreated for bioclass; actor base stats/hp are synchronized.
+2. No trait reseeding occurs.
+3. Trait regeneration is unaffected unless `system.traits` is changed.
 
 ## Example B: Replacing aspect via drag-and-drop onto actor sheet
 
@@ -165,9 +155,8 @@ Effects:
 
 ## Current aspect capability
 
-- Has subtype discriminator (`aspectType`)
-- Derives default traits from presets
-- Updates `system.abilities` when subtype changes
+- Manual abilities editing via aspect sheet
+- Manual trait editing via shared feature trait flow
 - Uses shared trait apply/remove lifecycle
 - No actor-stat synchronization yet (subtype sync hook remains inherited no-op)
 
@@ -180,11 +169,8 @@ Effects:
 
 ## Recommended extension checklist
 
-- Add new aspect subtype to `SYNTHICIDE.aspectTypes`.
-- Add preset entry in `SYNTHICIDE.aspectPresets` (traits/abilities and future fields).
-- Extend aspect schema fields only if needed.
-- In `_preUpdate`, sync only fields derived from subtype change.
-- Keep shared trait seeding in base `SynthicideFeature._preUpdate` as authority.
+- Extend aspect schema fields only when needed.
+- Keep manual edit fields (`traits`, `abilities`, `description`) explicit in sheet and schema.
 - If adding actor side effects, implement subtype hook + matching cleanup.
 - Validate replacement flow still performs single apply and single final render.
 
@@ -192,7 +178,6 @@ Effects:
 
 - Keep replacement orchestration centralized in `replaceOnActor`.
 - Keep subtype-specific behavior in subclass hooks (`_syncSubtypeAttributes`, `_cleanupOnDelete`, subtype `_preUpdate`).
-- Keep preset data lookup in config (`getFeaturePreset`) and behavior in item classes.
 - Prefer additive hooks over branching in shared base class.
 
 ---
@@ -204,6 +189,6 @@ Effects:
 - `SynthicideBioclass`
   - `_preUpdate` (bodyType/brainType/slot logic), `_syncSubtypeAttributes`, `_cleanupOnDelete`
 - `SynthicideAspect`
-  - `_preUpdate` (abilities refresh), schema defaults
+  - schema defaults (featureType + abilities)
 
 This design keeps shared lifecycle flow predictable while allowing bioclass/aspect divergence in small override points.

@@ -212,21 +212,7 @@
         "Abilities": "Abilities",
         "AddAbility": "Add Ability",
         "NoAbilities": "No abilities found.",
-        "TraitName": "Trait Name",
-        "PresetDescriptions": {
-          "brainiac": "Gifted with prodigal intellect, you take great pride in your research and talent.",
-          "bulbhead": "You are a psychic that struggles to function without Illuminix, an addictive and illegal substance traded underground.",
-          "leader": "You empower everyone around you; the universe just can't keep you down.",
-          "scoundrel": "You are a tricky individual who favors the element of surprise. ",
-          "thug": "Death has visited you more times than you can count, yet your innate martial prowess has kept you alive."
-        },
-        "Types": {
-          "brainiac": "Brainiac",
-          "bulbhead": "Bulbhead",
-          "leader": "Leader",
-          "scoundrel": "Scoundrel",
-          "thug": "Thug"
-        }
+        "TraitName": "Trait Name"
       },
       "BodyType": {
         "Organic": "Organic",

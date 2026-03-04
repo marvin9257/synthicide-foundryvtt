@@ -118,39 +118,6 @@ export default class SynthicideFeature extends SynthicideItemBase {
     return featureItem ? [featureItem] : [];
   }
 
-  /**
-   * Return a default trait array for a feature based on its system data.
-   * Subclasses or presets supply the actual values.
-   * @param {object} system - the system data being created/updated
-   * @returns {Array<object>}
-   */
-  static getDefaultTraits({ featureType, bioclassType, aspectType } = {}) {
-    switch (featureType) {
-      case FEATURE_TYPE.ASPECT: {
-        const preset = SYNTHICIDE.getFeaturePreset('aspect', aspectType);
-        return (preset.traits || []).map(t => ({
-          sort: t.sort,
-          name: t.name || '',
-          description: t.description || ''
-        }));
-      }
-      default:
-        return [];
-    }
-  }
-
-  /**
-   * Override create to ensure default traits are populated when a new
-   * feature is instantiated without an explicit traits array.
-   */
-  static async create(data = {}, options = {}) {
-    const system = foundry.utils.mergeObject({}, data.system || {}, { inplace: false });
-    if (!system.traits?.length) {
-      system.traits = this.getDefaultTraits(system);
-    }
-    data = foundry.utils.mergeObject(data, { system }, { inplace: false });
-    return super.create(data, options);
-  }
 
   /**
    * Resolve the owning actor from this embedded item data model.
@@ -172,26 +139,6 @@ export default class SynthicideFeature extends SynthicideItemBase {
    */
   _isCurrentUser(userId) {
     return !userId || game.userId === userId;
-  }
-
-  /**
-   * Determine whether a payload changes the effective feature subtype.
-   * @param {object} [systemChanges={}]
-   * @returns {boolean}
-   * @private
-   */
-  _didSubtypeChange(systemChanges = {}) {
-    if (!systemChanges) return false;
-    const featureTypeChanged =
-      Object.hasOwn(systemChanges, 'featureType') &&
-      systemChanges.featureType !== this.featureType;
-    const bioclassTypeChanged =
-      Object.hasOwn(systemChanges, 'bioclassType') &&
-      systemChanges.bioclassType !== this.bioclassType;
-    const aspectTypeChanged =
-      Object.hasOwn(systemChanges, 'aspectType') &&
-      systemChanges.aspectType !== this.aspectType;
-    return featureTypeChanged || bioclassTypeChanged || aspectTypeChanged;
   }
 
   // ---------------------------------------------------------------------
@@ -346,8 +293,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
     if (!actor) return;
 
     const traitUpdate = !!changed?.system?.traits;
-    const subtypeChange = this._didSubtypeChange(changed?.system);
-    if (traitUpdate || subtypeChange) {
+    if (traitUpdate) {
       await this.applyToActor(actor, { render: options?.render ?? true });
     }
   }
@@ -418,27 +364,6 @@ export default class SynthicideFeature extends SynthicideItemBase {
   async _preUpdate(changes, options, user) {
     const allowed = await super._preUpdate?.(changes, options, user);
     if (allowed === false) return false;
-
-    const systemChanges = changes?.system;
-    if (!systemChanges) return allowed;
-
-    const subtypeChanged = this._didSubtypeChange(systemChanges);
-    if (subtypeChanged) {
-      const featureType = systemChanges.featureType ?? this.featureType;
-      const bioclassType = systemChanges.bioclassType ?? this.bioclassType;
-      const aspectType = systemChanges.aspectType ?? this.aspectType;
-      const traits = this.constructor.getDefaultTraits({
-        featureType,
-        bioclassType,
-        aspectType
-      });
-
-      foundry.utils.setProperty(
-        changes,
-        'system.traits',
-        foundry.utils.deepClone(traits || [])
-      );
-    }
     return allowed;
   }
 }

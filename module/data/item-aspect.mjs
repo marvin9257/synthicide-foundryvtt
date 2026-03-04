@@ -1,5 +1,4 @@
 import SynthicideFeature from './item-feature.mjs';
-import SYNTHICIDE from '../helpers/config.mjs';
 
 /**
  * A concrete subclass representing an "aspect" feature.
@@ -14,8 +13,6 @@ import SYNTHICIDE from '../helpers/config.mjs';
  * @extends {SynthicideFeature}
  */
 export default class SynthicideAspect extends SynthicideFeature {
-  static DEFAULT_ASPECT = Object.keys(SYNTHICIDE.aspectTypes ?? {})[0] ?? 'brainiac';
-
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
     'SYNTHICIDE.Item.Aspect'
@@ -30,7 +27,6 @@ export default class SynthicideAspect extends SynthicideFeature {
   static defineSchema() {
     const fields = foundry.data.fields;
     const schema = super.defineSchema();
-    const defaultPreset = SYNTHICIDE.getFeaturePreset('aspect', this.DEFAULT_ASPECT);
 
     schema.featureType = new fields.StringField({
       required: true,
@@ -38,74 +34,17 @@ export default class SynthicideAspect extends SynthicideFeature {
       initial: 'aspect'
     });
 
-    schema.aspectType = new fields.StringField({
-      required: true,
-      choices: SYNTHICIDE.aspectTypes,
-      initial: this.DEFAULT_ASPECT
-    });
-
-    // default trait list corresponding to the chosen aspect subtype
-    const aspectDefaults = this.getDefaultTraits({
-      featureType: 'aspect',
-      aspectType: this.DEFAULT_ASPECT
-    });
-    schema.traits.initial = foundry.utils.deepClone(aspectDefaults);
+    schema.traits.initial = [];
 
     // A list of special abilities granted by this aspect. Each is an object with a description property.
     schema.abilities = new fields.ArrayField(
       new fields.SchemaField({
         description: new fields.StringField({ required: true, initial: '' })
       }),
-      { initial: foundry.utils.deepClone(defaultPreset.abilities || []) }
+      { initial: [] }
     );
 
-    const description = defaultPreset?.description || '';
-    schema.description.initial = description.startsWith('SYNTHICIDE.')
-      ? game.i18n.localize(description)
-      : description;
-
     return schema;
-  }
-
-  /**
-   * Resolve effective preset for the current or provided aspect type.
-   * @this {SynthicideAspect}
-   * @param {{aspectType?: string}} [options]
-   * @returns {{abilities?: object[], description?: string}}
-   */
-  _getEffectiveAspectPreset({ aspectType } = {}) {
-    const type = aspectType || this.aspectType || this.constructor.DEFAULT_ASPECT;
-    return SYNTHICIDE.getFeaturePreset('aspect', type) || { abilities: [], description: '' };
-  }
-
-  /**
-   * When the aspect type changes we need to repopulate traits and
-   * abilities from the preset.  Keeping this in the data model means
-   * sheets stay simple.
-    *
-    * @this {SynthicideAspect}
-    * @param {object} changes
-    * @param {object} options
-    * @param {string} user
-    * @returns {Promise<boolean|void>}
-    * @override
-   */
-  async _preUpdate(changes, options, user) {
-    const allowed = await super._preUpdate?.(changes, options, user);
-    if (allowed === false) return false;
-
-    const nextAspectType = changes.system?.aspectType;
-    if (nextAspectType && nextAspectType !== this.aspectType) {
-      const preset = this._getEffectiveAspectPreset({ aspectType: nextAspectType });
-      foundry.utils.setProperty(changes, 'system.abilities', foundry.utils.deepClone(preset.abilities || []));
-      const description = preset.description || '';
-      foundry.utils.setProperty(
-        changes,
-        'system.description',
-        description.startsWith('SYNTHICIDE.') ? game.i18n.localize(description) : description
-      );
-    }
-    return allowed;
   }
 
   // future custom logic (default attributes, trait presets, etc.)

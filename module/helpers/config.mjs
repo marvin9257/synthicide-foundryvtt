@@ -16,38 +16,6 @@ SYNTHICIDE.debug = {
 
 export default SYNTHICIDE;
 
-// Returns a normalized aspect preset for a given aspect type
-SYNTHICIDE.getAspectPreset = (aspectType) => {
-  const preset = SYNTHICIDE.aspectPresets[aspectType] ?? { traits: [], abilities: [] };
-  const description = preset.description ?? '';
-  // Ensure abilities are always objects with a description property
-  const abilities = (preset.abilities || []).map(a =>
-    typeof a === 'string' ? { description: a } : (a.description ? a : { description: String(a) })
-  );
-  const traits = (preset.traits || []).map(trait => ({
-    sort: trait.sort,
-    name: trait.name ?? '',
-    description: trait.description ?? ''
-  }));
-  return { ...preset, description, abilities, traits };
-};
-
-// Unified preset getter for any feature subtype.  `type` should be
-// "bioclass" or "aspect" and `subtype` the specific category value.
-// Returns an object containing at least `traits` (and for bioclasses,
-// `startingAttributes`, `bodySlots`, `brainSlots`, etc).
-SYNTHICIDE.getFeaturePreset = (type, subtype) => {
-  switch (type) {
-    case 'bioclass':
-      console.warn("Error in getting to getFeaturePreset")
-      return {};
-    case 'aspect':
-      return SYNTHICIDE.getAspectPreset(subtype) || { traits: [] };
-    default:
-      return { traits: [] };
-  }
-};
-
 /**
  * The set of Attribute Scores used within the system.
  * @type {Object}
@@ -91,77 +59,6 @@ SYNTHICIDE.traitTypes = {
   spell: 'SYNTHICIDE.Item.Trait.Types.spell'
 };
 
-// Aspects are handled by the new Feature class but we provide a
-// registry here for future presets and helpers.
-SYNTHICIDE.aspectTypes = {
-  brainiac: 'SYNTHICIDE.Item.Aspect.Types.brainiac',
-  bulbhead: 'SYNTHICIDE.Item.Aspect.Types.bulbhead',
-  leader: 'SYNTHICIDE.Item.Aspect.Types.leader',
-  scoundrel: 'SYNTHICIDE.Item.Aspect.Types.scoundrel',
-  thug: 'SYNTHICIDE.Item.Aspect.Types.thug',
-};
-
-// A minimal placeholder for aspect presets.  Actual data will be
-// fleshed out as the schema for aspects is determined.
-SYNTHICIDE.aspectPresets = {
-  brainiac: {
-    description: 'SYNTHICIDE.Item.Aspect.PresetDescriptions.brainiac',
-    abilities: [
-      { description: 'So long as requirements are met, select 3 knowledge focuses and gain 2 powers from each.'},
-      { description: 'After character creation, you may purchase new knowledge focuses with 1 less trait point.'}
-    ],
-    traits: [
-      { sort: 10, name: 'Attribute Increase', description: '+2 Operation' },
-      { sort: 20, name: 'Attribute Penalty (Mandatory)', description: '-1 to any one attribute except Operation'}
-    ]
-  },
-  bulbhead: {
-    description: 'SYNTHICIDE.Item.Aspect.PresetDescriptions.bulbhead',
-    abilities: [
-      { description: 'Gain any 2 psychic powers, so long as you meet the requirements.'},
-      { description: 'You are a psychic that struggles to function without Illuminix, an addictive and illegal substance traded underground. Every day you must consume doses of Illuminix equal to the highest level psychic power you want to use (1 dose to access 1st level powers, 4 doses for 4th level powers, etc). A Bulbhead who fails to score a dose of Illuminix is wracked with withdrawal, unable to access psychic powers and suffering -2 to every attribute. A single dose lifts the penalty.'},
-      { description: 'After character creation, you may purchase new psychic powers with 1 less trait point.'}
-    ],
-    traits: [
-      { sort: 10, name: 'Attribute Increase', description: '+2 Influence' },
-      { sort: 20, name: 'Attribute Penalty (Mandatory)', description: '-1 to any one attribute except Influence' }
-    ]
-  },
-  leader: {
-    description: 'SYNTHICIDE.Item.Aspect.PresetDescriptions.leader',
-    abilities: [
-      { description: 'Gain any 2 tactical powers for which you meet the requirements.' },
-      { description: 'New tactical powers cost 1 less TP' }
-    ],
-    traits: [
-      { sort: 10, name: 'Attribute Increase', description: '+2 Awareness' },
-      { sort: 20, name: 'Attribute Penalty (Mandatory)', description: '-1 to any one attribute except Awareness or Nerve' }
-    ]
-  },
-  scoundrel: {
-    description: 'SYNTHICIDE.Item.Aspect.PresetDescriptions.scoundrel',
-    abilities: [
-      { description: 'Gain access to any 1 knowledge focus you meet requirements for' },
-      { description: 'Battle Opportunist ability:  You also gain the Battle Opportunist ability, which grants the following: 1) Add +2 DMG to attacks against overpowered and unaware targets, 2) After or just before you gain advantage, you may move 4 squares at no AP cost, 3) If you choose the attack bonus effect from gain advantage add +3 ATT to your attack roll instead of +2., and 4) Battle Opportunist can be improved via general traits purchased at 4th and 7th level.'}
-    ],
-    traits: [
-      { sort: 10, name: 'Attribute Increase', description: '+1 Influence, +1 Speed' },
-      { sort: 20, name: 'Attribute Penalty (Mandatory)', description: '-1 to any one attribute except Influence, Operation, or Speed' }
-    ]
-  },
-  thug: {
-    description: 'SYNTHICIDE.Item.Aspect.PresetDescriptions.thug',
-    abilities: [
-      { description: 'You gain 1 weapon proficiency and 1 attack skill.' },
-      { description: 'You also gain an extra 4 maximum hit points.' },
-      { description: 'After character creation, you may purchase new attack skills with 1 less trait point.' }
-    ],
-    traits: [
-      { sort: 10, name: 'Attribute Increase', description: '+1 Combat, +1 Toughness' },
-      { sort: 20, name: 'Attribute Penalty (Mandatory)', description: '-1 to any one attribute except Combat or Toughness' }
-    ]
-  }
-};
 
 // Motivation choices for actors, referencing localization keys.
 SYNTHICIDE.motivations = {
