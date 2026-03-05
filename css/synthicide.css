@@ -18,6 +18,7 @@
   --synthicide-c-meter-line: rgba(0, 0, 0, 0.02);
   --synthicide-c-border-subtle: var(--synthicide-c-faint);
   --synthicide-c-hover-glow: red;
+  --synthicide-c-style-accent: var(--synthicide-c-tan);
   --synthicide-default-font: "Roboto", sans-serif;
   --form-field-bg: #e6e4df;
   --form-field-color: #333;
@@ -40,6 +41,7 @@
   --synthicide-c-warning: yellow;
   --synthicide-c-success: #2f9e44;
   --synthicide-c-hover-glow: red;
+  --synthicide-c-style-accent: var(--synthicide-c-tan);
 }
 
 /* Dark mode support */
@@ -260,6 +262,238 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 .grid-10col {
   grid-column: span 10/span 10;
   grid-template-columns: repeat(10, minmax(0, 1fr));
+}
+
+/* ============================== */
+/* Action Roll Chat Cards         */
+/* ============================== */
+.synthicide-action-roll-card {
+  border: 1px solid var(--synthicide-c-border-subtle);
+  border-radius: 6px;
+  background: var(--synthicide-c-panel-bg);
+  padding: 0.5rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.synthicide-action-roll-card .card-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.synthicide-action-roll-card .card-title {
+  margin: 0;
+  font-size: 1.7rem;
+  line-height: 1.05;
+}
+
+.synthicide-action-roll-card .card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.35rem;
+  justify-content: flex-start;
+}
+
+.synthicide-action-roll-card .card-header {
+  display: block;
+  margin: 0;
+}
+
+.synthicide-action-roll-card .card-header h4 {
+  margin: 0;
+}
+
+/* Utility: item-header can be applied to titles to opt into item-header styling */
+.synthicide-action-roll-card .card-header h4.item-header {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.synthicide-action-roll-card .card-title:not(.item-header) {
+  font-size: 2.05rem;
+  line-height: 1.05;
+}
+
+.synthicide-action-roll-card .tag {
+  border-radius: 999px;
+  padding: 0.18rem 0.62rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  border: 1px solid var(--synthicide-c-border-subtle);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.synthicide-action-roll-card .tag-label {
+  opacity: 0.85;
+}
+
+.synthicide-action-roll-card .tag-subtitle {
+  opacity: 0.85;
+}
+
+.synthicide-action-roll-card .notes {
+  margin: 0;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.synthicide-action-roll-card .formula-row,
+.synthicide-action-roll-card .total-row {
+  display: flex;
+  gap: 0.4rem;
+  align-items: baseline;
+}
+
+/* Indented equation terms: show equation terms in their own indented block */
+.synthicide-action-roll-card .equation-terms {
+  margin: 0.35rem 0 0 0.35rem;
+  padding-left: 0.4rem;
+  list-style: none;
+  border-left: 2px solid color-mix(in srgb, var(--synthicide-c-style-accent) 50%, transparent);
+}
+.synthicide-action-roll-card .equation-terms li {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.1rem 0;
+}
+.synthicide-action-roll-card .metadata-list {
+  margin: 0.35rem 0 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.synthicide-action-roll-card .metadata-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.synthicide-action-roll-card .card-footer {
+  margin-top: 0.2rem;
+}
+
+.synthicide-action-roll-card .card-details {
+  border-top: 1px solid var(--synthicide-c-border-subtle);
+  padding-top: 0.35rem;
+}
+
+.synthicide-action-roll-card .card-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.synthicide-action-roll-card .result-banner {
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  font-weight: 700;
+  text-align: center;
+  border: 1px solid var(--synthicide-c-border-subtle);
+}
+
+.synthicide-action-roll-card .outcome-failure {
+  color: var(--synthicide-c-danger);
+  border-color: var(--synthicide-c-danger);
+  background: var(--synthicide-c-panel-bg);
+}
+
+.synthicide-action-roll-card .outcome-standard {
+  color: var(--synthicide-c-tan);
+  border-color: var(--synthicide-c-tan);
+  background: var(--synthicide-c-groove);
+}
+
+.synthicide-action-roll-card .outcome-excellent {
+  color: var(--synthicide-c-dark);
+  border-color: var(--synthicide-c-warning);
+  background: var(--synthicide-c-warning);
+}
+
+.synthicide-action-roll-card .outcome-superb,
+.synthicide-action-roll-card .outcome-success {
+  color: var(--synthicide-c-success);
+  border-color: var(--synthicide-c-success);
+  background: var(--synthicide-c-panel-bg);
+}
+
+.synthicide-action-roll-card .inline-die-wrap .inline-dice {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.synthicide-action-roll-card .inline-die-wrap .inline-dice .roll {
+  margin: 0;
+}
+
+.synthicide-action-roll-card .inline-die-wrap .inline-dice .roll.d10 {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  background-size: 28px 28px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('/icons/svg/d10-grey.svg');
+  box-shadow: none;
+}
+
+.synthicide-action-roll-card .dice-render .dice-roll {
+  margin: 0;
+}
+
+.synthicide-attr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.synthicide-attr-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.synthicide-opposed-summary {
+  border: 1px solid var(--synthicide-c-border-subtle);
+  border-radius: 6px;
+  background: var(--synthicide-c-panel-bg);
+  padding: 0.5rem;
+}
+
+.synthicide-opposed-summary p {
+  margin: 0.3rem 0 0 0;
+}
+
+.synthicide-action-roll-form {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.synthicide-action-roll-form .form-group {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.synthicide-action-roll-form hr,
+.synthicide-action-roll-form p {
+  grid-column: 1 / -1;
+}
+
+.synthicide-style-bold .synthicide-action-roll-card {
+  border-width: 2px;
 }
 
 .grid-11col {
@@ -508,6 +742,18 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 .synthicide .sheet-body .tab,
 .synthicide .sheet-body .tab .editor {
   height: 100%;
+}
+
+/* Ensure item-header wins over earlier .card-title rules by being declared later
+   Use the more-specific .card-title.item-header selector and place it after
+   the main .card-title definitions so it reliably overrides them. */
+.synthicide-action-roll-card .card-title.item-header,
+.synthicide-action-roll-card .card-header h4.item-header {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0;
+  text-transform: none; /* allow theme to opt-in to uppercase via overrides */
+  letter-spacing: normal;
 }
 /* allow tabs to size to their contents instead of enforcing a large max height */
 .synthicide .tab {
@@ -1195,21 +1441,24 @@ img.actions-img {
 /* ============================================================ */
 
 /* ---- Color tokens: light mode ---- */
-body.synthicide-style-bold .synthicide {
+body.synthicide-style-bold {
   --rb-accent:        #c42b1c;   /* bright maroon-red                     */
   --rb-strong:        #7f180f;   /* deep maroon (header bg)                */
   --rb-alt:           #a33a00;   /* burnt-orange (gradient stop / labels)  */
   --rb-on-accent:     #ffffff;
+  --synthicide-c-style-accent: var(--rb-accent);
   --rb-line:          color-mix(in srgb, var(--synthicide-c-dark) 55%, transparent);
   --rb-cell:          color-mix(in srgb, var(--synthicide-c-panel-bg) 90%, transparent);
   --rb-cell-alt:      color-mix(in srgb, var(--synthicide-c-panel-bg) 160%, transparent);
 }
 
 /* ---- Color tokens: dark mode ---- */
-body.theme-dark.synthicide-style-bold .synthicide {
+body.theme-dark.synthicide-style-bold {
   --rb-accent:        #e05c3a;
   --rb-strong:        #8c2a12;
   --rb-alt:           #b84a1e;
+  --rb-on-accent:     #ffffff;
+  --synthicide-c-style-accent: var(--rb-accent);
   --rb-line:          color-mix(in srgb, var(--synthicide-c-black) 65%, transparent);
   --rb-cell:          color-mix(in srgb, var(--synthicide-c-panel-bg) 70%, transparent);
   --rb-cell-alt:      color-mix(in srgb, var(--synthicide-c-panel-bg) 110%, transparent);
@@ -1940,4 +2189,22 @@ body.synthicide-style-bold .synthicide .item-form .tab.traits fieldset.resource 
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+/* Rulebook Bold chat-title bar (match bioclass-style red header, minimal spacing). */
+body.synthicide-style-bold .synthicide-action-roll-card .card-header h4.item-header,
+body.synthicide-style-bold .synthicide-action-roll-card .card-title.item-header {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 0.25rem;
+  padding: 4px 10px;
+  border-left: 5px solid var(--rb-accent);
+  background: var(--rb-strong);
+  color: var(--rb-on-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
 }

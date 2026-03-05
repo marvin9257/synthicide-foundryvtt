@@ -10,6 +10,7 @@ import SYNTHICIDE from './helpers/config.mjs';
 import * as models from './data/_module.mjs';
 import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
+import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
 
 const collections = foundry.documents.collections;
 const sheets = foundry.appv1.sheets;
@@ -64,6 +65,7 @@ globalThis.synthicide = {
   },
   utils: {
     rollItemMacro,
+    openSynthicideActionRollDialog,
   },
   models,
 };
@@ -162,6 +164,7 @@ Handlebars.registerHelper('toLowerCase', function (str) {
 
 Hooks.once('ready', async function () {
   await migrateWorld();
+  registerActionRollHooks();
 
   applySheetStyleMode(
     game.settings.get('synthicide', SHEET_STYLE_SETTING_KEY)

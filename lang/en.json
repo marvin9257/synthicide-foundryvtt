@@ -219,6 +219,113 @@
         "Rigged": "Rigged"
       }
     },
+    "Roll": {
+      "Subtype": {
+        "Challenge": "Challenge",
+        "Attack": "Attack",
+        "Damage": "Damage"
+      },
+      "Dialog": {
+        "Title": "Synthicide Roll",
+        "OpposedTitle": "Opposed Challenge Roll",
+        "RollButton": "Roll",
+        "RollType": "Roll Type",
+        "MessageType": {
+          "Label": "Message Type",
+          "Public": "Public",
+          "GMWhisper": "GM Whisper",
+          "Blind": "Blind GM Roll",
+          "Self": "Self",
+          "IC": "In Character"
+        },
+        "Attribute": "Attribute",
+        "Difficulty": "Difficulty",
+        "MiscModifier": "Misc Modifier",
+        "AttackSection": "Attack Fields",
+        "AttackSectionHint": "ignored for Challenge",
+        "TargetArmor": "Target Armor",
+        "AttackBonus": "Attack Bonus (ATT)",
+        "DamageBonus": "Damage Bonus (DMG)",
+        "Flavor": "Flavor",
+        "OpposedFlavorDefault": "Opposed against roll {id}"
+      },
+      "Card": {
+        "TitleChallenge": "Challenge Roll",
+        "TitleAttack": "Attack Roll",
+        "TitleDamage": "Damage Roll",
+        "Equation": "Equation",
+        "Total": "Total",
+        "Effect": "Effect",
+        "DifficultyAbbr": "AD",
+        "DifficultyTooltip": "Action Difficulty (AD)",
+        "ResultAbbr": "SL",
+        "ResultTooltip": "Success Level (SL)",
+        "DieResult": "d10 result {result}",
+        "Attribute": "Attribute",
+        "AttributeValue": "Attribute Value",
+        "Difficulty": "Difficulty",
+        "Margin": "Margin",
+        "MiscModifier": "Misc Modifier",
+        "Armor": "Armor",
+        "AttackBonus": "ATT Bonus",
+        "DamageBonus": "DMG Bonus",
+        "SourceAttack": "Source Attack",
+        "DerivedFromAttack": "Derived from attack #{id}",
+        "DefaultFlavorChallenge": "{difficulty} roll made using {attribute}",
+        "DefaultFlavorAttack": "{item}: attack roll using {attribute} vs armor {armor}",
+        "ShowDetails": "Show Details",
+        "SuccessLevel": "Success Level: {level}",
+        "AttackResultHit": "Attack Result: Hit",
+        "AttackResultMiss": "Attack Result: Miss",
+        "DamageResultApplied": "Damage Result: {total}",
+        "RollDamage": "Roll Damage",
+        "RollOpposed": "Opposed Roll"
+      },
+      "Degree": {
+        "Failure": "Failure",
+        "Standard": "Standard",
+        "Excellent": "Excellent",
+        "Superb": "Superb"
+      },
+      "Difficulty": {
+        "Easy": "Easy (3)",
+        "Standard": "Standard (6)",
+        "Difficult": "Difficult (9)",
+        "Challenging": "Challenging (12)",
+        "Fantastic": "Fantastic (15)",
+        "Epic": "Epic (21)",
+        "Legendary": "Legendary (27+)"
+      },
+      "Outcome": {
+        "Hit": "Hit",
+        "Miss": "Miss",
+        "DamageApplied": "Damage Applied"
+      },
+      "Warnings": {
+        "ChallengeDifficultyRequired": "Challenge rolls require a difficulty value.",
+        "AttackDataMissing": "This message does not contain attack roll data.",
+        "DamageRequiresHit": "Damage can only be rolled from a successful attack.",
+        "ActorMissing": "Could not find the actor for this roll.",
+        "ChallengeDataMissing": "This message does not contain challenge roll data.",
+        "NotPermitted": "You do not have permission to use this action."
+      },
+      "Opposed": {
+        "SummaryTitle": "Opposed Challenge Result",
+        "Source": "Original Roller",
+        "Challenger": "Opposing Roller",
+        "Result": {
+          "ChallengerWins": "{challenger} wins the opposed roll ({total} vs {opposedTotal}).",
+          "SourceWins": "{source} keeps the lead ({total} vs {opposedTotal}).",
+          "Tie": "The opposed roll is tied at {total}."
+        }
+      },
+      "Tooltip": {
+        "AttackWithItem": "Attack with {item}"
+      },
+      "Actions": {
+        "Attack": "Attack"
+      }
+    },
     "Effect": {
       "Source": "Source",
       "Toggle": "Toggle Effect",

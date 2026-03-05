@@ -18,6 +18,8 @@
             <span
               class="rollable"
               data-action="roll"
+              data-roll-type="challenge"
+              data-attribute-key="{{key}}"
               data-roll="d10+@attributes.{{key}}.current"
               data-label="{{localize (lookup @root.SYNTHICIDE.attributes key)}}"
               tabindex="0"

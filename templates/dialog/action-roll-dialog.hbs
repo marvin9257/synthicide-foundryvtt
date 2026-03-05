@@ -1,0 +1,66 @@
+<form class="synthicide-action-roll-form">
+  {{#if allowSubtypeChange}}
+    <div class="form-group">
+      <label>{{localize "SYNTHICIDE.Roll.Dialog.RollType"}}</label>
+      <select name="subtype">
+        {{#each subtypeOptions as |option|}}
+          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+        {{/each}}
+      </select>
+    </div>
+  {{else}}
+    <input type="hidden" name="subtype" value="{{defaultSubtype}}" />
+  {{/if}}
+
+  <div class="form-group">
+    <label>{{localize "SYNTHICIDE.Roll.Dialog.MessageType.Label"}}</label>
+    <select name="messageMode">
+      {{#each messageModeOptions as |option|}}
+        <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "SYNTHICIDE.Roll.Dialog.Attribute"}}</label>
+    <select name="attribute">
+      {{#each attributeOptions as |option|}}
+        <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "SYNTHICIDE.Roll.Dialog.Difficulty"}}</label>
+    <select name="difficulty">
+      {{#each difficultyOptions as |option|}}
+        <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "SYNTHICIDE.Roll.Dialog.MiscModifier"}}</label>
+    <input type="number" name="misc" value="{{defaultMisc}}" step="1" />
+  </div>
+
+  {{#if isAttack}}
+    <hr />
+    <p><strong>{{localize "SYNTHICIDE.Roll.Dialog.AttackSection"}}</strong></p>
+
+    <div class="form-group">
+      <label>{{localize "SYNTHICIDE.Roll.Dialog.TargetArmor"}}</label>
+      <input type="number" name="armor" value="{{defaultArmor}}" step="1" />
+    </div>
+
+    <div class="form-group">
+      <label>{{localize "SYNTHICIDE.Roll.Dialog.AttackBonus"}}</label>
+      <input type="number" name="attackBonus" value="{{defaultAttackBonus}}" step="1" />
+    </div>
+
+    <div class="form-group">
+      <label>{{localize "SYNTHICIDE.Roll.Dialog.DamageBonus"}}</label>
+      <input type="number" name="damageBonus" value="{{defaultDamageBonus}}" step="1" />
+    </div>
+  {{/if}}
+</form>

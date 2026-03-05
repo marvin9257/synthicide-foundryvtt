@@ -41,6 +41,25 @@ SYNTHICIDE.attributeAbbreviations = {
   speed: 'SYNTHICIDE.Attribute.Speed.abbr',
 };
 
+// Centralized roll configuration used by action-roll workflows.
+SYNTHICIDE.rolls = {
+  challengeDifficulties: [
+    { value: 3, key: 'SYNTHICIDE.Roll.Difficulty.Easy' },
+    { value: 6, key: 'SYNTHICIDE.Roll.Difficulty.Standard' },
+    { value: 9, key: 'SYNTHICIDE.Roll.Difficulty.Difficult' },
+    { value: 12, key: 'SYNTHICIDE.Roll.Difficulty.Challenging' },
+    { value: 15, key: 'SYNTHICIDE.Roll.Difficulty.Fantastic' },
+    { value: 21, key: 'SYNTHICIDE.Roll.Difficulty.Epic' },
+    { value: 27, key: 'SYNTHICIDE.Roll.Difficulty.Legendary' },
+  ],
+  degreeBands: [
+    { min: 10, key: 'SYNTHICIDE.Roll.Degree.Superb' },
+    { min: 5, key: 'SYNTHICIDE.Roll.Degree.Excellent' },
+    { min: 0, key: 'SYNTHICIDE.Roll.Degree.Standard' },
+    { min: Number.NEGATIVE_INFINITY, key: 'SYNTHICIDE.Roll.Degree.Failure' },
+  ],
+};
+
 // Trait type choices for items.  We store an object mapping the type
 // key to the corresponding localization key.  This lets callers simply
 // iterate the entries or derive the list of valid types with

@@ -1,0 +1,92 @@
+<section class="synthicide-action-roll-card" data-subtype="{{subtype}}">
+  <header class="card-header">
+    <h4 class="card-title item-header">{{title}}</h4>
+    <div class="card-meta">
+      {{#if subtitle}}
+        <span class="tag tag-subtitle" data-tooltip="{{localize 'SYNTHICIDE.Roll.Card.DifficultyTooltip'}}">
+          <span class="tag-label">{{localize "SYNTHICIDE.Roll.Card.DifficultyAbbr"}}:</span>
+          {{subtitle}}
+        </span>
+      {{/if}}
+      {{#if dieValue}}
+        <span class="inline-die-wrap" aria-label="{{localize "SYNTHICIDE.Roll.Card.DieResult" result=dieValue}}">
+          <ol class="dice-rolls inline-dice">
+            <li class="roll die d10 {{dieClass}}">{{dieValue}}</li>
+          </ol>
+        </span>
+      {{/if}}
+      <span class="tag {{outcomeClass}}" data-tooltip="{{localize 'SYNTHICIDE.Roll.Card.ResultTooltip'}}">
+        <span class="tag-label">{{localize "SYNTHICIDE.Roll.Card.ResultAbbr"}}:</span>
+        {{outcomeLabel}}
+      </span>
+    </div>
+  </header>
+
+  {{#if flavor}}
+    <p class="notes">{{flavor}}</p>
+  {{/if}}
+
+  <div class="dice-render">{{{rollHtml}}}</div>
+
+  {{#if effectText}}
+    <div class="total-row">
+      <strong>{{localize "SYNTHICIDE.Roll.Card.Effect"}}:</strong>
+      <span>{{effectText}}</span>
+    </div>
+  {{else}}
+    <div class="total-row">
+      <strong>{{localize "SYNTHICIDE.Roll.Card.Total"}}:</strong>
+      <span>{{total}}</span>
+    </div>
+  {{/if}}
+
+  <details class="card-details">
+    <summary>{{localize "SYNTHICIDE.Roll.Card.ShowDetails"}}</summary>
+    <div class="formula-row">
+      <strong>{{localize "SYNTHICIDE.Roll.Card.Equation"}}:</strong>
+      <span>{{equation}}</span>
+    </div>
+
+    {{#if equationTerms.length}}
+      <ul class="equation-terms">
+        {{#each equationTerms as |term|}}
+          <li>
+            <strong>{{term.label}}:</strong>
+            {{#if term.valueHtml}}
+              {{{term.valueHtml}}}
+            {{else}}
+              {{term.value}}
+            {{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+
+    {{#if metadataRows.length}}
+      <ul class="metadata-list">
+        {{#each metadataRows as |row|}}
+          <li>
+            <strong>{{row.label}}:</strong>
+            {{#if row.valueHtml}}
+              {{{row.valueHtml}}}
+            {{else}}
+              {{row.value}}
+            {{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  </details>
+
+  {{#if showDamageButton}}
+    <footer class="card-footer">
+      <button type="button" data-action="rollDamage">{{localize "SYNTHICIDE.Roll.Card.RollDamage"}}</button>
+    </footer>
+  {{/if}}
+
+  {{#if showOpposedButton}}
+    <footer class="card-footer">
+      <button type="button" data-action="rollOpposed">{{localize "SYNTHICIDE.Roll.Card.RollOpposed"}}</button>
+    </footer>
+  {{/if}}
+</section>

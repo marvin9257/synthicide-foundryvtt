@@ -4,6 +4,7 @@ import SynthicideFeature from '../data/item-feature.mjs';
 import { FEATURE_TYPE, isFeatureType } from '../helpers/feature-types.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
 import { ICON_MAP } from '../helpers/icons.mjs';
+import { openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
 const { api, sheets } = foundry.applications;
 
 /**
@@ -455,6 +456,21 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     // Handle item rolls.
     switch (dataset.rollType) {
+      case 'challenge': {
+        return openSynthicideActionRollDialog({
+          actor: this.actor,
+          subtype: 'challenge',
+          attribute: dataset.attributeKey,
+        });
+      }
+      case 'attack': {
+        const item = this._getEmbeddedDocument(target);
+        return openSynthicideActionRollDialog({
+          actor: this.actor,
+          subtype: 'attack',
+          sourceItem: item,
+        });
+      }
       case 'item': {
         const item = this._getEmbeddedDocument(target);
         if (item) return item.roll();
