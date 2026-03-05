@@ -270,7 +270,7 @@
         "AttackBonus": "ATT Bonus",
         "DamageBonus": "DMG Bonus",
         "SourceAttack": "Source Attack",
-        "DerivedFromAttack": "Derived from attack #{id}",
+        "DerivedFromAttack": "Derived from attack",
         "DefaultFlavorChallenge": "{difficulty} roll made using {attribute}",
         "DefaultFlavorAttack": "{item}: attack roll using {attribute} vs armor {armor}",
         "ShowDetails": "Show Details",

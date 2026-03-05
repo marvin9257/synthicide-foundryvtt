@@ -88,6 +88,7 @@ async function executeChallengeRoll({ actor, input, sourceItem }) {
       effectText: effectValue,
       outcomeLabel: degree,
       outcomeClass: getChallengeOutcomeClass(effect),
+      showEffectOutcomeRow: true,
       dieValue: d10,
       dieClass: getDieClass(d10, 10),
       equationTerms: [
@@ -155,8 +156,8 @@ async function executeAttackRoll({ actor, input, sourceItem }) {
       equation: `1d10 + ${attributeValue} + ${attackBonus} + ${misc}`,
       total: attackTotal,
       effectText: hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss'),
-      outcomeLabel: hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss'),
-      outcomeClass: getOutcomeClass(SUBTYPES.ATTACK, hit ? 'hit' : 'miss'),
+      effectClass: hit ? 'outcome-success' : 'outcome-failure',
+      showEffectOutcomeRow: false,
       dieValue: d10,
       dieClass: getDieClass(d10, 10),
       equationTerms: [
@@ -219,11 +220,10 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
     cardData: {
       title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
       subtype: SUBTYPES.DAMAGE,
-      flavor: localize('SYNTHICIDE.Roll.Card.DerivedFromAttack', { id: sourceMessage.id }),
+      flavor: localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),
       equation: `${attack.d10} + ${attack.attributeValue} + ${attack.damageBonus}`,
       total: attack.damageTotal,
-      outcomeLabel: localize('SYNTHICIDE.Roll.Outcome.DamageApplied'),
-      outcomeClass: getOutcomeClass(SUBTYPES.DAMAGE, 'success'),
+      showEffectOutcomeRow: false,
       dieValue: attack.d10,
       dieClass: getDieClass(attack.d10, 10),
       metadataRows: [
@@ -558,13 +558,6 @@ function getChallengeOutcomeClass(effect) {
   if (effect < 0) return 'outcome-failure';
   if (effect >= 10) return 'outcome-superb';
   if (effect >= 5) return 'outcome-excellent';
-  return 'outcome-standard';
-}
-
-function getOutcomeClass(subtype, outcomeLabel) {
-  const value = String(outcomeLabel ?? '').toLowerCase();
-  if (subtype === SUBTYPES.ATTACK) return value.includes('hit') ? 'outcome-success' : 'outcome-failure';
-  if (subtype === SUBTYPES.DAMAGE) return 'outcome-success';
   return 'outcome-standard';
 }
 

@@ -336,6 +336,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 
 .synthicide-action-roll-card .tag-subtitle {
   opacity: 0.85;
+  border-color: var(--synthicide-c-dark);
 }
 
 .synthicide-action-roll-card .notes {
@@ -349,6 +350,24 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   display: flex;
   gap: 0.4rem;
   align-items: baseline;
+}
+
+.synthicide-action-roll-card .result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.synthicide-action-roll-card .result-row .tag {
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  margin: 0;
+}
+
+.synthicide-action-roll-card .tag-effect {
+  border-color: var(--synthicide-c-border-subtle);
 }
 
 /* Indented equation terms: show equation terms in their own indented block */

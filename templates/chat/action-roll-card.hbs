@@ -15,10 +15,6 @@
           </ol>
         </span>
       {{/if}}
-      <span class="tag {{outcomeClass}}" data-tooltip="{{localize 'SYNTHICIDE.Roll.Card.ResultTooltip'}}">
-        <span class="tag-label">{{localize "SYNTHICIDE.Roll.Card.ResultAbbr"}}:</span>
-        {{outcomeLabel}}
-      </span>
     </div>
   </header>
 
@@ -28,10 +24,23 @@
 
   <div class="dice-render">{{{rollHtml}}}</div>
 
-  {{#if effectText}}
-    <div class="total-row">
-      <strong>{{localize "SYNTHICIDE.Roll.Card.Effect"}}:</strong>
-      <span>{{effectText}}</span>
+  {{#if showEffectOutcomeRow}}
+    <div class="result-row">
+      <span class="tag tag-effect" data-tooltip="{{localize 'SYNTHICIDE.Roll.Card.Effect'}}">
+        <span class="tag-label">{{localize "SYNTHICIDE.Roll.Card.Effect"}}:</span>
+        {{effectText}}
+      </span>
+      <span class="tag {{outcomeClass}}" data-tooltip="{{localize 'SYNTHICIDE.Roll.Card.ResultTooltip'}}">
+        <span class="tag-label">{{localize "SYNTHICIDE.Roll.Card.ResultAbbr"}}:</span>
+        {{outcomeLabel}}
+      </span>
+    </div>
+  {{else if effectText}}
+    <div class="result-row">
+      <span class="tag tag-effect {{effectClass}}" data-tooltip="{{localize 'SYNTHICIDE.Roll.Card.Effect'}}">
+        <span class="tag-label">{{localize "SYNTHICIDE.Roll.Card.Effect"}}:</span>
+        {{effectText}}
+      </span>
     </div>
   {{else}}
     <div class="total-row">
