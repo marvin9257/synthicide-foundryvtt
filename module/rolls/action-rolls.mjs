@@ -96,7 +96,7 @@ async function executeChallengeRoll({ actor, input, sourceItem }) {
         { label: localize('SYNTHICIDE.Roll.Card.MiscModifier'), value: misc },
       ],
       metadataRows: [
-        { label: localize('SYNTHICIDE.Roll.Card.Difficulty'), value: difficulty },
+        { label: localize('SYNTHICIDE.Roll.Card.Difficulty'), value: difficultyLabel },
         { label: localize('SYNTHICIDE.Roll.Card.Effect'), value: effectValue },
       ],
       showDamageButton: false,
@@ -345,8 +345,8 @@ async function createActionMessage({ actor, roll, cardData, messageMode }) {
 }
 
 function activateActionRollChatListeners(message, htmlElement) {
-  const root = htmlElement?.[0] ?? htmlElement;
-  if (!root) return;
+  if (!htmlElement || typeof htmlElement.querySelectorAll !== 'function') return;
+  const root = htmlElement;
 
   for (const button of root.querySelectorAll('[data-action="rollDamage"]')) {
     button.dataset.messageId = message.id;
