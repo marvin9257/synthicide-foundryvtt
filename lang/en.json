@@ -108,9 +108,9 @@
             "value": {"label": "Hit Points"},
             "max": {"label": "Maximum HP"}
           },
-          "power": {
-            "value": {"label": "Power"},
-            "max": {"label": "Maximum Power"}
+          "forceBarrier": {
+            "value": {"label": "Force Barrier"},
+            "max": {"label": "Maximum Barrier"}
           },
           "foodDays": {
             "label": "Food Days",
@@ -332,6 +332,12 @@
       "Temporary": "Temporary Effects",
       "Passive": "Passive Effects",
       "Inactive": "Inactive Effects"
+    },
+    "Chat": {
+      "Roll": {
+        "ApplyDamage": "Apply Damage",
+        "ApplyHealing": "Apply Healing"
+      }
     }
   },
   "TYPES": {

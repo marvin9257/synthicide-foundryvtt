@@ -119,23 +119,23 @@
             style='width: calc(({{system.hitPoints.value}} / {{system.hitPoints.max}}) * 100%);'></div>
         </div>
       </div>
-      <!-- Power Resource -->
+      <!-- Force Barrier Resource -->
       <div class='resource flex-group-center header-resource'>
-        <label for='system.power.value' class='resource-label'>
-          {{localize 'SYNTHICIDE.Actor.base.FIELDS.power.value.label'}}
+        <label for='system.forceBarrier.value' class='resource-label'>
+          {{localize 'SYNTHICIDE.Actor.base.FIELDS.forceBarrier.value.label'}}
         </label>
         <div class='resource-content flexrow flex-center flex-between resource-pair'>
           <input
             type='number'
-            name='system.power.value'
-            value='{{system.power.value}}'
+            name='system.forceBarrier.value'
+            value='{{system.forceBarrier.value}}'
             data-dtype='Number'
           />
           <span> / </span>
           <input
             type='number'
-            name='system.power.max'
-            value='{{system.power.max}}'
+            name='system.forceBarrier.max'
+            value='{{system.forceBarrier.max}}'
             data-dtype='Number'
           />
         </div>

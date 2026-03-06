@@ -18,9 +18,9 @@ export default class SynthicideActorBaseData extends foundry.abstract
       perLevel: new fields.NumberField({ ...requiredInteger, initial: 5 })
     });
 
-    schema.power = new fields.SchemaField({
+    schema.forceBarrier = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }),
-      max: new fields.NumberField({ ...requiredInteger, initial: 5 })
+      max: new fields.NumberField({ ...requiredInteger, initial: 5 }) //will need to make persisted:false once armor is implemented
     });
 
     schema.biography = new fields.HTMLField();

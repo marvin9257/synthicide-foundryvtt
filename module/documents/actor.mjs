@@ -140,5 +140,35 @@ export class SynthicideActor extends Actor {
       foundry.utils.setProperty(this, path, newValue);
     }
   }
-  
+
+  async damageActor(damage) {
+    if (!damage || !["sharper", "npc"].includes(this.type)) return;
+    const updates = {};
+    let damageRemaining = damage;
+    // Check force barrier first and apply damage to it
+    if (this.system.forceBarrier.value > 0) {
+      const barrierAmount = Math.min(this.system.forceBarrier.value, damageRemaining);
+      if (barrierAmount > 0) {
+        damageRemaining -= barrierAmount;
+        updates['system.forceBarrier.value'] = Math.max(this.system.forceBarrier.value - barrierAmount, 0);
+      }
+    }
+
+    // Apply any leftover to hitPoints
+    if (damageRemaining > 0) {
+      const hitPointsAmount = Math.min(this.system.hitPoints.value, damageRemaining);
+      if (hitPointsAmount > 0) {
+        updates['system.hitPoints.value'] = Math.max(this.system.hitPoints.value - hitPointsAmount, 0);
+      }
+    }
+
+    await this.update(updates);
+  }
+
+  async healActor(healing) {
+    if (!healing || !["sharper", "npc"].includes(this.type)) return;
+    const updates = {};
+    updates['system.hitPoints.value'] = Math.min(this.system.hitPoints.value + healing, this.system.hitPoints.max);
+    await this.update(updates);
+  }
 }

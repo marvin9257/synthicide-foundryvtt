@@ -11,6 +11,7 @@ import * as models from './data/_module.mjs';
 import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
+import { SynthicideChatLog, SynthicideChatPopout } from './documents/chatlog.mjs';
 
 const collections = foundry.documents.collections;
 const sheets = foundry.appv1.sheets;
@@ -147,6 +148,11 @@ Hooks.once('init', function () {
 
   //Game pause icon change
   CONFIG.ui.pause = SynthicideGamePause;
+
+  //Add chat context
+  CONFIG.ui.chat = SynthicideChatLog;
+  CONFIG.ChatMessage.popoutClass = SynthicideChatPopout;
+
 });
 
 /* -------------------------------------------- */
