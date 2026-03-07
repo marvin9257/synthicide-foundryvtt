@@ -21,6 +21,10 @@
           "Classic": "Classic",
           "RulebookBold": "Rulebook Bold"
         }
+      },
+      "DefaultTargetArmor": { 
+        "Name": "Default Target Armor",
+        "Hint": "The armor defense to use when target's defense cant be determined."
       }
     },
     "Actor": {
@@ -247,7 +251,9 @@
         "AttackBonus": "Attack Bonus (ATT)",
         "DamageBonus": "Damage Bonus (DMG)",
         "Flavor": "Flavor",
-        "OpposedFlavorDefault": "Opposed against roll {id}"
+        "OpposedFlavorDefault": "Opposed against roll {id}",
+        "General": "General",
+        "RollModifiers": "Roll Modifiers"
       },
       "Card": {
         "TitleChallenge": "Challenge Roll",
@@ -307,7 +313,9 @@
         "DamageRequiresHit": "Damage can only be rolled from a successful attack.",
         "ActorMissing": "Could not find the actor for this roll.",
         "ChallengeDataMissing": "This message does not contain challenge roll data.",
-        "NotPermitted": "You do not have permission to use this action."
+        "NotPermitted": "You do not have permission to use this action.",
+        "NoTarget": "No attack targets selected (target armor default is 2)",
+        "TooManyTargets": "Too many targets selected (target armor default is 2)"
       },
       "Opposed": {
         "SummaryTitle": "Opposed Challenge Result",

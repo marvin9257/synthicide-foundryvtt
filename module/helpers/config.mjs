@@ -14,7 +14,10 @@ SYNTHICIDE.debug = {
   // Add more debug flags as needed
 };
 
-export default SYNTHICIDE;
+SYNTHICIDE.SHEET_STYLE_SETTING_KEY = 'sheetStyleMode';
+SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY = 'defaultTargetArmor';
+SYNTHICIDE.SHEET_STYLE_CLASSIC = 'classic';
+SYNTHICIDE.SHEET_STYLE_BOLD = 'rulebookBold';
 
 /**
  * The set of Attribute Scores used within the system.
@@ -110,6 +113,8 @@ SYNTHICIDE.motivations = {
     behavior: 'SYNTHICIDE.Actor.Motivation.liveFast.behavior',
   },
 };
+
+export default SYNTHICIDE;
 
 // Example derivation for selectOptions and behaviors:
 // const motivationOptions = Object.fromEntries(Object.entries(SYNTHICIDE.motivations).map(([k, v]) => [k, v.label]));

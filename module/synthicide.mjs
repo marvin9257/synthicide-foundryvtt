@@ -17,9 +17,6 @@ import { SynthicideChatLog, SynthicideChatPopout } from './documents/chatlog.mjs
 
 const collections = foundry.documents.collections;
 const sheets = foundry.appv1.sheets;
-const SHEET_STYLE_SETTING_KEY = 'sheetStyleMode';
-const SHEET_STYLE_CLASSIC = 'classic';
-const SHEET_STYLE_BOLD = 'rulebookBold';
 
 function applySheetStyleMode(mode) {
   const doc = globalThis.document;
@@ -29,7 +26,7 @@ function applySheetStyleMode(mode) {
   for (const root of roots) {
     root.classList.remove('synthicide-style-classic', 'synthicide-style-bold');
     root.classList.add(
-      mode === SHEET_STYLE_BOLD
+      mode === SYNTHICIDE.SHEET_STYLE_BOLD
         ? 'synthicide-style-bold'
         : 'synthicide-style-classic'
     );
@@ -37,18 +34,27 @@ function applySheetStyleMode(mode) {
 }
 
 function registerClientSettings() {
-  game.settings.register('synthicide', SHEET_STYLE_SETTING_KEY, {
+  game.settings.register('synthicide', SYNTHICIDE.SHEET_STYLE_SETTING_KEY, {
     name: 'SYNTHICIDE.Settings.SheetStyleMode.Name',
     hint: 'SYNTHICIDE.Settings.SheetStyleMode.Hint',
     scope: 'client',
     config: true,
     type: String,
     choices: {
-      [SHEET_STYLE_CLASSIC]: 'SYNTHICIDE.Settings.SheetStyleMode.Choices.Classic',
-      [SHEET_STYLE_BOLD]: 'SYNTHICIDE.Settings.SheetStyleMode.Choices.RulebookBold',
+      [SYNTHICIDE.SHEET_STYLE_CLASSIC]: 'SYNTHICIDE.Settings.SheetStyleMode.Choices.Classic',
+      [SYNTHICIDE.SHEET_STYLE_BOLD]: 'SYNTHICIDE.Settings.SheetStyleMode.Choices.RulebookBold',
     },
-    default: SHEET_STYLE_CLASSIC,
+    default: SYNTHICIDE.SHEET_STYLE_CLASSIC,
     onChange: (value) => applySheetStyleMode(value),
+  });
+
+  game.settings.register('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY, {
+    name: 'SYNTHICIDE.Settings.DefaultTargetArmor.Name',
+    hint: 'SYNTHICIDE.Settings.DefaultTargetArmor.Hint',
+    scope: 'world',
+    config: true,
+    type: Number,
+    default: 6,
   });
 }
 
@@ -178,7 +184,7 @@ Hooks.once('ready', async function () {
   registerActionRollHooks();
 
   applySheetStyleMode(
-    game.settings.get('synthicide', SHEET_STYLE_SETTING_KEY)
+    game.settings.get('synthicide', SYNTHICIDE.SHEET_STYLE_SETTING_KEY)
   );
 
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to

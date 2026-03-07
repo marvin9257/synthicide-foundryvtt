@@ -2227,3 +2227,16 @@ body.synthicide-style-bold .synthicide-action-roll-card .card-title.item-header 
   letter-spacing: 0.06em;
   line-height: 1.1;
 }
+
+.synthicide-window-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.synthicide-window-icon img {
+  display: block;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}

@@ -3,6 +3,7 @@ import SYNTHICIDE from '../helpers/config.mjs';
 const FLAG_PATH = 'actionRoll';
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
 const CARD_TEMPLATE = 'systems/synthicide/templates/chat/action-roll-card.hbs';
+const ACTION_ROLL_DIALOG_ICON = 'systems/synthicide/assets/synthicidePause.svg';
 
 const SUBTYPES = {
   CHALLENGE: 'challenge',
@@ -22,7 +23,7 @@ export async function openSynthicideActionRollDialog({
   allowSubtypeChange = false,
 } = {}) {
   if (!actor) return null;
-
+ 
   const result = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.Title'),
     defaults: {
@@ -30,7 +31,7 @@ export async function openSynthicideActionRollDialog({
       attribute: subtype === SUBTYPES.ATTACK ? 'combat' : attribute,
       difficulty: 6,
       misc: 0,
-      armor: 10,
+      armor: subtype === SUBTYPES.ATTACK ? getTargetArmor() : 0,
       attackBonus: 0,
       damageBonus: 0,
       messageMode: getDefaultMessageMode(),
@@ -411,8 +412,8 @@ async function renderActionRollDialog({ title, defaults }) {
   const content = await foundry.applications.handlebars.renderTemplate(DIALOG_TEMPLATE, context);
 
   try {
-    return await foundry.applications.api.DialogV2.prompt({
-      window: { title },
+    return await promptActionRollDialog({
+      title,
       content,
       ok: {
         label: localize('SYNTHICIDE.Roll.Dialog.RollButton'),
@@ -426,6 +427,26 @@ async function renderActionRollDialog({ title, defaults }) {
   } catch {
     return null;
   }
+}
+
+async function promptActionRollDialog({ title, render, ...config }) {
+  return foundry.applications.api.DialogV2.prompt({
+    ...config,
+    window: { ...(config.window ?? {}), title, icon: '' },
+    render: (event, dialog) => {
+      const iconEl = dialog.window?.icon;
+      if (iconEl) {
+        const img = globalThis.document.createElement('img');
+        img.src = ACTION_ROLL_DIALOG_ICON;
+        img.alt = '';
+        img.width = 16;
+        img.height = 16;
+        iconEl.className = 'window-icon synthicide-window-icon';
+        iconEl.replaceChildren(img);
+      }
+      if (typeof render === 'function') render(event, dialog);
+    },
+  });
 }
 
 function buildDialogContext(defaults) {
@@ -603,4 +624,16 @@ function canExecuteFollowup(message, user = game.user) {
 
   const actor = game.actors?.get(flags.actorId);
   return Boolean(actor?.isOwner);
+}
+
+function getTargetArmor() {
+  const defaultValue = game.settings.get('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY)
+  if (game.user.targets?.size === 1) {
+    return game.user.targets.first()?.actor?.system.armorDefense ?? defaultValue;
+  } else if (game.user.targets?.size > 1) {
+    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.TooManyTargets'));
+  } else {
+    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NoTarget'));
+  }
+  return defaultValue;
 }
