@@ -468,6 +468,16 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   box-shadow: none;
 }
 
+.synthicide-action-roll-card .inline-die-wrap .inline-dice .roll.d10.min {
+  color: #aa0200;
+  filter: sepia(0.5) hue-rotate(-60deg);
+}
+
+.synthicide-action-roll-card .inline-die-wrap .inline-dice .roll.d10.max {
+  color: #18520b;
+  filter: sepia(0.5) hue-rotate(60deg);
+}
+
 .synthicide-action-roll-card .dice-render .dice-roll {
   margin: 0;
 }

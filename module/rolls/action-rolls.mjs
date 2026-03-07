@@ -407,13 +407,25 @@ async function onOpposedRollButtonClick(event) {
 /* Dialog Rendering                             */
 /* -------------------------------------------- */
 
+/**
+ * Render and resolve the action-roll prompt.
+ *
+ * Uses DialogV2's `ok` callback to extract form values and return normalized
+ * roll input, or `null` if the dialog is cancelled. Also applies the
+ * Synthicide SVG to the dialog header icon on render.
+ *
+ * @param {object} params
+ * @param {string} params.title
+ * @param {object} params.defaults
+ * @returns {Promise<object|null>}
+ */
 async function renderActionRollDialog({ title, defaults }) {
   const context = buildDialogContext(defaults);
   const content = await foundry.applications.handlebars.renderTemplate(DIALOG_TEMPLATE, context);
 
   try {
-    return await promptActionRollDialog({
-      title,
+    return await foundry.applications.api.DialogV2.prompt({
+      window: { title, icon: '' },
       content,
       ok: {
         label: localize('SYNTHICIDE.Roll.Dialog.RollButton'),
@@ -423,30 +435,20 @@ async function renderActionRollDialog({ title, defaults }) {
           return extractDialogData(form);
         },
       },
+      render: (_event, dialog) => {
+        const iconEl = dialog.window?.icon;
+        if (!iconEl) return;
+
+        const img = globalThis.document.createElement('img');
+        img.src = ACTION_ROLL_DIALOG_ICON;
+        img.alt = '';
+        iconEl.className = 'window-icon synthicide-window-icon';
+        iconEl.replaceChildren(img);
+      },
     });
   } catch {
     return null;
   }
-}
-
-async function promptActionRollDialog({ title, render, ...config }) {
-  return foundry.applications.api.DialogV2.prompt({
-    ...config,
-    window: { ...(config.window ?? {}), title, icon: '' },
-    render: (event, dialog) => {
-      const iconEl = dialog.window?.icon;
-      if (iconEl) {
-        const img = globalThis.document.createElement('img');
-        img.src = ACTION_ROLL_DIALOG_ICON;
-        img.alt = '';
-        img.width = 16;
-        img.height = 16;
-        iconEl.className = 'window-icon synthicide-window-icon';
-        iconEl.replaceChildren(img);
-      }
-      if (typeof render === 'function') render(event, dialog);
-    },
-  });
 }
 
 function buildDialogContext(defaults) {
@@ -458,7 +460,7 @@ function buildDialogContext(defaults) {
     allowSubtypeChange: Boolean(defaults.allowSubtypeChange),
     defaultSubtype: subtype,
     isAttack,
-    defaultArmor: defaults.armor ?? 10,
+    defaultArmor: defaults.armor ?? game.settings.get('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY) ?? 5,
     defaultAttackBonus: defaults.attackBonus ?? 0,
     defaultDamageBonus: defaults.damageBonus ?? 0,
     defaultMisc: defaults.misc ?? 0,
