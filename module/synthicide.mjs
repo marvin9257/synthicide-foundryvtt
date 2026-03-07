@@ -8,6 +8,8 @@ import { SynthicideItemSheet } from './sheets/item-sheet.mjs';
 import SYNTHICIDE from './helpers/config.mjs';
 // Import DataModel classes
 import * as models from './data/_module.mjs';
+//Import Combat Class
+import  SynthicideCombat from './documents/combat.mjs';
 import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
@@ -152,6 +154,9 @@ Hooks.once('init', function () {
   //Add chat context
   CONFIG.ui.chat = SynthicideChatLog;
   CONFIG.ChatMessage.popoutClass = SynthicideChatPopout;
+
+  //Combat tracking
+  CONFIG.Combat.documentClass = SynthicideCombat;
 
 });
 
