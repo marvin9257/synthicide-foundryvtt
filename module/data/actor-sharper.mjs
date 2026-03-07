@@ -86,16 +86,17 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
    * @this {SynthicideSharperData}
    */
   prepareDerivedData() {
-    super.prepareDerivedData();
     
-    this.rollModifiers.starvationPenalty = this.foodDays?.value < 0 ? -2 : 0;
-    // For sharper actors, .current is always derived, add starvation penalty to all attributes
+    // For sharper actors, .current is always derived; calc before super so common derived values calc correctly
     if (this.attributes) {
       for (const attr of Object.values(this.attributes)) {
         attr.current = (attr.base ?? 0) + (attr.modifier ?? 0) + (attr.increase ?? 0);
       }
     }
+    super.prepareDerivedData();
+
     // Calculate foodDays.min as derived data for sharper actors
+    this.rollModifiers.starvationPenalty = this.foodDays?.value < 0 ? -2 : 0;
     if (this.foodDays && this.attributes?.toughness) {
       this.foodDays.min = -(6 + (this.attributes.toughness.current ?? 0));
     }

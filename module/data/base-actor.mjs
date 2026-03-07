@@ -8,7 +8,7 @@ export default class SynthicideActorBaseData extends foundry.abstract
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = {};
     
-    // Level field (if needed)
+    // Level field
     schema.level = makeValueField(1);
 
     schema.hitPoints = new fields.SchemaField({
@@ -21,6 +21,11 @@ export default class SynthicideActorBaseData extends foundry.abstract
     schema.forceBarrier = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }),
       max: new fields.NumberField({ ...requiredInteger, initial: 5 }) //will need to make persisted:false once armor is implemented
+    });
+
+    schema.actionPoints = new fields.SchemaField ({
+      modifier: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+      value: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false})
     });
 
     schema.biography = new fields.HTMLField();
@@ -36,5 +41,8 @@ export default class SynthicideActorBaseData extends foundry.abstract
           game.i18n.localize(SYNTHICIDE.attributes[key]) ?? key;
       }
     }
+
+    this.actionPoints.value = Math.floor(this.attributes.speed.value /2) + this.actionPoints.modifier + 3;
+    this.battleReflex = this.attributes.awareness.value + this.attributes.speed.value;
   }
 }
