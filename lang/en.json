@@ -314,8 +314,8 @@
         "ActorMissing": "Could not find the actor for this roll.",
         "ChallengeDataMissing": "This message does not contain challenge roll data.",
         "NotPermitted": "You do not have permission to use this action.",
-        "NoTarget": "No attack targets selected (target armor default is 2)",
-        "TooManyTargets": "Too many targets selected (target armor default is 2)"
+        "NoTarget": "No attack targets selected (using target armor default setting)",
+        "TooManyTargets": "Too many targets selected (using target armor default setting)"
       },
       "Opposed": {
         "SummaryTitle": "Opposed Challenge Result",
