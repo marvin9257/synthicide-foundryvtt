@@ -352,6 +352,24 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   align-items: baseline;
 }
 
+.synthicide-action-roll-card .formula-row {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 0.4rem;
+  row-gap: 0.1rem;
+  align-items: baseline;
+}
+
+.synthicide-action-roll-card .formula-row > strong {
+  white-space: nowrap;
+}
+
+.synthicide-action-roll-card .formula-row > span {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
 .synthicide-action-roll-card .result-row {
   display: flex;
   align-items: center;
@@ -519,6 +537,24 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 .synthicide-action-roll-form hr,
 .synthicide-action-roll-form p {
   grid-column: 1 / -1;
+}
+
+.synthicide-action-roll-form .roll-modifier-list {
+  grid-column: 1 / -1;
+  margin-top: 0.1rem;
+}
+
+.synthicide-action-roll-form .roll-modifier-list ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.synthicide-action-roll-form .roll-modifier-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.1rem 0;
 }
 
 .synthicide-style-bold .synthicide-action-roll-card {

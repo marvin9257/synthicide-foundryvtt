@@ -26,11 +26,20 @@
 
     <div class="form-group">
       <label>{{localize "SYNTHICIDE.Roll.Dialog.Attribute"}}</label>
-      <select name="attribute">
-        {{#each attributeOptions as |option|}}
-          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
-        {{/each}}
-      </select>
+      {{#if lockAttribute}}
+        <input type="hidden" name="attribute" value="{{attributeKey}}" />
+        <select disabled>
+          {{#each attributeOptions as |option|}}
+            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+          {{/each}}
+        </select>
+      {{else}}
+        <select name="attribute">
+          {{#each attributeOptions as |option|}}
+            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+          {{/each}}
+        </select>
+      {{/if}}
     </div>
 
     <div class="form-group">
@@ -49,6 +58,24 @@
       <label>{{localize "SYNTHICIDE.Roll.Dialog.MiscModifier"}}</label>
       <input type="number" name="misc" value="{{defaultMisc}}" step="1" />
     </div>
+
+    <div class="form-group roll-modifiers-total-row">
+      <label>{{localize "SYNTHICIDE.Roll.Dialog.RollModifiers"}}</label>
+      <input type="text" value="{{rollModifierTotalDisplay}}" readonly />
+    </div>
+
+    {{#if rollModifiers.length}}
+      <div class="roll-modifier-list">
+        <ul>
+          {{#each rollModifiers as |modifier|}}
+            <li>
+              <span class="modifier-key">{{modifier.label}}</span>
+              <span class="modifier-value">{{modifier.valueDisplay}}</span>
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+    {{/if}}
   </fieldset>
 
   {{#if isAttack}}

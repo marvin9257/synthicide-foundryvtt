@@ -1,9 +1,14 @@
+
 import SYNTHICIDE from '../helpers/config.mjs';
 
 const FLAG_PATH = 'actionRoll';
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
 const CARD_TEMPLATE = 'systems/synthicide/templates/chat/action-roll-card.hbs';
 const ACTION_ROLL_DIALOG_ICON = 'systems/synthicide/assets/synthicidePause.svg';
+const ATTRIBUTE_COMBAT = 'combat';
+const ACTION_ROLL_VERSION = 2;
+const FORMULA_CHALLENGE = '1d10 + @attribute + @misc + @modifiers';
+const FORMULA_ATTACK = '1d10 + @attribute + @misc + @attackBonus + @modifiers';
 
 const SUBTYPES = {
   CHALLENGE: 'challenge',
@@ -18,20 +23,22 @@ const SUBTYPES = {
 export async function openSynthicideActionRollDialog({
   actor,
   subtype = SUBTYPES.CHALLENGE,
-  attribute = 'combat',
+  attribute = ATTRIBUTE_COMBAT,
   sourceItem = null,
   allowSubtypeChange = false,
 } = {}) {
   if (!actor) return null;
+  const attributeKey = getActionAttributeKey(subtype, attribute);
  
   const result = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.Title'),
     defaults: {
+      actor,
       subtype,
-      attribute: subtype === SUBTYPES.ATTACK ? 'combat' : attribute,
+      attribute: attributeKey,
       difficulty: 6,
       misc: 0,
-      armor: subtype === SUBTYPES.ATTACK ? getTargetArmor() : 0,
+      armor: isAttackSubtype(subtype) ? getTargetArmor() : 0,
       attackBonus: 0,
       damageBonus: 0,
       messageMode: getDefaultMessageMode(),
@@ -41,11 +48,8 @@ export async function openSynthicideActionRollDialog({
 
   if (!result) return null;
 
-  if (result.subtype === SUBTYPES.ATTACK) {
-    return executeAttackRoll({ actor, input: result, sourceItem });
-  }
-
-  return executeChallengeRoll({ actor, input: result, sourceItem });
+  const subtypeToRun = result.subtype === SUBTYPES.ATTACK ? SUBTYPES.ATTACK : SUBTYPES.CHALLENGE;
+  return executeActionRoll({ actor, input: result, sourceItem, subtype: subtypeToRun });
 }
 
 export function registerActionRollHooks() {
@@ -55,147 +59,6 @@ export function registerActionRollHooks() {
 /* -------------------------------------------- */
 /* Roll Execution                               */
 /* -------------------------------------------- */
-
-async function executeChallengeRoll({ actor, input, sourceItem }) {
-  const attributeKey = normalizeAttributeKey(input.attribute);
-  const attributeValue = getActorAttributeValue(actor, attributeKey);
-  const misc = parseNumeric(input.misc, 0);
-  const difficulty = parseNumeric(input.difficulty, 6);
-
-  const evaluatedRoll = await new Roll(`1d10 + ${attributeValue} + ${misc}`).evaluate();
-  const total = Number(evaluatedRoll.total ?? 0);
-  const d10 = Number(evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? (total - attributeValue - misc));
-
-  const effect = total - difficulty;
-  const degree = getDegreeLabel(effect);
-  const difficultyLabel = getDifficultyLabel(difficulty);
-  const messageMode = normalizeMessageMode(input.messageMode);
-  const effectValue = formatSignedNumber(effect);
-
-  return createActionMessage({
-    actor,
-    roll: evaluatedRoll,
-    messageMode,
-    cardData: {
-      title: localize('SYNTHICIDE.Roll.Card.TitleChallenge'),
-      subtype: SUBTYPES.CHALLENGE,
-      flavor: localize('SYNTHICIDE.Roll.Card.DefaultFlavorChallenge', {
-        difficulty: difficultyLabel,
-        attribute: getAttributeLabel(attributeKey),
-      }),
-      subtitle: difficultyLabel,
-      equation: `1d10 + ${attributeValue} + ${misc}`,
-      total,
-      effectText: effectValue,
-      outcomeLabel: degree,
-      outcomeClass: getChallengeOutcomeClass(effect),
-      showEffectOutcomeRow: true,
-      dieValue: d10,
-      dieClass: getDieClass(d10, 10),
-      equationTerms: [
-        { label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(attributeKey) },
-        { label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: attributeValue },
-        { label: localize('SYNTHICIDE.Roll.Card.MiscModifier'), value: misc },
-      ],
-      metadataRows: [
-        { label: localize('SYNTHICIDE.Roll.Card.Difficulty'), value: difficultyLabel },
-        { label: localize('SYNTHICIDE.Roll.Card.Effect'), value: effectValue },
-      ],
-      showDamageButton: false,
-      showOpposedButton: true,
-      flags: {
-        version: 2,
-        subtype: SUBTYPES.CHALLENGE,
-        actorId: actor.id,
-        userId: game.user.id,
-        sourceItemUuid: sourceItem?.uuid ?? null,
-        messageMode,
-        challenge: {
-          attribute: attributeKey,
-          attributeValue,
-          difficulty,
-          misc,
-          d10,
-          total,
-          effect,
-          degree,
-        },
-      },
-    },
-  });
-}
-
-async function executeAttackRoll({ actor, input, sourceItem }) {
-  const attributeKey = normalizeAttributeKey(input.attribute);
-  const attributeValue = getActorAttributeValue(actor, attributeKey);
-  const attackBonus = parseNumeric(input.attackBonus, 0);
-  const damageBonus = parseNumeric(input.damageBonus, 0);
-  const misc = parseNumeric(input.misc, 0);
-  const armor = parseNumeric(input.armor, 0);
-
-  const evaluatedRoll = await new Roll(`1d10 + ${attributeValue} + ${attackBonus} + ${misc}`).evaluate();
-  const attackTotal = Number(evaluatedRoll.total ?? 0);
-  const d10 = Number(
-    evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? (attackTotal - attributeValue - attackBonus - misc)
-  );
-  const hit = attackTotal >= armor;
-  const damageTotal = d10 + attributeValue + damageBonus;
-  const messageMode = normalizeMessageMode(input.messageMode);
-
-  return createActionMessage({
-    actor,
-    roll: evaluatedRoll,
-    messageMode,
-    cardData: {
-      title: localize('SYNTHICIDE.Roll.Card.TitleAttack'),
-      subtype: SUBTYPES.ATTACK,
-      flavor: localize('SYNTHICIDE.Roll.Card.DefaultFlavorAttack', {
-        attribute: getAttributeLabel(attributeKey),
-        armor,
-        item: sourceItem?.name || localize('SYNTHICIDE.Roll.Subtype.Attack'),
-      }),
-      equation: `1d10 + ${attributeValue} + ${attackBonus} + ${misc}`,
-      total: attackTotal,
-      effectText: hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss'),
-      effectClass: hit ? 'outcome-success' : 'outcome-failure',
-      showEffectOutcomeRow: false,
-      dieValue: d10,
-      dieClass: getDieClass(d10, 10),
-      equationTerms: [
-        { label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(attributeKey) },
-        { label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: attributeValue },
-        { label: localize('SYNTHICIDE.Roll.Card.AttackBonus'), value: attackBonus },
-        { label: localize('SYNTHICIDE.Roll.Card.MiscModifier'), value: misc },
-      ],
-      metadataRows: [
-        { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
-        { label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: damageBonus },
-      ],
-      showDamageButton: hit,
-      showOpposedButton: false,
-      flags: {
-        version: 2,
-        subtype: SUBTYPES.ATTACK,
-        actorId: actor.id,
-        userId: game.user.id,
-        sourceItemUuid: sourceItem?.uuid ?? null,
-        messageMode,
-        attack: {
-          attribute: attributeKey,
-          attributeValue,
-          armor,
-          attackBonus,
-          damageBonus,
-          misc,
-          d10,
-          attackTotal,
-          hit,
-          damageTotal,
-        },
-      },
-    },
-  });
-}
 
 async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   const flags = sourceMessage.getFlag('synthicide', FLAG_PATH);
@@ -211,8 +74,11 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   const actor = game.actors?.get(flags.actorId);
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
+  // Ensure attributeValue is always set to combat
+  const combatValue = getActorAttributeValue(actor, ATTRIBUTE_COMBAT);
   const messageMode = normalizeMessageMode(userMessageMode ?? flags.messageMode ?? flags.messageType ?? 'public');
-  const summaryRoll = await new Roll(`${attack.d10} + ${attack.attributeValue} + ${attack.damageBonus}`).evaluate();
+  const summaryRoll = await new Roll(`${attack.d10} + ${combatValue} + ${attack.damageBonus}`).evaluate();
+  const damageTotal = Number(summaryRoll.total ?? 0);
 
   return createActionMessage({
     actor,
@@ -222,20 +88,23 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
       title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
       subtype: SUBTYPES.DAMAGE,
       flavor: localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),
-      equation: `${attack.d10} + ${attack.attributeValue} + ${attack.damageBonus}`,
-      total: attack.damageTotal,
+      equation: `${attack.d10} + ${combatValue} + ${attack.damageBonus}`,
+      total: damageTotal,
       showEffectOutcomeRow: false,
       dieValue: attack.d10,
       dieClass: getDieClass(attack.d10, 10),
-      metadataRows: [
-        { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: sourceMessage.id },
-        { label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: attack.attributeValue },
+      equationTerms: [
+        { label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(ATTRIBUTE_COMBAT) },
+        { label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: combatValue },
         { label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: attack.damageBonus },
+      ],
+      metadataRows: [
+        { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: sourceMessage.speaker?.alias ?? sourceMessage.id },
       ],
       showDamageButton: false,
       showOpposedButton: false,
       flags: {
-        version: 2,
+        version: ACTION_ROLL_VERSION,
         subtype: SUBTYPES.DAMAGE,
         actorId: actor.id,
         userId: game.user.id,
@@ -245,9 +114,9 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
         damage: {
           sourceMessageId: sourceMessage.id,
           d10: attack.d10,
-          attributeValue: attack.attributeValue,
+          attributeValue: combatValue,
           damageBonus: attack.damageBonus,
-          total: attack.damageTotal,
+          total: damageTotal,
         },
       },
     },
@@ -268,8 +137,9 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
   const result = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.OpposedTitle'),
     defaults: {
+      actor,
       subtype: SUBTYPES.CHALLENGE,
-      attribute: sourceChallenge.attribute ?? 'combat',
+      attribute: sourceChallenge.attribute ?? ATTRIBUTE_COMBAT,
       difficulty: sourceChallenge.difficulty ?? 6,
       misc: parseNumeric(sourceChallenge.misc, 0),
       armor: 10,
@@ -282,10 +152,11 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
 
   if (!result) return null;
 
-  const opposedRollMessage = await executeChallengeRoll({
+  const opposedRollMessage = await executeActionRoll({
     actor,
-    input: { ...result, subtype: SUBTYPES.CHALLENGE },
+    input: result,
     sourceItem: null,
+    subtype: SUBTYPES.CHALLENGE,
   });
   if (!opposedRollMessage) return null;
 
@@ -319,85 +190,173 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
   return opposedRollMessage;
 }
 
+/**
+ * Generic action roll executor for challenge and attack.
+ */
+async function executeActionRoll({ actor, input, sourceItem, subtype }) {
+  const attributeKey = getActionAttributeKey(subtype, input.attribute);
+  const rollData = buildActionRollData({ actor, input, attributeKey });
+  const armor = parseNumeric(input.armor, 0);
+  const difficulty = parseNumeric(input.difficulty, 6);
+  const damageBonus = parseNumeric(input.damageBonus, 0);
+  const formula = isAttackSubtype(subtype) ? FORMULA_ATTACK : FORMULA_CHALLENGE;
+  const evaluatedRoll = await new Roll(formula, rollData).evaluate();
+  const total = Number(evaluatedRoll.total ?? 0);
+  const d10 = Number(evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? 0);
+  const equationTerms = buildEquationTerms({ subtype, attributeKey, rollData });
+  const messageMode = normalizeMessageMode(input.messageMode);
+  const isAttack = isAttackSubtype(subtype);
+  const isChallenge = subtype === SUBTYPES.CHALLENGE;
+
+  let cardData = {
+    title: isAttack ? localize('SYNTHICIDE.Roll.Card.TitleAttack') : localize('SYNTHICIDE.Roll.Card.TitleChallenge'),
+    subtype,
+    equation: evaluatedRoll.result,
+    total,
+    dieValue: d10,
+    dieClass: getDieClass(d10, 10),
+    equationTerms,
+    showEffectOutcomeRow: isChallenge,
+    showDamageButton: isAttack && total >= armor,
+    showOpposedButton: isChallenge,
+    flags: {
+      version: ACTION_ROLL_VERSION,
+      subtype,
+      actorId: actor.id,
+      userId: game.user.id,
+      sourceItemUuid: sourceItem?.uuid ?? null,
+      messageMode,
+    },
+    flavor: '',
+    metadataRows: [],
+  };
+
+  if (isAttack) {
+    const attributeValue = Number(rollData.attribute ?? 0);
+    const hit = total >= armor;
+    const damageTotal = d10 + attributeValue + damageBonus;
+    cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorAttack', {
+      attribute: getAttributeLabel(attributeKey),
+      armor,
+      item: sourceItem?.name || localize('SYNTHICIDE.Roll.Subtype.Attack'),
+    });
+    cardData.effectText = hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss');
+    cardData.effectClass = hit ? 'outcome-success' : 'outcome-failure';
+    cardData.metadataRows = [
+      { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
+      { label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: damageBonus },
+    ];
+    cardData.flags.attack = {
+      attribute: attributeKey,
+      attributeValue,
+      armor,
+      damageBonus,
+      d10,
+      attackTotal: total,
+      hit,
+      damageTotal,
+    };
+  } else {
+    const effect = total - difficulty;
+    const degree = getDegreeLabel(effect);
+    const difficultyLabel = getDifficultyLabel(difficulty);
+    const effectValue = formatSignedNumber(effect);
+    cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorChallenge', {
+      difficulty: difficultyLabel,
+      attribute: getAttributeLabel(attributeKey),
+    });
+    cardData.subtitle = difficultyLabel;
+    cardData.effectText = effectValue;
+    cardData.outcomeLabel = degree;
+    cardData.outcomeClass = getChallengeOutcomeClass(effect);
+    cardData.metadataRows = [
+      { label: localize('SYNTHICIDE.Roll.Card.Difficulty'), value: difficultyLabel },
+      { label: localize('SYNTHICIDE.Roll.Card.Effect'), value: effectValue },
+    ];
+    cardData.flags.challenge = {
+      attribute: attributeKey,
+      difficulty,
+      d10,
+      total,
+      effect,
+      degree,
+    };
+  }
+
+  return createActionMessage({
+    actor,
+    roll: evaluatedRoll,
+    messageMode,
+    cardData,
+  });
+}
+
 /* -------------------------------------------- */
 /* Chat Cards                                   */
 /* -------------------------------------------- */
 
 async function createActionMessage({ actor, roll, cardData, messageMode }) {
-  const speaker = ChatMessage.getSpeaker({ actor });
   const rollHtml = await roll.render();
   const content = await foundry.applications.handlebars.renderTemplate(CARD_TEMPLATE, {
     ...cardData,
     rollHtml,
   });
 
-  return ChatMessage.create({
-    speaker,
+  const chatData = await roll.toMessage({
+    speaker: ChatMessage.getSpeaker({ actor }),
     content,
-    rolls: [roll],
     style: getChatMessageStyle(),
-    messageMode: normalizeMessageMode(messageMode),
     flags: {
       synthicide: {
         [FLAG_PATH]: cardData.flags,
       },
     },
+  }, {
+    messageMode: normalizeMessageMode(messageMode),
+    create: false,
   });
+
+  return ChatMessage.create(chatData);
 }
 
 function activateActionRollChatListeners(message, htmlElement) {
-  if (!htmlElement || typeof htmlElement.querySelectorAll !== 'function') return;
+  if (!htmlElement || typeof htmlElement.querySelectorAll !== 'function' || typeof htmlElement.addEventListener !== 'function') return;
+  const flags = message?.getFlag?.('synthicide', FLAG_PATH);
+  if (!flags || (flags.subtype !== SUBTYPES.ATTACK && flags.subtype !== SUBTYPES.CHALLENGE)) return;
   const root = htmlElement;
+  const allowed = canExecuteFollowup(message);
 
   for (const button of root.querySelectorAll('[data-action="rollDamage"]')) {
-    button.dataset.messageId = message.id;
-    const allowed = canExecuteFollowup(message);
     if (!allowed) button.disabled = true;
-    button.addEventListener('click', onRollDamageButtonClick);
   }
 
-  for (const button of root.querySelectorAll('[data-action="rollOpposed"]')) {
-    button.dataset.messageId = message.id;
-    button.addEventListener('click', onOpposedRollButtonClick);
-  }
+  if (root.dataset.synthicideActionBound === 'true') return;
+  root.dataset.synthicideActionBound = 'true';
+  root.addEventListener('click', (event) => onActionRollCardClick(event, message));
 }
 
-async function onRollDamageButtonClick(event) {
+async function onActionRollCardClick(event, message) {
+  const button = event.target?.closest?.('[data-action]');
+  if (!button) return;
+
+  const action = button.dataset.action;
+  if (action !== 'rollDamage' && action !== 'rollOpposed') return;
+
   event.preventDefault();
+  if (button.disabled) return;
 
-  const button = event.currentTarget;
-  const messageId = button?.dataset?.messageId;
-  if (!messageId) return;
-
-  const message = game.messages?.get(messageId);
-  if (!message) return;
-
-  if (!canExecuteFollowup(message)) {
+  if (action === 'rollDamage' && !canExecuteFollowup(message)) {
     ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NotPermitted'));
     return;
   }
 
   button.disabled = true;
   try {
-    await executeDerivedDamageRoll({ sourceMessage: message });
-  } finally {
-    button.disabled = false;
-  }
-}
-
-async function onOpposedRollButtonClick(event) {
-  event.preventDefault();
-
-  const button = event.currentTarget;
-  const messageId = button?.dataset?.messageId;
-  if (!messageId) return;
-
-  const message = game.messages?.get(messageId);
-  if (!message) return;
-
-  button.disabled = true;
-  try {
-    await executeOpposedChallengeRoll({ sourceMessage: message });
+    if (action === 'rollDamage') {
+      await executeDerivedDamageRoll({ sourceMessage: message });
+    } else {
+      await executeOpposedChallengeRoll({ sourceMessage: message });
+    }
   } finally {
     button.disabled = false;
   }
@@ -430,7 +389,11 @@ async function renderActionRollDialog({ title, defaults }) {
       ok: {
         label: localize('SYNTHICIDE.Roll.Dialog.RollButton'),
         callback: (event, button, dialog) => {
-          const form = resolveDialogForm(event, button, dialog);
+          const form = button?.form
+            ?? event?.currentTarget?.form
+            ?? event?.target?.form
+            ?? dialog?.element?.querySelector?.('form.synthicide-action-roll-form')
+            ?? null;
           if (!form) return null;
           return extractDialogData(form);
         },
@@ -453,14 +416,27 @@ async function renderActionRollDialog({ title, defaults }) {
 
 function buildDialogContext(defaults) {
   const subtype = defaults.subtype ?? SUBTYPES.CHALLENGE;
-  const isAttack = subtype === SUBTYPES.ATTACK;
+  const isAttack = isAttackSubtype(subtype);
   const difficultyList = getChallengeDifficulties();
+
+  const actor = defaults.actor;
+  const attributeKey = getActionAttributeKey(subtype, defaults.attribute ?? ATTRIBUTE_COMBAT);
+  const rawRollModifiers = getActorRollModifiers(actor);
+  const rollModifiers = rawRollModifiers.map((modifier) => ({
+    ...modifier,
+    label: formatModifierKey(modifier.key),
+    valueDisplay: formatSignedNumber(modifier.value),
+  }));
+  const rollModifierTotalDisplay = formatSignedNumber(
+    rawRollModifiers.reduce((sum, modifier) => sum + (Number(modifier.value) || 0), 0)
+  );
 
   return {
     allowSubtypeChange: Boolean(defaults.allowSubtypeChange),
     defaultSubtype: subtype,
     isAttack,
     defaultArmor: defaults.armor ?? game.settings.get('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY) ?? 5,
+    lockAttribute: isAttack,
     defaultAttackBonus: defaults.attackBonus ?? 0,
     defaultDamageBonus: defaults.damageBonus ?? 0,
     defaultMisc: defaults.misc ?? 0,
@@ -477,12 +453,16 @@ function buildDialogContext(defaults) {
       },
     ],
     messageModeOptions: getMessageModeOptions(defaults.messageMode),
-    attributeOptions: getLocalizedAttributeOptions(defaults.attribute),
+    attributeOptions: getLocalizedAttributeOptions(attributeKey),
     difficultyOptions: difficultyList.map((entry) => ({
       value: entry.value,
       label: localize(entry.key),
       selected: Number(entry.value) === Number(defaults.difficulty ?? 6),
     })),
+    rollModifiers,
+    rollModifierTotalDisplay,
+    actor,
+    attributeKey,
   };
 }
 
@@ -491,23 +471,13 @@ function extractDialogData(formElement) {
   return {
     subtype: String(formData.get('subtype') ?? SUBTYPES.CHALLENGE),
     messageMode: normalizeMessageMode(String(formData.get('messageMode') ?? 'public')),
-    attribute: String(formData.get('attribute') ?? 'combat'),
+    attribute: String(formData.get('attribute') ?? ATTRIBUTE_COMBAT),
     difficulty: parseNumeric(formData.get('difficulty'), 6),
     misc: parseNumeric(formData.get('misc'), 0),
     armor: parseNumeric(formData.get('armor'), 0),
     attackBonus: parseNumeric(formData.get('attackBonus'), 0),
     damageBonus: parseNumeric(formData.get('damageBonus'), 0),
   };
-}
-
-function resolveDialogForm(event, button, dialog) {
-  const fromButton = button?.form;
-  if (fromButton) return fromButton;
-
-  const fromEventTarget = event?.currentTarget?.form ?? event?.target?.form;
-  if (fromEventTarget) return fromEventTarget;
-
-  return dialog?.element?.querySelector?.('form.synthicide-action-roll-form') ?? null;
 }
 
 /* -------------------------------------------- */
@@ -530,8 +500,48 @@ function formatSignedNumber(value) {
   return `${numeric}`;
 }
 
+function formatModifierKey(key) {
+  return String(key ?? '')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[_-]+/g, ' ')
+    .replace(/^./, (char) => char.toUpperCase());
+}
+
 function normalizeAttributeKey(attributeKey) {
-  return attributeKey && SYNTHICIDE.attributes?.[attributeKey] ? attributeKey : 'combat';
+  return attributeKey && SYNTHICIDE.attributes?.[attributeKey] ? attributeKey : ATTRIBUTE_COMBAT;
+}
+
+function isAttackSubtype(subtype) {
+  return subtype === SUBTYPES.ATTACK;
+}
+
+function getActionAttributeKey(subtype, requestedAttribute) {
+  return isAttackSubtype(subtype) ? ATTRIBUTE_COMBAT : normalizeAttributeKey(requestedAttribute);
+}
+
+function buildActionRollData({ actor, input, attributeKey }) {
+  const modifiers = getActorRollModifiers(actor);
+  return {
+    attribute: getActorAttributeValue(actor, attributeKey),
+    attackBonus: parseNumeric(input.attackBonus, 0),
+    misc: parseNumeric(input.misc, 0),
+    modifiers: modifiers.reduce((sum, mod) => sum + (Number(mod.value) || 0), 0),
+  };
+}
+
+function buildEquationTerms({ subtype, attributeKey, rollData }) {
+  const terms = [
+    { label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(attributeKey) },
+    { label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: rollData.attribute },
+    { label: localize('SYNTHICIDE.Roll.Card.MiscModifier'), value: rollData.misc },
+  ];
+
+  if (isAttackSubtype(subtype)) {
+    terms.push({ label: localize('SYNTHICIDE.Roll.Card.AttackBonus'), value: rollData.attackBonus });
+  }
+
+  terms.push({ label: localize('SYNTHICIDE.Roll.Dialog.RollModifiers'), value: rollData.modifiers });
+  return terms;
 }
 
 function getActorAttributeValue(actor, attributeKey) {
@@ -546,7 +556,7 @@ function getAttributeLabel(attributeKey) {
 function getAttributeValueHtml(attributeKey) {
   const key = normalizeAttributeKey(attributeKey);
   const label = foundry.utils.escapeHTML(getAttributeLabel(key));
-  return `<span class="synthicide-attr-pill"><img class="synthicide-attr-icon" src="/systems/synthicide/assets/${key}.png" alt="${label}" /> ${label}</span>`;
+  return `<span class="synthicide-attr-pill"><img class="synthicide-attr-icon" src="/systems/synthicide/assets/${key}.png" alt="" /> ${label}</span>`;
 }
 
 function getLocalizedAttributeOptions(selectedKey = 'combat') {
@@ -638,4 +648,13 @@ function getTargetArmor() {
     ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NoTarget'));
   }
   return defaultValue;
+}
+
+function getActorRollModifiers(actor) {
+  const rollModifiers = actor?.system?.rollModifiers;
+  if (!rollModifiers || typeof rollModifiers !== 'object') return [];
+
+  return Object.entries(rollModifiers)
+    .map(([key, value]) => ({ key, value: Number(value) }))
+    .filter((entry) => Number.isFinite(entry.value) && entry.value !== 0);
 }
