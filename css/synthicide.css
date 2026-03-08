@@ -1134,7 +1134,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 
 .attributes-header,
 .attribute-input,
-.attribute-current {
+.attribute-value {
   text-align: center;
   padding: 4px 4px;
 }
@@ -1231,7 +1231,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   appearance: textfield;
 }
 
-/*.attribute-current {
+/*.attribute-value {
   padding-left: 8px;
 }*/
 
@@ -1826,7 +1826,7 @@ body.synthicide-style-bold .synthicide .attribute-input {
 }
 
 body.synthicide-style-bold .synthicide .attribute-input input,
-body.synthicide-style-bold .synthicide .attribute-current input {
+body.synthicide-style-bold .synthicide .attribute-value input {
   font-weight: 700;
   text-align: center;
   width: 100%;

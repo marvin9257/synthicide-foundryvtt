@@ -27,7 +27,7 @@ export class SynthicideActor extends Actor {
    *
    * This method sums up all attribute and non-attribute modifiers from the actor's owned items,
    * applies the aggregated attribute modifiers to the actor's attributes (persisting .modifier if changed),
-   * recalculates .current in memory, and applies non-attribute modifiers to arbitrary system paths.
+  * recalculates .value in memory, and applies non-attribute modifiers to arbitrary system paths.
    *
    * This should be called from item data model hooks (e.g., _onCreate, _onUpdate, _onDelete) when item changes
    * may affect actor attributes or other system data.
@@ -73,11 +73,11 @@ export class SynthicideActor extends Actor {
       await this.update(updates, { render });
     }
 
-    // Always recalculate current in memory after aggregation
+    // Always recalculate value in memory after aggregation
     for (const key of attributeKeys) {
       const attr = this.system?.attributes?.[key];
       if (!attr) continue;
-      attr.current = attr.base + attr.modifier + attr.increase;
+      attr.value = attr.base + attr.modifier + attr.increase;
     }
     if (debug) {
       this.debugModifierAggregation(attributeKeys, attributeModifiers, debugItemContrib);
@@ -111,7 +111,7 @@ export class SynthicideActor extends Actor {
         ),
         aggregatedDelta: Number(attributeModifiers[key] ?? 0),
         finalModifier: Number(this.system?.attributes?.[key]?.modifier ?? 0),
-        current: Number(this.system?.attributes?.[key]?.current ?? 0),
+        value: Number(this.system?.attributes?.[key]?.value ?? 0),
       }))
     );
     if (debugItemContrib.length) console.table(debugItemContrib);

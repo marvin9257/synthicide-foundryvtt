@@ -20,7 +20,7 @@
               data-action="roll"
               data-roll-type="challenge"
               data-attribute-key="{{key}}"
-              data-roll="d10+@attributes.{{key}}.current"
+              data-roll="d10+@attributes.{{key}}.value"
               data-label="{{localize (lookup @root.SYNTHICIDE.attributes key)}}"
               tabindex="0"
               role="button"
@@ -47,8 +47,8 @@
               </div>
             </div>
           </div>
-          <div class="attribute-current">
-            <input disabled type="text" name="system.attributes.{{key}}.current" value="{{numberFormat attribute.current decimals=0 sign=true}}" class="attribute-score" data-dtype="Number" step="1">
+          <div class="attribute-value">
+            <input disabled type="text" name="system.attributes.{{key}}.value" value="{{numberFormat attribute.value decimals=0 sign=true}}" class="attribute-score" data-dtype="Number" step="1">
           </div>
         {{/each}}
       </div>

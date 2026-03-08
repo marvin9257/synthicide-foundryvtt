@@ -40,7 +40,7 @@ export default class SynthicideGear extends SynthicideItemBase {
       }),
       diceSize: new fields.StringField({ initial: 'd10' }),
       diceBonus: new fields.StringField({
-        initial: '+ @attributes.combat.current',
+        initial: '+ @attributes.combat.value',
       }),
     });
 

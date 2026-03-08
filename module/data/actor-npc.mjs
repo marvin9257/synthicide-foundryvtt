@@ -12,11 +12,11 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
   static defineSchema() {
     const schema = super.defineSchema();
 
-    // Synthicide attributes only current values which are editiable for npc
+    // Synthicide attributes only value fields, which are editable for NPCs.
     schema.attributes = new fields.SchemaField(
       Object.keys(SYNTHICIDE.attributes).reduce((obj, attribute) => {
         obj[attribute] = new fields.SchemaField({
-          current: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+          value: new fields.NumberField({ ...requiredInteger, initial: 0 }),
         });
         return obj;
       }, {})
@@ -26,7 +26,7 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
   }
 
   prepareDerivedData() {
-    // For NPCs, .current is editable and not derived. Only update hitPoints.max as needed.
+    // For NPCs, .value is editable and not derived. Only update hitPoints.max as needed.
     this.hitPoints.max = this.hitPoints.base ?? 0;
   }
 }

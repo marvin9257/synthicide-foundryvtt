@@ -17,14 +17,14 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
   static defineSchema() {
     const schema = super.defineSchema();
 
-    // Synthicide attributes: base and current values, min -1
+    // Synthicide attributes: base and derived value fields, min -1
     schema.attributes = new fields.SchemaField(
       Object.keys(SYNTHICIDE.attributes).reduce((obj, attribute) => {
         obj[attribute] = new fields.SchemaField({
           base: new fields.NumberField({...requiredInteger, initial: 0}),
           modifier: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           increase: new fields.NumberField({ ...requiredInteger, initial: 0, max: 5 }),
-          current: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
+          value: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
         });
         return obj;
       }, {})
@@ -81,16 +81,16 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
   }
 
   /**
-   * Calculate and assign derived data for sharper actors (e.g., .current, foodDays.min, hitPoints.max).
+  * Calculate and assign derived data for sharper actors (e.g., .value, foodDays.min, hitPoints.max).
    * @override
    * @this {SynthicideSharperData}
    */
   prepareDerivedData() {
     
-    // For sharper actors, .current is always derived; calc before super so common derived values calc correctly
+    // For sharper actors, .value is always derived; calc before super so common derived values calc correctly
     if (this.attributes) {
       for (const attr of Object.values(this.attributes)) {
-        attr.current = (attr.base ?? 0) + (attr.modifier ?? 0) + (attr.increase ?? 0);
+        attr.value = (attr.base ?? 0) + (attr.modifier ?? 0) + (attr.increase ?? 0);
       }
     }
     super.prepareDerivedData();
@@ -98,7 +98,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     // Calculate foodDays.min as derived data for sharper actors
     this.rollModifiers.starvationPenalty = this.foodDays?.value < 0 ? -2 : 0;
     if (this.foodDays && this.attributes?.toughness) {
-      this.foodDays.min = -(6 + (this.attributes.toughness.current ?? 0));
+      this.foodDays.min = -(6 + (this.attributes.toughness.value ?? 0));
     }
     const level = this.level.value ?? 1;
     this.hitPoints.max = (this.hitPoints.base ?? 0) + (this.hitPoints.perLevel ?? 0) * Math.max(0, level - 1);

@@ -545,7 +545,7 @@ function buildEquationTerms({ subtype, attributeKey, rollData }) {
 }
 
 function getActorAttributeValue(actor, attributeKey) {
-  return Number(actor?.system?.attributes?.[attributeKey]?.current ?? 0);
+  return Number(actor?.system?.attributes?.[attributeKey]?.value ?? 0);
 }
 
 function getAttributeLabel(attributeKey) {
