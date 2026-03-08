@@ -57,8 +57,7 @@ export default class SynthicideGear extends SynthicideItemBase {
    */
   prepareDerivedData() {
     // Build the formula dynamically using string interpolation
-    const roll = this.roll;
-
-    this.formula = `${roll.diceNum}${roll.diceSize}${roll.diceBonus}`;
+    
+    this.formula = `${this.roll.diceNum}${this.roll.diceSize}${this.roll.diceBonus}`;
   }
 }

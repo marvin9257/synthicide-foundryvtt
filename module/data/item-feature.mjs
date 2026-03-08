@@ -339,7 +339,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
     }
 
     const debug = Boolean(SYNTHICIDE.debug?.synthicideModifiers);
-    actor.aggregateAndApplyItemModifiers({ debug, render: options?.render ?? true });
+    await actor.aggregateAndApplyItemModifiers({ debug, render: options?.render ?? true });
   }
 
   /**
