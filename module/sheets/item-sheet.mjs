@@ -21,7 +21,7 @@ const { api, sheets } = foundry.applications;
  */
 const ITEM_BASE_PARTS_BY_TYPE = {
   trait: ['attributesTrait'],
-  gear: ['attributesGear'],
+  gear: ['rollGear'],
   bioclass: ['attributesBioclass', 'cyberneticsBioclass', 'traitsBioclass'],
   aspect: ['abilitiesAspect', 'traitsBioclass'],
 };
@@ -43,7 +43,7 @@ const ITEM_BASE_PARTS_BY_TYPE = {
 const ITEM_TAB_MAP = {
   general: { id: 'general', icon: ICON_MAP.general, label: 'General' },
   attributesTrait: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
-  attributesGear: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
+  rollGear: { id: 'rollGear', icon: ICON_MAP.roll, label: 'RollData' },
   attributesBioclass: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
   cyberneticsBioclass: { id: 'cybernetics', icon: ICON_MAP.cybernetics, label: 'Cybernetics' },
   traitsBioclass: { id: 'traits', icon: ICON_MAP.trait, label: 'Traits' },
@@ -99,8 +99,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       template:
         'systems/synthicide/templates/item/attribute-parts/trait.hbs',
     },
-    attributesGear: {
-      template: 'systems/synthicide/templates/item/attribute-parts/gear.hbs',
+    rollGear: {
+      template: 'systems/synthicide/templates/item/attribute-parts/rollGear.hbs',
     },
     attributesBioclass: {
       template:

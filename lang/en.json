@@ -143,7 +143,8 @@
         "Description": "Description",
         "Information": "Information",
         "General": "General",
-        "Effects": "Effects"
+        "Effects": "Effects",
+        "RollData": "Roll Data"
       },
       "Gear": {
         "FIELDS": {
@@ -264,8 +265,8 @@
         "Effect": "Effect",
         "DifficultyAbbr": "AD",
         "DifficultyTooltip": "Action Difficulty (AD)",
-        "ResultAbbr": "SL",
-        "ResultTooltip": "Success Level (SL)",
+        "SuccessLevelAbbr": "SL",
+        "SuccessLevelTooltip": "Success Level (SL)",
         "DieResult": "d10 result {result}",
         "Attribute": "Attribute",
         "AttributeValue": "Attribute Value",
