@@ -14,7 +14,8 @@ export const ICON_MAP = {
   consumable: 'fa-solid fa-battery-full',
   gear: 'fa-solid fa-toolbox',
   tool: 'fa-solid fa-hammer',
-  default: 'fa-solid fa-box'
+  default: 'fa-solid fa-box',
+  description: 'fa-solid fa-file-lines'
 };
 
 /**

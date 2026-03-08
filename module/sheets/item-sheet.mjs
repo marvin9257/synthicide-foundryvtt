@@ -49,6 +49,7 @@ const ITEM_TAB_MAP = {
   traitsBioclass: { id: 'traits', icon: ICON_MAP.trait, label: 'Traits' },
   abilitiesAspect: { id: 'abilities', icon: ICON_MAP.abilities, label: 'Abilities' },
   effects: { id: 'effects', icon: ICON_MAP.effects, label: 'Effects' },
+  description: { id: 'description', icon: ICON_MAP.description, label: 'Description'}
 };
 
 /**
@@ -119,6 +120,9 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     effects: {
       template: 'systems/synthicide/templates/item/effects.hbs',
     },
+    description: {
+      template: 'systems/synthicide/templates/item/description.hbs'
+    }
   };
 
   /** @override */
@@ -132,6 +136,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     options.parts.push(...(ITEM_BASE_PARTS_BY_TYPE[this.document.type] ?? []));
     // every item type can have effects
     options.parts.push('effects');
+    // every item type has a description
+    options.parts.push('description');
   }
 
   /** @inheritDoc */
@@ -175,7 +181,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     assignTabContext(partId, context);
 
     switch (partId) {
-      case 'general':
+      case 'description':
         // Use shared helper to keep enrich options consistent across sheets.
         context.enrichedDescription = await enrichSheetHtml({
           html: this.item.system.description,

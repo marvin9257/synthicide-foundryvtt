@@ -34,14 +34,4 @@
     </div>
   {{/if}}
 
-  {{#if editable}}
-    <div class='description-header'>{{localize 'SYNTHICIDE.Item.Tabs.Description'}}</div>
-    <div class='trait-description-editor'>
-      <prose-mirror name="system.description" data-document-uuid="{{item.uuid}}" value="{{system.description}}" collaborate="true" toggled="true">
-        {{{enrichedDescription}}}
-      </prose-mirror>
-    </div>
-  {{else}} {{{enrichedDescription}}}
-  {{/if}}
-
 </section>
