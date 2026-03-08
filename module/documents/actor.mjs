@@ -68,6 +68,7 @@ export class SynthicideActor extends Actor {
         updates[`system.attributes.${key}.modifier`] = newModifier;
       }
     }
+    Object.assign(updates, this.buildNonAttributeModifierUpdates(nonAttributeModifiers));
     if (Object.keys(updates).length > 0) {
       await this.update(updates, { render });
     }
@@ -81,7 +82,6 @@ export class SynthicideActor extends Actor {
     if (debug) {
       this.debugModifierAggregation(attributeKeys, attributeModifiers, debugItemContrib);
     }
-    this.applyNonAttributeModifiers(nonAttributeModifiers);
   }
 
   /**
@@ -119,26 +119,35 @@ export class SynthicideActor extends Actor {
   }
 
   /**
-   * Apply non-attribute modifiers to any system path on the actor.
+   * Build update payload for non-attribute modifiers.
    * @param {Array<Object>} nonAttributeModifiers - The non-attribute modifiers to apply.
+   * @returns {Object} flat update payload compatible with Actor.update
    */
-  applyNonAttributeModifiers(nonAttributeModifiers) {
+  buildNonAttributeModifierUpdates(nonAttributeModifiers) {
+    const updates = {};
     for (const mod of nonAttributeModifiers) {
       if (!mod.target) continue;
       let path = mod.target;
       if (!path.startsWith('system.')) path = `system.${path}`;
-      let current = foundry.utils.getProperty(this, path);
+
+      const stagedValue = updates[path];
+      let current = stagedValue;
+      if (current === undefined) current = foundry.utils.getProperty(this, path);
       if (current === undefined) current = 0;
-      let newValue = current;
-      if (mod.type === 'set') {
-        newValue = mod.value;
-      } else if (mod.type === 'penalty') {
-        newValue -= mod.value ?? 0;
-      } else {
-        newValue += mod.value ?? 0;
-      }
-      foundry.utils.setProperty(this, path, newValue);
+
+      const numericCurrent = Number(current);
+      const baseValue = Number.isFinite(numericCurrent) ? numericCurrent : 0;
+      const numericModValue = Number(mod.value ?? 0);
+
+      const newValue = mod.type === 'set'
+        ? mod.value
+        : mod.type === 'penalty'
+          ? baseValue - numericModValue
+          : baseValue + numericModValue;
+
+      updates[path] = newValue;
     }
+    return updates;
   }
 
   async damageActor(damage) {

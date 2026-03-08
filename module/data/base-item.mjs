@@ -61,11 +61,11 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
     * @param {{render?: boolean}} [options]
     * @returns {void}
    */
-  triggerActorModifierAggregation({ render = true } = {}) {
+  async triggerActorModifierAggregation({ render = true } = {}) {
     const actor = this.parent?.actor;
     if (!actor) return;
     const debug = Boolean(SYNTHICIDE.debug?.synthicideModifiers);
-    actor.aggregateAndApplyItemModifiers({ debug, render });
+    await actor.aggregateAndApplyItemModifiers({ debug, render });
   }
 
   /**
@@ -82,7 +82,7 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
     // render: false because Foundry's item-creation pipeline already re-renders
     // the owning actor sheet. For explicit drop flows (_handleGenericItemDrop),
     // aggregation is awaited separately before the sheet is rendered.
-    this.triggerActorModifierAggregation({ render: false });
+    await this.triggerActorModifierAggregation({ render: false });
   }
 
   /**
@@ -97,10 +97,13 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
     super._onUpdate(changed, options, userId);
     if (game.userId !== userId) return;
     // Only trigger aggregation if system.modifiers changed.
-    // render: false for the same reason as _onDelete — Foundry's update pipeline
-    // already re-renders the owning actor sheet.
-    if (changed?.system?.modifiers) {
-      this.triggerActorModifierAggregation({ render: false });
+    // Use render:true so actor sheets reflect updated aggregated modifiers immediately.
+    const changedFlat = foundry.utils.flattenObject(changed ?? {});
+    const modifierChanged = Object.keys(changedFlat).some(
+      (path) => path === 'system.modifiers' || path.startsWith('system.modifiers.')
+    );
+    if (modifierChanged) {
+      await this.triggerActorModifierAggregation({ render: true });
     }
   }
 
@@ -117,6 +120,6 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
     // render: false because Foundry's item-deletion pipeline already re-renders
     // the owning actor sheet; letting the actor.update() also render would cause
     // a redundant second refresh of the sheet.
-    this.triggerActorModifierAggregation({ render: false });
+    await this.triggerActorModifierAggregation({ render: false });
   }
 }

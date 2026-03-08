@@ -16,7 +16,6 @@ import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls
 import { SynthicideChatLog, SynthicideChatPopout } from './documents/chatlog.mjs';
 
 const collections = foundry.documents.collections;
-const sheets = foundry.appv1.sheets;
 
 function applySheetStyleMode(mode) {
   const doc = globalThis.document;
@@ -123,13 +122,6 @@ Hooks.once('init', function () {
     bioclass: models.SynthicideBioclass,
     aspect: models.SynthicideAspect,
   };
-  CONFIG.Item.typeClasses = {
-    bioclass: models.SynthicideBioclass,
-    gear: models.SynthicideGear,
-    trait: models.SynthicideTrait,
-    aspect: models.SynthicideAspect,
-    // Add other item types as needed
-  };
 
   // Active Effects are never copied to the Actor,
   // but will still apply to the Actor from within the Item
@@ -141,14 +133,13 @@ Hooks.once('init', function () {
   registerClientSettings();
 
   // Register sheet application classes
-  collections.Actors.unregisterSheet('core', sheets.ActorSheet);
   collections.Actors.unregisterSheet('core', foundry.applications.sheets.ActorSheetV2)
   collections.Actors.registerSheet('synthicide', SynthicideActorSheet, {
     types:["sharper", "npc"],
     makeDefault: true,
     label: 'SYNTHICIDE.SheetLabels.Actor',
   });
-  collections.Items.unregisterSheet('core', sheets.ItemSheet);
+  collections.Items.unregisterSheet('core', foundry.applications.sheets.ItemSheetV2);
   collections.Items.registerSheet('synthicide', SynthicideItemSheet, {
     makeDefault: true,
     label: 'SYNTHICIDE.SheetLabels.Item',

@@ -484,7 +484,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       await roll.toMessage({
         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
         flavor: label,
-        rollMode: game.settings.get('core', 'rollMode'),
+      }, {
+        messageMode: game.settings.get('core', 'messageMode'),
       });
       return roll;
     }
@@ -642,19 +643,24 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    ***************/
 
   /**
-   * Handle the dropping of ActiveEffect data onto an Actor Sheet
-   * @param {DragEvent} event                  The concluding DragEvent which contains drop data
-   * @param {object} data                      The data transfer extracted from the event
-   * @returns {Promise<ActiveEffect|boolean>}  The created ActiveEffect object or false if it couldn't be created.
+   * Handle dropping an ActiveEffect document onto the actor sheet.
+   * Preserve custom sorting for actor/item-owned effects while delegating
+   * normal creation behavior to core V2 implementation.
+   * @param {DragEvent} event
+   * @param {ActiveEffect} effect
+   * @returns {Promise<ActiveEffect|null|undefined>}
    * @protected
    */
-  async _onDropActiveEffect(event, data) {
-    const aeCls = getDocumentClass('ActiveEffect');
-    const effect = await aeCls.fromDropData(data);
-    if (!this.actor.isOwner || !effect) return false;
-    if (effect.target === this.actor)
+  async _onDropActiveEffect(event, effect) {
+    if (!this.actor.isOwner || !effect) return null;
+
+    const effectOnActor = effect.parent?.uuid === this.actor.uuid;
+    const effectOnOwnedItem = effect.parent?.parent?.uuid === this.actor.uuid;
+    if (effectOnActor || effectOnOwnedItem) {
       return this._onSortActiveEffect(event, effect);
-    return aeCls.create(effect, { parent: this.actor });
+    }
+
+    return super._onDropActiveEffect(event, effect);
   }
 
   /**
@@ -686,7 +692,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     }
 
     // Perform the sort
-    const sortUpdates = SortingHelpers.performIntegerSort(effect, {
+    const sortUpdates = foundry.utils.performIntegerSort(effect, {
       target,
       siblings,
     });
@@ -717,16 +723,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     return this.actor.updateEmbeddedDocuments('ActiveEffect', directUpdates);
   }
 
-  /**
-   * Handle dropping of an Actor data onto another Actor sheet
-   * @param {DragEvent} event            The concluding DragEvent which contains drop data
-   * @param {object} data                The data transfer extracted from the event
-   * @returns {Promise<object|boolean>}  A data object which describes the result of the drop, or false if the drop was
-   *                                     not permitted.
-   * @protected
-   */
-  async _onDropActor(_event, _data) {
-    if (!this.actor.isOwner) return false;
+  /** @override */
+  async _onDropActor(_event, _actor) {
+    return null;
   }
 
   /* -------------------------------------------- */
@@ -735,13 +734,12 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * Handle dropping of a Folder on an Actor Sheet.
    * The core sheet currently supports dropping a Folder of Items to create all items as owned items.
    * @param {DragEvent} event     The concluding DragEvent which contains drop data
-   * @param {object} data         The data transfer extracted from the event
+   * @param {Folder} folder       The dropped Folder document
    * @returns {Promise<Item[]>}
    * @protected
    */
-  async _onDropFolder(event, data) {
+  async _onDropFolder(event, folder) {
     if (!this.actor.isOwner) return [];
-    const folder = await Folder.implementation.fromDropData(data);
     if (folder.type !== 'Item') return [];
     const droppedItemData = await Promise.all(
       folder.contents.map(async (item) => {
@@ -753,32 +751,38 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   }
 
   /**
-   * Generic drop handler for items, folders, actors, and effects
+   * Handle dropping an Item document onto the actor sheet.
+   * Preserve custom feature replacement behavior while using core V2
+   * sorting behavior for already-owned items.
    * @param {DragEvent} event
-   * @returns {Promise}
+   * @param {Item} item
+   * @returns {Promise<Item|null|undefined>}
+   * @protected
+   */
+  async _onDropItem(event, item) {
+    if (!this.actor.isOwner) return null;
+
+    // Let core handle sorting for items already embedded on this actor.
+    if (this.actor.uuid === item.parent?.uuid) {
+      return super._onDropItem(event, item);
+    }
+
+    const keepId = !this.actor.items.has(item.id);
+    const itemData = item.inCompendium
+      ? game.items.fromCompendium(item, { clearFolder: true, keepId })
+      : item.toObject();
+
+    const created = await this._onDropItemCreate([itemData], event);
+    return created?.[0] ?? null;
+  }
+
+  /**
+   * Delegate drop handling to Foundry V2 pipeline.
+   * @param {DragEvent} event
+   * @returns {Promise<void>}
    */
   async _onDrop(event) {
-    event.preventDefault();
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-    if (!data) return;
-    switch (data.type) {
-      case 'ActiveEffect':
-        return this._onDropActiveEffect(event, data);
-      case 'Actor':
-        return this._onDropActor(event, data);
-      case 'Folder':
-        return this._onDropFolder(event, data);
-      case 'Item': {
-        let itemObj = data;
-        if (data.uuid) {
-          const doc = await fromUuid(data.uuid);
-          if (doc) itemObj = doc.toObject();
-        }
-        return this._onDropItemCreate([itemObj], event);
-      }
-      default:
-        return;
-    }
+    return super._onDrop(event);
   }
 
   /**
