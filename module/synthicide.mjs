@@ -78,7 +78,9 @@ globalThis.synthicide = {
   models,
 };
 
+
 Hooks.once('init', function () {
+
   console.log(
       `%cSYNTHICIDE | Initializing system\n` +
       `%c
@@ -92,6 +94,9 @@ Hooks.once('init', function () {
       "color: #ffffff; font-weight: bold; font-size: 16px;", // Style for the header
       "color:rgb(222, 51, 3); font-weight: normal; font-size: 12px;" // Style for the ASCII art
   );
+
+  // Expose the synthicide namespace on `game` for macros and user scripts.
+  if (typeof game !== 'undefined') game.synthicide = globalThis.synthicide;
 
   // Add custom constants for configuration.
   CONFIG.SYNTHICIDE = SYNTHICIDE;
@@ -179,7 +184,18 @@ Hooks.once('ready', async function () {
   );
 
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
-  Hooks.on('hotbarDrop', (bar, data, slot) => createDocMacro(data, slot));
+  // Use a synchronous check to decide whether to intercept the drop and return `false` immediately
+  // so Foundry's default hotbar macro creation is prevented. The actual macro creation remains
+  // asynchronous inside `createDocMacro`.
+  Hooks.on('hotbarDrop', (bar, data, slot) => {
+    if (!data || data.type !== 'Item') return;
+    const uuid = data.uuid || '';
+    if (!(uuid.includes('Actor.') || uuid.includes('Token.'))) return;
+    // Spawn the async creation but return false synchronously to block the default handler.
+    void createDocMacro(data, slot);
+    return false;
+  });
+
 });
 
 /* -------------------------------------------- */
@@ -204,8 +220,8 @@ async function createDocMacro(data, slot) {
   // If it is, retrieve it based on the uuid.
   const item = await Item.fromDropData(data);
 
-  // Create the macro command using the uuid.
-  const command = `game.synthicide.rollItemMacro("${data.uuid}");`;
+  // Create the macro command using the uuid. Call the utils directly.
+  const command = `game.synthicide.utils.rollItemMacro("${data.uuid}");`;
   let macro = game.macros.find(
     (m) => m.name === item.name && m.command === command
   );
@@ -244,6 +260,8 @@ function rollItemMacro(itemUuid) {
     }
 
     // Trigger the item roll
-    item.roll();
+    /** @type {import('./documents/item.mjs').SynthicideItem} */
+    const sItem = /** @type {import('./documents/item.mjs').SynthicideItem} */ (item);
+    sItem.roll();
   });
 }

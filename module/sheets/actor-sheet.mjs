@@ -472,6 +472,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         });
       }
       case 'item': {
+        /** @type {import('../documents/item.mjs').SynthicideItem | null} */
         const item = this._getEmbeddedDocument(target);
         if (item) return item.roll();
       }

@@ -70,19 +70,23 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   if (!attack.hit) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DamageRequiresHit'));
   }
-
-  const actor = game.actors?.get(flags.actorId);
+  
+  const actor = flags?.actorUuid ? globalThis.fromUuidSync(flags.actorUuid) ?? null : null;
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
-  // Ensure attributeValue is always set to combat
-  const combatValue = getActorAttributeValue(actor, ATTRIBUTE_COMBAT);
+  // Prefer the attribute value used on the original attack.
+  const combatValue = Number(attack.attributeValue ?? getActorAttributeValue(actor, ATTRIBUTE_COMBAT) ?? 0);
   const messageMode = normalizeMessageMode(userMessageMode ?? flags.messageMode ?? flags.messageType ?? 'public');
-  const summaryRoll = await new Roll(`${attack.d10} + ${combatValue} + ${attack.damageBonus}`).evaluate();
+
+  // Build a simple arithmetic summary rather than re-rolling any dice.
+  const summaryRoll = new Roll(`${attack.d10} + ${combatValue} + ${attack.damageBonus}`);
+  // Evaluate synchronously so the calculation is deterministic and noiseless.
+  summaryRoll.evaluateSync();
   const damageTotal = Number(summaryRoll.total ?? 0);
 
   return createActionMessage({
     actor,
-    roll: summaryRoll,
+    roll: null,  // No new dice were rolled for derived damage; omit the Roll from themessage creation
     messageMode,
     cardData: {
       title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
@@ -106,7 +110,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
       flags: {
         version: ACTION_ROLL_VERSION,
         subtype: SUBTYPES.DAMAGE,
-        actorId: actor.id,
+        actorUuid: actor.uuid,
         userId: game.user.id,
         sourceMessageId: sourceMessage.id,
         sourceItemUuid: flags.sourceItemUuid ?? null,
@@ -130,7 +134,7 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ChallengeDataMissing'));
   }
 
-  const actor = canvas?.tokens?.controlled?.[0]?.actor ?? game.user?.character ?? game.actors?.get(sourceFlags.actorId);
+  const actor = sourceFlags?.actorUuid ? globalThis.fromUuidSync(sourceFlags.actorUuid) ?? null : null;
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
   const sourceMode = normalizeMessageMode(sourceFlags.messageMode ?? sourceFlags.messageType ?? 'public');
@@ -222,7 +226,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
     flags: {
       version: ACTION_ROLL_VERSION,
       subtype,
-      actorId: actor.id,
+      actorUuid: actor.uuid,
       userId: game.user.id,
       sourceItemUuid: sourceItem?.uuid ?? null,
       messageMode,
@@ -295,14 +299,44 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
 /* Chat Cards                                   */
 /* -------------------------------------------- */
 
-async function createActionMessage({ actor, roll, cardData, messageMode }) {
-  const rollHtml = await roll.render();
+export async function createActionMessage({ actor, roll, cardData, messageMode }) {
+  // If a Roll is provided, render and use Foundry's `toMessage` path so the
+  // roll HTML and message metadata are correct. If no Roll is provided (e.g.
+  // derived deterministic results), skip roll rendering and build the
+  // ChatMessage data directly to avoid dice UI and sounds.
+  if (roll) {
+    const rollHtml = await roll.render();
+    const content = await foundry.applications.handlebars.renderTemplate(CARD_TEMPLATE, {
+      ...cardData,
+      rollHtml,
+    });
+
+    const chatData = await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content,
+      style: getChatMessageStyle(),
+      flags: {
+        synthicide: {
+          [FLAG_PATH]: cardData.flags,
+        },
+      },
+    }, {
+      messageMode: normalizeMessageMode(messageMode),
+      create: false,
+    });
+
+    return ChatMessage.create(chatData);
+  }
+
+  // No roll: render template without roll HTML and create the chat message
+  // directly. This prevents Foundry from treating this as a new dice roll
+  // (no sound, no dice term rendering), while keeping our card layout.
   const content = await foundry.applications.handlebars.renderTemplate(CARD_TEMPLATE, {
     ...cardData,
-    rollHtml,
+    rollHtml: '',
   });
 
-  const chatData = await roll.toMessage({
+  const chatData = {
     speaker: ChatMessage.getSpeaker({ actor }),
     content,
     style: getChatMessageStyle(),
@@ -311,10 +345,8 @@ async function createActionMessage({ actor, roll, cardData, messageMode }) {
         [FLAG_PATH]: cardData.flags,
       },
     },
-  }, {
     messageMode: normalizeMessageMode(messageMode),
-    create: false,
-  });
+  };
 
   return ChatMessage.create(chatData);
 }
@@ -634,7 +666,9 @@ function canExecuteFollowup(message, user = game.user) {
 
   if (flags.userId === user.id) return true;
 
-  const actor = game.actors?.get(flags.actorId);
+  // Try UUID resolution first to handle unlinked/temporary actors.
+  const actor = flags?.actorUuid ? globalThis.fromUuidSync(flags.actorUuid) ?? null : null;
+  if (!actor) return false;
   return Boolean(actor?.isOwner);
 }
 

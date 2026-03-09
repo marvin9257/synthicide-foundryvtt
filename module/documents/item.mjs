@@ -1,4 +1,6 @@
 
+import { createActionMessage } from '../rolls/action-rolls.mjs';
+
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
@@ -45,7 +47,7 @@ export class SynthicideItem extends Item {
     const label = `[${item.type}] ${item.name}`;
 
     // If there's no roll data, send a chat message.
-    if (!this.system.formula) {
+    if (!this.system.formula || (this.system.roll.diceSize === "" && this.system.roll.diceBonus === "")) {
       ChatMessage.create({
         speaker: speaker,
         flavor: label,
@@ -54,22 +56,75 @@ export class SynthicideItem extends Item {
         messageMode: game.settings.get('core', 'messageMode'),
       });
     }
-    // Otherwise, create a roll and send a chat message from it.
+    // Otherwise, create a roll and render it using the action-roll card.
     else {
-      // Retrieve roll data.
       const rollData = this.getRollData();
+      const evaluatedRoll = await new Roll(rollData.formula, rollData.actor).evaluate();
+      const total = Number(evaluatedRoll.total ?? 0);
+      const dieValue = Number(evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? 0);
+      let dieClass = '';
+      if (Number.isFinite(dieValue)) {
+        if (dieValue <= 1) dieClass = 'min';
+        else if (dieValue >= 10) dieClass = 'max';
+      }
 
-      // Invoke the roll and submit it to chat.
-      const roll = new Roll(rollData.formula, rollData.actor);
-      // If you need to store the value first, uncomment the next line.
-      // const result = await roll.evaluate();
-      roll.toMessage({
-        speaker: speaker,
-        flavor: label,
-      }, {
+      const cardData = {
+        title: label,
+        subtype: 'item',
+        equation: evaluatedRoll.result,
+        total,
+        dieValue,
+        dieClass,
+        equationTerms: buildItemEquationTerms(rollData, this),
+        showEffectOutcomeRow: false,
+        showDamageButton: false,
+        showOpposedButton: false,
+        flags: {
+          actorUuid: this.actor?.uuid ?? null,
+          userId: game.user.id,
+          sourceItemUuid: this.uuid,
+          messageMode: game.settings.get('core', 'messageMode'),
+        },
+        flavor: this.system.description ?? '',
+        metadataRows: [
+          { label: 'Formula', valueHtml: `<code>${foundry.utils.escapeHTML(String(rollData.formula ?? ''))}</code>` },
+        ],
+      };
+
+      return createActionMessage({
+        actor: this.actor,
+        roll: evaluatedRoll,
         messageMode: game.settings.get('core', 'messageMode'),
+        cardData,
       });
-      return roll;
     }
   }
+}
+
+// Build compact equation terms for the item roll card.
+function buildItemEquationTerms(rollData, item) {
+  const terms = [];
+  try {
+    const formula = String(rollData?.formula ?? '');
+    const regex = /@attributes\.([a-zA-Z0-9_-]+)\.value/g;
+    const seen = new Set();
+    const actor = item?.actor;
+    const actorAttrs = actor?.system?.attributes ?? {};
+    const attrLabelText = game?.i18n?.localize?.('SYNTHICIDE.Roll.Card.Attribute') ?? 'Attribute';
+    for (const match of formula.matchAll(regex)) {
+      const key = match[1];
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const attrLabel = actorAttrs?.[key]?.label ?? key;
+      const valueHtml = `<span class="synthicide-attr-pill"><img class="synthicide-attr-icon" src="/systems/synthicide/assets/${foundry.utils.escapeHTML(key)}.png" alt="" /> ${foundry.utils.escapeHTML(attrLabel)}</span>`;
+      terms.push({ label: attrLabelText, valueHtml });
+    }
+    if (terms.length > 0) return terms;
+  // eslint-disable-next-line no-unused-vars
+  } catch (err) {
+    // ignore and fall through
+  }
+  // Fallback: show the item name as the source
+  terms.push({ label: game?.i18n?.localize?.('SYNTHICIDE.Roll.Card.Source') ?? 'Source', value: item?.name ?? '' });
+  return terms;
 }

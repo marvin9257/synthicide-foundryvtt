@@ -259,7 +259,7 @@
       "Card": {
         "TitleChallenge": "Challenge Roll",
         "TitleAttack": "Attack Roll",
-        "TitleDamage": "Damage Roll",
+        "TitleDamage": "Calculated Damage",
         "Equation": "Equation",
         "Total": "Total",
         "Effect": "Effect",
@@ -285,7 +285,7 @@
         "AttackResultHit": "Attack Result: Hit",
         "AttackResultMiss": "Attack Result: Miss",
         "DamageResultApplied": "Damage Result: {total}",
-        "RollDamage": "Roll Damage",
+        "RollDamage": "Calculate Damage",
         "RollOpposed": "Opposed Roll"
       },
       "Degree": {

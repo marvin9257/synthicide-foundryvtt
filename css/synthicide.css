@@ -413,6 +413,20 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   gap: 0.35rem;
 }
 
+/* Prevent metadata labels from wrapping one character per line */
+.synthicide-action-roll-card .metadata-list li strong {
+  white-space: nowrap;
+}
+
+/* Allow metadata values (code) to take remaining space and wrap cleanly */
+.synthicide-action-roll-card .metadata-list li code {
+  flex: 1 1 0%;
+  min-width: 0;
+  display: inline-block;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .synthicide-action-roll-card .card-footer {
   margin-top: 0.2rem;
 }

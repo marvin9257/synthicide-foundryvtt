@@ -40,7 +40,7 @@ export class SynthicideChatPopout extends foundry.applications.sidebar.apps.Chat
 function newContextOptions(coreContext)  {
   const canApply = li => {
     const message = game.messages.get(li.dataset?.messageId);
-    return message?.isRoll && message?.isContentVisible && canvas.tokens?.controlled.length;
+    return (message?.isRoll || message.getFlag('synthicide', 'actionRoll.damage.total') )&& message?.isContentVisible && canvas.tokens?.controlled.length;
   };
   coreContext.push(
     {
