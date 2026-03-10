@@ -1,5 +1,5 @@
 import SYNTHICIDE from '../helpers/config.mjs';
-import { makeValueField } from './commonSchemaUtils.mjs';
+import { makeValueField, makeDerivedField } from './commonSchemaUtils.mjs';
 export default class SynthicideActorBaseData extends foundry.abstract
   .TypeDataModel {
   static LOCALIZATION_PREFIXES = ["SYNTHICIDE.Actor.base"];
@@ -12,21 +12,24 @@ export default class SynthicideActorBaseData extends foundry.abstract
     schema.level = makeValueField(1);
 
     schema.hitPoints = new fields.SchemaField({
-      value: new fields.NumberField({...requiredInteger, initial: 10, min: 0}),
-      max: new fields.NumberField({ ...requiredInteger, initial: 10 }, {persisted: false}),
+      value: new fields.NumberField({...requiredInteger, initial: 20, min: 0}),
+      max: new fields.NumberField({ ...requiredInteger, initial: 20 }, {persisted: false}),
       base: new fields.NumberField({ ...requiredInteger, initial: 20 }),
       perLevel: new fields.NumberField({ ...requiredInteger, initial: 5 })
     });
 
     schema.forceBarrier = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }),
-      max: new fields.NumberField({ ...requiredInteger, initial: 5 }) //will need to make persisted:false once armor is implemented
+      max: new fields.NumberField({ ...requiredInteger, initial: 5 }, {persisted: false}),
+      recoveryRate: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }, {persisted: false})
     });
 
-    schema.actionPoints = new fields.SchemaField ({
-      modifier: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      value: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false})
-    });
+    schema.actionPoints = makeDerivedField();
+    schema.toughnessDefense = makeDerivedField();
+    schema.armorDefense = makeDerivedField();
+    schema.nerveDefense = makeDerivedField();
+    schema.shockThreshold = makeDerivedField();
+    schema.battleReflex = makeDerivedField();
 
     schema.biography = new fields.HTMLField();
 
@@ -42,7 +45,6 @@ export default class SynthicideActorBaseData extends foundry.abstract
       }
     }
 
-    this.actionPoints.value = Math.floor(this.attributes.speed.value /2) + this.actionPoints.modifier + 3;
-    this.battleReflex = this.attributes.awareness.value + this.attributes.speed.value;
+    
   }
 }

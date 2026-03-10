@@ -47,6 +47,12 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
 
     schema.lurans = new fields.NumberField({ ...requiredInteger, initial: 0 });
 
+    schema.armorValues = new fields.SchemaField({
+      armorBonus: new fields.NumberField({ ...requiredInteger, initial: 0}, {persisted: false}),
+      stBonus: new fields.NumberField({ ...requiredInteger, initial: 0}, {persisted: false}),
+      speedMax: new fields.NumberField({ ...requiredInteger, initial: 5}, {persisted: false}),
+    });
+
     schema.rollModifiers = new fields.SchemaField({
       starvationPenalty: new fields.NumberField({ ...requiredInteger, initial: 0}, {persisted: false}),
     });
@@ -86,14 +92,20 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
    * @this {SynthicideSharperData}
    */
   prepareDerivedData() {
-    
-    // For sharper actors, .value is always derived; calc before super so common derived values calc correctly
+     super.prepareDerivedData();
+
     if (this.attributes) {
       for (const attr of Object.values(this.attributes)) {
         attr.value = (attr.base ?? 0) + (attr.modifier ?? 0) + (attr.increase ?? 0);
       }
     }
-    super.prepareDerivedData();
+    //Get worn armor values
+    foundry.utils.mergeObject(this.armorValues, getCurrentArmorValues(this.parent?.actor));
+
+    // Constrain speed.value to armor worn (guarding in case attributes are missing)
+    if (this.attributes?.speed && Number.isFinite(this.armorValues?.speedMax)) {
+      this.attributes.speed.value = Math.min(this.attributes.speed.value, this.armorValues.speedMax);
+    }
 
     // Calculate foodDays.min as derived data for sharper actors
     this.rollModifiers.starvationPenalty = this.foodDays?.value < 0 ? -2 : 0;
@@ -101,7 +113,15 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       this.foodDays.min = -(6 + (this.attributes.toughness.value ?? 0));
     }
     const level = this.level.value ?? 1;
+    
+    //Dervived data calculated a bit differently for NPC's so make it sharper specicifc
     this.hitPoints.max = (this.hitPoints.base ?? 0) + (this.hitPoints.perLevel ?? 0) * Math.max(0, level - 1);
+    this.actionPoints.value = Math.floor(this.attributes.speed.value / 2) + this.actionPoints.modifier + 3;
+    this.battleReflex.value = this.attributes.awareness.value + this.attributes.speed.value + this.battleReflex.modifier;
+    this.toughnessDefense.value = this.attributes.toughness.value + 5 + this.toughnessDefense.modifier
+    this.armorDefense.value = this.armorValues.armorBonus + this.attributes.toughness.value + 5 + this.armorDefense.modifier;
+    this.shockThreshold.value = this.armorValues.stBonus + this.armorDefense.value + this.shockThreshold.modifier;
+    this.nerveDefense.value = this.attributes.nerve.value + 5 + this.nerveDefense.modifier;
   }
 
   /**
@@ -124,4 +144,23 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     data.lvl = this.level.value;
     return data;
   }
+}
+
+function getCurrentArmorValues(actor) {
+  let returnValues = {
+    armorBonus: 0,
+    stBonus: 0,
+    speedMax: 10
+  }
+  if (!actor) return returnValues;
+
+  const wornArmor = actor.itemTypes?.armor?.find(arm => arm.system.equipped);
+  if (!wornArmor) return returnValues;
+
+  returnValues = {
+    armorBonus: wornArmor.armorBonus,
+    stBonus: wornArmor.stBonus,
+    speedMax: wornArmor.speedMax
+  }
+  return returnValues;
 }

@@ -1,4 +1,5 @@
 const fields = foundry.data.fields;
+const requiredInteger = { required: true, nullable: false, integer: true };
 
 /**
  * Data structure for character's resources.
@@ -25,6 +26,19 @@ export function makeResourceField(initialValue, initialMax, schemaOptions={}) {
 export function makeValueField(initialValue = 0, schemaOptions={}) {
   return new fields.SchemaField({
     value: new fields.NumberField({required: true, integer: false, initial: initialValue}),
+  }, schemaOptions);
+}
+
+/**
+ * Produce the derived field for value modifier pairs where value isn't persisted.
+ * @param {number} initialValue
+ * @param {object} schemaOptions  Options passed to the outer schema.
+ * @returns {ResourceData}
+ */
+export function makeDerivedField(initialValue = 0, schemaOptions={}) {
+  return new fields.SchemaField({
+    modifier: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+    value: new fields.NumberField({ ...requiredInteger, initial: initialValue }, {persisted: false})
   }, schemaOptions);
 }
 
