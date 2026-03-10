@@ -13,7 +13,7 @@ import  SynthicideCombat from './documents/combat.mjs';
 import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
-import { SynthicideChatLog, SynthicideChatPopout } from './documents/chatlog.mjs';
+import { registerSynthicideChatContextHook, SynthicideChatPopout } from './documents/chatlog.mjs';
 
 const collections = foundry.documents.collections;
 
@@ -128,14 +128,12 @@ Hooks.once('init', function () {
     aspect: models.SynthicideAspect,
   };
 
-  // Active Effects are never copied to the Actor,
-  // but will still apply to the Actor from within the Item
-  // if the transfer property on the Active Effect is true.
-  CONFIG.ActiveEffect.legacyTransferral = false;
-
   // Internal settings used by world migrations
   registerMigrationSettings();
   registerClientSettings();
+
+  // Register application/document hooks.
+  registerSynthicideChatContextHook();
 
   // Register sheet application classes
   collections.Actors.unregisterSheet('core', foundry.applications.sheets.ActorSheetV2)
@@ -153,8 +151,7 @@ Hooks.once('init', function () {
   //Game pause icon change
   CONFIG.ui.pause = SynthicideGamePause;
 
-  //Add chat context
-  CONFIG.ui.chat = SynthicideChatLog;
+  // Add custom chat popout class.
   CONFIG.ChatMessage.popoutClass = SynthicideChatPopout;
 
   //Combat tracking

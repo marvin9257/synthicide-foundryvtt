@@ -2,6 +2,12 @@ const MIGRATION_SETTING_KEY = 'migrationVersion';
 const CURRENT_MIGRATION_VERSION = '3.0.0';
 
 /**
+ * NOTE:
+ * - CURRENT_MIGRATION_VERSION is an internal schema/data migration counter.
+ * - It does not need to match system.json "version" used for release/update channels.
+ */
+
+/**
  * HOW TO ADD FUTURE MIGRATIONS
  *
  * 1) Add a new migration function in this file:

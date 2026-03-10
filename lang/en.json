@@ -228,7 +228,8 @@
       "Subtype": {
         "Challenge": "Challenge",
         "Attack": "Attack",
-        "Damage": "Damage"
+        "Damage": "Damage",
+        "ItemRoll": "Item Roll"
       },
       "Dialog": {
         "Title": "Synthicide Roll",
@@ -261,6 +262,7 @@
         "TitleShock": "Shocking Strike: Toughness Check",
         "TitleAttack": "Attack Roll",
         "TitleDamage": "Calculated Damage",
+        "ItemRoll": "Item Roll for [{type}]:{name}",
         "Equation": "Equation",
         "Total": "Total",
         "Effect": "Effect",

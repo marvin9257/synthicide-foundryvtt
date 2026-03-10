@@ -627,6 +627,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    */
   _getEmbeddedDocument(target) {
     const docRow = target.closest('li[data-document-class]');
+    if (!docRow?.dataset?.documentClass) return null;
     if (docRow.dataset.documentClass === 'Item') {
       return this.actor.items.get(docRow.dataset.itemId);
     } else if (docRow.dataset.documentClass === 'ActiveEffect') {
@@ -634,8 +635,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         docRow.dataset.parentId === this.actor.id
           ? this.actor
           : this.actor.items.get(docRow?.dataset.parentId);
-      return parent.effects.get(docRow?.dataset.effectId);
-    } else return console.warn('Could not find document class');
+      return parent?.effects?.get(docRow?.dataset.effectId) ?? null;
+    }
+    console.warn('Could not find document class');
+    return null;
   }
 
   /***************

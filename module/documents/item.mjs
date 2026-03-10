@@ -44,11 +44,11 @@ export class SynthicideItem extends Item {
 
     // Initialize chat data.
     const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-    const label = `[${item.type}] ${item.name}`;
+    const label = game.i18n.format('SYNTHICIDE.Roll.Card.ItemRoll', {type: item.type, name: item.name});
 
     // If there's no roll data, send a chat message.
     if (!this.system.formula || (this.system.roll.diceSize === "" && this.system.roll.diceBonus === "")) {
-      ChatMessage.create({
+      return ChatMessage.create({
         speaker: speaker,
         flavor: label,
         content: item.system.description ?? '',

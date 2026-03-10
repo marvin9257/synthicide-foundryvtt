@@ -71,12 +71,12 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DamageRequiresHit'));
   }
   
-  const actor = flags?.actorUuid ? globalThis.fromUuidSync(flags.actorUuid) ?? null : null;
+  const actor = resolveActorFromUuidSync(flags?.actorUuid);
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
   // Prefer the attribute value used on the original attack.
   const combatValue = Number(attack.attributeValue ?? getActorAttributeValue(actor, ATTRIBUTE_COMBAT) ?? 0);
-  const messageMode = normalizeMessageMode(userMessageMode ?? flags.messageMode ?? flags.messageType ?? 'public');
+  const messageMode = normalizeMessageMode(userMessageMode ?? flags?.messageMode ?? 'public');
 
   // Build a simple arithmetic summary rather than re-rolling any dice.
   const summaryRoll = new Roll(`${attack.d10} + ${combatValue} + ${attack.damageBonus}`);
@@ -86,7 +86,8 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
 
   return createActionMessage({
     actor,
-    roll: null,  // No new dice were rolled for derived damage; omit the Roll from themessage creation
+    // No new dice were rolled for derived damage; skip Roll-backed message creation.
+    roll: null,
     messageMode,
     cardData: {
       title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
@@ -135,10 +136,10 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ChallengeDataMissing'));
   }
 
-  const actor = sourceFlags?.actorUuid ? globalThis.fromUuidSync(sourceFlags.actorUuid) ?? null : null;
+  const actor = resolveActorFromUuidSync(sourceFlags?.actorUuid);
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
-  const sourceMode = normalizeMessageMode(sourceFlags.messageMode ?? sourceFlags.messageType ?? 'public');
+  const sourceMode = normalizeMessageMode(sourceFlags?.messageMode ?? 'public');
   const result = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.OpposedTitle'),
     defaults: {
@@ -189,8 +190,7 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
   await ChatMessage.create({
     content: `<div class="synthicide-opposed-summary"><strong>${localize('SYNTHICIDE.Roll.Opposed.SummaryTitle')}</strong><p>${winnerText}</p></div>`,
     speaker: ChatMessage.getSpeaker({ actor }),
-    messageMode: sourceMode,
-  });
+  }, { messageMode: sourceMode });
 
   return opposedRollMessage;
 }
@@ -352,11 +352,10 @@ export async function createActionMessage({ actor, roll, cardData, messageMode, 
         [FLAG_PATH]: cardData.flags,
       },
     },
-    messageMode: normalizeMessageMode(messageMode),
   };
   if (Array.isArray(whisper) && whisper.length) chatData.whisper = whisper;
 
-  return ChatMessage.create(chatData);
+  return ChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
 }
 
 function activateActionRollChatListeners(message, htmlElement) {
@@ -675,15 +674,32 @@ function canExecuteFollowup(message, user = game.user) {
   if (flags.userId === user.id) return true;
 
   // Try UUID resolution first to handle unlinked/temporary actors.
-  const actor = flags?.actorUuid ? globalThis.fromUuidSync(flags.actorUuid) ?? null : null;
+  const actor = resolveActorFromUuidSync(flags?.actorUuid);
   if (!actor) return false;
   return Boolean(actor?.isOwner);
+}
+
+/**
+ * Resolve an actor UUID safely in synchronous contexts.
+ * Uses strict:false so malformed or unsync-resolvable UUIDs return null.
+ * @param {string|undefined|null} uuid
+ * @returns {Actor|null}
+ */
+function resolveActorFromUuidSync(uuid) {
+  if (!uuid) return null;
+  try {
+    return globalThis.fromUuidSync(uuid, { strict: false }) ?? null;
+  } catch {
+    return null;
+  }
 }
 
 function getTargetArmor() {
   const defaultValue = game.settings.get('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY)
   if (game.user.targets?.size === 1) {
-    return game.user.targets.first()?.actor?.system.armorDefense ?? defaultValue;
+    const armorData = game.user.targets.first()?.actor?.system?.armorDefense;
+    const armor = Number(armorData?.value ?? armorData);
+    return Number.isFinite(armor) ? armor : defaultValue;
   } else if (game.user.targets?.size > 1) {
     ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.TooManyTargets'));
   } else {
