@@ -73,15 +73,15 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     const allowed = await super._preUpdate?.(changed, options, user);
     if (allowed === false) return false;
 
-    // Clamp hitPoints.value to hitPoints.max
-    // (cynicism/resolve are clamped by their schema field min/max; hitPoints.max
-    //  is persisted:false so Foundry can't enforce it at update time, hence manual clamp)
+    // Constrain hitPoints.value to not exceed hitPoints.max, but allow
+    // negative HP values (e.g., -1) per updated rules/schema. Previously we
+    // clamped a lower bound of 0 here; that prevented representing negative HP.
     if (foundry.utils.hasProperty(changed, 'system.hitPoints.value')) {
       const nextHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.value') ?? 0);
       // Try to get max from changed or from this
       let maxHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.max'));
       if (isNaN(maxHP)) maxHP = Number(this.hitPoints?.max ?? 0);
-      foundry.utils.setProperty(changed, 'system.hitPoints.value', Math.max(0, Math.min(maxHP, nextHP)));
+      foundry.utils.setProperty(changed, 'system.hitPoints.value', Math.min(maxHP, nextHP));
     }
     return allowed;
   }
@@ -115,7 +115,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     const level = this.level.value ?? 1;
     
     //Dervived data calculated a bit differently for NPC's so make it sharper specicifc
-    this.hitPoints.max = (this.hitPoints.base ?? 0) + (this.hitPoints.perLevel ?? 0) * Math.max(0, level - 1);
+    this.hitPoints.max = (this.hitPoints.base ?? 32) + (this.hitPoints.perLevel ?? 0) * Math.max(0, level - 1);
     this.actionPoints.value = Math.floor(this.attributes.speed.value / 2) + this.actionPoints.modifier + 3;
     this.battleReflex.value = this.attributes.awareness.value + this.attributes.speed.value + this.battleReflex.modifier;
     this.toughnessDefense.value = this.attributes.toughness.value + 5 + this.toughnessDefense.modifier

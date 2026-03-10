@@ -1,4 +1,5 @@
 import SYNTHICIDE from "../helpers/config.mjs";
+import { createActionMessage } from "../rolls/action-rolls.mjs";
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -150,27 +151,35 @@ export class SynthicideActor extends Actor {
     return updates;
   }
 
-  async damageActor(damage) {
+  async damageActor(damage, options = {}) {
     if (!damage || !["sharper", "npc"].includes(this.type)) return;
     const updates = {};
     let damageRemaining = damage;
     // Check force barrier first and apply damage to it
+    let barrierAmount = 0;
     if (this.system.forceBarrier.value > 0) {
-      const barrierAmount = Math.min(this.system.forceBarrier.value, damageRemaining);
+      barrierAmount = Math.min(this.system.forceBarrier.value, damageRemaining);
       if (barrierAmount > 0) {
         damageRemaining -= barrierAmount;
         updates['system.forceBarrier.value'] = Math.max(this.system.forceBarrier.value - barrierAmount, 0);
       }
     }
 
-    // Apply any leftover to hitPoints
+    // Apply any leftover to hitPoints (we compute outcomes before persisting so
+    // we can evaluate RD and the toughness check using the pre-damage HP).
+    const preHP = Number(this.system.hitPoints.value ?? 0);
     if (damageRemaining > 0) {
-      const hitPointsAmount = Math.min(this.system.hitPoints.value, damageRemaining);
+      const hitPointsAmount = Math.min(preHP, damageRemaining);
       if (hitPointsAmount > 0) {
-        updates['system.hitPoints.value'] = Math.max(this.system.hitPoints.value - hitPointsAmount, 0);
+        // Persist the raw subtraction — schema now allows negative HP values
+        updates['system.hitPoints.value'] = preHP - hitPointsAmount;
       }
+
+      // Delegate shocking-strike handling to a helper so damageActor stays small.
+      await this._handleShockingStrike(damageRemaining, preHP, updates, { ...options, barrierAbsorbed: barrierAmount});
     }
 
+    // Persist damage and any flags
     await this.update(updates);
   }
 
@@ -179,5 +188,130 @@ export class SynthicideActor extends Actor {
     const updates = {};
     updates['system.hitPoints.value'] = Math.min(this.system.hitPoints.value + healing, this.system.hitPoints.max);
     await this.update(updates);
+  }
+
+  /**
+   * Handle shocking-strike resolution: calculates RD, performs toughness roll,
+   * applies HP/death outcomes by mutating the passed `updates` object, and
+   * posts the appropriate chat message and flags.
+   * @param {number} damageRemaining - damage reaching HP after barriers
+   * @param {number} preHP - HP value before applying this damage
+   * @param {Object} updates - the update payload being built by damageActor
+   */
+  async _handleShockingStrike(damageRemaining, preHP, updates, options = {}) {
+    if (!(damageRemaining > 0)) return;
+    const shockThreshold = Number(this.system.shockThreshold?.value ?? 0);
+
+    // Resolve armor/AD to apply barrier/shock rules. Prefer the passed-in
+    // `options.armor`
+    const providedArmor = Number(options?.armor ?? NaN);
+    const actorArmor = Number(this.system?.armorDefense?.value ?? NaN);
+    const armor = Number.isFinite(providedArmor) ? providedArmor : (Number.isFinite(actorArmor) ? actorArmor : 0);
+
+    // If a force barrier absorbed part of the attack, apply the special rules:
+    // - Lethal is suppressed when any barrier absorption occurred
+    // - A barrier-absorbed attack only triggers a shocking strike when the
+    //   remaining damage reaching HP is at least 2× AD
+    const barrierAbsorbed = Number(options?.barrierAbsorbed ?? 0);
+    if (barrierAbsorbed > 0 && !(damageRemaining >= 2 * armor)) return;
+
+    if (!(shockThreshold > 0 && damageRemaining > shockThreshold)) return;
+
+    const rd = Math.floor(damageRemaining / 5);
+    const wouldBeNegative = damageRemaining > preHP;
+
+    const toughnessValue = Number(this.system.attributes?.toughness?.value ?? 0);
+    const roll = await new Roll('1d10 + @attribute', { attribute: toughnessValue }).evaluate();
+    const rollTotal = Number(roll.total ?? 0);
+    const success = rollTotal > rd;
+
+    // Build the cardData using the centralized helper
+    const cardData = this._buildShockCardData({ roll, rollTotal, damageRemaining, shockThreshold, rd, toughnessValue, success, wouldBeNegative });
+
+    // Determine messageMode: prefer the provided message mode, otherwise fall
+    // back to the card flags or the core setting. Also forward whisper
+    // recipients if present so the resulting message uses the same audience.
+    const preferredMode = options?.messageMode ?? cardData.flags?.messageMode ?? game.settings.get('core', 'messageMode');
+    const whisper = options?.whisper ?? cardData.flags?.whisper ?? undefined;
+    await createActionMessage({ actor: this, roll, cardData, messageMode: preferredMode, whisper });
+
+    // Determine lethal (prefer options.attack or direct option). If a barrier
+    // absorbed part of the attack, lethal is suppressed.
+    let lethal = Number(options?.lethal ?? options?.attack?.lethal ?? 0);
+    if (barrierAbsorbed > 0) lethal = 0;
+
+    const lastFlag = {
+      damage: damageRemaining,
+      rd,
+      roll: rollTotal,
+      success: success,
+      armor,
+      barrierAbsorbed,
+      lethal,
+      timestamp: Date.now(),
+    };
+
+    if (success) {
+      updates['flags.synthicide.lastShockingStrike'] = lastFlag;
+      return;
+    }
+
+    // Failure paths: record outcome in flags and mutate HP in the updates
+    if (wouldBeNegative) {
+      updates['system.hitPoints.value'] = preHP - damageRemaining;
+      updates['flags.synthicide.lastShockingStrike'] = { ...lastFlag, success: false, death: true };
+      updates['flags.synthicide.dead'] = true;
+    } else {
+      updates['system.hitPoints.value'] = -1;
+      updates['flags.synthicide.lastShockingStrike'] = { ...lastFlag, success: false, forcedHP: -1 };
+    }
+  }
+
+  /**
+   * Build cardData for a Shocking Strike toughness check chat card.
+   * @private
+   */
+  _buildShockCardData({ roll, rollTotal, damageRemaining, shockThreshold, rd, toughnessValue, success, wouldBeNegative } = {}) {
+    const d10 = Number(roll.dice?.[0]?.results?.[0]?.result ?? 0);
+    const baseFlavor = game.i18n.format("SYNTHICIDE.Chat.Shock.Base", {
+      actor: this.name,
+      damage: damageRemaining,
+      threshold: shockThreshold
+    });
+
+    let outcomeFlavor;
+    if (success) {
+      outcomeFlavor = game.i18n.format("SYNTHICIDE.Chat.Shock.Success", { roll: rollTotal, rd });
+    } else if (wouldBeNegative) {
+      outcomeFlavor = game.i18n.format("SYNTHICIDE.Chat.Shock.FailureDeath", { roll: rollTotal, rd });
+    } else {
+      outcomeFlavor = game.i18n.format("SYNTHICIDE.Chat.Shock.FailureMinusOne", { roll: rollTotal, rd });
+    }
+
+    return {
+      title: game.i18n.localize("SYNTHICIDE.Roll.Card.TitleShock"),
+      subtype: 'shock',
+      equation: roll.result,
+      total: rollTotal,
+      dieValue: d10,
+      dieClass: '',
+      equationTerms: [
+        { label: game.i18n.localize(SYNTHICIDE.attributes.toughness), value: toughnessValue },
+        { label: game.i18n.localize("SYNTHICIDE.Roll.Card.Difficulty"), value: rd },
+        { label: game.i18n.localize("SYNTHICIDE.Roll.Card.DamageResultApplied"), value: damageRemaining },
+      ],
+      metadataRows: [
+        { label: game.i18n.localize("SYNTHICIDE.Chat.Shock.Threshold"), value: shockThreshold },
+      ],
+      flavor: `${baseFlavor} ${outcomeFlavor}`,
+      flags: {
+        subtype: 'shock',
+        actorUuid: this.uuid,
+        userId: game.user.id,
+        messageMode: game.settings.get('core', 'messageMode'),
+        shock: { damage: damageRemaining, rd, shockThreshold, roll: rollTotal, success }
+      },
+      showEffectOutcomeRow: false,
+    };
   }
 }

@@ -94,7 +94,6 @@
             name='system.hitPoints.value'
             value='{{system.hitPoints.value}}'
             data-dtype='Number'
-            min='0'
             max='{{system.hitPoints.max}}'
             step='1'
           />
@@ -116,7 +115,7 @@
             {{else}}
               'resource-track-fill resource-track-fill-red'
             {{/if}}
-            style='width: calc(({{system.hitPoints.value}} / {{system.hitPoints.max}}) * 100%);'></div>
+            style='width: calc({{hpPercent}} * 100%);'></div>
         </div>
       </div>
       <!-- Force Barrier Resource -->

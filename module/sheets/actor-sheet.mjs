@@ -157,10 +157,11 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       },
     });
 
-    // Calculate hpPercent for hit points bar coloring
+    // Calculate hpPercent for hit points bar coloring. Negative HP should
+    // display as an empty bar while still preserving the numeric value.
     const hpValue = Number(context.system.hitPoints?.value ?? 0);
     const hpMax = Number(context.system.hitPoints?.max ?? 1);
-    context.hpPercent = hpMax > 0 ? hpValue / hpMax : 0;
+    context.hpPercent = hpMax > 0 ? Math.max(0, hpValue) / hpMax : 0;
 
     // Motivation selectOptions and behaviors
     context.config = context.config || {};

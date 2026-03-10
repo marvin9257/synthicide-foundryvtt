@@ -258,6 +258,7 @@
       },
       "Card": {
         "TitleChallenge": "Challenge Roll",
+        "TitleShock": "Shocking Strike: Toughness Check",
         "TitleAttack": "Attack Roll",
         "TitleDamage": "Calculated Damage",
         "Equation": "Equation",
@@ -284,7 +285,7 @@
         "SuccessLevel": "Success Level: {level}",
         "AttackResultHit": "Attack Result: Hit",
         "AttackResultMiss": "Attack Result: Miss",
-        "DamageResultApplied": "Damage Result: {total}",
+        "DamageResultApplied": "Damage Result",
         "RollDamage": "Calculate Damage",
         "RollOpposed": "Opposed Roll"
       },
@@ -346,6 +347,14 @@
       "Roll": {
         "ApplyDamage": "Apply Damage",
         "ApplyHealing": "Apply Healing"
+      }
+      ,
+      "Shock": {
+        "Base": "{actor} suffered a Shocking Strike for {damage} damage (Threshold {threshold}).",
+        "Threshold": "Shock Threshold",
+        "Success": "Toughness check succeeded ({roll} vs RD {rd}).",
+        "FailureDeath": "Toughness check failed ({roll} vs RD {rd}) — would be reduced below zero and dies.",
+        "FailureMinusOne": "Toughness check failed ({roll} vs RD {rd}) — HP reduced to -1."
       }
     }
   },

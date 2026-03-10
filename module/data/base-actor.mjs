@@ -12,7 +12,7 @@ export default class SynthicideActorBaseData extends foundry.abstract
     schema.level = makeValueField(1);
 
     schema.hitPoints = new fields.SchemaField({
-      value: new fields.NumberField({...requiredInteger, initial: 20, min: 0}),
+      value: new fields.NumberField({...requiredInteger, initial: 20}),
       max: new fields.NumberField({ ...requiredInteger, initial: 20 }, {persisted: false}),
       base: new fields.NumberField({ ...requiredInteger, initial: 20 }),
       perLevel: new fields.NumberField({ ...requiredInteger, initial: 5 })

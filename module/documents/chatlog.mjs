@@ -76,7 +76,17 @@ function applyChatCardDamage(li, multiplier) {
       if (["sharper", "npc"].includes(targetActor.type)) {
         damage = Math.floor(damage * multiplier);
         if (multiplier > 0) {
-          targetActor.damageActor(damage);
+          const messageMode = actionRollData?.messageMode ?? actionRollData?.messageType ?? undefined;
+          const whisper = message.whisper ?? undefined;
+          const lethal = actionRollData?.lethal ?? actionRollData?.attack?.lethal ?? 0;
+          const options = {
+            messageMode,
+            whisper,
+            sourceItemUuid: actionRollData?.sourceItemUuid ?? null,
+            attack: actionRollData?.attack ?? null,
+            lethal,
+          };
+          targetActor.damageActor(damage, options);
         } else if (multiplier < 0 ) {
           targetActor.healActor(-damage);
         }

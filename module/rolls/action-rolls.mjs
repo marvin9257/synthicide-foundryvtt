@@ -114,6 +114,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
         userId: game.user.id,
         sourceMessageId: sourceMessage.id,
         sourceItemUuid: flags.sourceItemUuid ?? null,
+        lethal: flags?.attack?.lethal ?? 0,
         messageMode,
         damage: {
           sourceMessageId: sourceMessage.id,
@@ -250,6 +251,8 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
       { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
       { label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: damageBonus },
     ];
+    // Resolve lethal directly from the source item when available; default to 0
+    const lethal = Number(sourceItem?.system?.lethal ?? 0);
     cardData.flags.attack = {
       attribute: attributeKey,
       attributeValue,
@@ -259,6 +262,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
       attackTotal: total,
       hit,
       damageTotal,
+      lethal,
     };
   } else {
     const effect = total - difficulty;
@@ -299,7 +303,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
 /* Chat Cards                                   */
 /* -------------------------------------------- */
 
-export async function createActionMessage({ actor, roll, cardData, messageMode }) {
+export async function createActionMessage({ actor, roll, cardData, messageMode, whisper } = {}) {
   // If a Roll is provided, render and use Foundry's `toMessage` path so the
   // roll HTML and message metadata are correct. If no Roll is provided (e.g.
   // derived deterministic results), skip roll rendering and build the
@@ -311,7 +315,7 @@ export async function createActionMessage({ actor, roll, cardData, messageMode }
       rollHtml,
     });
 
-    const chatData = await roll.toMessage({
+    const toMessageOptions = {
       speaker: ChatMessage.getSpeaker({ actor }),
       content,
       style: getChatMessageStyle(),
@@ -320,7 +324,10 @@ export async function createActionMessage({ actor, roll, cardData, messageMode }
           [FLAG_PATH]: cardData.flags,
         },
       },
-    }, {
+    };
+    if (Array.isArray(whisper) && whisper.length) toMessageOptions.whisper = whisper;
+
+    const chatData = await roll.toMessage(toMessageOptions, {
       messageMode: normalizeMessageMode(messageMode),
       create: false,
     });
@@ -347,6 +354,7 @@ export async function createActionMessage({ actor, roll, cardData, messageMode }
     },
     messageMode: normalizeMessageMode(messageMode),
   };
+  if (Array.isArray(whisper) && whisper.length) chatData.whisper = whisper;
 
   return ChatMessage.create(chatData);
 }

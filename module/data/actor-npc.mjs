@@ -27,6 +27,7 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
 
   prepareDerivedData() {
     // For NPCs, .value is editable and not derived. Only update hitPoints.max as needed.
-    this.hitPoints.max = this.hitPoints.base ?? 0;
+    const baseHP = Number(this.hitPoints.base ?? 32);
+    this.hitPoints.max = baseHP;
   }
 }
