@@ -205,15 +205,15 @@ export class SynthicideActor extends Actor {
 
     if (!(shockThreshold > 0 && damageRemaining > shockThreshold)) return;
 
-    const rd = Math.floor(damageRemaining / 5);
+    const shockRD = Math.floor(damageRemaining / 5);
     const wouldDropBelowZero = damageRemaining > preHP;
 
     const toughnessValue = Number(this.system.attributes?.toughness?.value ?? 0);
     const roll = await new Roll('1d10 + @attribute', { attribute: toughnessValue }).evaluate();
     const rollTotal = Number(roll.total ?? 0);
-    const success = rollTotal > rd;
+    const success = rollTotal > shockRD;
 
-    const cardData = this._buildShockCardData({ roll, rollTotal, damageRemaining, shockThreshold, rd, toughnessValue, success, wouldBeNegative: wouldDropBelowZero });
+    const cardData = this._buildShockCardData({ roll, rollTotal, damageRemaining, shockThreshold, rd: shockRD, toughnessValue, success, wouldBeNegative: wouldDropBelowZero });
 
     const preferredMode = options?.messageMode ?? cardData.flags?.messageMode ?? game.settings.get('core', 'messageMode');
     const whisper = options?.whisper ?? cardData.flags?.whisper ?? undefined;
@@ -221,13 +221,12 @@ export class SynthicideActor extends Actor {
 
     const lastFlag = {
       damage: damageRemaining,
-      rd,
+      rd: shockRD,
       roll: rollTotal,
       success: success,
       armor,
       barrierAbsorbed,
       lethal,
-      timestamp: Date.now(),
     };
 
     if (success) {
