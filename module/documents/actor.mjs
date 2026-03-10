@@ -155,31 +155,27 @@ export class SynthicideActor extends Actor {
     if (!damage || !["sharper", "npc"].includes(this.type)) return;
     const updates = {};
     let damageRemaining = damage;
-    // Check force barrier first and apply damage to it
-    let barrierAmount = 0;
+    // Apply force barrier first.
+    let barrierAbsorbed = 0;
     if (this.system.forceBarrier.value > 0) {
-      barrierAmount = Math.min(this.system.forceBarrier.value, damageRemaining);
-      if (barrierAmount > 0) {
-        damageRemaining -= barrierAmount;
-        updates['system.forceBarrier.value'] = Math.max(this.system.forceBarrier.value - barrierAmount, 0);
+      barrierAbsorbed = Math.min(this.system.forceBarrier.value, damageRemaining);
+      if (barrierAbsorbed > 0) {
+        damageRemaining -= barrierAbsorbed;
+        updates['system.forceBarrier.value'] = Math.max(this.system.forceBarrier.value - barrierAbsorbed, 0);
       }
     }
 
-    // Apply any leftover to hitPoints (we compute outcomes before persisting so
-    // we can evaluate RD and the toughness check using the pre-damage HP).
+    // Compute outcomes against pre-damage HP before persisting updates.
     const preHP = Number(this.system.hitPoints.value ?? 0);
     if (damageRemaining > 0) {
-      const hitPointsAmount = Math.min(preHP, damageRemaining);
-      if (hitPointsAmount > 0) {
-        // Persist the raw subtraction — schema now allows negative HP values
-        updates['system.hitPoints.value'] = preHP - hitPointsAmount;
+      const hpDamage = Math.min(preHP, damageRemaining);
+      if (hpDamage > 0) {
+        updates['system.hitPoints.value'] = preHP - hpDamage;
       }
 
-      // Delegate shocking-strike handling to a helper so damageActor stays small.
-      await this._handleShockingStrike(damageRemaining, preHP, updates, { ...options, barrierAbsorbed: barrierAmount});
+      await this._handleShockingStrike(damageRemaining, preHP, updates, { ...options, barrierAbsorbed });
     }
 
-    // Persist damage and any flags
     await this.update(updates);
   }
 
@@ -202,43 +198,26 @@ export class SynthicideActor extends Actor {
     if (!(damageRemaining > 0)) return;
     const shockThreshold = Number(this.system.shockThreshold?.value ?? 0);
 
-    // Resolve armor/AD to apply barrier/shock rules. Prefer the passed-in
-    // `options.armor`
-    const providedArmor = Number(options?.armor ?? NaN);
-    const actorArmor = Number(this.system?.armorDefense?.value ?? NaN);
-    const armor = Number.isFinite(providedArmor) ? providedArmor : (Number.isFinite(actorArmor) ? actorArmor : 0);
+    const { armor, barrierAbsorbed, lethal } = this._resolveShockContext(options);
 
-    // If a force barrier absorbed part of the attack, apply the special rules:
-    // - Lethal is suppressed when any barrier absorption occurred
-    // - A barrier-absorbed attack only triggers a shocking strike when the
-    //   remaining damage reaching HP is at least 2× AD
-    const barrierAbsorbed = Number(options?.barrierAbsorbed ?? 0);
+    // Barrier-absorbed attacks only trigger shocking strike at 2x AD.
     if (barrierAbsorbed > 0 && !(damageRemaining >= 2 * armor)) return;
 
     if (!(shockThreshold > 0 && damageRemaining > shockThreshold)) return;
 
     const rd = Math.floor(damageRemaining / 5);
-    const wouldBeNegative = damageRemaining > preHP;
+    const wouldDropBelowZero = damageRemaining > preHP;
 
     const toughnessValue = Number(this.system.attributes?.toughness?.value ?? 0);
     const roll = await new Roll('1d10 + @attribute', { attribute: toughnessValue }).evaluate();
     const rollTotal = Number(roll.total ?? 0);
     const success = rollTotal > rd;
 
-    // Build the cardData using the centralized helper
-    const cardData = this._buildShockCardData({ roll, rollTotal, damageRemaining, shockThreshold, rd, toughnessValue, success, wouldBeNegative });
+    const cardData = this._buildShockCardData({ roll, rollTotal, damageRemaining, shockThreshold, rd, toughnessValue, success, wouldBeNegative: wouldDropBelowZero });
 
-    // Determine messageMode: prefer the provided message mode, otherwise fall
-    // back to the card flags or the core setting. Also forward whisper
-    // recipients if present so the resulting message uses the same audience.
     const preferredMode = options?.messageMode ?? cardData.flags?.messageMode ?? game.settings.get('core', 'messageMode');
     const whisper = options?.whisper ?? cardData.flags?.whisper ?? undefined;
     await createActionMessage({ actor: this, roll, cardData, messageMode: preferredMode, whisper });
-
-    // Determine lethal (prefer options.attack or direct option). If a barrier
-    // absorbed part of the attack, lethal is suppressed.
-    let lethal = Number(options?.lethal ?? options?.attack?.lethal ?? 0);
-    if (barrierAbsorbed > 0) lethal = 0;
 
     const lastFlag = {
       damage: damageRemaining,
@@ -256,8 +235,7 @@ export class SynthicideActor extends Actor {
       return;
     }
 
-    // Failure paths: record outcome in flags and mutate HP in the updates
-    if (wouldBeNegative) {
+    if (wouldDropBelowZero) {
       updates['system.hitPoints.value'] = preHP - damageRemaining;
       updates['flags.synthicide.lastShockingStrike'] = { ...lastFlag, success: false, death: true };
       updates['flags.synthicide.dead'] = true;
@@ -265,6 +243,26 @@ export class SynthicideActor extends Actor {
       updates['system.hitPoints.value'] = -1;
       updates['flags.synthicide.lastShockingStrike'] = { ...lastFlag, success: false, forcedHP: -1 };
     }
+  }
+
+  /**
+   * Resolve shock-processing context from message options and actor fallback.
+   * Message attack AD is authoritative when present; if missing, fall back to
+   * the target actor's current AD.
+   * @private
+   */
+  _resolveShockContext(options = {}) {
+    const messageArmor = Number(options?.attack?.armor ?? options?.armor ?? NaN);
+    const actorArmor = Number(this.system?.armorDefense?.value ?? NaN);
+    const armor = Number.isFinite(messageArmor)
+      ? messageArmor
+      : (Number.isFinite(actorArmor) ? actorArmor : 0);
+
+    const barrierAbsorbed = Number(options?.barrierAbsorbed ?? 0);
+    let lethal = Number(options?.attack?.lethal ?? options?.lethal ?? 0);
+    if (barrierAbsorbed > 0) lethal = 0;
+
+    return { armor, barrierAbsorbed, lethal };
   }
 
   /**

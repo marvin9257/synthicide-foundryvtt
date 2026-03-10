@@ -69,12 +69,12 @@ function newContextOptions(coreContext)  {
 function applyChatCardDamage(li, multiplier) {
   const message = game.messages.get(li.dataset?.messageId);
   const actionRollData = message.getFlag('synthicide', 'actionRoll');
-  let damage = actionRollData?.damage?.total ?? message.rolls[0]?.total;
-  if (damage > 0) {
+  const baseDamage = actionRollData?.damage?.total ?? message.rolls[0]?.total;
+  if (baseDamage > 0) {
     return Promise.all(canvas.tokens.controlled.map(t => {
       const targetActor = t.actor;
       if (["sharper", "npc"].includes(targetActor.type)) {
-        damage = Math.floor(damage * multiplier);
+        const damage = Math.floor(baseDamage * multiplier);
         if (multiplier > 0) {
           const messageMode = actionRollData?.messageMode ?? actionRollData?.messageType ?? undefined;
           const whisper = message.whisper ?? undefined;
