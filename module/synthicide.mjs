@@ -17,46 +17,6 @@ import { registerSynthicideChatContextHook, SynthicideChatPopout } from './docum
 
 const collections = foundry.documents.collections;
 
-function applySheetStyleMode(mode) {
-  const doc = globalThis.document;
-  if (!doc) return;
-
-  const roots = [doc.body, doc.documentElement].filter(Boolean);
-  for (const root of roots) {
-    root.classList.remove('synthicide-style-classic', 'synthicide-style-bold');
-    root.classList.add(
-      mode === SYNTHICIDE.SHEET_STYLE_BOLD
-        ? 'synthicide-style-bold'
-        : 'synthicide-style-classic'
-    );
-  }
-}
-
-function registerClientSettings() {
-  game.settings.register('synthicide', SYNTHICIDE.SHEET_STYLE_SETTING_KEY, {
-    name: 'SYNTHICIDE.Settings.SheetStyleMode.Name',
-    hint: 'SYNTHICIDE.Settings.SheetStyleMode.Hint',
-    scope: 'client',
-    config: true,
-    type: String,
-    choices: {
-      [SYNTHICIDE.SHEET_STYLE_CLASSIC]: 'SYNTHICIDE.Settings.SheetStyleMode.Choices.Classic',
-      [SYNTHICIDE.SHEET_STYLE_BOLD]: 'SYNTHICIDE.Settings.SheetStyleMode.Choices.RulebookBold',
-    },
-    default: SYNTHICIDE.SHEET_STYLE_CLASSIC,
-    onChange: (value) => applySheetStyleMode(value),
-  });
-
-  game.settings.register('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY, {
-    name: 'SYNTHICIDE.Settings.DefaultTargetArmor.Name',
-    hint: 'SYNTHICIDE.Settings.DefaultTargetArmor.Hint',
-    scope: 'world',
-    config: true,
-    type: Number,
-    default: 6,
-  });
-}
-
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
@@ -122,15 +82,17 @@ Hooks.once('init', function () {
   };
   CONFIG.Item.documentClass = SynthicideItem;
   CONFIG.Item.dataModels = {
+    aspect: models.SynthicideAspect,
+    bioclass: models.SynthicideBioclass,
     gear: models.SynthicideGear,
     trait: models.SynthicideTrait,
-    bioclass: models.SynthicideBioclass,
-    aspect: models.SynthicideAspect,
   };
 
   // Internal settings used by world migrations
   registerMigrationSettings();
-  registerClientSettings();
+
+  // Client and Workds settings for Synthicide
+  registerSettings();
 
   // Register application/document hooks.
   registerSynthicideChatContextHook();
@@ -261,4 +223,54 @@ function rollItemMacro(itemUuid) {
     const sItem = /** @type {import('./documents/item.mjs').SynthicideItem} */ (item);
     sItem.roll();
   });
+}
+
+function applySheetStyleMode(mode) {
+  const doc = globalThis.document;
+  if (!doc) return;
+
+  const roots = [doc.body, doc.documentElement].filter(Boolean);
+  for (const root of roots) {
+    root.classList.remove('synthicide-style-classic', 'synthicide-style-bold');
+    root.classList.add(
+      mode === SYNTHICIDE.SHEET_STYLE_BOLD
+        ? 'synthicide-style-bold'
+        : 'synthicide-style-classic'
+    );
+  }
+}
+
+function registerSettings() {
+  game.settings.register('synthicide', SYNTHICIDE.SHEET_STYLE_SETTING_KEY, {
+    name: 'SYNTHICIDE.Settings.SheetStyleMode.Name',
+    hint: 'SYNTHICIDE.Settings.SheetStyleMode.Hint',
+    scope: 'client',
+    config: true,
+    type: String,
+    choices: {
+      [SYNTHICIDE.SHEET_STYLE_CLASSIC]: 'SYNTHICIDE.Settings.SheetStyleMode.Choices.Classic',
+      [SYNTHICIDE.SHEET_STYLE_BOLD]: 'SYNTHICIDE.Settings.SheetStyleMode.Choices.RulebookBold',
+    },
+    default: SYNTHICIDE.SHEET_STYLE_CLASSIC,
+    onChange: (value) => applySheetStyleMode(value),
+  });
+
+  game.settings.register('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY, {
+    name: 'SYNTHICIDE.Settings.DefaultTargetArmor.Name',
+    hint: 'SYNTHICIDE.Settings.DefaultTargetArmor.Hint',
+    scope: 'world',
+    config: true,
+    type: Number,
+    default: 6,
+  });
+
+  game.settings.register('synthicide', SYNTHICIDE.USE_SHOCKING_STRIKE_KEY, {
+    name: 'SYNTHICIDE.Settings.UseShockingStrike.Name',
+    hint: 'SYNTHICIDE.Settings.UseShockingStrike.Hint',
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
 }

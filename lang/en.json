@@ -25,6 +25,10 @@
       "DefaultTargetArmor": { 
         "Name": "Default Target Armor",
         "Hint": "The armor defense to use when target's defense cant be determined."
+      },
+      "UseShockingStrike": {
+        "Name": "Use Shocking Strike Rules",
+        "Hint": "Automatically apply riles for a shocking strike where a single, high damage blow (If damage from a single attack exceeds a character’s shock threshold (ST = 10 + AD + modifiers)) might result in incapacitation.  Toughtness save is automated too."
       }
     },
     "Actor": {
@@ -160,7 +164,8 @@
           "dieSize": {"label": "Die Size"},
           "rollMod": {"label": "Roll Modifier"},
           "quantity": {"label": "Quantity"},
-          "weight": {"label": "Weight"}
+          "weight": {"label": "Weight"},
+          "equipped": {"label":"Equipped"}
         }
       },
       "Trait": {

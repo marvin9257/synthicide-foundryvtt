@@ -30,6 +30,7 @@ export default class SynthicideGear extends SynthicideItemBase {
       initial: 0,
       min: 0,
     });
+    schema.equipped = new fields.BooleanField({required: true, nullable:false, initial: false});
 
     // Break down roll formula into three independent fields
     schema.roll = new fields.SchemaField({

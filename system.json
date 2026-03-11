@@ -10,25 +10,26 @@
   ],
   "documentTypes": {
     "Actor": {
-        "sharper": {
-            "htmlFields": ["biography"]
-        },
-        "npc": {
-            "htmlFields": ["biography"]
-        }
+      "sharper": {
+        "htmlFields": ["biography"]
+      },
+      "npc": {
+        "htmlFields": ["biography"]
+      }
     },
     "Item": {
-        "trait": {
-          "htmlFields": ["description"]
-        },
-        "gear": {
-            "htmlFields": ["description"]
-        },
-        "bioclass": {
-          "htmlFields": ["description"]
-        },
-        "aspect": {
-          "htmlFields": ["description"]        }
+      "aspect": {
+        "htmlFields": ["description"]
+      },
+      "bioclass": {
+        "htmlFields": ["description"]
+      },
+      "gear": {
+        "htmlFields": ["description"]
+      },
+      "trait": {
+        "htmlFields": ["description"]
+      } 
     }
   },
   "flags": {
