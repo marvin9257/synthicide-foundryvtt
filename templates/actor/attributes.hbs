@@ -56,6 +56,99 @@
 
     <div class='attributes-derived'>
       {{! Derived stats, secondary data, etc. will go here }}
+      <!-- Action Points Resource -->
+      <h4>{{localize "SYNTHICIDE.Actor.base.FIELDS.DerivedValues"}}</h4>
+      <div class="derived-list">
+        <div class='resource flex-group-center header-resource'>
+          <label for='system.actionPoints.value' class='resource-label'>
+            {{localize 'SYNTHICIDE.Actor.base.FIELDS.actionPoints.value.label'}}
+          </label>
+          <div class='resource-content flexrow flex-center flex-between '>
+            <input
+              type='number'
+              name='system.actionPoints.value'
+              value='{{system.actionPoints.value}}'
+              data-dtype='Number'
+              disabled
+            />
+          </div>
+        </div>
+
+        <div class='resource flex-group-center header-resource'>
+          <label for='system.battleReflex.value' class='resource-label'>
+            {{localize 'SYNTHICIDE.Actor.base.FIELDS.battleReflex.value.label'}}
+          </label>
+          <div class='resource-content flexrow flex-center flex-between '>
+            <input
+              type='number'
+              name='system.battleReflex.value'
+              value='{{system.battleReflex.value}}'
+              data-dtype='Number'
+              disabled
+            />
+          </div>
+        </div>
+
+        <div class='resource flex-group-center header-resource'>
+          <label for='system.toughnessDefense.value' class='resource-label'>
+            {{localize 'SYNTHICIDE.Actor.base.FIELDS.toughnessDefense.value.label'}}
+          </label>
+          <div class='resource-content flexrow flex-center flex-between '>
+            <input
+              type='number'
+              name='system.toughnessDefense.value'
+              value='{{system.toughnessDefense.value}}'
+              data-dtype='Number'
+              disabled
+            />
+          </div>
+        </div>
+
+        <div class='resource flex-group-center header-resource'>
+          <label for='system.armorDefense.value' class='resource-label'>
+            {{localize 'SYNTHICIDE.Actor.base.FIELDS.armorDefense.value.label'}}
+          </label>
+          <div class='resource-content flexrow flex-center flex-between '>
+            <input
+              type='number'
+              name='system.armorDefense.value'
+              value='{{system.armorDefense.value}}'
+              data-dtype='Number'
+              disabled
+            />
+          </div>
+        </div>
+
+        <div class='resource flex-group-center header-resource'>
+          <label for='system.shockThreshold.value' class='resource-label'>
+            {{localize 'SYNTHICIDE.Actor.base.FIELDS.shockThreshold.value.label'}}
+          </label>
+          <div class='resource-content flexrow flex-center flex-between '>
+            <input
+              type='number'
+              name='system.shockThreshold.value'
+              value='{{system.shockThreshold.value}}'
+              data-dtype='Number'
+              disabled
+            />
+          </div>
+        </div>
+
+        <div class='resource flex-group-center header-resource'>
+          <label for='system.nerveDefense.value' class='resource-label'>
+            {{localize 'SYNTHICIDE.Actor.base.FIELDS.nerveDefense.value.label'}}
+          </label>
+          <div class='resource-content flexrow flex-center flex-between '>
+            <input
+              type='number'
+              name='system.nerveDefense.value'
+              value='{{system.nerveDefense.value}}'
+              data-dtype='Number'
+              disabled
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>

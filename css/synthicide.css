@@ -1136,6 +1136,15 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 .tab.attributes .attributes-derived {
   flex: 1 1 0;
   min-width: 0;
+  
+}
+
+.tab.attributes .attributes-derived .derived-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2ch;
+  justify-content: space-evenly;
 }
 
 .attributes-table {
@@ -1267,6 +1276,10 @@ img.actions-img {
   border: 1px solid var(--synthicide-c-dark);
   border-radius: 4px;
   object-fit: contain;
+}
+
+.synthicide .attributes-derived .header-resource {
+  max-width: 14ch;
 }
 
 /* ============================== */
@@ -1968,12 +1981,22 @@ body.theme-dark.synthicide-style-bold .synthicide h4 {
 /* Aspect tab: h4 is a full-width header bar */
 body.synthicide-style-bold .synthicide .tab.aspect h4 {
   background: var(--rb-strong);
-  color: var(--rb-on-accent) !important;
+  color: var(--rb-on-accent);
   border-left: 5px solid var(--rb-accent);
   padding: 6px 14px;
   margin: 0 0 4px;
   font-size: 0.85rem;
   border-radius: 0;
+}
+
+body.synthicide-style-bold .synthicide .tab.attributes h4 {
+  background: var(--rb-strong);
+  color: var(--rb-on-accent);
+  padding: 6px 14px;
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  border: none;
+  text-align: center;
 }
 
 /* ============================================================ */

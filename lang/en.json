@@ -119,7 +119,14 @@
           "foodDays": {
             "label": "Food Days",
             "without": "Days w/o Food"
-          }
+          },
+          "actionPoints": {"value": {"label": "Action Points"}},
+          "battleReflex": {"value": {"label": "Battle Reflex"}},
+          "toughnessDefense": {"value": {"label": "Toughness Defense"}},
+          "armorDefense": {"value": {"label": "Armor Defense"}},
+          "shockThreshold": {"value": {"label": "Shock Treshold"}},
+          "nerveDefense": {"value": {"label": "Nerve Defense"}},
+          "DerivedValues": "Derived Values"
         }
       },
       "Character": {
