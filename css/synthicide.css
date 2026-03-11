@@ -1147,6 +1147,10 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   justify-content: space-evenly;
 }
 
+.tab.attributes .attributes-derived h4 {
+  text-align: center;
+}
+
 .attributes-table {
   display: grid;
   /* icon+abbr | base | modifier | level-increase | current */
@@ -1992,7 +1996,7 @@ body.synthicide-style-bold .synthicide .tab.aspect h4 {
 body.synthicide-style-bold .synthicide .tab.attributes h4 {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
-  padding: 6px 14px;
+  padding: 14px;
   margin: 0 0 4px;
   font-size: 0.85rem;
   border: none;
