@@ -1,5 +1,24 @@
 import SYNTHICIDE from "../helpers/config.mjs";
 import { createActionMessage } from "../rolls/action-rolls.mjs";
+
+const DAMAGEABLE_ACTOR_TYPES = new Set(['sharper', 'npc']);
+const FLAG_LAST_SHOCKING_STRIKE = 'flags.synthicide.lastShockingStrike';
+const FLAG_DEAD = 'flags.synthicide.dead';
+
+const SHOCK_OUTCOMES = {
+  LETHAL: 'lethal',
+  SUCCESS: 'success',
+  DEATH: 'death',
+  MINUS_ONE: 'minusOne',
+};
+
+const SHOCK_FLAVOR_KEYS = {
+  [SHOCK_OUTCOMES.LETHAL]: 'SYNTHICIDE.Chat.Shock.LethalApplied',
+  [SHOCK_OUTCOMES.SUCCESS]: 'SYNTHICIDE.Chat.Shock.Success',
+  [SHOCK_OUTCOMES.DEATH]: 'SYNTHICIDE.Chat.Shock.FailureDeath',
+  [SHOCK_OUTCOMES.MINUS_ONE]: 'SYNTHICIDE.Chat.Shock.FailureMinusOne',
+};
+
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -152,7 +171,7 @@ export class SynthicideActor extends Actor {
   }
 
   async damageActor(damage, options = {}) {
-    if (!damage || !["sharper", "npc"].includes(this.type)) return;
+    if (!damage || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return;
     const updates = {};
     let damageRemaining = damage;
     // Apply force barrier first.
@@ -172,15 +191,16 @@ export class SynthicideActor extends Actor {
       if (hpDamage > 0) {
         updates['system.hitPoints.value'] = preHP - hpDamage;
       }
-
-      await this._handleShockingStrike(damageRemaining, preHP, updates, { ...options, barrierAbsorbed });
+      if (game.settings.get('synthicide', SYNTHICIDE.USE_SHOCKING_STRIKE_KEY)) {
+        await this._handleShockingStrike(damageRemaining, preHP, updates, { ...options, barrierAbsorbed });
+      }
     }
 
     await this.update(updates);
   }
 
   async healActor(healing) {
-    if (!healing || !["sharper", "npc"].includes(this.type)) return;
+    if (!healing || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return;
     const updates = {};
     updates['system.hitPoints.value'] = Math.min(this.system.hitPoints.value + healing, this.system.hitPoints.max);
     await this.update(updates);
@@ -207,41 +227,46 @@ export class SynthicideActor extends Actor {
 
     const shockRD = Math.floor(damageRemaining / 5);
     const wouldDropBelowZero = damageRemaining > preHP;
+    const isLethal = Number.isFinite(lethal) && lethal > 0 && armor <= lethal;
 
     const toughnessValue = Number(this.system.attributes?.toughness?.value ?? 0);
-    const roll = await new Roll('1d10 + @attribute', { attribute: toughnessValue }).evaluate();
-    const rollTotal = Number(roll.total ?? 0);
-    const success = rollTotal > shockRD;
+    let roll = null;
+    let rollTotal = null;
+    let success = false;
 
-    const cardData = this._buildShockCardData({ roll, rollTotal, damageRemaining, shockThreshold, rd: shockRD, toughnessValue, success, wouldBeNegative: wouldDropBelowZero });
+    if (!isLethal) {
+      roll = await new Roll('1d10 + @attribute', { attribute: toughnessValue }).evaluate();
+      rollTotal = Number(roll.total ?? 0);
+      success = rollTotal > shockRD;
+    }
 
-    const preferredMode = options?.messageMode ?? cardData.flags?.messageMode ?? game.settings.get('core', 'messageMode');
-    const whisper = options?.whisper ?? cardData.flags?.whisper ?? undefined;
+    const outcome = this._resolveShockOutcome({ isLethal, success, wouldDropBelowZero });
+
+    const cardData = this._buildShockCardData({
+      roll,
+      rollTotal,
+      damageRemaining,
+      shockThreshold,
+      rd: shockRD,
+      toughnessValue,
+      outcome,
+      lethal,
+    });
+
+    const { preferredMode, whisper } = this._resolveShockMessageOptions({ options, cardData });
     await createActionMessage({ actor: this, roll, cardData, messageMode: preferredMode, whisper });
 
-    const lastFlag = {
-      damage: damageRemaining,
+    const lastFlag = this._buildShockLastFlag({
+      damageRemaining,
       rd: shockRD,
       roll: rollTotal,
-      success: success,
+      success,
       armor,
       barrierAbsorbed,
       lethal,
-    };
+    });
 
-    if (success) {
-      updates['flags.synthicide.lastShockingStrike'] = lastFlag;
-      return;
-    }
-
-    if (wouldDropBelowZero) {
-      updates['system.hitPoints.value'] = preHP - damageRemaining;
-      updates['flags.synthicide.lastShockingStrike'] = { ...lastFlag, success: false, death: true };
-      updates['flags.synthicide.dead'] = true;
-    } else {
-      updates['system.hitPoints.value'] = -1;
-      updates['flags.synthicide.lastShockingStrike'] = { ...lastFlag, success: false, forcedHP: -1 };
-    }
+    this._applyShockOutcomeUpdates({ updates, outcome, lastFlag });
   }
 
   /**
@@ -265,31 +290,83 @@ export class SynthicideActor extends Actor {
   }
 
   /**
+   * Resolve the final shocking-strike outcome from derived booleans.
+   * @private
+   */
+  _resolveShockOutcome({ isLethal, success, wouldDropBelowZero } = {}) {
+    if (isLethal) return SHOCK_OUTCOMES.LETHAL;
+    if (success) return SHOCK_OUTCOMES.SUCCESS;
+    return wouldDropBelowZero ? SHOCK_OUTCOMES.DEATH : SHOCK_OUTCOMES.MINUS_ONE;
+  }
+
+  /**
+   * Build and normalize a single lastShockingStrike payload.
+   * @private
+   */
+  _buildShockLastFlag({ damageRemaining, rd, roll, success, armor, barrierAbsorbed, lethal } = {}) {
+    return {
+      damage: damageRemaining,
+      rd,
+      roll,
+      success,
+      armor,
+      barrierAbsorbed,
+      lethal,
+    };
+  }
+
+  /**
+   * Apply post-roll/non-roll shocking-strike outcomes to the pending update payload.
+   * @private
+   */
+  _applyShockOutcomeUpdates({ updates, outcome, lastFlag } = {}) {
+    if (outcome === SHOCK_OUTCOMES.SUCCESS) {
+      updates[FLAG_LAST_SHOCKING_STRIKE] = lastFlag;
+      return;
+    }
+
+    // Any failed shocking strike outcome forces HP to -1.
+    updates['system.hitPoints.value'] = -1;
+
+    if (outcome === SHOCK_OUTCOMES.LETHAL || outcome === SHOCK_OUTCOMES.DEATH) {
+      updates[FLAG_LAST_SHOCKING_STRIKE] = { ...lastFlag, success: false, death: true };
+      updates[FLAG_DEAD] = true;
+      return;
+    }
+
+    updates[FLAG_LAST_SHOCKING_STRIKE] = { ...lastFlag, success: false, forcedHP: -1 };
+  }
+
+  /**
+   * Resolve chat visibility options for shocking-strike messages.
+   * @private
+   */
+  _resolveShockMessageOptions({ options = {}, cardData } = {}) {
+    return {
+      preferredMode: options?.messageMode ?? cardData?.flags?.messageMode ?? game.settings.get('core', 'messageMode'),
+      whisper: options?.whisper ?? cardData?.flags?.whisper ?? undefined,
+    };
+  }
+
+  /**
    * Build cardData for a Shocking Strike toughness check chat card.
    * @private
    */
-  _buildShockCardData({ roll, rollTotal, damageRemaining, shockThreshold, rd, toughnessValue, success, wouldBeNegative } = {}) {
-    const d10 = Number(roll.dice?.[0]?.results?.[0]?.result ?? 0);
+  _buildShockCardData({ roll, rollTotal, damageRemaining, shockThreshold, rd, toughnessValue, outcome, lethal } = {}) {
+    const isLethal = outcome === SHOCK_OUTCOMES.LETHAL;
+    const d10 = Number(roll?.dice?.[0]?.results?.[0]?.result ?? 0);
     const baseFlavor = game.i18n.format("SYNTHICIDE.Chat.Shock.Base", {
       actor: this.name,
       damage: damageRemaining,
       threshold: shockThreshold
     });
-
-    let outcomeFlavor;
-    if (success) {
-      outcomeFlavor = game.i18n.format("SYNTHICIDE.Chat.Shock.Success", { roll: rollTotal, rd });
-    } else if (wouldBeNegative) {
-      outcomeFlavor = game.i18n.format("SYNTHICIDE.Chat.Shock.FailureDeath", { roll: rollTotal, rd });
-    } else {
-      outcomeFlavor = game.i18n.format("SYNTHICIDE.Chat.Shock.FailureMinusOne", { roll: rollTotal, rd });
-    }
+    const outcomeFlavor = this._buildShockOutcomeFlavor({ outcome, lethal, rollTotal, rd });
 
     return {
       title: game.i18n.localize("SYNTHICIDE.Roll.Card.TitleShock"),
       subtype: 'shock',
-      equation: roll.result,
-      total: rollTotal,
+      equation: roll?.result ?? '',
+      total: isLethal ? damageRemaining : rollTotal,
       dieValue: d10,
       dieClass: '',
       equationTerms: [
@@ -306,9 +383,21 @@ export class SynthicideActor extends Actor {
         actorUuid: this.uuid,
         userId: game.user.id,
         messageMode: game.settings.get('core', 'messageMode'),
-        shock: { damage: damageRemaining, rd, shockThreshold, roll: rollTotal, success }
+        shock: { damage: damageRemaining, rd, shockThreshold, roll: rollTotal, success: outcome === SHOCK_OUTCOMES.SUCCESS, lethal: isLethal ? lethal : 0 }
       },
       showEffectOutcomeRow: false,
     };
+  }
+
+  /**
+   * Build localized outcome flavor text for shocking strike cards.
+   * @private
+   */
+  _buildShockOutcomeFlavor({ outcome, lethal, rollTotal, rd } = {}) {
+    const key = SHOCK_FLAVOR_KEYS[outcome] ?? SHOCK_FLAVOR_KEYS[SHOCK_OUTCOMES.MINUS_ONE];
+    if (outcome === SHOCK_OUTCOMES.LETHAL) {
+      return game.i18n.format(key, { lethal });
+    }
+    return game.i18n.format(key, { roll: rollTotal, rd });
   }
 }
