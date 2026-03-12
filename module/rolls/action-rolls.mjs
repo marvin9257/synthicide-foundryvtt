@@ -456,7 +456,7 @@ async function renderActionRollDialog({ title, defaults }) {
 function buildDialogContext(defaults) {
   const subtype = defaults.subtype ?? SUBTYPES.CHALLENGE;
   const isAttack = isAttackSubtype(subtype);
-  const difficultyList = getChallengeDifficulties();
+  const difficultyList = SYNTHICIDE.rolls?.challengeDifficulties ?? [];
 
   const actor = defaults.actor;
   const attributeKey = getActionAttributeKey(subtype, defaults.attribute ?? ATTRIBUTE_COMBAT);
@@ -482,22 +482,21 @@ function buildDialogContext(defaults) {
     subtypeOptions: [
       {
         value: SUBTYPES.CHALLENGE,
-        label: localize('SYNTHICIDE.Roll.Subtype.Challenge'),
+        label: 'SYNTHICIDE.Roll.Subtype.Challenge',
         selected: subtype === SUBTYPES.CHALLENGE,
       },
       {
         value: SUBTYPES.ATTACK,
-        label: localize('SYNTHICIDE.Roll.Subtype.Attack'),
+        label: 'SYNTHICIDE.Roll.Subtype.Attack',
         selected: subtype === SUBTYPES.ATTACK,
       },
     ],
-    messageModeOptions: getMessageModeOptions(defaults.messageMode),
-    attributeOptions: getLocalizedAttributeOptions(attributeKey),
-    difficultyOptions: difficultyList.map((entry) => ({
-      value: entry.value,
-      label: localize(entry.key),
-      selected: Number(entry.value) === Number(defaults.difficulty ?? 6),
-    })),
+    messageModeOptions: CONFIG.ChatMessage.modes,
+    messageModeSelected: normalizeMessageMode(defaults.messageMode),
+    attributeOptions: SYNTHICIDE.attributes,
+    attributeSelected: attributeKey,
+    difficultyOptions: difficultyList,
+    difficultySelected: Number(defaults.difficulty ?? 6),
     rollModifiers,
     rollModifierTotalDisplay,
     actor,
@@ -598,18 +597,6 @@ function getAttributeValueHtml(attributeKey) {
   return `<span class="synthicide-attr-pill"><img class="synthicide-attr-icon" src="/systems/synthicide/assets/${key}.png" alt="" /> ${label}</span>`;
 }
 
-function getLocalizedAttributeOptions(selectedKey = 'combat') {
-  return Object.entries(SYNTHICIDE.attributes ?? {}).map(([key, labelKey]) => ({
-    value: key,
-    label: game.i18n.localize(labelKey),
-    selected: key === selectedKey,
-  }));
-}
-
-function getChallengeDifficulties() {
-  return SYNTHICIDE.rolls?.challengeDifficulties ?? [];
-}
-
 function getDegreeBands() {
   return SYNTHICIDE.rolls?.degreeBands ?? [];
 }
@@ -617,13 +604,14 @@ function getDegreeBands() {
 function getDegreeLabel(effect) {
   const bands = getDegreeBands();
   const match = bands.find((band) => effect >= Number(band.min)) ?? bands.at(-1);
-  return match ? game.i18n.localize(match.key) : game.i18n.localize('SYNTHICIDE.Roll.Degree.Failure');
+  return match ? game.i18n.localize(match.label) : game.i18n.localize('SYNTHICIDE.Roll.Degree.Failure');
 }
 
 function getDifficultyLabel(difficulty) {
   const normalized = Number(difficulty);
-  const match = getChallengeDifficulties().find((entry) => Number(entry.value) === normalized);
-  return match ? localize(match.key) : String(difficulty);
+  const list = SYNTHICIDE.rolls?.challengeDifficulties ?? [];
+  const match = list.find((entry) => Number(entry.value) === normalized);
+  return match ? localize(match.label) : String(difficulty);
 }
 
 function getChallengeOutcomeClass(effect) {
@@ -650,14 +638,7 @@ function normalizeMessageMode(mode) {
   return CONFIG.ChatMessage.modes?.[mode] ? mode : 'public';
 }
 
-function getMessageModeOptions(selectedMode) {
-  const normalized = normalizeMessageMode(selectedMode);
-  return Object.entries(CONFIG.ChatMessage.modes ?? {}).map(([value, definition]) => ({
-    value,
-    label: game.i18n.localize(definition.label),
-    selected: value === normalized,
-  }));
-}
+
 
 function getChatMessageStyle() {
   const styles = CONST.CHAT_MESSAGE_STYLES;

@@ -48,19 +48,19 @@ SYNTHICIDE.attributeAbbreviations = {
 // Centralized roll configuration used by action-roll workflows.
 SYNTHICIDE.rolls = {
   challengeDifficulties: [
-    { value: 3, key: 'SYNTHICIDE.Roll.Difficulty.Easy' },
-    { value: 6, key: 'SYNTHICIDE.Roll.Difficulty.Standard' },
-    { value: 9, key: 'SYNTHICIDE.Roll.Difficulty.Difficult' },
-    { value: 12, key: 'SYNTHICIDE.Roll.Difficulty.Challenging' },
-    { value: 15, key: 'SYNTHICIDE.Roll.Difficulty.Fantastic' },
-    { value: 21, key: 'SYNTHICIDE.Roll.Difficulty.Epic' },
-    { value: 27, key: 'SYNTHICIDE.Roll.Difficulty.Legendary' },
+    { value: 3, label: 'SYNTHICIDE.Roll.Difficulty.Easy' },
+    { value: 6, label: 'SYNTHICIDE.Roll.Difficulty.Standard' },
+    { value: 9, label: 'SYNTHICIDE.Roll.Difficulty.Difficult' },
+    { value: 12, label: 'SYNTHICIDE.Roll.Difficulty.Challenging' },
+    { value: 15, label: 'SYNTHICIDE.Roll.Difficulty.Fantastic' },
+    { value: 21, label: 'SYNTHICIDE.Roll.Difficulty.Epic' },
+    { value: 27, label: 'SYNTHICIDE.Roll.Difficulty.Legendary' },
   ],
   degreeBands: [
-    { min: 10, key: 'SYNTHICIDE.Roll.Degree.Superb' },
-    { min: 5, key: 'SYNTHICIDE.Roll.Degree.Excellent' },
-    { min: 0, key: 'SYNTHICIDE.Roll.Degree.Standard' },
-    { min: Number.NEGATIVE_INFINITY, key: 'SYNTHICIDE.Roll.Degree.Failure' },
+    { min: 10, label: 'SYNTHICIDE.Roll.Degree.Superb' },
+    { min: 5, label: 'SYNTHICIDE.Roll.Degree.Excellent' },
+    { min: 0, label: 'SYNTHICIDE.Roll.Degree.Standard' },
+    { min: Number.NEGATIVE_INFINITY, label: 'SYNTHICIDE.Roll.Degree.Failure' },
   ],
 };
 

@@ -6,9 +6,7 @@
       <div class="form-group">
         <label>{{localize "SYNTHICIDE.Roll.Dialog.RollType"}}</label>
         <select name="subtype">
-          {{#each subtypeOptions as |option|}}
-            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
-          {{/each}}
+          {{selectOptions subtypeOptions localize=true}}
         </select>
       </div>
     {{else}}
@@ -18,9 +16,7 @@
     <div class="form-group">
       <label>{{localize "SYNTHICIDE.Roll.Dialog.MessageType.Label"}}</label>
       <select name="messageMode">
-        {{#each messageModeOptions as |option|}}
-          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
-        {{/each}}
+        {{selectOptions messageModeOptions selected=messageModeSelected labelAttr="label" localize=true}}
       </select>
     </div>
 
@@ -29,27 +25,25 @@
       {{#if lockAttribute}}
         <input type="hidden" name="attribute" value="{{attributeKey}}" />
         <select disabled>
-          {{#each attributeOptions as |option|}}
-            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
-          {{/each}}
+          {{selectOptions attributeOptions selected=attributeSelected localize=true}}
         </select>
       {{else}}
         <select name="attribute">
-          {{#each attributeOptions as |option|}}
-            <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
-          {{/each}}
+          {{selectOptions attributeOptions selected=attributeSelected localize=true}}
         </select>
       {{/if}}
     </div>
 
-    <div class="form-group">
-      <label>{{localize "SYNTHICIDE.Roll.Dialog.Difficulty"}}</label>
-      <select name="difficulty">
-        {{#each difficultyOptions as |option|}}
-          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
-        {{/each}}
-      </select>
-    </div>
+    {{#unless isAttack}}
+      <div class="form-group">
+        <label>{{localize "SYNTHICIDE.Roll.Dialog.Difficulty"}}</label>
+        <select name="difficulty">
+          {{selectOptions difficultyOptions selected=difficultySelected labelAttr="label" localize=true}}
+        </select>
+      </div>
+    {{else}}
+      <input type="hidden" name="difficulty" value="{{difficultySelected}}" />
+    {{/unless}}
   </fieldset>
 
   <fieldset class="roll-modifiers">
