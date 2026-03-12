@@ -97,25 +97,25 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     },
     attributesTrait: {
       template:
-        'systems/synthicide/templates/item/attribute-parts/trait.hbs',
+        'systems/synthicide/templates/item/parts/trait.hbs',
     },
     rollGear: {
-      template: 'systems/synthicide/templates/item/attribute-parts/rollGear.hbs',
+      template: 'systems/synthicide/templates/item/parts/rollGear.hbs',
     },
     attributesBioclass: {
       template:
-        'systems/synthicide/templates/item/attribute-parts/bioclass-attributes.hbs',
+        'systems/synthicide/templates/item/parts/bioclass-attributes.hbs',
     },
     cyberneticsBioclass: {
       template:
-        'systems/synthicide/templates/item/attribute-parts/bioclass-cybernetics.hbs',
+        'systems/synthicide/templates/item/parts/bioclass-cybernetics.hbs',
     },
     traitsBioclass: {
       template:
-        'systems/synthicide/templates/item/attribute-parts/bioclass-traits.hbs',
+        'systems/synthicide/templates/item/parts/bioclass-traits.hbs',
     },
     abilitiesAspect: {
-      template: 'systems/synthicide/templates/item/attribute-parts/aspect-abilities.hbs',
+      template: 'systems/synthicide/templates/item/parts/aspect-abilities.hbs',
     },
     effects: {
       template: 'systems/synthicide/templates/item/effects.hbs',
@@ -172,6 +172,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     context.config.traitLevelOptions = Object.fromEntries(
       ALLOWED_TRAIT_LEVELS.map(l => [String(l), game.i18n.format('SYNTHICIDE.Item.Trait.LevelLabel', { level: l })])
     );
+    context.isGear = ["gear", "armor", "weapon", "drugs"].includes(this.item.type);
 
     return context;
   }

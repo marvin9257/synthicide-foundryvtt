@@ -165,7 +165,8 @@
           "rollMod": {"label": "Roll Modifier"},
           "quantity": {"label": "Quantity"},
           "weight": {"label": "Weight"},
-          "equipped": {"label":"Equipped"}
+          "equipped": {"label":"Equipped"},
+          "price": {"label": "Price"}
         }
       },
       "Trait": {

@@ -248,7 +248,7 @@ Gets accent border-left and styled legend in bold mode automatically.
 
 ### 1. Template
 
-Create `templates/actor/mytab.hbs` (or `templates/item/attribute-parts/mytab.hbs`):
+Create `templates/actor/mytab.hbs` (or `templates/item/parts/mytab.hbs`):
 
 ```html
 <section class='tab mytab scrollable {{tab.cssClass}}' data-group='primary' data-tab='mytab'>
