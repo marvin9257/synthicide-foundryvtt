@@ -1,5 +1,3 @@
-
-
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 :root {
@@ -730,8 +728,8 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   margin-bottom: 10px;
 }
 .synthicide .sheet-header .profile-img {
-  flex: 0 0 100px;
-  height: 100px;
+  flex: 0 0 120px;
+  height: 120px;
   margin-right: 10px;
 }
 .synthicide .sheet-header .header-fields {
@@ -750,7 +748,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   gap: 6px;
   margin-top: 6px;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-evenly;
   width: 100%
 }
 
@@ -1154,8 +1152,6 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 .tab.attributes .attributes-derived h4 {
   text-align: center;
 }
-
-
 
 .attributes-header,
 .attributes-col-header,
@@ -1616,7 +1612,7 @@ body.synthicide-style-bold .synthicide .sheet-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 2px;
-  padding: 4px 0 0;
+  padding: 4px 0;
   margin-bottom: 8px;
   border-top: 3px solid var(--rb-strong);
   border-bottom: 3px solid var(--rb-strong);
@@ -1860,7 +1856,7 @@ body.synthicide-style-bold .synthicide table.attributes-table thead th.attribute
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  padding: 10px 8px; /* slightly taller header band */
+  padding: 8px;
   text-align: center;
   border: none;
 }
@@ -1886,8 +1882,6 @@ body.synthicide-style-bold .synthicide table.attributes-table tbody tr:nth-child
   background: var(--rb-cell-alt);
 }
 
-
-
 /* Attribute row label cell – bold overrides */
 body.synthicide-style-bold .synthicide .attribute-label {
   font-size: 0.78rem;
@@ -1905,7 +1899,6 @@ body.synthicide-style-bold .synthicide .attribute-label img.actions-img {
   height: auto;
   width: 36px;
   display: inline-block;
-  object-fit: contain;
   border-color: color-mix(in srgb, var(--rb-strong) 50%, transparent);
 }
 
@@ -2069,9 +2062,6 @@ body.synthicide-style-bold .synthicide .tab.attributes h4 {
   color: var(--rb-on-accent);
   padding: 14px;
   margin: 0 0 4px;
-  font-size: 0.85rem;
-  border: none;
-  text-align: center;
 }
 
 /* ============================================================ */
