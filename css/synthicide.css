@@ -1,4 +1,5 @@
 
+
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 :root {
@@ -307,12 +308,6 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 }
 
 /* Utility: item-header can be applied to titles to opt into item-header styling */
-.synthicide-action-roll-card .card-header h4.item-header {
-  font-weight: 700;
-  font-size: 0.95rem;
-  margin: 0;
-}
-
 .synthicide-action-roll-card .card-title:not(.item-header) {
   font-size: 2.05rem;
   line-height: 1.05;
@@ -345,7 +340,6 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   opacity: 0.9;
 }
 
-.synthicide-action-roll-card .formula-row,
 .synthicide-action-roll-card .total-row {
   display: flex;
   gap: 0.4rem;
@@ -754,7 +748,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 .synthicide .header-resource-flex {
   display: flex;
   gap: 6px;
-  margin-top: 4px;
+  margin-top: 6px;
   flex-direction: row;
   justify-content: space-between;
   width: 100%
@@ -811,9 +805,18 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Classic mode: stack equipped label and checkbox vertically */
+.resource-equipped {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 8px;
+}
+
 .synthicide .sheet-tabs {
   flex: 0;
-  margin-bottom: 0.75rem;       /* spacing beneath the tab buttons */
+  margin: 0.25rem;       /* spacing beneath the tab buttons */
+  line-height: 1.5;
   /*padding-bottom: 0.25rem;*/
   /*border-bottom: 1px solid var(--synthicide-c-black); /* match top header line */
 }
@@ -838,6 +841,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 .synthicide .tab {
   max-height: none;
   overflow: auto;
+  padding-top: 1ch;
 }
 .synthicide .tab.biography {
   flex: 1;
@@ -1125,7 +1129,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 8px;
+  /*padding: 8px;*/
 }
 
 .tab.attributes .attributes-panel {
@@ -1151,15 +1155,10 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   text-align: center;
 }
 
-.attributes-table {
-  display: grid;
-  /* icon+abbr | base | modifier | level-increase | current */
-  grid-template-columns: 65px 60px 75px 110px 70px;
-  margin-left: 0;
-  align-items: center;
-}
+
 
 .attributes-header,
+.attributes-col-header,
 .attribute-input,
 .attribute-value {
   text-align: center;
@@ -1167,11 +1166,8 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 }
 
 .attribute-label {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 5px;
   padding: 2px 4px;
+  text-align: right;
 }
 
 .attr-abbr {
@@ -1194,30 +1190,27 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   gap: 4px;
 }
 
-.attribute-block-meter {
-  position: relative;
-  flex: 0 0 10px;
-  width: 10px;
-  height: 32px;
+
+/* Grid-based block meter (5 segments) */
+.attribute-block-meter-grid {
+  display: grid;
+  grid-template-rows: repeat(5, 1fr);
+  width: 16px;
+  height: 30px;
+  border: 2px solid var(--synthicide-c-dark);
+  background: var(--synthicide-c-white);
   box-sizing: border-box;
-  border: 1px solid var(--synthicide-c-dark);
-  background-image: repeating-linear-gradient(
-    to top,
-    transparent 0,
-    transparent 5px,
-    var(--synthicide-c-dark) 5px,
-    var(--synthicide-c-dark) 6px
-  );
-  background-color: var(--synthicide-c-white);
   overflow: hidden;
 }
-
-.attribute-block-fill {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(var(--level) * 20%);
+.attribute-block-meter-grid .segment {
+  border-bottom: 1px solid var(--synthicide-c-dark);
+  background: var(--synthicide-c-white);
+  transition: background 0.2s;
+}
+.attribute-block-meter-grid .segment:last-child {
+  border-bottom: none;
+}
+.attribute-block-meter-grid .segment.filled {
   background: var(--synthicide-c-dark);
 }
 
@@ -1246,15 +1239,14 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 }
 
 .attribute-input input[type="number"] {
-  width: 30px;
-  max-width: 44px;
-  height: 30px;
-  font-size: 0.95em;
+  width: 28px;
+  max-width: 36px;
+  height: 26px;
+  font-size: 0.92em;
   text-align: center;
-  padding: 0 4px;
+  padding: 0 3px;
   box-sizing: border-box;
   margin: 0;
-  /*display: block;*/
   appearance: textfield;
 }
 
@@ -1273,7 +1265,7 @@ input.attribute-score {
 }
 
 img.actions-img {
-  height: 4ch;
+  height: 2.4rem;
   width: auto;
   display: inline-flex;
   vertical-align: middle;
@@ -1658,14 +1650,6 @@ body.synthicide-style-bold .synthicide .sheet-tabs .item.active {
 }
 
 /* ============================================================ */
-/* ALL TABS: base padding                                       */
-/* ============================================================ */
-
-body.synthicide-style-bold .synthicide .tab {
-  padding-top: 4px;
-}
-
-/* ============================================================ */
 /* SECTION HEADER BARS (items-header, effects-header, etc.)     */
 /* One universal dark-maroon bar rule; specialised tabs can     */
 /* override size but share the same colour language.            */
@@ -1780,55 +1764,129 @@ body.synthicide-style-bold .synthicide .effects-list .effect-controls a {
 /* ATTRIBUTES TABLE                                             */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide .attributes-table {
-  display: grid;               /* keep whatever grid base defines columns */
-  gap: 0;
-  align-items: stretch;        /* all cells in a row share equal height    */
-  border: 1px solid color-mix(in srgb, var(--rb-strong) 50%, transparent);
-  overflow: hidden;
-  border-radius: 2px;
+/* Support for semantic table markup: keep visual parity with
+   the existing grid-based styles while improving classic-mode
+   header contrast and accessibility. */
+.tab.attributes .attributes-table {
+  width: auto;
+  max-width: 420px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin-top: 0;
 }
 
-/* Header row cells */
-body.synthicide-style-bold .synthicide .attributes-table .attributes-header {
-  background: var(--rb-strong);
-  border-left: none;
+/* column widths controlled by CSS classes on <col> */
+.tab.attributes .attributes-table col.col-icon { width: 72px; }
+.tab.attributes .attributes-table col.col-base { width: 48px; }
+.tab.attributes .attributes-table col.col-modifier { width: 48px; }
+.tab.attributes .attributes-table col.col-increase { width: 100px; }
+.tab.attributes .attributes-table col.col-current { width: 48px; }
+
+.tab.attributes .attributes-table thead th.attributes-header,
+.tab.attributes .attributes-table thead th.attributes-col-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.tab.attributes .attributes-table tbody th.attribute-label,
+.tab.attributes .attributes-table tbody td {
+  padding: 4px 6px;
+  text-align: center;
+  vertical-align: middle;
+  border-right: 1px solid var(--synthicide-c-faint);
+}
+
+.tab.attributes .attributes-table tbody td {
+  background: transparent;
+  padding: 4px 6px;
+}
+
+.tab.attributes .attributes-table tbody tr { border-bottom: 1px solid var(--synthicide-c-faint); }
+
+/* center inputs inside TDs and keep heights reasonable */
+.tab.attributes .attributes-table tbody td .attribute-input,
+.tab.attributes .attributes-table tbody td .attribute-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 6px;
+}
+
+.tab.attributes .attributes-table thead th.attributes-header,
+.tab.attributes .attributes-table thead th.attributes-col-header {
+  background: color-mix(in srgb, var(--synthicide-c-panel-bg) 96%, transparent);
+  border-bottom: 2px solid color-mix(in srgb, var(--synthicide-c-dark) 6%, transparent);
+}
+
+.tab.attributes .attributes-table tbody th.attribute-label {
+  text-align: right;
+  padding-right: 8px;
+  display: table-cell;
+}
+
+/* Center the icon and abbreviation within the first column for better alignment */
+.tab.attributes .attributes-table tbody th.attribute-label .attr-abbr,
+.tab.attributes .attributes-table tbody th.attribute-label .rollable {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Make narrow tables responsive: allow horizontal scroll when needed */
+.tab.attributes .attributes-panel {
+  overflow: auto;
+}
+
+/* Bold-mode table equivalents for semantic markup */
+body.synthicide-style-bold .synthicide table.attributes-table {
+  display: table;
+  width: auto;
+  max-width: 420px;
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 50%, transparent);
+  border-collapse: collapse;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+body.synthicide-style-bold .synthicide table.attributes-table thead th.attributes-header,
+body.synthicide-style-bold .synthicide table.attributes-table thead th.attributes-col-header {
+  background: transparent; /* use the row band as the visible background */
+  color: var(--rb-on-accent);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  padding: 4px;
-  /* flex centers text; cell height is driven by the tallest cell in the row */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 10px 8px; /* slightly taller header band */
   text-align: center;
+  border: none;
 }
 
-/* All cells: full stretch + dividers */
-body.synthicide-style-bold .synthicide .attributes-table > * {
+/* Make the entire thead row act as a full-width header band */
+body.synthicide-style-bold .synthicide table.attributes-table thead tr {
+  background: var(--rb-strong);
+  z-index: 1;
+}
+
+body.synthicide-style-bold .synthicide table.attributes-table tbody td,
+body.synthicide-style-bold .synthicide table.attributes-table tbody td.attribute-label,
+body.synthicide-style-bold .synthicide table.attributes-table tbody th[scope="row"] {
   box-sizing: border-box;
   border-right: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
   border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px 3px;
+  padding: 6px 8px;
+  text-align: center;
+  background: var(--rb-cell);
 }
 
-/* Suppress right border on last column */
-body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(5n) {
-  border-right: none;
-}
-
-/* Even data rows: very light tint */
-body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(10n+6),
-body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(10n+7),
-body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(10n+8),
-body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(10n+9),
-body.synthicide-style-bold .synthicide .attributes-table > *:nth-child(10n+10) {
+body.synthicide-style-bold .synthicide table.attributes-table tbody tr:nth-child(even) td {
   background: var(--rb-cell-alt);
 }
+
+
 
 /* Attribute row label cell – bold overrides */
 body.synthicide-style-bold .synthicide .attribute-label {
@@ -1837,23 +1895,36 @@ body.synthicide-style-bold .synthicide .attribute-label {
   gap: 6px;
   padding-right: 6px;
   padding-left: 4px;
-  min-height: 40px;
+  min-height: 56px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }
 
 body.synthicide-style-bold .synthicide .attribute-label img.actions-img {
-  height: 32px;
-  width: 32px;
-  display: block;
-  flex-shrink: 0;
+  height: auto;
+  width: 36px;
+  display: inline-block;
   object-fit: contain;
   border-color: color-mix(in srgb, var(--rb-strong) 50%, transparent);
 }
 
-/* Attribute inputs: centered */
-body.synthicide-style-bold .synthicide .attribute-input {
+/* Attribute inputs: bold-mode
+   - Keep general attribute-inputs centered in non-attributes tabs
+   - Ensure the attributes table has its own explicit alignment rules
+*/
+body.synthicide-style-bold .synthicide .tab:not(.attributes) .attribute-input {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Table-scoped bold-mode alignment — ensures cells align as table layout */
+body.synthicide-style-bold .synthicide table.attributes-table tbody td .attribute-input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px;
 }
 
 body.synthicide-style-bold .synthicide .attribute-input input,
@@ -2008,7 +2079,7 @@ body.synthicide-style-bold .synthicide .tab.attributes h4 {
 /* ============================================================ */
 
 body.synthicide-style-bold .synthicide .trait-description {
-  border-left: 4px solid var(--rb-accent);
+  /*border-left: 4px solid var(--rb-accent);*/
   border-radius: 2px;
   padding: 8px 10px;
   font-size: 0.86rem;

@@ -200,6 +200,16 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           this.actor.allApplicableEffects()
         );
         break;
+      case 'attributes':
+        // Add increaseSegments array (bottom-up) for each attribute for block meter rendering
+        if (context.system?.attributes) {
+          for (const attribute of Object.values(context.system.attributes)) {
+            const filled = Number(attribute.increase) || 0;
+            // Bottom-up: first element is bottom segment
+            attribute.increaseSegments = Array.from({length: 5}, (_, i) => i < filled).reverse();
+          }
+        }
+        break;
     }
     return context;
   }

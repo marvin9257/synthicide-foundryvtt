@@ -6,52 +6,69 @@
 >
   <div class='attributes-layout'>
     <div class='attributes-panel'>
-      <div class="attributes-table">
-        <div class="attributes-header"></div>
-        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Attributes.Base'}}</div>
-        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Attributes.Modifier'}}</div>
-        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Attributes.LevelIncrease'}}</div>
-        <div class="attributes-header">{{localize 'SYNTHICIDE.Actor.Attributes.Current'}}</div>
+      <table class="attributes-table" role="table" aria-label="Attributes">
+        <colgroup>
+          <col class="col-icon">
+          <col class="col-base">
+          <col class="col-modifier">
+          <col class="col-increase">
+          <col class="col-current">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="attributes-col-header" scope="col"></th>
+            <th class="attributes-col-header" scope="col">{{localize 'SYNTHICIDE.Actor.Attributes.Base'}}</th>
+            <th class="attributes-col-header" scope="col">{{localize 'SYNTHICIDE.Actor.Attributes.Modifier'}}</th>
+            <th class="attributes-col-header" scope="col">{{localize 'SYNTHICIDE.Actor.Attributes.LevelIncrease'}}</th>
+            <th class="attributes-col-header" scope="col">{{localize 'SYNTHICIDE.Actor.Attributes.Current'}}</th>
+          </tr>
+        </thead>
+        <tbody>
         {{#each system.attributes as |attribute key|}}
-          <div class="attribute-label">
-            <span class="attr-abbr" data-tooltip="{{localize (lookup @root.SYNTHICIDE.attributes key)}}">{{localize (lookup @root.SYNTHICIDE.attributeAbbreviations key)}}</span>
-            <span
-              class="rollable"
-              data-action="roll"
-              data-roll-type="challenge"
-              data-attribute-key="{{key}}"
-              data-roll="d10+@attributes.{{key}}.value"
-              data-label="{{localize (lookup @root.SYNTHICIDE.attributes key)}}"
-              tabindex="0"
-              role="button"
-              data-tooltip="{{localize (lookup @root.SYNTHICIDE.attributes key)}}"
-            >
-            <img class="actions-img" src="{{concat '/systems/synthicide/assets/' key '.png'}}">
-            </span>
-          </div>
-          <div class="attribute-input">
-            <input type="number" name="system.attributes.{{key}}.base" value="{{attribute.base}}" class="attribute-score" data-dtype="Number" max="5" step="1">
-          </div>
-          <div class="attribute-input">
-            <input disabled type="number" name="system.attributes.{{key}}.modifier" value="{{attribute.modifier}}" class="attribute-score" data-dtype="Number" step="1">
-          </div>
-          <div class="attribute-input">
-            <div class="attribute-stepper" data-attribute-key="{{key}}">
-              <div class="attribute-block-meter" style="--level: {{attribute.increase}};" aria-label="{{localize (lookup @root.SYNTHICIDE.attributes key)}} increase {{attribute.increase}} of 5">
-                <div class="attribute-block-fill"></div>
+          <tr>
+            <td class="attribute-label">
+              <span class="attr-abbr" data-tooltip="{{localize (lookup @root.SYNTHICIDE.attributes key)}}">{{localize (lookup @root.SYNTHICIDE.attributeAbbreviations key)}}</span>
+              <span
+                class="rollable"
+                data-action="roll"
+                data-roll-type="challenge"
+                data-attribute-key="{{key}}"
+                data-roll="d10+@attributes.{{key}}.value"
+                data-label="{{localize (lookup @root.SYNTHICIDE.attributes key)}}"
+                tabindex="0"
+                role="button"
+                data-tooltip="{{localize (lookup @root.SYNTHICIDE.attributes key)}}"
+              >
+                <img class="actions-img" src="{{concat '/systems/synthicide/assets/' key '.png'}}">
+              </span>
+            </td>
+            <td class="attribute-input">
+              <input type="number" name="system.attributes.{{key}}.base" value="{{attribute.base}}" class="attribute-score" data-dtype="Number" max="5" step="1">
+            </td>
+            <td class="attribute-input">
+              <input disabled type="number" name="system.attributes.{{key}}.modifier" value="{{attribute.modifier}}" class="attribute-score" data-dtype="Number" step="1">
+            </td>
+            <td class="attribute-input">
+              <div class="attribute-stepper" data-attribute-key="{{key}}">
+                <div class="attribute-block-meter-grid" aria-label="{{localize (lookup @root.SYNTHICIDE.attributes key)}} increase {{attribute.increase}} of 5">
+                  {{#each attribute.increaseSegments}}
+                    <div class="segment{{#if this}} filled{{/if}}"></div>
+                  {{/each}}
+                </div>
+                <input type="number" name="system.attributes.{{key}}.increase" value="{{attribute.increase}}" class="attribute-score" data-dtype="Number" min="0" max="5" step="1">
+                <div class="attribute-step-buttons">
+                  <button type="button" class="attribute-step-btn" data-action="increaseAttribute" data-attribute-key="{{key}}" aria-label="Increase {{localize (lookup @root.SYNTHICIDE.attributes key)}}">+</button>
+                  <button type="button" class="attribute-step-btn" data-action="decreaseAttribute" data-attribute-key="{{key}}" aria-label="Decrease {{localize (lookup @root.SYNTHICIDE.attributes key)}}">-</button>
+                </div>
               </div>
-              <input type="number" name="system.attributes.{{key}}.increase" value="{{attribute.increase}}" class="attribute-score" data-dtype="Number" min="0" max="5" step="1">
-              <div class="attribute-step-buttons">
-                <button type="button" class="attribute-step-btn" data-action="increaseAttribute" data-attribute-key="{{key}}" aria-label="Increase {{localize (lookup @root.SYNTHICIDE.attributes key)}}">+</button>
-                <button type="button" class="attribute-step-btn" data-action="decreaseAttribute" data-attribute-key="{{key}}" aria-label="Decrease {{localize (lookup @root.SYNTHICIDE.attributes key)}}">-</button>
-              </div>
-            </div>
-          </div>
-          <div class="attribute-value">
-            <input disabled type="text" name="system.attributes.{{key}}.value" value="{{numberFormat attribute.value decimals=0 sign=true}}" class="attribute-score" data-dtype="Number" step="1">
-          </div>
+            </td>
+            <td class="attribute-value">
+              <input disabled type="text" name="system.attributes.{{key}}.value" value="{{numberFormat attribute.value decimals=0 sign=true}}" class="attribute-score" data-dtype="Number" step="1">
+            </td>
+          </tr>
         {{/each}}
-      </div>
+        </tbody>
+      </table>
     </div>
 
     <div class='attributes-derived'>
