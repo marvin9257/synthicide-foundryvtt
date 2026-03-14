@@ -38,8 +38,6 @@ export default class SynthicideTrait extends SynthicideItemBase {
     );
 
     // Trait categories/types (bioclass, attack skill, knowledge focus, etc.)
-    // This replaces the old `bioClassLink` boolean and allows for future
-    // differentiation. Level is only meaningful for non-bioclass traits.
     schema.traitType = new fields.StringField({
       required: true,
       choices: [
@@ -59,14 +57,15 @@ export default class SynthicideTrait extends SynthicideItemBase {
     });
 
     // Optional level for traits. Bioclass traits will usually leave this
-    // undefined; other trait types should set it. We keep the same range
-    // that spellLevel previously used.
+    // undefined; other trait types should set it.
     schema.level = new fields.NumberField({
+      choices: SYNTHICIDE.ALLOWED_TRAIT_LEVELS,
+      initial: 1,
       required: false,
       nullable: true,
       integer: true,
-      min: 0,
-      max: 9,
+      min: 1,
+      max: 7,
     });
 
     schema.requirements = new fields.StringField({...requiredBlankString});
@@ -89,10 +88,9 @@ export default class SynthicideTrait extends SynthicideItemBase {
    */
   async _preUpdate(changed, options, user) {
     // Strict validation: reject updates attempting to set an invalid trait level.
-    const allowed = [1, 4, 7];
     if (changed?.system && Object.prototype.hasOwnProperty.call(changed.system, 'level')) {
       const lvl = Number(changed.system.level);
-      if (!allowed.includes(lvl)) {
+      if (!SYNTHICIDE.ALLOWED_TRAIT_LEVELS.includes(lvl)) {
         console.warn(`[Synthicide] Rejected invalid trait level update: ${lvl}`);
         return false; // cancel the update
       }

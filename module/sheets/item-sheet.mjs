@@ -168,11 +168,12 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     // traitTypes is already a key->loc-key map; the template can localize it
     context.config.traitTypeOptions = SYNTHICIDE.traitTypes;
     // Localized labels for allowed trait levels using a single format string
-    const ALLOWED_TRAIT_LEVELS = [1, 4, 7];
+    
     context.config.traitLevelOptions = Object.fromEntries(
-      ALLOWED_TRAIT_LEVELS.map(l => [String(l), game.i18n.format('SYNTHICIDE.Item.Trait.LevelLabel', { level: l })])
+      SYNTHICIDE.ALLOWED_TRAIT_LEVELS.map(l => [String(l), game.i18n.format('SYNTHICIDE.Item.Trait.LevelLabel', { level: l })])
     );
-    context.isGear = ["gear", "armor", "weapon", "drugs"].includes(this.item.type);
+    context.isGear = SYNTHICIDE.GEAR_TYPES.includes(this.item.type);
+    context.isEquipable = SYNTHICIDE.EQUIPABLE.includes(this.item.type);
 
     return context;
   }

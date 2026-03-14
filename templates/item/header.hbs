@@ -41,11 +41,12 @@
             data-dtype='Number'
           />
         </div>
-      
-        <div class="resource resource-equipped">
-          <span class="resource-label">{{localize "SYNTHICIDE.Item.Gear.FIELDS.equipped.label"}}</span>
-          <input type="checkbox" class="checkbox" name="system.equipped" {{checked system.equipped}} data-dtype="Boolean" />
-        </div>
+        {{#if isEquipable}}
+          <div class="resource resource-equipped">
+            <span class="resource-label">{{localize "SYNTHICIDE.Item.Gear.FIELDS.equipped.label"}}</span>
+            <input type="checkbox" class="checkbox" name="system.equipped" {{checked system.equipped}} data-dtype="Boolean" />
+          </div>
+        {{/if}}
       </div>
     {{/if}}
   </div>

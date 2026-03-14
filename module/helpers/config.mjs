@@ -14,6 +14,7 @@ SYNTHICIDE.debug = {
   // Add more debug flags as needed
 };
 
+// Settings constants
 SYNTHICIDE.SHEET_STYLE_SETTING_KEY = 'sheetStyleMode';
 SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY = 'defaultTargetArmor';
 SYNTHICIDE.SHEET_STYLE_CLASSIC = 'classic';
@@ -35,6 +36,10 @@ SYNTHICIDE.attributes = {
   speed: 'SYNTHICIDE.Attribute.Speed.long',
 };
 
+/**
+ * The set of Attribute Scores abbreviations used within the system.
+ * @type {Object}
+ */
 SYNTHICIDE.attributeAbbreviations = {
   awareness: 'SYNTHICIDE.Attribute.Awareness.abbr',
   combat: 'SYNTHICIDE.Attribute.Combat.abbr',
@@ -45,7 +50,10 @@ SYNTHICIDE.attributeAbbreviations = {
   speed: 'SYNTHICIDE.Attribute.Speed.abbr',
 };
 
-// Centralized roll configuration used by action-roll workflows.
+/**
+ * Centralized roll difficulty and sucess levels used by action-roll workflows.
+ * @type {Object}
+ */
 SYNTHICIDE.rolls = {
   challengeDifficulties: [
     { value: 3, label: 'SYNTHICIDE.Roll.Difficulty.Easy' },
@@ -64,11 +72,14 @@ SYNTHICIDE.rolls = {
   ],
 };
 
-// Trait type choices for items.  We store an object mapping the type
-// key to the corresponding localization key.  This lets callers simply
-// iterate the entries or derive the list of valid types with
-// `Object.keys(SYNTHICIDE.traitTypes)` when constructing schemas.
-// `spell` remains as a valid trait subtype (spells are represented as traits).
+/**
+ * Trait type choices for items.  We store an object mapping the type
+ * key to the corresponding localization key.  This lets callers simply
+ * iterate the entries or derive the list of valid types with
+ * `Object.keys(SYNTHICIDE.traitTypes)` when constructing schemas.
+ * `spell` remains as a valid trait subtype (spells are represented as traits).
+ * @type {Object}
+ */
 SYNTHICIDE.traitTypes = {
   aspect: 'SYNTHICIDE.Item.Trait.Types.aspect',
   bioclass: 'SYNTHICIDE.Item.Trait.Types.bioclass',
@@ -82,8 +93,10 @@ SYNTHICIDE.traitTypes = {
   spell: 'SYNTHICIDE.Item.Trait.Types.spell'
 };
 
-
-// Motivation choices for actors, referencing localization keys.
+/**
+ * Motivation choices for actors, referencing localization keys.
+ * @type {Object}
+ */
 SYNTHICIDE.motivations = {
   proveStrength: {
     label: 'SYNTHICIDE.Actor.Motivation.proveStrength.label',
@@ -114,6 +127,15 @@ SYNTHICIDE.motivations = {
     behavior: 'SYNTHICIDE.Actor.Motivation.liveFast.behavior',
   },
 };
+
+/**
+ * Constants for validating data.
+ */
+//Alowed Trait levels
+SYNTHICIDE.ALLOWED_TRAIT_LEVELS = [1, 4, 7];
+//items that have quantity, weight and could be equipped
+SYNTHICIDE.GEAR_TYPES = ["gear", "armor", "weapon", "drugs"];
+SYNTHICIDE.EQUIPABLE = ["armor", "weapon"];
 
 export default SYNTHICIDE;
 
