@@ -1,11 +1,5 @@
 @font-face {
   font-family: "Roboto";
-  src: url("../assets/fonts/Roboto/Roboto-VariableFont.ttf") format("truetype");
-  font-weight: 100 900;
-  font-style: normal;
-}
-@font-face {
-  font-family: "Roboto";
   src: url("../assets/fonts/Roboto/Roboto-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
@@ -36,6 +30,7 @@
   --synthicide-c-hover-glow: red;
   --synthicide-c-style-accent: var(--synthicide-c-tan);
   --synthicide-default-font: "Roboto", sans-serif;
+  --font-body: var(--synthicide-default-font);
   --font-h4-size: 1rem;
   --reduced-font-size: 0.85rem;
   --form-field-bg: #e6e4df;

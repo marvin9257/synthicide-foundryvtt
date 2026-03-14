@@ -123,8 +123,7 @@ Hooks.once('init', function () {
     editor: true,
     fonts: [
       { urls: ["systems/synthicide/assets/fonts/Roboto/Roboto-Regular.ttf"], weight: 400 },
-      { urls: ["systems/synthicide/assets/fonts/Roboto/Roboto-Bold.ttf"], weight: 700 },
-      { urls: ["systems/synthicide/assets/fonts/Roboto/Roboto-VariableFont.ttf"], weight: "variable" }
+      { urls: ["systems/synthicide/assets/fonts/Roboto/Roboto-Bold.ttf"], weight: 700 }
     ]
   };
 });
