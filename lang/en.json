@@ -302,7 +302,8 @@
         "AttackResultMiss": "Attack Result: Miss",
         "DamageResultApplied": "Damage Result",
         "RollDamage": "Calculate Damage",
-        "RollOpposed": "Opposed Roll"
+        "RollOpposed": "Opposed Roll",
+        "Source": "Source Item"
       },
       "Degree": {
         "Failure": "Failure",

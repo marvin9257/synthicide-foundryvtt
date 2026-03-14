@@ -1,4 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+@font-face {
+  font-family: "Roboto";
+  src: url("../assets/fonts/Roboto/Roboto-VariableFont.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../assets/fonts/Roboto/Roboto-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../assets/fonts/Roboto/Roboto-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
 
 :root {
   --synthicide-border-groove: #bdbdbd;
@@ -19,6 +36,8 @@
   --synthicide-c-hover-glow: red;
   --synthicide-c-style-accent: var(--synthicide-c-tan);
   --synthicide-default-font: "Roboto", sans-serif;
+  --font-h4-size: 1rem;
+  --reduced-font-size: 0.85rem;
   --form-field-bg: #e6e4df;
   --form-field-color: #333;
 }
@@ -716,7 +735,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 
 /* Styles limited to synthicide sheets */
 .synthicide .item-form {
-  font-family: "Roboto", sans-serif;
+  font-family: var(--synthicide-default-font);
 }
 .synthicide .sheet-header {
   flex: 0 auto;
@@ -1740,7 +1759,7 @@ body.synthicide-style-bold .synthicide .effects-list .effect:hover {
 /* Item name + effect name text */
 body.synthicide-style-bold .synthicide .items-list .item-name,
 body.synthicide-style-bold .synthicide .effects-list .effect-name {
-  font-size: 0.85rem;
+  font-size: var(--reduced-font-size);
   font-weight: 600;
 }
 
@@ -2028,7 +2047,7 @@ body.synthicide-style-bold .synthicide .modifiers-cell {
 body.synthicide-style-bold .synthicide h3,
 body.synthicide-style-bold .synthicide h4 {
   font-family: var(--synthicide-default-font);
-  font-size: 1rem;
+  font-size: var(--font-h4-size);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -2053,7 +2072,7 @@ body.synthicide-style-bold .synthicide .tab.aspect h4 {
   border-left: 5px solid var(--rb-accent);
   padding: 6px 14px;
   margin: 0 0 4px;
-  font-size: 0.85rem;
+  font-size: var(--reduced-font-size);
   border-radius: 0;
 }
 
@@ -2062,6 +2081,7 @@ body.synthicide-style-bold .synthicide .tab.attributes h4 {
   color: var(--rb-on-accent);
   padding: 14px;
   margin: 0 0 4px;
+  font-size: var(--reduced-font-size);
 }
 
 /* ============================================================ */
@@ -2072,7 +2092,7 @@ body.synthicide-style-bold .synthicide .trait-description {
   /*border-left: 4px solid var(--rb-accent);*/
   border-radius: 2px;
   padding: 8px 10px;
-  font-size: 0.86rem;
+  font-size: var(--reduced-font-size);
   line-height: 1.3;
 }
 
@@ -2104,8 +2124,8 @@ body.theme-dark.synthicide-style-bold .synthicide fieldset.cybernetics legend {
 /* ============================================================ */
 
 body.synthicide-style-bold .synthicide .tab.gear .item-formula.item-prop {
-  font-family: "Roboto", monospace;
-  font-size: 0.85rem;
+  font-family: var(--synthicide-default-font);
+  font-size: var(--reduced-font-size);
   font-weight: 500;
   background: var(--rb-cell);
   border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
