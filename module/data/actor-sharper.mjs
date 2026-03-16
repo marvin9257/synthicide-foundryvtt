@@ -132,7 +132,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
    */
   getRollData() {
     // Start with base class roll data
-    const data = super.getRollData ? super.getRollData() : {};
+    const data = { ...(super.getRollData ? super.getRollData() : {}), ...this};
 
     // Copy the attribute scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.
