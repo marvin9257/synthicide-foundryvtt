@@ -120,6 +120,6 @@ export default class SynthicideItemBase extends foundry.abstract.TypeDataModel {
     // render: false because Foundry's item-deletion pipeline already re-renders
     // the owning actor sheet; letting the actor.update() also render would cause
     // a redundant second refresh of the sheet.
-    await this.triggerActorModifierAggregation({ render: false });
+    await this.triggerActorModifierAggregation({ render: true });
   }
 }
