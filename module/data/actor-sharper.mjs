@@ -131,8 +131,12 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
    * @returns {Object} The roll data object.
    */
   getRollData() {
-    // Start with base class roll data
-    const data = { ...(super.getRollData ? super.getRollData() : {}), ...this};
+    // Start with base class roll data and merge with this to get derived data (deep merge)
+    const data = foundry.utils.mergeObject(
+      super.getRollData ? super.getRollData() : {},
+      this,
+      { inplace: false, recursive: true }
+    );
 
     // Copy the attribute scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.
