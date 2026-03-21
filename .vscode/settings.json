@@ -3,5 +3,6 @@
   "editor.tabSize": 2,
   "files.exclude": {
     "foundry/": true
-  }
+  },
+  "typescript.validate.enabled": false
 }

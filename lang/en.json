@@ -116,9 +116,15 @@
             "value": {"label": "Hit Points"},
             "max": {"label": "Maximum HP"}
           },
-          "forceBarrier": {
-            "value": {"label": "Force Barrier"},
-            "max": {"label": "Maximum Barrier"}
+          "armorValues": {
+            "armorBonus": "Armor Bonus",
+            "stBonus": "ST Bonus",
+            "speedMax": "Maximum Speed",
+            "forceBarrier": {
+              "value": {"label": "Force Barrier"},
+              "max": {"label": "Maximum Barrier"},
+              "recharge": {"label": "Rechage rate (hours)"}
+            }
           },
           "foodDays": {
             "label": "Food Days",
@@ -167,6 +173,18 @@
           "weight": {"label": "Weight"},
           "equipped": {"label":"Equipped"},
           "price": {"label": "Price"}
+        }
+      },
+      "Armor": {
+        "FIELDS": {
+          "armorBonus": "Armor Bonus",
+          "stBonus": "ST Bonus",
+          "speedMax": "Maximum Speed",
+          "forceBarrier": {
+            "value": {"label": "Force Barrier"},
+            "max": {"label": "Maximum Barrier"},
+            "recharge": {"label": "Rechage rate (hours)"}
+          }
         }
       },
       "Trait": {

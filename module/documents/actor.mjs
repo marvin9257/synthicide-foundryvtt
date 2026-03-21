@@ -42,12 +42,29 @@ export class SynthicideActor extends Actor {
     // ...existing code for other derived data...
   }
 
+   /**
+   * Equip an armor item, unequipping all other armor items for this actor.
+   * @param {string} armorItemId - The ID of the armor item to equip.
+   */
+  async equipArmor(armorItemId) {
+    const armorItems = this.items.filter(item => item.type === "armor");
+    const updates = armorItems
+      .filter(item => item.id !== armorItemId && item.system.equipped)
+      .map(item => ({
+        _id: item.id,
+        "system.equipped": false
+      }));
+    if (updates.length) {
+      await this.updateEmbeddedDocuments("Item", updates);
+    }
+  }
+
   /**
    * Aggregate all item modifiers and apply to this actor.
    *
    * This method sums up all attribute and non-attribute modifiers from the actor's owned items,
    * applies the aggregated attribute modifiers to the actor's attributes (persisting .modifier if changed),
-  * recalculates .value in memory, and applies non-attribute modifiers to arbitrary system paths.
+   * recalculates .value in memory, and applies non-attribute modifiers to arbitrary system paths.
    *
    * This should be called from item data model hooks (e.g., _onCreate, _onUpdate, _onDelete) when item changes
    * may affect actor attributes or other system data.
@@ -181,11 +198,11 @@ export class SynthicideActor extends Actor {
     let damageRemaining = damage;
     // Apply force barrier first.
     let barrierAbsorbed = 0;
-    if (this.system.forceBarrier.value > 0) {
-      barrierAbsorbed = Math.min(this.system.forceBarrier.value, damageRemaining);
+    if (this.system.armorValues?.forceBarrier.value > 0) {
+      barrierAbsorbed = Math.min(this.system.armorValues.forceBarrier.value, damageRemaining);
       if (barrierAbsorbed > 0) {
         damageRemaining -= barrierAbsorbed;
-        updates['system.forceBarrier.value'] = Math.max(this.system.forceBarrier.value - barrierAbsorbed, 0);
+        updates['system.armorValues.forceBarrier.value'] = Math.max(this.system.armorValues.forceBarrier.value - barrierAbsorbed, 0);
       }
     }
 
@@ -216,22 +233,27 @@ export class SynthicideActor extends Actor {
    * applies HP/death outcomes by mutating the passed `updates` object, and
    * posts the appropriate chat message and flags.
    * @param {number} damageRemaining - damage reaching HP after barriers
-   * @param {number} preHP - HP value before applying this damage
+   * @param {number} preHitPoints - HP value before applying this damage
    * @param {Object} updates - the update payload being built by damageActor
    */
-  async _handleShockingStrike(damageRemaining, preHP, updates, options = {}) {
+  async _handleShockingStrike(damageRemaining, preHitPoints, updates, options = {}) {
     if (!(damageRemaining > 0)) return;
     const shockThreshold = Number(this.system.shockThreshold?.value ?? 0);
 
+    //Get attack context variables:
+    //armor - target's armor value (AD - attack difficulty)
+    //barrier abosorbed - amount damange barrier absorbed
+    //lethal - the lethality rating of weapon making the attack
     const { armor, barrierAbsorbed, lethal } = this._resolveShockContext(options);
 
     // Barrier-absorbed attacks only trigger shocking strike at 2x AD.
     if (barrierAbsorbed > 0 && !(damageRemaining >= 2 * armor)) return;
 
+    //If damage remaining does not exceed shock threshold for actor, no shocking strike
     if (!(shockThreshold > 0 && damageRemaining > shockThreshold)) return;
 
-    const shockRD = Math.floor(damageRemaining / 5);
-    const wouldDropBelowZero = damageRemaining > preHP;
+    const shockRollDifficulty = Math.floor(damageRemaining / 5);
+    const wouldDropBelowZero = damageRemaining > preHitPoints;
     const isLethal = Number.isFinite(lethal) && lethal > 0 && armor <= lethal;
 
     const toughnessValue = Number(this.system.attributes?.toughness?.value ?? 0);
@@ -242,7 +264,7 @@ export class SynthicideActor extends Actor {
     if (!isLethal) {
       roll = await new Roll('1d10 + @attribute', { attribute: toughnessValue }).evaluate();
       rollTotal = Number(roll.total ?? 0);
-      success = rollTotal > shockRD;
+      success = rollTotal > shockRollDifficulty;
     }
 
     const outcome = this._resolveShockOutcome({ isLethal, success, wouldDropBelowZero });
@@ -252,7 +274,7 @@ export class SynthicideActor extends Actor {
       rollTotal,
       damageRemaining,
       shockThreshold,
-      rd: shockRD,
+      rd: shockRollDifficulty,
       toughnessValue,
       outcome,
       lethal,
@@ -263,7 +285,7 @@ export class SynthicideActor extends Actor {
 
     const lastFlag = this._buildShockLastFlag({
       damageRemaining,
-      rd: shockRD,
+      rd: shockRollDifficulty,
       roll: rollTotal,
       success,
       armor,
@@ -276,7 +298,7 @@ export class SynthicideActor extends Actor {
 
   /**
    * Resolve shock-processing context from message options and actor fallback.
-   * Message attack AD is authoritative when present; if missing, fall back to
+   * Message attack difficulty, AD, is authoritative when present; if missing, fall back to
    * the target actor's current AD.
    * @private
    */

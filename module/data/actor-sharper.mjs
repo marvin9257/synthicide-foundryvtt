@@ -51,6 +51,10 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       armorBonus: new fields.NumberField({ ...requiredInteger, initial: 0}, {persisted: false}),
       stBonus: new fields.NumberField({ ...requiredInteger, initial: 0}, {persisted: false}),
       speedMax: new fields.NumberField({ ...requiredInteger, initial: 5}, {persisted: false}),
+      forceBarrier: new fields.SchemaField({
+        value: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }),
+        max: new fields.NumberField({ ...requiredInteger, initial: 5 }, {persisted: false}),
+        recoveryRate: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }, {persisted: false})})
     });
 
     schema.rollModifiers = new fields.SchemaField({
@@ -103,8 +107,8 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     foundry.utils.mergeObject(this.armorValues, getCurrentArmorValues(this.parent?.actor));
 
     // Constrain speed.value to armor worn (guarding in case attributes are missing)
-    if (this.attributes?.speed && Number.isFinite(this.armorValues?.speedMax)) {
-      this.attributes.speed.value = Math.min(this.attributes.speed.value, this.armorValues.speedMax);
+    if (this.attributes?.speed && Number.isFinite(this.armorValues.forceBarrier.speedMax)) {
+      this.attributes.speed.value = Math.min(this.attributes.speed.value, this.armorValues.forceBarrier.speedMax);
     }
 
     // Calculate foodDays.min as derived data for sharper actors
@@ -154,7 +158,11 @@ function getCurrentArmorValues(actor) {
   let returnValues = {
     armorBonus: 0,
     stBonus: 0,
-    speedMax: 10
+    speedMax: 10,
+    forceBarrier: {
+      max: 0,
+      recoveryRate: 0
+    }
   }
   if (!actor) return returnValues;
 
@@ -164,7 +172,11 @@ function getCurrentArmorValues(actor) {
   returnValues = {
     armorBonus: wornArmor.armorBonus,
     stBonus: wornArmor.stBonus,
-    speedMax: wornArmor.speedMax
+    speedMax: wornArmor.speedMax,
+    forceBarrier: {
+      max: wornArmor.forceBarrier.max,
+      recoveryRate: wornArmor.recoveryRate
+    }
   }
   return returnValues;
 }

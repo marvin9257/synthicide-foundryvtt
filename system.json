@@ -53,7 +53,7 @@
   "version": "1.0.0",
   "compatibility": {
     "minimum": "14",
-    "verified": "14.356"
+    "verified": "14.357"
   },
   "esmodules": ["module/synthicide.mjs"],
   "styles": ["css/synthicide.css"],

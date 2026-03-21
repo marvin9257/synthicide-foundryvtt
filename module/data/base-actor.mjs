@@ -12,16 +12,10 @@ export default class SynthicideActorBaseData extends foundry.abstract
     schema.level = makeValueField(1);
 
     schema.hitPoints = new fields.SchemaField({
-      value: new fields.NumberField({...requiredInteger, initial: 20}),
+      value: new fields.NumberField({...requiredInteger, initial: 20}), //barrier HP, left as 'value' to allow resource use for fvtt
       max: new fields.NumberField({ ...requiredInteger, initial: 20 }, {persisted: false}),
       base: new fields.NumberField({ ...requiredInteger, initial: 20 }),
       perLevel: new fields.NumberField({ ...requiredInteger, initial: 5 })
-    });
-
-    schema.forceBarrier = new fields.SchemaField({
-      value: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }),
-      max: new fields.NumberField({ ...requiredInteger, initial: 5 }, {persisted: false}),
-      recoveryRate: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }, {persisted: false})
     });
 
     schema.actionPoints = makeDerivedField();
