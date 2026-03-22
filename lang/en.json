@@ -82,7 +82,8 @@
         "Effects": "Effects",
         "Aspect": "Aspect",
         "Bio": "Bio",
-        "Bioclass": "Bioclass"
+        "Bioclass": "Bioclass",
+        "Combat": "Combat"
       },
       "Bioclass": {
         "NoneAssigned": "No bioclass assigned. Drop or create one.",
@@ -123,7 +124,7 @@
             "forceBarrier": {
               "value": {"label": "Force Barrier"},
               "max": {"label": "Maximum Barrier"},
-              "recharge": {"label": "Rechage rate (hours)"}
+              "rechargeTime": {"label": "Rechage rate (hours)"}
             }
           },
           "foodDays": {
@@ -182,9 +183,12 @@
           "speedMax": "Maximum Speed",
           "forceBarrier": {
             "value": {"label": "Force Barrier"},
-            "max": {"label": "Maximum Barrier"},
-            "recharge": {"label": "Rechage rate (hours)"}
-          }
+            "max": {"label": "Barrier HP"},
+            "rechargeTime": {"label": "Recharge (hours)"},
+            "recoveryRate": {"label": "Recovery (HP)"}
+          },
+          "Protection": "Protection",
+          "ForceBarrier": "Force Barrier"
         }
       },
       "Trait": {
@@ -401,7 +405,8 @@
       "gear": "Gear",
       "bioclass": "Bioclass",
       "aspect": "Aspect",
-      "trait": "Trait"
+      "trait": "Trait",
+      "armor": "Armor"
     }
   }
 }

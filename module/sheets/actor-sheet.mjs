@@ -16,7 +16,7 @@ const { api, sheets } = foundry.applications;
  * - Any part listed here should also exist in static PARTS.
  */
 const ACTOR_PARTS_BY_TYPE = {
-  sharper: ['attributes', 'bioclass', 'aspect', 'gear', 'traits', 'cybernetics', 'biography', 'effects'],
+  sharper: ['attributes', 'bioclass', 'aspect', 'combat', 'gear', 'traits', 'cybernetics', 'biography', 'effects'],
   npc: ['attributes', 'gear', 'biography', 'effects'],
 };
 
@@ -37,6 +37,7 @@ const ACTOR_PARTS_BY_TYPE = {
 const ACTOR_TAB_MAP = {
   attributes: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
   gear: { id: 'gear', icon: ICON_MAP.gear, label: 'Gear' },
+  combat: { id: 'combat', icon: ICON_MAP.combat, label: 'Combat' },
   traits: { id: 'traits', icon: ICON_MAP.trait, label: 'Traits' },
   bioclass: { id: 'bioclass', icon: ICON_MAP.bioclass, label: 'Bioclass' },
   aspect: { id: 'aspect', icon: ICON_MAP.aspect, label: 'Aspect' },
@@ -98,7 +99,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // Bioclass tab (bioclass data and associated traits)
     bioclass: {
       template: 'systems/synthicide/templates/actor/bioclass-traits.hbs',
-      scrollable: [""],
+      scrollable: [""]
     },
     attributes: {
       template: 'systems/synthicide/templates/actor/attributes.hbs',
@@ -106,16 +107,16 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     },
     biography: {
       template: 'systems/synthicide/templates/actor/biography.hbs',
-      scrollable: [""],
+      scrollable: [""]
     },
     gear: {
       template: 'systems/synthicide/templates/actor/gear.hbs',
-      scrollable: [""],
+      scrollable: [""]
     },
     // Traits tab (leveled traits)
     traits: {
       template: 'systems/synthicide/templates/actor/traits.hbs',
-      scrollable: [""],
+      scrollable: [""]
     },
     aspect: {
       template: 'systems/synthicide/templates/actor/aspect-abilities.hbs',
@@ -123,12 +124,16 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     },
     cybernetics: {
       template: 'systems/synthicide/templates/actor/cybernetics.hbs',
-      scrollable: [""],
+      scrollable: [""]
     },
     effects: {
       template: 'systems/synthicide/templates/actor/effects.hbs',
-      scrollable: [""],
+      scrollable: [""]
     },
+    combat: {
+      template: 'systems/synthicide/templates/actor/combat.hbs',
+      scrollable: [""]
+    }
   };
 
   /** @override */
@@ -237,43 +242,38 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    */
   async _prepareItems(context) {
     // Initialize containers.
-    const gear = [];
-    let bioclass = null; // reassigned when a bioclass item is found
-    let aspect = null;   // assigned when an aspect item is present
+    const gear = this.actor.itemTypes.gear;
+    const armor = this.actor.itemTypes.armor;
+    const weapon = this.actor.itemTypes.weapon;
+    
     const aspectTraits = [];
     const bioclassTraits = [];
     const traitsByLevel = { 1: [], 4: [], 7: [] };
 
     const actorRollData = this.actor.getRollData();
 
-    // Iterate through items, allocating to containers
-    for (let i of this.document.items) {
-      if (i.type === 'gear') {
-        gear.push(i);
-      }
-      else if (i.type === 'trait') {
-        // Use shared helper to keep enrich options consistent across sheets.
+    context.aspect = this.actor.itemTypes.aspect[0] ?? null;
+    context.bioclass = this.actor.itemTypes.bioclass[0] ?? null;
+    
+    // Iterate through traits as they need special handling
+    for (let i of this.actor.itemTypes.trait) {
+      // Separate bioclass and aspect associated traits from those base traits that have levels
+      // Aspects and Bioclasses can have associated traits, so this is necessary
+      if ([FEATURE_TYPE.BIOCLASS, FEATURE_TYPE.ASPECT].includes(i.system.traitType)) {
         i.enrichedDescription = await enrichSheetHtml({
           html: i.system.description || '',
           document: this.actor,
           isOwner: this.document.isOwner,
           rollData: actorRollData,
         });
-        // Separate bioclass traits from those that have levels
-        if (i.system.traitType === FEATURE_TYPE.BIOCLASS) {
-          bioclassTraits.push(i);
-        } else if (i.system.traitType === FEATURE_TYPE.ASPECT) {
-          aspectTraits.push(i);
-        } else {
-          const lvl = Number(i.system.level ?? 0);
-          traitsByLevel[lvl]?.push(i);
-        }
       }
-      else if (i.type === FEATURE_TYPE.BIOCLASS && !bioclass) {
-        bioclass = i;
-      }
-      else if (i.type === FEATURE_TYPE.ASPECT && !aspect) {
-        aspect = i;
+      if (i.system.traitType === FEATURE_TYPE.BIOCLASS) {
+        bioclassTraits.push(i);
+      } else if (i.system.traitType === FEATURE_TYPE.ASPECT) {
+        aspectTraits.push(i);
+      } else {
+        const lvl = Number(i.system.level ?? 0);
+        traitsByLevel[lvl]?.push(i);
       }
     }
 
@@ -283,15 +283,15 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     }
 
     // Sort then assign
-    context.gear = gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    context.bioclassTraits = bioclassTraits.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.gear = gear?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.armor = armor?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.weapon = weapon?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.bioclassTraits = bioclassTraits?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     // Only keep milestone trait levels (1,4,7) for the actor context.
     const ALLOWED_TRAIT_LEVELS = [1, 4, 7];
     context.traitsByLevel = ALLOWED_TRAIT_LEVELS.map(l => ({ level: l, traits: traitsByLevel[l] }));
     context.allowedTraitLevels = ALLOWED_TRAIT_LEVELS;
-    context.bioclass = bioclass;
-    context.aspect = aspect;
-    context.aspectTraits = aspectTraits.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.aspectTraits = aspectTraits?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
   }
 
   /**

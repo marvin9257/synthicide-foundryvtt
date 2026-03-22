@@ -16,7 +16,8 @@ export const ICON_MAP = {
   tool: 'fa-solid fa-hammer',
   default: 'fa-solid fa-box',
   description: 'fa-solid fa-file-lines',
-  roll: 'fa-solid fa-dice-d20'
+  roll: 'fa-solid fa-dice-d20',
+  combat: 'fa-solid fa-person-rifle'
 };
 
 /**

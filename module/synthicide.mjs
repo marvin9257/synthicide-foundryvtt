@@ -42,14 +42,14 @@ globalThis.synthicide = {
 Hooks.once('init', function () {
 
   console.log(
-      `%cSYNTHICIDE | Initializing system\n` +
+      `%cSYNTHICIDE 2e | Initializing system\n` +
       `%c
-                         _   _     _      _     _      
-         ___ _   _ _ __ | |_| |__ (_) ___(_) __| | ___ 
-        / __| | | | '_ \\| __| '_ \\| |/ __| |/ _\\ |/ _ \\     
-        \\__ \\ |_| | | | | |_| | | | | (__| | (_| |  __/     
-        |___/\\__, |_| |_|\\__|_| |_|_|\\___|_|\\__,_|\\___| 
-             |___/                                      
+                         _   _     _      _     _        ____      
+         ___ _   _ _ __ | |_| |__ (_) ___(_) __| | ___  |___ \\ ___ 
+        / __| | | | '_ \\| __| '_ \\| |/ __| |/ _' |/ _ \\   __) / _ \\ 
+        \\__ \\ |_| | | | | |_| | | | | (__| | (_| |  __/  / __/  __/
+        |___/\\__, |_| |_|\\__|_| |_|_|\\___|_|\\__,_|\\___| |_____\\___|
+            |___/                                                                                     
       `,
       "color: #ffffff; font-weight: bold; font-size: 16px;", // Style for the header
       "color:rgb(222, 51, 3); font-weight: normal; font-size: 12px;" // Style for the ASCII art
@@ -82,10 +82,11 @@ Hooks.once('init', function () {
   };
   CONFIG.Item.documentClass = SynthicideItem;
   CONFIG.Item.dataModels = {
+    armor: models.SynthicideArmor,
     aspect: models.SynthicideAspect,
     bioclass: models.SynthicideBioclass,
     gear: models.SynthicideGear,
-    trait: models.SynthicideTrait,
+    trait: models.SynthicideTrait
   };
 
   // Internal settings used by world migrations

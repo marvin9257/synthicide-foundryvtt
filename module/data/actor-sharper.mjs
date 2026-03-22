@@ -104,7 +104,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       }
     }
     //Get worn armor values
-    foundry.utils.mergeObject(this.armorValues, getCurrentArmorValues(this.parent?.actor));
+    foundry.utils.mergeObject(this.armorValues, getCurrentArmorValues(this.parent));
 
     // Constrain speed.value to armor worn (guarding in case attributes are missing)
     if (this.attributes?.speed && Number.isFinite(this.armorValues.forceBarrier.speedMax)) {
@@ -170,12 +170,12 @@ function getCurrentArmorValues(actor) {
   if (!wornArmor) return returnValues;
 
   returnValues = {
-    armorBonus: wornArmor.armorBonus,
-    stBonus: wornArmor.stBonus,
-    speedMax: wornArmor.speedMax,
+    armorBonus: wornArmor.system.armorBonus,
+    stBonus: wornArmor.system.stBonus,
+    speedMax: wornArmor.system.speedMax,
     forceBarrier: {
-      max: wornArmor.forceBarrier.max,
-      recoveryRate: wornArmor.recoveryRate
+      max: wornArmor.system.forceBarrier.max,
+      recoveryRate: wornArmor.system.forceBarrier.recoveryRate
     }
   }
   return returnValues;

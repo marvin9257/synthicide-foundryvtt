@@ -157,22 +157,26 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 
 /* ============================== */
 /* Progress Bar Styles            */
+/* ============================== */
 .resource-track-fill-green {
   background: var(--synthicide-c-success);
 }
+
 .resource-track-fill-yellow {
   background: var(--synthicide-c-warning);
 }
+
 .resource-track-fill-red {
   background: var(--synthicide-c-danger);
 }
-/* ============================== */
+
 .synthicide .progress-bar {
   position: relative;
   overflow: hidden;
   background-color: var(--synthicide-c-white);
   border-radius: 3px;
 }
+
 .synthicide .progress-bar.vertical {
   flex: 0 0 10px;
   width: 10px;
@@ -187,12 +191,14 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
     transparent 6px
   );
 }
+
 .synthicide .progress-bar.horizontal {
   width: 100%;
   height: 4px;
   margin-top: 0.2rem;
   background: var(--synthicide-c-faint);
 }
+
 .synthicide .progress-bar-fill {
   position: absolute;
   left: 0;
@@ -202,21 +208,22 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   width: 0;
   transition: width 120ms ease-in-out, height 120ms ease-in-out;
 }
+
 .synthicide .progress-bar.vertical .progress-bar-fill {
   background: var(--synthicide-c-dark);
 }
+
 .synthicide .progress-bar.horizontal.resolve .progress-bar-fill {
   background: var(--synthicide-c-success);
 }
-
 
 /* ============================== */
 /* App-Wide Utilities            */
 /* ============================== */
 
-/* ============================== */
-/* Global Styles                  */
-/* ============================== */
+/* ==================================== */
+/* Global Styles (mostly from template) */
+/* ==================================== */
 .window-app {
   font-family: var(--synthicide-default-font);
 }
@@ -1625,7 +1632,7 @@ body.synthicide-style-bold .synthicide .header-info-lurans-input {
 body.synthicide-style-bold .synthicide .sheet-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px;
+  gap: 2ch;
   padding: 4px 0;
   margin-bottom: 8px;
   border-top: 3px solid var(--rb-strong);
@@ -1662,7 +1669,7 @@ body.synthicide-style-bold .synthicide .sheet-tabs .item.active {
 /* ============================================================ */
 /* SECTION HEADER BARS (items-header, effects-header, etc.)     */
 /* One universal dark-maroon bar rule; specialised tabs can     */
-/* override size but share the same colour language.            */
+/* override size but share the same color scheme.               */
 /* ============================================================ */
 
 /* Universal header bar */
@@ -2060,7 +2067,7 @@ body.theme-dark.synthicide-style-bold .synthicide h4 {
   color: var(--synthicide-c-black);
 }
 
-/* Aspect tab: h4 is a full-width header bar */
+/* Aspect & Combat tab: h4 is a full-width header bar */
 body.synthicide-style-bold .synthicide .tab.aspect h4 {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
@@ -2068,6 +2075,15 @@ body.synthicide-style-bold .synthicide .tab.aspect h4 {
   padding: 6px 14px;
   margin: 0 0 4px;
   font-size: var(--reduced-font-size);
+  border-radius: 0;
+}
+
+body.synthicide-style-bold .synthicide .tab.combat h4 {
+  background: var(--rb-strong);
+  color: var(--rb-on-accent);
+  border-left: 5px solid var(--rb-accent);
+  padding: 6px 14px;
+  margin: 0 0 4px;
   border-radius: 0;
 }
 
@@ -2129,6 +2145,23 @@ body.synthicide-style-bold .synthicide .tab.gear .item-formula.item-prop {
   font-style: italic;
   white-space: nowrap;
 }
+
+/* ============================================================ */
+/* COMBAT TAB                                    */
+/* ============================================================ */
+
+body.synthicide-style-bold .synthicide .tab.combat .item-formula.item-prop {
+  font-family: var(--synthicide-default-font);
+  font-size: var(--reduced-font-size);
+  font-weight: 500;
+  background: var(--rb-cell);
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-style: italic;
+  white-space: nowrap;
+}
+
 
 /* ============================================================ */
 /* BIOGRAPHY TAB                                               */
@@ -2403,3 +2436,16 @@ body.synthicide-style-bold .synthicide-action-roll-card .card-title.item-header 
   height: 18px;
   object-fit: contain;
 }
+
+/* ========================= */
+/* Armor Item Sheet          */
+/* ========================= */
+
+.synthicide .armor-group {
+  display: flex;
+  gap: 2ch;
+}
+
+/*.synthicide .armor-group .resource-pair {
+  text-align: center;
+}*/

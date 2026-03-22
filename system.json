@@ -18,6 +18,9 @@
       }
     },
     "Item": {
+      "armor": {
+        "htmlFields": ["description"]
+      },
       "aspect": {
         "htmlFields": ["description"]
       },
@@ -28,6 +31,9 @@
         "htmlFields": ["description"]
       },
       "trait": {
+        "htmlFields": ["description"]
+      },
+      "weapon": {
         "htmlFields": ["description"]
       } 
     }

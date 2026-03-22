@@ -24,6 +24,7 @@ const ITEM_BASE_PARTS_BY_TYPE = {
   gear: ['rollGear'],
   bioclass: ['attributesBioclass', 'cyberneticsBioclass', 'traitsBioclass'],
   aspect: ['abilitiesAspect', 'traitsBioclass'],
+  armor: []
 };
 
 /**
@@ -57,6 +58,7 @@ const ITEM_TAB_MAP = {
  * @extends {ItemSheetV2}
  */
 export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2) {
+    
   /** @override */
   static DEFAULT_OPTIONS = {
     classes: ['synthicide', 'item'],
@@ -96,23 +98,19 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       template: 'systems/synthicide/templates/item/general.hbs',
     },
     attributesTrait: {
-      template:
-        'systems/synthicide/templates/item/parts/trait.hbs',
+      template: 'systems/synthicide/templates/item/parts/trait.hbs',
     },
     rollGear: {
       template: 'systems/synthicide/templates/item/parts/rollGear.hbs',
     },
     attributesBioclass: {
-      template:
-        'systems/synthicide/templates/item/parts/bioclass-attributes.hbs',
+      template: 'systems/synthicide/templates/item/parts/bioclass-attributes.hbs',
     },
     cyberneticsBioclass: {
-      template:
-        'systems/synthicide/templates/item/parts/bioclass-cybernetics.hbs',
+      template: 'systems/synthicide/templates/item/parts/bioclass-cybernetics.hbs',
     },
     traitsBioclass: {
-      template:
-        'systems/synthicide/templates/item/parts/bioclass-traits.hbs',
+      template: 'systems/synthicide/templates/item/parts/bioclass-traits.hbs',
     },
     abilitiesAspect: {
       template: 'systems/synthicide/templates/item/parts/aspect-abilities.hbs',
@@ -122,6 +120,12 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     },
     description: {
       template: 'systems/synthicide/templates/item/description.hbs'
+    },
+    generalTraits: {
+      template: 'systems/synthicide/templates/item/parts/general-traits.hbs'
+    },
+    generalArmor: {
+      template: 'systems/synthicide/templates/item/parts/general-armor.hbs'
     }
   };
 

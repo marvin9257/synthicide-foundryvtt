@@ -10,3 +10,4 @@ export { default as SynthicideTrait } from './item-trait.mjs';
 export { default as SynthicideBioclass } from './item-bioclass.mjs';
 export { default as SynthicideFeature } from './item-feature.mjs';
 export { default as SynthicideAspect } from './item-aspect.mjs';
+export { default as SynthicideArmor } from './item-armor.mjs';

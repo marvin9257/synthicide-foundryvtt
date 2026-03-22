@@ -1,12 +1,41 @@
 
+
 import { createActionMessage } from '../rolls/action-rolls.mjs';
+import SYNTHICIDE from '../helpers/config.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
 export class SynthicideItem extends Item {
-  // No bioclass trait/attribute logic here; handled in SynthicideBioclass.
+  /**
+   * Intercept equipped checkbox changes and trigger equip logic.
+   */
+  async _onUpdate(changed, options, userId) {
+    super._onUpdate(changed, options, userId);
+    if (game.userId !== userId) return;
+    if (changed?.system?.equipped) {
+      if (changed.system.equipped && this.type === "armor") {
+        await this.equip();
+      }
+    }
+  }
+  
+  /**
+   * Equip this item. For armor, ensures only one is equipped. For other types, equips this item if not already equipped.
+   */
+  async equip() {
+    if (!SYNTHICIDE.EQUIPABLE.includes(this.type)) return;
+    if (this.type === "armor") {
+      // Only update other armor items, not this one (form already did)
+      await this.actor.equipArmor(this.id);
+    } else {
+      // Only update if not already equipped
+      if (!this.system.equipped) {
+        await this.update({ "system.equipped": true });
+      }
+    }
+  }
 
   /**
    * Augment the basic Item data model with additional dynamic data.

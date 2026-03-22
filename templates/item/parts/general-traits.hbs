@@ -1,0 +1,25 @@
+{{!-- On traits show type/level above requirements --}}
+<div class='trait-top-fields'>
+  <div class='resource resource-pair'>
+    <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.traitType.label'}}</label>
+    <select name='system.traitType'>
+      {{selectOptions @root.config.traitTypeOptions selected=system.traitType localize=true}}
+    </select>
+  </div>
+  <div class='resource resource-pair'>
+    <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.level.label'}}</label>
+    <select name='system.level'>
+      {{selectOptions @root.config.traitLevelOptions selected=system.level}}
+    </select>
+  </div>
+</div>
+<div class='trait-top-fields'>
+  <div class='resource resource-pair'>
+    <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.requirements.label'}}</label>
+    <input
+      type='text'
+      name='system.requirements'
+      value='{{system.requirements}}'
+    />
+  </div>
+</div>
