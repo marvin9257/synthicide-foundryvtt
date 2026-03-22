@@ -23,7 +23,7 @@ This system is a draft, unofficial version of a Synthicide 2E rpg for Foundry VT
 
 ## Prerequisites
 
-- Node.js (v22 or later recommended)
+- Node.js (v24 or later recommended)
 
 - npm (comes with Node.js)
 
