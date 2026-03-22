@@ -1,4 +1,4 @@
-# Synthicide System
+# Synthicide 2e System
 
 ![Synthicide Theme](assets/synthicide2eTheme.webp)
 
@@ -17,7 +17,7 @@
 
 ![Forge installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fsynthicide)
 
-This system is a draft, unofficial version of a Synthicide 2E rpg for Foundry VTT. It is is based on v13 Boilerplate similar to Simple World-building, but has examples of creating attributes in code rather than dynamically through the UI.
+This system is a draft, unofficial version of a Synthicide 2E rpg for Foundry VTT. It is is based on v13 Boilerplate.
 
 # Development & Build Instructions
 
