@@ -1631,8 +1631,8 @@ body.synthicide-style-bold .synthicide .header-info-lurans-input {
 /* The tab row: top and bottom accent bars frame the tabs */
 body.synthicide-style-bold .synthicide .sheet-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 2ch;
+  /*flex-wrap: wrap;*/
+  gap: 1ch;
   padding: 4px 0;
   margin-bottom: 8px;
   border-top: 3px solid var(--rb-strong);
