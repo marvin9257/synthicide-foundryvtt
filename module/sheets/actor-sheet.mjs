@@ -664,11 +664,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     event.preventDefault();
     const doc = this._getEmbeddedDocument(target);
     if (!doc) return;
-    if (doc.system.equipped) {
-      await doc.update({'system.equipped': false});
-    } else {
-      await doc.equip()
-    }
+    await doc.update({ 'system.equipped': !doc.system.equipped }, {refresh: !(doc.type === 'armor')});
   }
 
   /***************

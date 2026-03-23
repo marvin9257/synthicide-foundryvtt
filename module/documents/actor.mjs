@@ -42,21 +42,33 @@ export class SynthicideActor extends Actor {
     // ...existing code for other derived data...
   }
 
-   /**
+  /**
    * Equip an armor item, unequipping all other armor items for this actor.
    * @param {string} armorItemId - The ID of the armor item to equip.
    */
   async equipArmor(armorItemId) {
     const armorItems = this.items.filter(item => item.type === "armor");
-    const updates = armorItems
-      .filter(item => item.id !== armorItemId && item.system.equipped)
-      .map(item => ({
-        _id: item.id,
-        "system.equipped": false
-      }));
-    if (updates.length) {
-      await this.updateEmbeddedDocuments("Item", updates);
+    const updates = [];
+    let newBarrierHP = undefined;
+    for (const item of armorItems) {
+      if (item.id === armorItemId) {
+        newBarrierHP = item.system.forceBarrier.max;
+        if (!item.system.equipped) {
+          updates.push({ _id: item.id, "system.equipped": true });
+        }
+      } else {
+        if (item.system.equipped) {
+          updates.push({ _id: item.id, "system.equipped": false });
+        }
+      }
     }
+    if (updates.length) {
+      await this.updateEmbeddedDocuments("Item", updates, {render: false});
+    }
+    if (isFinite(newBarrierHP)) {
+      await this.update({"system.armorValues.forceBarrier.value": newBarrierHP}, {render: false});
+    }
+    if (this.sheet && (updates.length || isFinite(newBarrierHP))) await this.sheet?.render(true);
   }
 
   /**

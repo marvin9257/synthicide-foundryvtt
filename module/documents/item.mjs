@@ -12,7 +12,7 @@ export class SynthicideItem extends Item {
    * Intercept equipped checkbox changes and trigger equip logic.
    */
   async _onUpdate(changed, options, userId) {
-    super._onUpdate(changed, options, userId);
+    await super._onUpdate(changed, options, userId);
     if (game.userId !== userId) return;
     if (changed?.system?.equipped) {
       if (changed.system.equipped && this.type === "armor") {
@@ -22,16 +22,15 @@ export class SynthicideItem extends Item {
   }
   
   /**
-   * Equip this item. For armor, ensures only one is equipped. Also, equips this item if not already equipped.
+   * Equip this item. For armor, ensures only one is equipped. For other items, equips this item if not already equipped.
    */
   async equip() {
     if (!SYNTHICIDE.EQUIPABLE.includes(this.type)) return;
     if (this.type === "armor") {
-      // Only update other armor items
+      // Update armor items and unequip where necessary
       await this.actor.equipArmor(this.id);
-    }
-    // Only update if not already equipped (click action on actor sheet deos not update)
-    if (!this.system.equipped) {
+    } else if (!this.system.equipped) {
+      // Only update if not already equipped
       await this.update({ "system.equipped": true });
     }
   }
