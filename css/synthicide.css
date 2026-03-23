@@ -1026,7 +1026,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   text-align: center;
   border-left: 1px solid var(--synthicide-c-border-subtle);
   border-right: 1px solid var(--synthicide-c-border-subtle);
-  font-size: 12px;
+  /*font-size: 12px;*/
 }
 .synthicide .item-formula {
   flex: 0 0 200px;

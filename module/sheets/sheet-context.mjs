@@ -44,7 +44,7 @@ export function buildBaseSheetContext({ sheet, document, documentKey, extra = {}
     system: document.system,
     flags: document.flags,
     fields: document.schema.fields,
-    systemFields: document.system.schema.fields,
+    systemFields: document.system.schema?.fields,
   };
 
   return Object.assign(context, extra);

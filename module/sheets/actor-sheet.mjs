@@ -78,6 +78,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       decreaseCounter: this._onDecreaseCounter,
       editTraitItem: this._editTraitItem,
       deleteTraitItem: this._deleteTraitItem,
+      changeEquippedState: this._onChangeEquippedState,
     },
 
     // Custom property that's merged into `this.options`
@@ -649,6 +650,25 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     }
     console.warn('Could not find document class');
     return null;
+  }
+
+  /**
+   * Handles change in equipped state
+   *
+   * @this SynthicideActorSheet
+   * @param {PointerEvent} event   The originating click event
+   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
+   * @protected
+   */
+  static async _onChangeEquippedState(event, target) {
+    event.preventDefault();
+    const doc = this._getEmbeddedDocument(target);
+    if (!doc) return;
+    if (doc.system.equipped) {
+      await doc.update({'system.equipped': false});
+    } else {
+      await doc.equip()
+    }
   }
 
   /***************

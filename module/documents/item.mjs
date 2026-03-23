@@ -22,18 +22,17 @@ export class SynthicideItem extends Item {
   }
   
   /**
-   * Equip this item. For armor, ensures only one is equipped. For other types, equips this item if not already equipped.
+   * Equip this item. For armor, ensures only one is equipped. Also, equips this item if not already equipped.
    */
   async equip() {
     if (!SYNTHICIDE.EQUIPABLE.includes(this.type)) return;
     if (this.type === "armor") {
-      // Only update other armor items, not this one (form already did)
+      // Only update other armor items
       await this.actor.equipArmor(this.id);
-    } else {
-      // Only update if not already equipped
-      if (!this.system.equipped) {
-        await this.update({ "system.equipped": true });
-      }
+    }
+    // Only update if not already equipped (click action on actor sheet deos not update)
+    if (!this.system.equipped) {
+      await this.update({ "system.equipped": true });
     }
   }
 

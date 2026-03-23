@@ -108,6 +108,22 @@
         "LevelIncrease": "Level Increase",
         "Current": "Current"
       },
+      "Combat": {
+        "Armor": "Armor",
+        "armorValues": {
+          "armorBonus": "Armor Bonus",
+          "stBonus": "ST Bonus",
+          "speedMax": "Maximum Speed",
+          "forceBarrier": {
+            "value": {"label": "Force Barrier"},
+            "max": {"label": "Maximum Barrier"},
+            "rechargeTime": {"label": "Rechage rate (hours)"}
+          },
+          "ForceBarrier": "Force Barrier"
+        },
+        "Weapons": "Weapons",
+        "ChangeEquipped": "Change Equipped State"
+      },
       "base": {
         "FIELDS": {
           "biography": {"label": "Biography"},
@@ -116,16 +132,6 @@
           "hitPoints": {
             "value": {"label": "Hit Points"},
             "max": {"label": "Maximum HP"}
-          },
-          "armorValues": {
-            "armorBonus": "Armor Bonus",
-            "stBonus": "ST Bonus",
-            "speedMax": "Maximum Speed",
-            "forceBarrier": {
-              "value": {"label": "Force Barrier"},
-              "max": {"label": "Maximum Barrier"},
-              "rechargeTime": {"label": "Rechage rate (hours)"}
-            }
           },
           "foodDays": {
             "label": "Food Days",
@@ -406,7 +412,9 @@
       "bioclass": "Bioclass",
       "aspect": "Aspect",
       "trait": "Trait",
-      "armor": "Armor"
+      "armor": "Armor",
+      "weapon" : "Weapon",
+      "shield": "Shield"
     }
   }
 }
