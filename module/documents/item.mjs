@@ -11,14 +11,18 @@ export class SynthicideItem extends Item {
   /**
    * Intercept equipped checkbox changes and trigger equip logic.
    */
-  async _onUpdate(changed, options, userId) {
-    await super._onUpdate(changed, options, userId);
-    if (game.userId !== userId) return;
-    if (changed?.system?.equipped) {
-      if (changed.system.equipped && this.type === "armor") {
-        await this.equip();
+  async _preUpdate(changed, options, user) {
+    const allowed = await super._preUpdate(changed, options, user);
+    if (allowed === false) return false;
+
+    if (this.type === "armor" && changed?.system?.equipped !== undefined && !options._fromEquipLogic) {
+      if (changed?.system?.equipped) {
+        await this.actor.equipArmor(this.id);
+      } else {
+        await this.actor.update({'system.armorValues.forceBarrier.value': 0}, {render: false})
       }
     }
+    return allowed;
   }
   
   /**

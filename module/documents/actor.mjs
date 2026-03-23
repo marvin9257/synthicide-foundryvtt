@@ -44,6 +44,8 @@ export class SynthicideActor extends Actor {
 
   /**
    * Equip an armor item, unequipping all other armor items for this actor.
+   * In order to prevent an infinite loop with Item._preUpdate, An option flag (_fromEquipLogic) is passed to updateEmbeddedDocuments
+   * to supress further updates when other armor items are being unequipped.
    * @param {string} armorItemId - The ID of the armor item to equip.
    */
   async equipArmor(armorItemId) {
@@ -63,7 +65,7 @@ export class SynthicideActor extends Actor {
       }
     }
     if (updates.length) {
-      await this.updateEmbeddedDocuments("Item", updates, {render: false});
+      await this.updateEmbeddedDocuments("Item", updates, {render: false, _fromEquipLogic: true});
     }
     if (isFinite(newBarrierHP)) {
       await this.update({"system.armorValues.forceBarrier.value": newBarrierHP}, {render: false});
