@@ -1701,6 +1701,7 @@ body.synthicide-style-bold .synthicide .effects-header .effect-name {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  border: none;
 }
 
 /* ---- Large section name bars (bioclass / aspect / cybernetics) ---- */
