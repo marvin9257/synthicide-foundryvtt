@@ -1213,7 +1213,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   display: grid;
   grid-template-rows: repeat(5, 1fr);
   width: 16px;
-  height: 30px;
+  height: 34px;
   border: 2px solid var(--synthicide-c-dark);
   background: var(--synthicide-c-white);
   box-sizing: border-box;
@@ -1223,6 +1223,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   border-bottom: 1px solid var(--synthicide-c-dark);
   background: var(--synthicide-c-white);
   transition: background 0.2s;
+  min-height: 6px;
 }
 .attribute-block-meter-grid .segment:last-child {
   border-bottom: none;
