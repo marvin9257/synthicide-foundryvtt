@@ -595,7 +595,7 @@ function getAttributeLabel(attributeKey) {
 function getAttributeValueHtml(attributeKey) {
   const key = normalizeAttributeKey(attributeKey);
   const label = foundry.utils.escapeHTML(getAttributeLabel(key));
-  return `<span class="synthicide-attr-pill"><img class="synthicide-attr-icon" src="/systems/synthicide/assets/${key}.png" alt="" /> ${label}</span>`;
+  return `<span class="synthicide-attr-pill"><img class="synthicide-attr-icon" src="/systems/synthicide/assets/icons/attributes/${key}.png" alt="" /> ${label}</span>`;
 }
 
 function getDegreeBands() {

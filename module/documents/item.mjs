@@ -147,7 +147,7 @@ function buildItemEquationTerms(rollData, item) {
       if (seen.has(key)) continue;
       seen.add(key);
       const attrLabel = actorAttrs?.[key]?.label ?? key;
-      const valueHtml = `<span class="synthicide-attr-pill"><img class="synthicide-attr-icon" src="/systems/synthicide/assets/${foundry.utils.escapeHTML(key)}.png" alt="" /> ${foundry.utils.escapeHTML(attrLabel)}</span>`;
+      const valueHtml = `<span class="synthicide-attr-pill"><img class="synthicide-attr-icon" src="/systems/synthicide/assets/icons/attributes/${foundry.utils.escapeHTML(key)}.png" alt="" /> ${foundry.utils.escapeHTML(attrLabel)}</span>`;
       terms.push({ label: attrLabelText, valueHtml });
     }
     if (terms.length > 0) return terms;
