@@ -204,14 +204,15 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   const armor = parseNumeric(input.armor, 0);
   const difficulty = parseNumeric(input.difficulty, 6);
   const damageBonus = parseNumeric(input.damageBonus, 0);
-  const formula = isAttackSubtype(subtype) ? FORMULA_ATTACK : FORMULA_CHALLENGE;
+  const isAttack = isAttackSubtype(subtype);
+  const isChallenge = subtype === SUBTYPES.CHALLENGE;
+  const formula = isAttack ? FORMULA_ATTACK : FORMULA_CHALLENGE;
   const evaluatedRoll = await new Roll(formula, rollData).evaluate();
   const total = Number(evaluatedRoll.total ?? 0);
   const d10 = Number(evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? 0);
   const equationTerms = buildEquationTerms({ subtype, attributeKey, rollData });
   const messageMode = normalizeMessageMode(input.messageMode);
-  const isAttack = isAttackSubtype(subtype);
-  const isChallenge = subtype === SUBTYPES.CHALLENGE;
+  
 
   let cardData = {
     title: isAttack ? localize('SYNTHICIDE.Roll.Card.TitleAttack') : localize('SYNTHICIDE.Roll.Card.TitleChallenge'),

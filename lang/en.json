@@ -374,7 +374,8 @@
         }
       },
       "Tooltip": {
-        "AttackWithItem": "Attack with {item}"
+        "AttackWithItem": "Attack with {item}",
+        "RollWithItem": "Roll with {item}"
       },
       "Actions": {
         "Attack": "Attack"

@@ -122,10 +122,10 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     this.hitPoints.max = (this.hitPoints.base ?? 32) + (this.hitPoints.perLevel ?? 0) * Math.max(0, level - 1);
     this.actionPoints.value = Math.floor(this.attributes.speed.value / 2) + this.actionPoints.modifier + 3;
     this.battleReflex.value = this.attributes.awareness.value + this.attributes.speed.value + this.battleReflex.modifier;
-    this.toughnessDefense.value = this.attributes.toughness.value + 5 + this.toughnessDefense.modifier
-    this.armorDefense.value = this.armorValues.armorBonus + this.attributes.toughness.value + 5 + this.armorDefense.modifier;
+    this.toughnessDefense.value = 5 + this.attributes.toughness.value + this.toughnessDefense.modifier;
+    this.armorDefense.value = 5 + this.armorValues.armorBonus + this.attributes.toughness.value + this.armorDefense.modifier;
     this.shockThreshold.value = 10 + this.armorValues.stBonus + this.armorDefense.value + this.shockThreshold.modifier;
-    this.nerveDefense.value = this.attributes.nerve.value + 5 + this.nerveDefense.modifier;
+    this.nerveDefense.value = 5 + this.attributes.nerve.value + this.nerveDefense.modifier;
   }
 
   /**
