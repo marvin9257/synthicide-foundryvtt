@@ -107,8 +107,8 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     foundry.utils.mergeObject(this.armorValues, getCurrentArmorValues(this.parent));
 
     // Constrain speed.value to armor worn (guarding in case attributes are missing)
-    if (this.attributes?.speed && Number.isFinite(this.armorValues.forceBarrier.speedMax)) {
-      this.attributes.speed.value = Math.min(this.attributes.speed.value, this.armorValues.forceBarrier.speedMax);
+    if (this.attributes?.speed && Number.isFinite(this.armorValues.speedMax)) {
+      this.attributes.speed.value = Math.min(this.attributes.speed.value, this.armorValues.speedMax);
     }
 
     // Calculate foodDays.min as derived data for sharper actors
