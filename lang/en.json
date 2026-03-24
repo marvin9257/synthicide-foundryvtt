@@ -263,6 +263,38 @@
       "BodyType": {
         "Organic": "Organic",
         "Rigged": "Rigged"
+      },
+      "Weapon": {
+        "Melee": {
+          "label": "Melee",
+          "Axe": "Axe",
+          "Hammer": "Hammer",
+          "Knife": "Knife",
+          "Martial": "Martial",
+          "Sword": "Sword"
+        },
+        "Ranged": {
+          "label": "Ranged",
+          "Pistol": "Pistol",
+          "Rifle": "Rifle",
+          "Shotgun": "Shotgun"
+        },
+        "Demolition": {
+          "label": "Demolition",
+          "Grenade": "Grenade",
+          "Mine": "Mine",
+          "Charge": "Charge"
+        },
+        "FIELDS": {
+          "Attack": "Attack",
+          "Type": "Type",
+          "WeaponClass": "Weapon Class",
+          "WeaponType": "Weapon Type",
+          "AttackBonus":"Attack Bonus (ATT)",
+          "DamageBonus":"Damage Bonus (DMG)",
+          "Lethal": "Lethal"
+
+        }
       }
     },
     "Roll": {

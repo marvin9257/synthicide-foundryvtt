@@ -137,6 +137,35 @@ SYNTHICIDE.ALLOWED_TRAIT_LEVELS = [1, 4, 7];
 SYNTHICIDE.GEAR_TYPES = ["gear", "armor", "weapon", "drugs"];
 SYNTHICIDE.EQUIPABLE = ["armor", "weapon"];
 
+/**
+ * Weapon Constants
+ */
+SYNTHICIDE.WEAPON_CLASSES = {
+  melee: "SYNTHICIDE.Item.Weapon.Melee.label",
+  ranged: "SYNTHICIDE.Item.Weapon.Ranged.label",
+  demolition: "SYNTHICIDE.Item.Weapon.Demolition.label"
+};
+
+SYNTHICIDE.WEAPON_TYPES = {
+  melee: {
+    axe: "SYNTHICIDE.Item.Weapon.Melee.Axe",
+    hammer: "SYNTHICIDE.Item.Weapon.Melee.Hammer",
+    knife: "SYNTHICIDE.Item.Weapon.Melee.Knife",
+    martial: "SYNTHICIDE.Item.Weapon.Melee.Martial",
+    sword: "SYNTHICIDE.Item.Weapon.Melee.Sword"
+  },
+  ranged: {
+    pistol: "SYNTHICIDE.Item.Weapon.Ranged.Pistol",
+    rifle: "SYNTHICIDE.Item.Weapon.Ranged.Rifle",
+    shotgun: "SYNTHICIDE.Item.Weapon.Ranged.Shotgun"
+  },
+  demolition: {
+    grenade: "SYNTHICIDE.Item.Weapon.Demolition.Grenade",
+    mine: "SYNTHICIDE.Item.Weapon.Demolition.Mine",
+    charge: "SYNTHICIDE.Item.Weapon.Demolition.Charge"
+  }
+}
+
 export default SYNTHICIDE;
 
 // Example derivation for selectOptions and behaviors:

@@ -86,7 +86,8 @@ Hooks.once('init', function () {
     aspect: models.SynthicideAspect,
     bioclass: models.SynthicideBioclass,
     gear: models.SynthicideGear,
-    trait: models.SynthicideTrait
+    trait: models.SynthicideTrait,
+    weapon: models.SynthicideWeapon
   };
 
   // Internal settings used by world migrations

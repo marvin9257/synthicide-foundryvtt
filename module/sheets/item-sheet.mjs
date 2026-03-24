@@ -126,6 +126,9 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     },
     generalArmor: {
       template: 'systems/synthicide/templates/item/parts/general-armor.hbs'
+    },
+    generalWeapon: {
+      template: 'systems/synthicide/templates/item/parts/general-weapon.hbs'
     }
   };
 
@@ -178,7 +181,11 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     );
     context.isGear = SYNTHICIDE.GEAR_TYPES.includes(this.item.type);
     context.isEquipable = SYNTHICIDE.EQUIPABLE.includes(this.item.type);
-
+    if (this.item.type === "weapon") {
+      context.weaponClasses = SYNTHICIDE.WEAPON_CLASSES;
+      context.weaponTypes = SYNTHICIDE.WEAPON_TYPES[this.item.system.weaponClass];
+    }
+    
     return context;
   }
 
