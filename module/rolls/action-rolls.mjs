@@ -238,7 +238,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
 
   if (isAttack) {
     const attributeValue = Number(rollData.attribute ?? 0);
-    const hit = total >= armor;
+    const hit = total > armor; //revised 2e moved to gt not ge
     const damageTotal = d10 + attributeValue + damageBonus;
     cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorAttack', {
       attribute: getAttributeLabel(attributeKey),
