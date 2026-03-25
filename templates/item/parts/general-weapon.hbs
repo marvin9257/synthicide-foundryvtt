@@ -23,7 +23,7 @@
       <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.AttackBonus'}}</label>
         <input
-          type='text'
+          type='number'
           name='system.attackBonus'
           value='{{system.attackBonus}}'
         />
@@ -31,19 +31,55 @@
       <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.DamageBonus'}}</label>
         <input
-          type='text'
+          type='number'
           name='system.damageBonus'
           value='{{system.damageBonus}}'
         />
       </div>
       <div class='resource resource-pair'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.RangeIncrement'}}</label>
+        <input
+          type='number'
+          name='system.rangeIncrement'
+          value='{{system.rangeIncrement}}'
+        />
+      </div>
+      <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.Lethal'}}</label>
         <input
-          type='text'
+          type='number'
           name='system.lethal'
           value='{{system.lethal}}'
         />
       </div>
+    </div>
+  </fieldset>
+
+  <fieldset class ="weapon">
+    <legend>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.Features'}}</legend>
+    <div class=''>
+      <div class='resource resource-pair'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.Core'}}</label>
+        <multi-select class="select weapon-features" name="system.features" multiple>
+          {{selectOptions weaponFeaturesOptions selected=system.features localize=true}}
+        </multi-select>
+      </div>
+      {{#if (ne item.system.weaponClass "demolition")}}
+        <div class='resource resource-pair'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.Modifications'}}</label>
+          <multi-select class="select weapon-features" name="system.modifications" multiple>
+            {{selectOptions weaponModificationsOptions selected=system.modifications localize=true}}
+          </multi-select>
+        </div>
+      {{/if}}
+      {{#if (eq item.system.weaponClass "ranged")}}
+        <div class='resource resource-pair'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.Ammo'}}</label>
+          <select class="select weapon-features" name="system.specialAmmo">
+            {{selectOptions weaponAmmoOptions selected=system.specialAmmo localize=true}}
+          </select>
+        </div>
+      {{/if}}
     </div>
   </fieldset>
 

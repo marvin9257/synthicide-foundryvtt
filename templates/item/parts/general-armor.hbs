@@ -5,7 +5,7 @@
       <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Armor.FIELDS.armorBonus'}}</label>
         <input
-          type='text'
+          type='number'
           name='system.armorBonus'
           value='{{system.armorBonus}}'
         />
@@ -13,7 +13,7 @@
       <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Armor.FIELDS.stBonus'}}</label>
         <input
-          type='text'
+          type='number'
           name='system.stBonus'
           value='{{system.stBonus}}'
         />
@@ -21,7 +21,7 @@
       <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Armor.FIELDS.speedMax'}}</label>
         <input
-          type='text'
+          type='number'
           name='system.speedMax'
           value='{{system.speedMax}}'
         />
@@ -35,7 +35,7 @@
       <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Armor.FIELDS.forceBarrier.max.label'}}</label>
         <input
-          type='text'
+          type='number'
           name='system.forceBarrier.max'
           value='{{system.forceBarrier.max}}'
         />
@@ -43,7 +43,7 @@
       <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Armor.FIELDS.forceBarrier.recoveryRate.label'}}</label>
         <input
-          type='text'
+          type='number'
           name='system.forceBarrier.recoveryRate'
           value='{{system.forceBarrier.recoveryRate}}'
         />
@@ -51,10 +51,22 @@
       <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Armor.FIELDS.forceBarrier.rechargeTime.label'}}</label>
         <input
-          type='text'
+          type='number'
           name='system.forceBarrier.rechargeTime'
           value='{{system.forceBarrier.rechargeTime}}'
         />
+      </div>
+    </div>
+  </fieldset>
+</div>
+<div class="armor-group">
+  <fieldset class ="armor">
+    <legend>{{localize 'SYNTHICIDE.Item.Armor.FIELDS.Modifications'}}</legend>
+    <div class=''>
+      <div class='resource resource-pair'>
+        <multi-select class="select weapon-features" name="system.modifications" multiple>
+          {{selectOptions SYNTHICIDE.ARMOR_MODIFICATIONS selected=system.modifications localize=true}}
+        </multi-select>
       </div>
     </div>
   </fieldset>

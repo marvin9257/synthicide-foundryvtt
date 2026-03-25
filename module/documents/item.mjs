@@ -14,6 +14,7 @@ export class SynthicideItem extends Item {
   async _preUpdate(changed, options, user) {
     const allowed = await super._preUpdate(changed, options, user);
     if (allowed === false) return false;
+    if (!this.actor) return allowed;
 
     if (this.type === "armor" && changed?.system?.equipped !== undefined && !options._fromEquipLogic) {
       if (changed?.system?.equipped) {
@@ -30,7 +31,7 @@ export class SynthicideItem extends Item {
    */
   async equip() {
     if (!SYNTHICIDE.EQUIPABLE.includes(this.type)) return;
-    if (this.type === "armor") {
+    if (this.type === "armor" && this.actor) {
       // Update armor items and unequip where necessary
       await this.actor.equipArmor(this.id);
     } else if (!this.system.equipped) {

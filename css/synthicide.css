@@ -889,6 +889,9 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 }
 .synthicide .trait-top-fields .resource {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .synthicide .trait-description-editor {

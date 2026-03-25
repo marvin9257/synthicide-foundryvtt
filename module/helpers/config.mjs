@@ -164,6 +164,90 @@ SYNTHICIDE.WEAPON_TYPES = {
     mine: "SYNTHICIDE.Item.Weapon.Demolition.Mine",
     charge: "SYNTHICIDE.Item.Weapon.Demolition.Charge"
   }
+};
+
+SYNTHICIDE.WEAPON_FEATURES = {
+  melee: {
+    twoHanded: "SYNTHICIDE.Item.Weapon.Melee.Feature.TwoHanded",
+    primative: "SYNTHICIDE.Item.Weapon.Melee.Feature.Primative",
+    counter: "SYNTHICIDE.Item.Weapon.Melee.Feature.Counter",
+    guard: "SYNTHICIDE.Item.Weapon.Melee.Feature.Guard"
+  },
+  ranged: {
+    twoHanded: "SYNTHICIDE.Item.Weapon.Melee.Feature.TwoHanded",
+    primative: "SYNTHICIDE.Item.Weapon.Melee.Feature.Primative",
+    close: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Close",
+    guard: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Guard",
+    slow1: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Slow1",
+    slow2: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Slow2",
+    spread: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Spread"
+  },
+  demolition: {
+    blast3: "SYNTHICIDE.Item.Weapon.Demolition.Feature.Blast3",
+    blast5: "SYNTHICIDE.Item.Weapon.Demolition.Feature.Blast5",
+    stun: "SYNTHICIDE.Item.Weapon.Demolition.Feature.Stun",
+    plant8: "SYNTHICIDE.Item.Weapon.Demolition.Feature.Plant8",
+    plant12: "SYNTHICIDE.Item.Weapon.Demolition.Feature.Plant12"
+  }
+};
+SYNTHICIDE.WEAPON_MODIFICATIONS = {
+  melee: {
+    none: "SYNTHICIDE.Item.Weapon.Melee.Modification.None",
+    expertCrafting: "SYNTHICIDE.Item.Weapon.Melee.Modification.ExpertCrafting",
+    minaturized: "SYNTHICIDE.Item.Weapon.Melee.Modification.Minaturized",
+    baneTuneOrganics: "SYNTHICIDE.Item.Weapon.Melee.Modification.BaneTuneOrganics",
+    baneTuneSynthetics: "SYNTHICIDE.Item.Weapon.Melee.Modification.BaneTuneSynthetics",
+    reach: "SYNTHICIDE.Item.Weapon.Melee.Modification.Reach",
+    telescoping: "SYNTHICIDE.Item.Weapon.Melee.Modification.Telescoping",
+    enhancedAlloy: "SYNTHICIDE.Item.Weapon.Melee.Modification.EnhancedAlloy",
+    poisonReservoir: "SYNTHICIDE.Item.Weapon.Melee.Modification.PoisonReservoir"
+  },
+  ranged: {
+    none: "SYNTHICIDE.Item.Weapon.Ranged.Modification.None",
+    longRange: "SYNTHICIDE.Item.Weapon.Ranged.Modification.LongRange",
+    expertCrafting: "SYNTHICIDE.Item.Weapon.Ranged.Modification.ExpertCrafting",
+    snubNose: "SYNTHICIDE.Item.Weapon.Ranged.Modification.SnubNose",
+    fullAuto: "SYNTHICIDE.Item.Weapon.Ranged.Modification.FullAuto",
+    silencing: "SYNTHICIDE.Item.Weapon.Ranged.Modification.Silencing",
+    battleAssist: "SYNTHICIDE.Item.Weapon.Ranged.Modification.BattleAssist",
+    minaturized: "SYNTHICIDE.Item.Weapon.Ranged.Modification.Minaturized",
+    baneTuneOrganics: "SYNTHICIDE.Item.Weapon.Ranged.Modification.BaneTuneOrganics",
+    baneTuneSynthetics: "SYNTHICIDE.Item.Weapon.Ranged.Modification.BaneTuneSynthetics",
+    scanningScope: "SYNTHICIDE.Item.Weapon.Ranged.Modification.ScanningScope",
+    highPowered: "SYNTHICIDE.Item.Weapon.Ranged.Modification.HighPowered",
+    slugShot: "SYNTHICIDE.Item.Weapon.Ranged.Modification.SlugShot",
+    doubleShot: "SYNTHICIDE.Item.Weapon.Ranged.Modification.DoubleShot",
+    rapidReload: "SYNTHICIDE.Item.Weapon.Ranged.Modification.RapidReload"
+  },
+  demolition: {
+    none: "SYNTHICIDE.Item.Weapon.Ranged.Modification.None"
+  }
+};
+
+SYNTHICIDE.WEAPON_AMMO = {
+  none: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.None",
+  cryo: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Cryo",
+  cinder: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Cinder",
+  knockBack: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.KnockBack",
+  homing: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Homing",
+  poison: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Poison",
+  powerWounding: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.PowerWounding",
+  flash: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Flash",
+  anchor: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Anchor",
+  bouncing: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Bouncing"
+};
+
+SYNTHICIDE.ARMOR_MODIFICATIONS = {
+  none: "SYNTHICIDE.Item.Armor.Modification.None",
+  endoPlating: "SYNTHICIDE.Item.Armor.Modification.EndoPlating",
+  lighterMaterials: "SYNTHICIDE.Item.Armor.Modification.LighterMaterials",
+  psychicInsulator: "SYNTHICIDE.Item.Armor.Modification.PsychicInsulator",
+  superiorCrafting: "SYNTHICIDE.Item.Armor.Modification.SuperiorCrafting",
+  reinforcedHelmet: "SYNTHICIDE.Item.Armor.Modification.ReinforcedHelmet",
+  slick: "SYNTHICIDE.Item.Armor.Modification.Slick",
+  radiative: "SYNTHICIDE.Item.Armor.Modification.Radiative",
+  reactiveCamo: "SYNTHICIDE.Item.Armor.Modification.ReactiveCamo",
+  calling: "SYNTHICIDE.Item.Armor.Modification.Calling"
 }
 
 export default SYNTHICIDE;

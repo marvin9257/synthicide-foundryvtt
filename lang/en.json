@@ -194,7 +194,20 @@
             "recoveryRate": {"label": "Recovery (HP)"}
           },
           "Protection": "Protection",
-          "ForceBarrier": "Force Barrier"
+          "ForceBarrier": "Force Barrier",
+          "Modifications": "Modifications"
+        },
+        "Modification" : {
+          "None": "None",
+          "EndoPlating": "Endo Plating",
+          "LighterMaterials": "Lighter Materials",
+          "PsychicInsulator": "Psychic Insulator",
+          "SuperiorCrafting": "Superior Crafting",
+          "ReinforcedHelmet": "Reinforced Helmet",
+          "Slick": "Slick",
+          "Radiative": "Radiative",
+          "ReactiveCamo": "Reactive Camo",
+          "Calling": "Calling"
         }
       },
       "Trait": {
@@ -271,19 +284,81 @@
           "Hammer": "Hammer",
           "Knife": "Knife",
           "Martial": "Martial",
-          "Sword": "Sword"
+          "Sword": "Sword",
+          "Feature": {
+            "TwoHanded": "Two Handed",
+            "Primative": "Primative",
+            "Counter": "Counter",
+            "Guard": "Guard"
+          },
+          "Modification" : {
+            "None": "None",
+            "ExpertCrafting": "Expert Crafting",
+            "Minaturized": "Minaturized",
+            "BaneTuneOrganics": "Bane Tune (Organics)",
+            "BaneTuneSynthetics": "Bane Tune (Synthetics)",
+            "Reach": "Reach",
+            "Telescoping": "Telescoping",
+            "EnhancedAlloy": "Enhanced Alloy",
+            "PoisonReservoir": "Poison Reservior"
+          }
         },
         "Ranged": {
           "label": "Ranged",
           "Pistol": "Pistol",
           "Rifle": "Rifle",
-          "Shotgun": "Shotgun"
+          "Shotgun": "Shotgun",
+          "Feature": {
+            "TwoHanded": "Two Handed",
+            "Primative": "Primative",
+            "Close": "Close",
+            "Guard": "Guard",
+            "Slow1": "Slow 1",
+            "Slow2": "Slow 2",
+            "Spread": "Spread"
+          },
+          "Modification": {
+            "None": "None",
+            "LongRange": "Long Range",
+            "ExpertCrafting": "Expert Crafting",
+            "SnubNose": "Snub Nose",
+            "FullAuto": "Full Auto",
+            "Silencing": "Silencing",
+            "BattleAssist": "Battle Assist",
+            "Minaturized": "Minaturized",
+            "BaneTuneOrganics": "Bane Tune (Organics)",
+            "BaneTuneSynthetics": "Bane Tune (Synthetics)",
+            "ScanningScope": "Scanning Scope",
+            "HighPowered": "High Powered",
+            "SlugShot": "Slug Shot",
+            "DoubleShot": "Double Shot",
+            "RapidReload": "Rapid Reload"
+          },
+          "Ammo": {
+            "None": "None",
+            "Cryo": "Cryo",
+            "Cinder": "Cinder",
+            "KnockBack": "Knock-back",
+            "Homing": "Homing",
+            "Poison": "Poison",
+            "PowerWounding": "Power Wounding",
+            "Flash": "Flash",
+            "Anchor": "Anchor",
+            "Bouncing": "Bouncing"
+          }
         },
         "Demolition": {
           "label": "Demolition",
           "Grenade": "Grenade",
           "Mine": "Mine",
-          "Charge": "Charge"
+          "Charge": "Charge",
+          "Feature": {
+            "Blast3": "Blast 3",
+            "Blast5": "Blast 5",
+            "Stun": "Stun",
+            "Plant8": "Plant 8",
+            "Plant12": "Plant12"
+          }
         },
         "FIELDS": {
           "Attack": "Attack",
@@ -292,8 +367,12 @@
           "WeaponType": "Weapon Type",
           "AttackBonus":"Attack Bonus (ATT)",
           "DamageBonus":"Damage Bonus (DMG)",
-          "Lethal": "Lethal"
-
+          "Lethal": "Lethal",
+          "Features": "Features",
+          "RangeIncrement": "Range Increment",
+          "Core": "Core",
+          "Modifications": "Modifications",
+          "Ammo": "Ammo"
         }
       }
     },

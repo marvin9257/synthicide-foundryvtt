@@ -28,6 +28,7 @@ export default class SynthicideArmor extends SynthicideGear {
       recoveryRate: new fields.NumberField({...requiredInteger, initial: 0}),
       rechargeTime: new fields.NumberField({...requiredInteger, initial: 0})
     });
+    schema.modifications = new fields.SetField(new fields.StringField({ required: true, blank: false }));
 
     return schema;
   }

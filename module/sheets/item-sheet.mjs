@@ -96,6 +96,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     },
     general: {
       template: 'systems/synthicide/templates/item/general.hbs',
+      scrollable: [""]
     },
     attributesTrait: {
       template: 'systems/synthicide/templates/item/parts/trait.hbs',
@@ -125,10 +126,12 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       template: 'systems/synthicide/templates/item/parts/general-traits.hbs'
     },
     generalArmor: {
-      template: 'systems/synthicide/templates/item/parts/general-armor.hbs'
+      template: 'systems/synthicide/templates/item/parts/general-armor.hbs',
+      scrollable: [""]
     },
     generalWeapon: {
-      template: 'systems/synthicide/templates/item/parts/general-weapon.hbs'
+      template: 'systems/synthicide/templates/item/parts/general-weapon.hbs',
+      scrollable: [""]
     }
   };
 
@@ -184,6 +187,11 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     if (this.item.type === "weapon") {
       context.weaponClasses = SYNTHICIDE.WEAPON_CLASSES;
       context.weaponTypes = SYNTHICIDE.WEAPON_TYPES[this.item.system.weaponClass];
+      context.weaponFeaturesOptions = SYNTHICIDE.WEAPON_FEATURES[this.item.system.weaponClass];
+      context.weaponModificationsOptions = SYNTHICIDE.WEAPON_MODIFICATIONS[this.item.system.weaponClass];
+      if (this.item.system.weaponClass === "ranged") {
+        context.weaponAmmoOptions = SYNTHICIDE.WEAPON_AMMO;
+      }
     }
     
     return context;

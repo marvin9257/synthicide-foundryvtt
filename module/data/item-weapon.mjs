@@ -33,11 +33,10 @@ export default class SynthicideWeapon extends SynthicideGear {
     schema.attackBonus = new fields.NumberField({...requiredInteger, initial: 0});
     schema.damageBonus = new fields.NumberField({...requiredInteger, initial: 0});
     schema.lethal = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.hands = new fields.NumberField({...requiredInteger, initial: 0, min: 0, max: 2, step: 1});
     schema.rangeIncrement = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.spread = new fields.BooleanField({ required: true, nullable:false, initial: false });
-    schema.close = new fields.BooleanField({ required: true, nullable:false, initial: false });
-    schema.blast = new fields.NumberField({...requiredInteger, initial: 0, min: 0, max: 5, step: 1});
+    schema.features = new fields.SetField(new fields.StringField({ required: true, blank: false }));
+    schema.modifications = new fields.SetField(new fields.StringField({ required: true, blank: false }));
+    schema.specialAmmo = new fields.StringField({ required: true, blank: false, initial: "none" })
     
     return schema;
   }
