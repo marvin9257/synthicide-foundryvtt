@@ -23,7 +23,7 @@
     <div class="form-group">
       <label>{{localize "SYNTHICIDE.Roll.Dialog.Attribute"}}</label>
       {{#if lockAttribute}}
-        <input type="hidden" name="attribute" value="{{attributeKey}}" />
+        <input type="hidden" name="attribute" value="{{attributeSelected}}" />
         <select disabled>
           {{selectOptions attributeOptions selected=attributeSelected localize=true}}
         </select>

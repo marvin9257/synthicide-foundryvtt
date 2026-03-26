@@ -28,14 +28,12 @@ export async function openSynthicideActionRollDialog({
   allowSubtypeChange = false,
 } = {}) {
   if (!actor) return null;
-  const attributeKey = getActionAttributeKey(subtype, attribute);
- 
   const result = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.Title'),
     defaults: {
       actor,
       subtype,
-      attribute: attributeKey,
+      attribute: getActionAttributeKey(subtype, attribute),
       difficulty: 6,
       misc: 0,
       armor: isAttackSubtype(subtype) ? getTargetArmor() : 0,
@@ -500,8 +498,7 @@ function buildDialogContext(defaults) {
     difficultySelected: Number(defaults.difficulty ?? 6),
     rollModifiers,
     rollModifierTotalDisplay,
-    actor,
-    attributeKey,
+    actor
   };
 }
 
