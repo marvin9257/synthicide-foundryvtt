@@ -1,6 +1,3 @@
-
-
-
 /**
  * Get the virtual grid cell coordinates for a point in pixel space.
  * @param {number} x - X coordinate in pixels.
