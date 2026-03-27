@@ -198,12 +198,14 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
 /**
  * Generic action roll executor for challenge and attack.
  */
+
 async function executeActionRoll({ actor, input, sourceItem, subtype }) {
+  // Shared setup
   const attributeKey = getActionAttributeKey(subtype, input.attribute);
   const rollData = buildActionRollData({ actor, input, attributeKey });
   const armor = parseNumeric(input.armor, 0);
   const difficulty = parseNumeric(input.difficulty, 6);
-  const damageBonus = parseNumeric(input.damageBonus, 0);
+  // const damageBonus = parseNumeric(input.damageBonus, 0); // No longer needed, handled in cardData
   const isAttack = isAttackSubtype(subtype);
   const isChallenge = subtype === SUBTYPES.CHALLENGE;
   const formula = isAttack ? FORMULA_ATTACK : FORMULA_CHALLENGE;
@@ -212,8 +214,8 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   const d10 = Number(evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? 0);
   const equationTerms = buildEquationTerms({ subtype, attributeKey, rollData });
   const messageMode = normalizeMessageMode(input.messageMode);
-  
 
+  // Shared cardData structure
   let cardData = {
     title: isAttack ? localize('SYNTHICIDE.Roll.Card.TitleAttack') : localize('SYNTHICIDE.Roll.Card.TitleChallenge'),
     subtype,
@@ -222,6 +224,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
     dieValue: d10,
     dieClass: getDieClass(d10, 10),
     equationTerms,
+    attributeKey,
     showEffectOutcomeRow: isChallenge,
     showDamageButton: isAttack && total >= armor,
     showOpposedButton: isChallenge,
@@ -237,59 +240,13 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
     metadataRows: [],
   };
 
+  // Delegate to roll-type-specific handler for cardData customization
   if (isAttack) {
-    const attributeValue = Number(rollData.attribute ?? 0);
-    const hit = total > armor; //revised 2e moved to gt not ge
-    const damageTotal = d10 + attributeValue + damageBonus;
-    cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorAttack', {
-      attribute: getAttributeLabel(attributeKey),
-      armor,
-      item: sourceItem?.name || localize('SYNTHICIDE.Roll.Subtype.Attack'),
-    });
-    cardData.effectText = hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss');
-    cardData.effectClass = hit ? 'outcome-success' : 'outcome-failure';
-    cardData.metadataRows = [
-      { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
-      { label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: damageBonus },
-    ];
-    // Resolve lethal directly from the source item when available; default to 0
-    const lethal = Number(sourceItem?.system?.lethal ?? 0);
-    cardData.flags.attack = {
-      attribute: attributeKey,
-      attributeValue,
-      armor,
-      damageBonus,
-      d10,
-      attackTotal: total,
-      hit,
-      damageTotal,
-      lethal,
-    };
+    cardData = handleAttackRoll({ cardData, sourceItem });
+  } else if (isChallenge) {
+    cardData = handleChallengeRoll({ cardData, difficulty });
   } else {
-    const effect = total - difficulty;
-    const degree = getDegreeLabel(effect);
-    const difficultyLabel = getDifficultyLabel(difficulty);
-    const effectValue = formatSignedNumber(effect);
-    cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorChallenge', {
-      difficulty: difficultyLabel,
-      attribute: getAttributeLabel(attributeKey),
-    });
-    cardData.subtitle = difficultyLabel;
-    cardData.effectText = effectValue;
-    cardData.outcomeLabel = degree;
-    cardData.outcomeClass = getChallengeOutcomeClass(effect);
-    cardData.metadataRows = [
-      { label: localize('SYNTHICIDE.Roll.Card.Difficulty'), value: difficultyLabel },
-      { label: localize('SYNTHICIDE.Roll.Card.Effect'), value: effectValue },
-    ];
-    cardData.flags.challenge = {
-      attribute: attributeKey,
-      difficulty,
-      d10,
-      total,
-      effect,
-      degree,
-    };
+    return handleOtherRoll({ actor, input, sourceItem, subtype });
   }
 
   return createActionMessage({
@@ -298,6 +255,85 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
     messageMode,
     cardData,
   });
+}
+
+// --- Handlers for each roll type ---
+
+function handleAttackRoll({ cardData, sourceItem }) {
+  const attributeKey = cardData.attributeKey;
+  const attributeValue = Number(cardData.equationTerms?.attribute ?? 0);
+  const hit = cardData.total > (cardData.flags.attack?.armor ?? 0);
+  const damageBonus = cardData.flags.attack?.damageBonus ?? 0;
+  const d10 = cardData.dieValue;
+  const armor = cardData.flags.attack?.armor ?? 0;
+  const damageTotal = d10 + attributeValue + damageBonus;
+  cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorAttack', {
+    attribute: getAttributeLabel(attributeKey),
+    armor,
+    item: sourceItem?.name || localize('SYNTHICIDE.Roll.Subtype.Attack'),
+  });
+  cardData.effectText = hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss');
+  cardData.effectClass = hit ? 'outcome-success' : 'outcome-failure';
+  cardData.metadataRows = [
+    { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
+    { label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: damageBonus },
+  ];
+  // Resolve lethal directly from the source item when available; default to 0
+  const lethal = Number(sourceItem?.system?.lethal ?? 0);
+  cardData.flags.attack = {
+    attribute: attributeKey,
+    attributeValue,
+    armor,
+    damageBonus,
+    d10,
+    attackTotal: cardData.total,
+    hit,
+    damageTotal,
+    lethal,
+  };
+  cardData.showEffectOutcomeRow = false;
+  cardData.showDamageButton = cardData.total >= armor;
+  cardData.showOpposedButton = false;
+  return cardData;
+}
+
+function handleChallengeRoll({ cardData, difficulty }) {
+  const attributeKey = cardData.attributeKey;
+  const effect = cardData.total - difficulty;
+  const degree = getDegreeLabel(effect);
+  const difficultyLabel = getDifficultyLabel(difficulty);
+  const effectValue = formatSignedNumber(effect);
+  cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorChallenge', {
+    difficulty: difficultyLabel,
+    attribute: getAttributeLabel(attributeKey),
+  });
+  cardData.subtitle = difficultyLabel;
+  cardData.effectText = effectValue;
+  cardData.outcomeLabel = degree;
+  cardData.outcomeClass = getChallengeOutcomeClass(effect);
+  cardData.metadataRows = [
+    { label: localize('SYNTHICIDE.Roll.Card.Difficulty'), value: difficultyLabel },
+    { label: localize('SYNTHICIDE.Roll.Card.Effect'), value: effectValue },
+  ];
+  cardData.flags.challenge = {
+    attribute: attributeKey,
+    difficulty,
+    d10: cardData.dieValue,
+    total: cardData.total,
+    effect,
+    degree,
+  };
+  cardData.showEffectOutcomeRow = true;
+  cardData.showDamageButton = false;
+  cardData.showOpposedButton = true;
+  return cardData;
+}
+
+// Placeholder for future roll types
+async function handleOtherRoll({ _actor, _input, _sourceItem, subtype }) {
+  // For now, just return a generic message or throw an error
+  ui.notifications?.warn(`Roll type '${subtype}' is not implemented yet.`);
+  return null;
 }
 
 /* -------------------------------------------- */

@@ -29,6 +29,10 @@
       "UseShockingStrike": {
         "Name": "Use Shocking Strike Rules",
         "Hint": "Automatically apply riles for a shocking strike where a single, high damage blow (If damage from a single attack exceeds a character’s shock threshold (ST = 10 + AD + modifiers)) might result in incapacitation.  Toughtness save is automated too."
+      },
+      "VirtualGridMovement": {
+        "Name": "Use Virtual Grids (Zones)",
+        "Hint": "Once combat starts, a 3x3 virtual grid overlay appears to mimic Synthicide's 15'x15' zones (assuming 5' core grid units—the default). Each zone represents a 15'x15' area. Movement is shown as the number of zones crossed, rather than individual grid squares. The virtual grid overlay is disabled when combat ends."
       }
     },
     "Actor": {

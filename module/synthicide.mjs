@@ -14,6 +14,9 @@ import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
 import { registerSynthicideChatContextHook, SynthicideChatPopout } from './documents/chatlog.mjs';
+import { registerVirtualGridOverlay } from './canvas/virtual-grid-overlay.mjs';
+import SynthicideVirtualRuler from './canvas/synthicide-virtual-ruler.mjs';
+import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler.mjs';
 
 const collections = foundry.documents.collections;
 
@@ -128,6 +131,10 @@ Hooks.once('init', function () {
       { urls: ["systems/synthicide/assets/fonts/Roboto/Roboto-Bold.ttf"], weight: 700 }
     ]
   };
+  registerVirtualGridOverlay();
+  // Use custom ruler for virtual grid measurement
+  CONFIG.Canvas.rulerClass = SynthicideVirtualRuler;
+  CONFIG.Token.rulerClass = SynthicideVirtualTokenRuler;
 });
 
 /* -------------------------------------------- */
@@ -280,6 +287,17 @@ function registerSettings() {
     config: true,
     type: Boolean,
     default: true,
+  });
+
+  // Virtual Grid Movement Display Setting
+  game.settings.register('synthicide', SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY, {
+    name: 'SYNTHICIDE.Settings.VirtualGridMovement.Name',
+    hint: 'SYNTHICIDE.Settings.VirtualGridMovement.Hint',
+    scope: 'client',
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: () => { if (canvas.ready) canvas.draw(); }
   });
 
 }

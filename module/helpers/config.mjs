@@ -19,7 +19,10 @@ SYNTHICIDE.SHEET_STYLE_SETTING_KEY = 'sheetStyleMode';
 SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY = 'defaultTargetArmor';
 SYNTHICIDE.SHEET_STYLE_CLASSIC = 'classic';
 SYNTHICIDE.SHEET_STYLE_BOLD = 'rulebookBold';
-SYNTHICIDE.USE_SHOCKING_STRIKE_KEY= 'useShockingStrike'
+SYNTHICIDE.USE_SHOCKING_STRIKE_KEY = 'useShockingStrike';
+
+// Virtual Grid Movement Setting Key
+SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY = 'virtualGridMovement';
 
 /**
  * The set of Attribute Scores used within the system.
