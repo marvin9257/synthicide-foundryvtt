@@ -10,20 +10,36 @@ import SYNTHICIDE from '../helpers/config.mjs';
 export class SynthicideItem extends Item {
   /**
    * Intercept equipped checkbox changes and trigger equip logic.
+   * Now handled in _onUpdate for consistency.
    */
   async _preUpdate(changed, options, user) {
     const allowed = await super._preUpdate(changed, options, user);
-    if (allowed === false) return false;
-    if (!this.actor) return allowed;
+    return allowed;
+  }
 
+  /**
+  * Foundry hook: Called when the item is updated.
+  * Handle post-update logic for armor equip/unequip.
+  *
+  * @this {SynthicideItem}
+  * @param {object} changed
+  * @param {object} options
+  * @param {string} userId
+  * @returns {Promise<void>}
+  */
+  async _onUpdate(changed, options, userId) {
+    await super._onUpdate(changed, options, userId);
+    if (game.userId !== userId) return;
+
+    if (!this.actor) return;
+    // Only trigger if this is armor and not from equip logic
     if (this.type === "armor" && changed?.system?.equipped !== undefined && !options._fromEquipLogic) {
       if (changed?.system?.equipped) {
         await this.actor.equipArmor(this.id);
       } else {
-        await this.actor.update({'system.armorValues.forceBarrier.value': 0}, {render: false})
+        await this.actor.update({'system.armorValues.forceBarrier.value': 0}, {render: false});
       }
     }
-    return allowed;
   }
   
   /**
