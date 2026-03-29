@@ -293,7 +293,7 @@ function registerSettings() {
   game.settings.register('synthicide', SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY, {
     name: 'SYNTHICIDE.Settings.VirtualGridMovement.Name',
     hint: 'SYNTHICIDE.Settings.VirtualGridMovement.Hint',
-    scope: 'client',
+    scope: 'world',
     config: true,
     type: Boolean,
     default: false,

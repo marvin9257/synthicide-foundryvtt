@@ -1,6 +1,3 @@
-// Virtual Grid Overlay for Synthicide
-// Draws a 3x3 virtual grid overlay (each cell = 3x3 Foundry grid units)
-
 import SYNTHICIDE from '../helpers/config.mjs';
 
 /**
@@ -13,6 +10,20 @@ export class VirtualGridLayer extends foundry.canvas.layers.CanvasLayer {
       name: 'virtualGrid',
       zIndex: 120,
     });
+  }
+
+  /**
+   * Update the virtual grid overlay visibility for all clients.
+   */
+  updateVirtualGridOverlay() {
+    try {
+      const show = game.combats?.active?.started && game.settings.get('synthicide', SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY);
+      this.visible = !!show;
+      if (show) this.drawVirtualGrid();
+      else this.clear();
+    } catch (e) {
+      console.warn('[VirtualGridLayer] Could not update virtual grid overlay:', e);
+    }
   }
 
   drawVirtualGrid() {
@@ -62,22 +73,23 @@ export class VirtualGridLayer extends foundry.canvas.layers.CanvasLayer {
   }
 }
 
-// Register and manage the overlay
+// Register and manage the overlay as a custom canvas layer
 export function registerVirtualGridOverlay() {
+  // Register the custom layer in Foundry's layer system
+  CONFIG.Canvas.layers.virtualGrid = {
+    layerClass: VirtualGridLayer,
+    group: 'primary',
+  };
+
+  // On canvas ready, update visibility
   Hooks.on('canvasReady', () => {
-    if (!canvas.virtualGrid) {
-      canvas.virtualGrid = new VirtualGridLayer();
-      canvas.stage.addChild(canvas.virtualGrid);
+    if (canvas.virtualGrid?.updateVirtualGridOverlay) {
+      canvas.virtualGrid.updateVirtualGridOverlay();
     }
-    // Show overlay if combat is already active and setting is enabled
-    const show = game.combats?.active?.started && game.settings.get('synthicide', SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY);
-    canvas.virtualGrid.visible = !!show;
-    if (show) canvas.virtualGrid.drawVirtualGrid();
-    else canvas.virtualGrid.clear();
   });
 
   // Only redraw if visible on resize
   Hooks.on('resize', () => {
-    if (canvas.virtualGrid && canvas.virtualGrid.visible) canvas.virtualGrid.drawVirtualGrid();
+    if (canvas.virtualGrid?.visible) canvas.virtualGrid.drawVirtualGrid();
   });
 }
