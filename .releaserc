@@ -6,7 +6,15 @@
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
     "@semantic-release/npm",
-    "@semantic-release/github",
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          { "path": "synthicide.zip", "label": "Synthicide FVTT System (zip)" },
+          { "path": "system.json", "label": "Manifest (system.json)" }
+        ]
+      }
+    ],
     [
       "@semantic-release/git",
       {
