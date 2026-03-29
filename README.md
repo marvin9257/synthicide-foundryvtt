@@ -4,11 +4,12 @@
 
 ![Foundry v14](https://img.shields.io/badge/foundry-v14-green)
 
-<img title="Minimum foundry version" src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/marvin9257/synthicide-foundryvtt/master/static/system.json&label=Minimum%20Foundry%20version&query=compatibility.minimum&style=flat-square&color=important"> 
 
-<img title="Verified foundry version" src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/marvin9257/synthicide-foundryvtt/master/static/system.json&label=Verified%20Foundry%20version&query=compatibility.verified&style=flat-square&color=important"> 
+<img title="Minimum foundry version" src="https://img.shields.io/badge/dynamic/json?url=https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/system.json&label=Minimum%20Foundry%20version&query=compatibility.minimum&style=flat-square&color=important"> 
 
-<img title="Synthicide version" src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/marvin9257/synthicide-foundryvtt/master/static/system.json&label=Synthicide%20version&query=version&style=flat-square&color=success">
+<img title="Verified foundry version" src="https://img.shields.io/badge/dynamic/json?url=https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/system.json&label=Verified%20Foundry%20version&query=compatibility.verified&style=flat-square&color=important"> 
+
+<img title="Synthicide version" src="https://img.shields.io/badge/dynamic/json?url=https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/system.json&label=Synthicide%20version&query=version&style=flat-square&color=success">
 
 ![GitHub release](https://img.shields.io/github/release-date/marvin9257/synthicide-foundryvtt) 
 [![GitHub commits](https://img.shields.io/github/commits-since/marvin9257/synthicide-foundryvtt/latest)](https://github.com/marvin9257/synthicide-foundryvtt/commits/) 

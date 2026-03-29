@@ -21,8 +21,12 @@ jobs:
         with:
           node-version: ${{ env.node_version }}
 
+
       - name: Install dependencies
         run: npm install
+
+      - name: Build (create dist/)
+        run: npm run build
 
       - name: Install semantic-release and plugins
         run: |
@@ -40,14 +44,18 @@ jobs:
         run: |
           git remote set-url origin https://$GH_TOKEN@github.com/marvin9257/synthicide-foundryvtt.git
 
+
       - name: Zip dist contents for FVTT release
+        if: success() && exists('dist')
         run: |
           cd dist
           zip -r ../synthicide.zip .
           cd ..
         shell: bash
 
+
       - name: Move manifest for release asset
+        if: success() && exists('dist/system.json')
         run: |
           cp dist/system.json ./system.json
         shell: bash
