@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.2...1.0.3) (2026-03-29)
+
+
+### Bug Fixes
+
+* update virtual grid so that it shows on player screens ([81b69dd](https://github.com/marvin9257/synthicide-foundryvtt/commit/81b69dd114e38753713c43118d7d73b2d4b92b23))
+
 ## [1.0.2](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.1...1.0.2) (2026-03-29)
 
 
