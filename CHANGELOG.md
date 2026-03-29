@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.1...1.0.2) (2026-03-29)
+
+
+### Bug Fixes
+
+* another go at release automation ([ca020d7](https://github.com/marvin9257/synthicide-foundryvtt/commit/ca020d78343bd7f5b2271678039ccf9411c0e4d1))
+
 ## [1.0.1](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.0...1.0.1) (2026-03-29)
 
 
