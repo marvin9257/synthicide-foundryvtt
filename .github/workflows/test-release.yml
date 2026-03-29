@@ -37,3 +37,4 @@ jobs:
 # - semantic-release will handle versioning, changelog, manifest update, and GitHub release/tag creation.
 # - Configure .releaserc to update system.json, CHANGELOG.md, and upload assets as needed.
 # - This workflow will only run on direct push to main or beta (not on PRs or manual runs).
+# try a new release
