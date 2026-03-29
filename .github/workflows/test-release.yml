@@ -28,6 +28,12 @@ jobs:
         run: |
           npm install --no-save semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github
 
+      - name: Debug GitHub Token User
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          curl -H "Authorization: token $GH_TOKEN" https://api.github.com/user
+
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
