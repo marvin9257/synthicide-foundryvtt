@@ -24,7 +24,8 @@ const ITEM_BASE_PARTS_BY_TYPE = {
   gear: ['rollGear'],
   bioclass: ['attributesBioclass', 'cyberneticsBioclass', 'traitsBioclass'],
   aspect: ['abilitiesAspect', 'traitsBioclass'],
-  armor: []
+  armor: [],
+  weapon: ['rollGear']
 };
 
 /**
