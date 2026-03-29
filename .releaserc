@@ -10,8 +10,8 @@
       "@semantic-release/github",
       {
         "assets": [
-          { "path": "synthicide.zip", "label": "Synthicide FVTT System (zip)" },
-          { "path": "system.json", "label": "Manifest (system.json)" }
+          "synthicide.zip",
+          "system.json"
         ]
       }
     ],
