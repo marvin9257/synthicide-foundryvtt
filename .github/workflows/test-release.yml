@@ -50,3 +50,4 @@ jobs:
 # - Configure .releaserc to update system.json, CHANGELOG.md, and upload assets as needed.
 # - This workflow will only run on direct push to main or beta (not on PRs or manual runs).
 # - Requires a Personal Access Token (PAT) with repo and workflow scopes stored as GH_TOKEN in repository secrets.
+# - need a new release test
