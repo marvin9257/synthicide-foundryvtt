@@ -31,12 +31,24 @@ export default class SynthicideCombat extends Combat {
 
   /** @override */  
   async _onStartTurn(combatant) {
-      await super._onStartTurn(combatant)
-      console.log (`At start of turn for ${combatant.name}`);
+    await super._onStartTurn(combatant);
+    console.log (`At start of turn for ${combatant.name}`);
+
+    // refresh force barrier if required
+    const forceBarrierData = combatant.actor?.system.armorValues?.forceBarrier;
+    if (forceBarrierData) {
+      if ( forceBarrierData.max > 0 && forceBarrierData.value > 0 && forceBarrierData.recoveryRate > 0) {
+        const newValue = Math.min(forceBarrierData.max, forceBarrierData.value + forceBarrierData.recoveryRate);
+        if (forceBarrierData.value !== newValue) {
+            await combatant.actor.update({'system.armorValues.forceBarrier.value': newValue});
+        }
+      }
+    }
   }
+
   /** @override */
   async _onEndTurn(combatant) {
-      await super._onEndTurn(combatant)
-      console.log (`At end of turn for ${combatant.name}`)
+    await super._onEndTurn(combatant);
+    console.log (`At end of turn for ${combatant.name}`);
   }
 }
