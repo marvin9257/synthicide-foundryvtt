@@ -30,11 +30,11 @@ jobs:
 
       - name: Run semantic-release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npx semantic-release
 
 # Notes:
 # - semantic-release will handle versioning, changelog, manifest update, and GitHub release/tag creation.
 # - Configure .releaserc to update system.json, CHANGELOG.md, and upload assets as needed.
 # - This workflow will only run on direct push to main or beta (not on PRs or manual runs).
-# try a new release
+# - Requires a Personal Access Token (PAT) with repo and workflow scopes stored as GH_TOKEN in repository secrets.
