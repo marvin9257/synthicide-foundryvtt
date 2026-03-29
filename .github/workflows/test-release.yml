@@ -34,6 +34,12 @@ jobs:
         run: |
           curl -H "Authorization: token $GH_TOKEN" https://api.github.com/user
 
+      - name: Set git remote to use PAT
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git remote set-url origin https://$GH_TOKEN@github.com/marvin9257/synthicide-foundryvtt.git
+
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
