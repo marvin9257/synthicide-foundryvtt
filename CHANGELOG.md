@@ -1,3 +1,12 @@
+## [1.0.1](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.0...1.0.1) (2026-03-29)
+
+
+### Bug Fixes
+
+* release script errors ([6deec60](https://github.com/marvin9257/synthicide-foundryvtt/commit/6deec603dd4e0f32dcce7f1cd5bca4d9bb5ab0ce))
+* try to get release build to work ([04a4c9b](https://github.com/marvin9257/synthicide-foundryvtt/commit/04a4c9b102b99488a8c9c046018f892404e13ee9))
+* update the release package ([1bc6d80](https://github.com/marvin9257/synthicide-foundryvtt/commit/1bc6d802b0bc60a9feec1aea8309e2501abb8f9a))
+
 # 1.0.0 (2026-03-29)
 
 
