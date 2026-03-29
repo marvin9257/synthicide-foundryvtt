@@ -1,14 +1,16 @@
-name: Test and (Manual) Release
+name: Test and Release (Push)
 
 on:
-  workflow_dispatch:  # Only run when manually triggered from GitHub UI
+  push:
+    branches: [ main, beta ]  # Run on direct push to main or beta
 
 env:
   node_version: 24
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   release:
-    name: Semantic Release (Manual Only)
+    name: Semantic Release (Push)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,4 +36,4 @@ jobs:
 # Notes:
 # - semantic-release will handle versioning, changelog, manifest update, and GitHub release/tag creation.
 # - Configure .releaserc to update system.json, CHANGELOG.md, and upload assets as needed.
-# - This workflow will only run when manually triggered from the Actions UI.
+# - This workflow will only run on direct push to main or beta (not on PRs or manual runs).

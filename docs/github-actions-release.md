@@ -6,19 +6,19 @@ This document explains the automated test and release process for the Synthicide
 
 ## Overview
 
-- **Manual Release (with Automation):** Releases are created when manually triggered from the GitHub Actions UI. When run, the workflow uses [semantic-release](https://semantic-release.gitbook.io/semantic-release/) to fully automate versioning, changelog, manifest update, and GitHub release creation.
+- **Automated Release (on Push):** Releases are created automatically when you push to the `main` or `beta` branches. The workflow uses [semantic-release](https://semantic-release.gitbook.io/semantic-release/) to fully automate versioning, changelog, manifest update, and GitHub release creation.
 - **Automated Versioning:** Version numbers, tags, changelogs, and manifest updates are all handled by semantic-release based on commit messages.
 - **No `v` Prefix:** Release tags are in the format `1.2.3` (not `v1.2.3`), which is compatible with FoundryVTT.
 - **Release Assets:** semantic-release can be configured to upload assets (e.g., system.json, zip) to each GitHub release for user and FVTT convenience.
-- **Validation:** Ensure your manifest and build are correct before running the workflow.
+- **Validation:** Ensure your manifest and build are correct before pushing to main or beta.
 - **Pre-Release Support:** Use commit messages or branch configuration to control pre-releases if needed.
 
 ---
 
 ## How It Works
 
-### 1. Manual Release Job
-- Only runs when you manually trigger it from the GitHub Actions UI ("Run workflow").
+### 1. Release Job (on Push)
+- Runs automatically when you push to `main` or `beta`.
 - Steps:
   1. Installs dependencies.
   2. Installs semantic-release and plugins.
@@ -41,13 +41,10 @@ This document explains the automated test and release process for the Synthicide
 
 ## How to Use
 
-1. Go to the **Actions** tab on GitHub.
-2. Select the **Test and (Manual) Release** workflow.
-3. Click **Run workflow** (top right) and confirm.
-4. The workflow will:
-   - Install dependencies
-   - Install semantic-release and plugins
-   - Run semantic-release to handle versioning, changelog, manifest, and release
+1. Make sure your commits use [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat: add X`, `fix: bug Y`).
+2. Push your changes to the `main` or `beta` branch.
+3. The workflow will run automatically and create a release if a version bump is detected.
+4. Check the **Releases** tab on GitHub for the new release.
 
 ---
 
@@ -64,7 +61,21 @@ This document explains the automated test and release process for the Synthicide
 - **Version Consistency**: semantic-release ensures the `version` field in `system.json` matches the release/tag version.
 - **Release Attachments**: Configure semantic-release to upload both the manifest and the zip archive to each GitHub release.
 - **Release Notes**: semantic-release generates changelogs and release notes automatically.
-- **Validation**: Validate your manifest and build before running the workflow.
+- **Validation**: Validate your manifest and build before pushing to main or beta.
+
+---
+
+## Node.js 24 Warning Fix
+
+GitHub Actions is deprecating Node.js 20 for actions. To avoid warnings and ensure compatibility, add this to your workflow's `env:` block:
+
+```
+env:
+  node_version: 24
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+```
+
+This will force all actions to use Node.js 24.
 
 ---
 
