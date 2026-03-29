@@ -46,7 +46,7 @@ jobs:
 
 
       - name: Zip dist contents for FVTT release
-        if: success() && exists('dist')
+        if: success()
         run: |
           cd dist
           zip -r ../synthicide.zip .
@@ -55,7 +55,7 @@ jobs:
 
 
       - name: Move manifest for release asset
-        if: success() && exists('dist/system.json')
+        if: success()
         run: |
           cp dist/system.json ./system.json
         shell: bash
