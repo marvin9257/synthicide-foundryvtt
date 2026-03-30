@@ -30,6 +30,14 @@ export async function openSynthicideActionRollDialog({
   if (!actor) return null;
   const attributeKey = getActionAttributeKey(subtype, attribute);
  
+  // Set attackBonus and damageBonus from sourceItem if this is an attack and a weapon/item is provided
+  let attackBonus = 0;
+  let damageBonus = 0;
+  if (isAttackSubtype(subtype) && sourceItem?.system) {
+    attackBonus = Number(sourceItem.system.attackBonus ?? 0);
+    damageBonus = Number(sourceItem.system.damageBonus ?? 0);
+  }
+
   const result = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.Title'),
     defaults: {
@@ -39,8 +47,8 @@ export async function openSynthicideActionRollDialog({
       difficulty: 6,
       misc: 0,
       armor: isAttackSubtype(subtype) ? getTargetArmor() : 0,
-      attackBonus: 0,
-      damageBonus: 0,
+      attackBonus,
+      damageBonus,
       messageMode: getDefaultMessageMode(),
       allowSubtypeChange,
     },
@@ -228,7 +236,8 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
     attributeKey,
     attributeValue,
     showEffectOutcomeRow: isChallenge,
-    showDamageButton: isAttack && total >= armor,
+    // showDamageButton will be set in handleAttackRoll using attack.hit
+    showDamageButton: false,
     showOpposedButton: isChallenge,
     flags: {
       version: ACTION_ROLL_VERSION,
@@ -238,6 +247,14 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
       sourceItemUuid: sourceItem?.uuid ?? null,
       messageMode,
       attributeValue,
+      ...(isAttack ? {
+        attack: {
+          armor: parseNumeric(input.armor, 0),
+          attackBonus: parseNumeric(input.attackBonus, 0),
+          damageBonus: parseNumeric(input.damageBonus, 0),
+          // hit will be set in handleAttackRoll
+        }
+      } : {})
     },
     flavor: '',
     metadataRows: [],
@@ -265,10 +282,10 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
 function handleAttackRoll({ cardData, sourceItem }) {
   const attributeKey = cardData.attributeKey;
   const attributeValue = Number(cardData.attributeValue ?? 0);
-  const hit = cardData.total > (cardData.flags.attack?.armor ?? 0);
-  const damageBonus = cardData.flags.attack?.damageBonus ?? 0;
   const d10 = cardData.dieValue;
   const armor = cardData.flags.attack?.armor ?? 0;
+  const damageBonus = cardData.flags.attack?.damageBonus ?? 0;
+  const hit = cardData.total >= armor;
   const damageTotal = d10 + attributeValue + damageBonus;
   cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorAttack', {
     attribute: getAttributeLabel(attributeKey),
@@ -284,10 +301,9 @@ function handleAttackRoll({ cardData, sourceItem }) {
   // Resolve lethal directly from the source item when available; default to 0
   const lethal = Number(sourceItem?.system?.lethal ?? 0);
   cardData.flags.attack = {
+    ...cardData.flags.attack,
     attribute: attributeKey,
     attributeValue,
-    armor,
-    damageBonus,
     d10,
     attackTotal: cardData.total,
     hit,
@@ -295,7 +311,7 @@ function handleAttackRoll({ cardData, sourceItem }) {
     lethal,
   };
   cardData.showEffectOutcomeRow = false;
-  cardData.showDamageButton = cardData.total >= armor;
+  cardData.showDamageButton = hit;
   cardData.showOpposedButton = false;
   return cardData;
 }

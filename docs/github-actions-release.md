@@ -109,7 +109,6 @@ This will force all actions to use Node.js 24.
 
 ## Troubleshooting
 - Make sure your commit messages follow the Conventional Commits format for best results with semantic-release.
-- Ensure `GH_TOKEN` is available in your repository secrets (set by default on GitHub).
 - For FoundryVTT API submission, you will need to add `FOUNDRYVTT_RELEASE_TOKEN` to your repository secrets.
 - Validate your manifest with [jsonlint.com](https://jsonlint.com/) if you encounter issues.
 
