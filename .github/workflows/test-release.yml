@@ -21,25 +21,29 @@ jobs:
         with:
           node-version: ${{ env.node_version }}
 
-
       - name: Install dependencies
         run: npm install
-
 
       - name: Install semantic-release and plugins
         run: |
           npm install --no-save semantic-release @semantic-release/exec @semantic-release/changelog @semantic-release/git @semantic-release/github
 
+      - name: Set git remote to use GITHUB_TOKEN
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/marvin9257/synthicide-foundryvtt.git
+          echo "Using GITHUB_TOKEN for git authentication."
+
       - name: Run semantic-release (handles versioning and system.json update)
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
 
       - name: Build (create dist/)
         run: npm run build
 
       - name: Zip dist contents for FVTT release
-        if: success()
         run: |
           cd dist
           zip -r ../synthicide.zip .
@@ -47,57 +51,11 @@ jobs:
         shell: bash
 
       - name: Move manifest for release asset
-        if: success()
         run: |
           cp dist/system.json ./system.json
         shell: bash
-
-      - name: Debug GitHub Token User
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          curl -H "Authorization: token $GH_TOKEN" https://api.github.com/user
-
-
-      - name: Set git remote to use GITHUB_TOKEN (preferred) or fallback to PAT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          if [ -n "$GITHUB_TOKEN" ]; then
-            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/marvin9257/synthicide-foundryvtt.git
-            echo "Using GITHUB_TOKEN for git authentication."
-          elif [ -n "$GH_TOKEN" ]; then
-            git remote set-url origin https://$GH_TOKEN@github.com/marvin9257/synthicide-foundryvtt.git
-            echo "Using GH_TOKEN (PAT) for git authentication."
-          else
-            echo "No authentication token found!" && exit 1
-          fi
-
-
-      - name: Zip dist contents for FVTT release
-        if: success()
-        run: |
-          cd dist
-          zip -r ../synthicide.zip .
-          cd ..
-        shell: bash
-
-
-      - name: Move manifest for release asset
-        if: success()
-        run: |
-          cp dist/system.json ./system.json
-        shell: bash
-
-      - name: Run semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npx semantic-release
 
 # Notes:
 # - semantic-release will handle versioning, changelog, manifest update, and GitHub release/tag creation.
 # - Configure .releaserc to update system.json, CHANGELOG.md, and upload assets as needed.
 # - This workflow will only run on direct push to main or beta (not on PRs or manual runs).
-# - Requires a Personal Access Token (PAT) with repo and workflow scopes stored as GH_TOKEN in repository secrets.
-# - need a new release test
