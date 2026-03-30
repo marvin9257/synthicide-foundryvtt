@@ -26,18 +26,24 @@ jobs:
         run: npm install
 
 
-      - name: Build (create dist/)
-        run: npm run build
-
-      - name: Update system.json version in dist and root
-        run: |
-          VERSION=$(npx semantic-release --dry-run | grep 'next release version is' | awk '{print $NF}')
-          echo "Next release version: $VERSION"
-          node scripts/update-system-json-version.js $VERSION
 
       - name: Install semantic-release and plugins
         run: |
           npm install --no-save semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github
+
+      - name: Build (create dist/)
+        run: npm run build
+
+      - name: Get next release version from semantic-release
+        id: get_version
+        run: |
+          VERSION=$(npx semantic-release --dry-run --branches=${{ github.ref_name }} --ci --no-ci false --plugins=@semantic-release/commit-analyzer,@semantic-release/release-notes-generator,@semantic-release/changelog,@semantic-release/git,@semantic-release/github --debug=false --stdout --json | grep '"nextRelease":' -A 10 | grep '"version":' | head -1 | awk -F '"' '{print $4}')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Next release version: $VERSION"
+
+      - name: Update system.json version in dist and root
+        run: |
+          node scripts/update-system-json-version.js $VERSION
 
       - name: Debug GitHub Token User
         env:
