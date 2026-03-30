@@ -1,3 +1,15 @@
+## [1.0.10](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.9...1.0.10) (2026-03-30)
+
+
+### Bug Fixes
+
+* another shot at dry-run ([8356b93](https://github.com/marvin9257/synthicide-foundryvtt/commit/8356b93bafb7a088bd8f389b3c3f21a2e8148ffa))
+* growing very old with this ([c2d56d3](https://github.com/marvin9257/synthicide-foundryvtt/commit/c2d56d37b77eb170fae2d591aa3b85050db50f6b))
+* here we go again ([fe056f5](https://github.com/marvin9257/synthicide-foundryvtt/commit/fe056f5f83556c833a3cda75a0e233769460ca1c))
+* more craziness ([717d2a1](https://github.com/marvin9257/synthicide-foundryvtt/commit/717d2a1f9b0261f235b98de418da91cb8eb4bd46))
+* try again using dry release ([02f360a](https://github.com/marvin9257/synthicide-foundryvtt/commit/02f360a7311e69f01c9e8f98624702ddf783e103))
+* try to look at official repro ([9024933](https://github.com/marvin9257/synthicide-foundryvtt/commit/90249337ba378b13a9397cfe66e751941cbcd6c2))
+
 ## [1.0.9](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.8...1.0.9) (2026-03-30)
 
 
