@@ -1,3 +1,10 @@
+## [1.0.11](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.10...1.0.11) (2026-03-30)
+
+
+### Bug Fixes
+
+* avoid updating system.json in dist before the build ([3399681](https://github.com/marvin9257/synthicide-foundryvtt/commit/33996813fcc3966a8c60dffbb2259cf183cd0267))
+
 ## [1.0.10](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.9...1.0.10) (2026-03-30)
 
 
