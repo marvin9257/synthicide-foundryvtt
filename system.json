@@ -81,7 +81,7 @@
       "thumbnail": "systems/synthicide/assets/synthicideTheme2.svg"
     }
   ],
-  "version": "1.0.5",
+  "version": "1.0.6",
   "compatibility": {
     "minimum": "14",
     "verified": "14.357"

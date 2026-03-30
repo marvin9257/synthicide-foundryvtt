@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.5...1.0.6) (2026-03-30)
+
+
+### Bug Fixes
+
+* try to get rid of PAT's ([a689c0d](https://github.com/marvin9257/synthicide-foundryvtt/commit/a689c0d8a2a305b638a286fd0affec006ac91061))
+
 ## [1.0.5](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.4...1.0.5) (2026-03-30)
 
 
