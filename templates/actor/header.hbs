@@ -138,11 +138,8 @@
             data-dtype='Number'
           />
         </div>
+        <div class='resource-track resource-track-empty'></div>
       </div>
-
-      {{#if (eq actor.type 'npc')}}
-
-      {{/if}}
       <!-- Cynicism Resource -->
       <div class='resource flex-group-center header-resource'>
         <label class='resource-label'>
@@ -223,45 +220,46 @@
           <div class='resource-track-fill' style='width: calc(({{system.resolve}} / 5) * 100%);'></div>
         </div>
       </div>
-        <!-- Food Days Resource -->
-        <div class='resource flex-group-center header-resource'>
-          <label class='resource-label'>
-            {{#if (lt system.foodDays.value 0)}}
-            <span class="text-warning">{{localize 'SYNTHICIDE.Actor.base.FIELDS.foodDays.without'}}</span>
-            {{else}}
-            {{localize 'SYNTHICIDE.Actor.base.FIELDS.foodDays.label'}}
+      <!-- Food Days Resource -->
+      <div class='resource flex-group-center header-resource'>
+        <label class='resource-label'>
+          {{#if (lt system.foodDays.value 0)}}
+          <span class="text-warning">{{localize 'SYNTHICIDE.Actor.base.FIELDS.foodDays.without'}}</span>
+          {{else}}
+          {{localize 'SYNTHICIDE.Actor.base.FIELDS.foodDays.label'}}
+          {{/if}}
+        </label>
+        <div class='resource-content flexrow flex-center flex-between resource-counter'>
+          <div class='resource-stepper' data-counter-key='foodDays'>
+            {{#if @root.editable}}
+              <button
+                type='button'
+                class='resource-step-btn'
+                data-action='decreaseCounter'
+                data-counter-key='foodDays'
+                aria-label='Decrease food days'
+              >-</button>
             {{/if}}
-          </label>
-          <div class='resource-content flexrow flex-center flex-between resource-counter'>
-            <div class='resource-stepper' data-counter-key='foodDays'>
-              {{#if @root.editable}}
-                <button
-                  type='button'
-                  class='resource-step-btn'
-                  data-action='decreaseCounter'
-                  data-counter-key='foodDays'
-                  aria-label='Decrease food days'
-                >-</button>
-              {{/if}}
-              <input
-                type='number'
-                name='system.foodDays.value'
-                value='{{system.foodDays.value}}'
-                data-dtype='Number'
-                min='{{system.foodDays.min}}'
-                step='1'
-              />
-              {{#if @root.editable}}
-                <button
-                  type='button'
-                  class='resource-step-btn'
-                  data-action='increaseCounter'
-                  data-counter-key='foodDays'
-                  aria-label='Increase food days'
-                >+</button>
-              {{/if}}
-            </div>
+            <input
+              type='number'
+              name='system.foodDays.value'
+              value='{{system.foodDays.value}}'
+              data-dtype='Number'
+              min='{{system.foodDays.min}}'
+              step='1'
+            />
+            {{#if @root.editable}}
+              <button
+                type='button'
+                class='resource-step-btn'
+                data-action='increaseCounter'
+                data-counter-key='foodDays'
+                aria-label='Increase food days'
+              >+</button>
+            {{/if}}
           </div>
         </div>
+        <div class='resource-track resource-track-empty'></div>
+      </div>
     </div>
 </header>

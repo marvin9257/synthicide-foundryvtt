@@ -1346,6 +1346,11 @@ img.actions-img {
   transition: width 120ms ease-in-out;
 }
 
+/* Make background transparent for empty tracks */
+.synthicide .resource-track-empty {
+  background: transparent !important;
+}
+
 .synthicide .resource-track-cynicism .resource-track-fill {
   background: var(--synthicide-c-danger);
 }
