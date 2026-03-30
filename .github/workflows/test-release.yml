@@ -25,8 +25,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+
       - name: Build (create dist/)
         run: npm run build
+
+      - name: Update system.json version in dist and root
+        run: |
+          VERSION=$(npx semantic-release --dry-run | grep 'next release version is' | awk '{print $NF}')
+          echo "Next release version: $VERSION"
+          node scripts/update-system-json-version.js $VERSION
 
       - name: Install semantic-release and plugins
         run: |
