@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.6...1.0.7) (2026-03-30)
+
+
+### Bug Fixes
+
+* get rid of duplicate actions in release process ([bcdb3aa](https://github.com/marvin9257/synthicide-foundryvtt/commit/bcdb3aadc6fa6e7bf341ffa06f80abddbf004302))
+
 ## [1.0.6](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.5...1.0.6) (2026-03-30)
 
 
