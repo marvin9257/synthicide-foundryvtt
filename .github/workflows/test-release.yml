@@ -36,6 +36,20 @@ jobs:
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/marvin9257/synthicide-foundryvtt.git
           echo "Using GITHUB_TOKEN for git authentication."
 
+
+      - name: Get next version (semantic-release dry run)
+        id: get_next_version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEXT_VERSION=$(npx semantic-release --dry-run | grep -Po '"version":\s*"\K[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)
+          echo "Next version: $NEXT_VERSION"
+          echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
+
+      - name: Update system.json with next version
+        run: |
+          node scripts/update-system-json-version.js $NEXT_VERSION
+
       - name: Build (create dist/)
         run: npm run build
 
