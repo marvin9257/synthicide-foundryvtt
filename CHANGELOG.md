@@ -1,3 +1,15 @@
+## [1.0.5](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.4...1.0.5) (2026-03-30)
+
+
+### Bug Fixes
+
+* and again with a test ([e0bfdf2](https://github.com/marvin9257/synthicide-foundryvtt/commit/e0bfdf2aeb9f116b4390f332291ab2a7dbb73b2f))
+* another go at automated release ([ec0d297](https://github.com/marvin9257/synthicide-foundryvtt/commit/ec0d297db3efc628e8027de9ff5405dd5fe6aa9d))
+* another go at release process ([948a165](https://github.com/marvin9257/synthicide-foundryvtt/commit/948a16532e0684d75325c4c30533e8e38726d5e9))
+* I'm growing old trying to get AI to fix this ([5f2857c](https://github.com/marvin9257/synthicide-foundryvtt/commit/5f2857c1a47a2519ecdeae7bb93191ee6de229e6))
+* maybe 7th time ([f1204b4](https://github.com/marvin9257/synthicide-foundryvtt/commit/f1204b4a4a2c58fb6215f090ab4bc40a3d9f7f7d))
+* ok 6th time is the charm ([7ad9846](https://github.com/marvin9257/synthicide-foundryvtt/commit/7ad98461c769626f9ee9a66abf80f1cb5871446d))
+
 ## [1.0.4](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.3...1.0.4) (2026-03-30)
 
 
