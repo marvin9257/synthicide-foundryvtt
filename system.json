@@ -11,37 +11,62 @@
   "documentTypes": {
     "Actor": {
       "sharper": {
-        "htmlFields": ["biography"]
+        "htmlFields": [
+          "biography"
+        ]
       },
       "npc": {
-        "htmlFields": ["biography"]
+        "htmlFields": [
+          "biography"
+        ]
       }
     },
     "Item": {
       "armor": {
-        "htmlFields": ["description"]
+        "htmlFields": [
+          "description"
+        ]
       },
       "aspect": {
-        "htmlFields": ["description"]
+        "htmlFields": [
+          "description"
+        ]
       },
       "bioclass": {
-        "htmlFields": ["description"]
+        "htmlFields": [
+          "description"
+        ]
       },
       "gear": {
-        "htmlFields": ["description"]
+        "htmlFields": [
+          "description"
+        ]
       },
       "trait": {
-        "htmlFields": ["description"]
+        "htmlFields": [
+          "description"
+        ]
       },
       "weapon": {
-        "htmlFields": ["description"]
-      } 
+        "htmlFields": [
+          "description"
+        ]
+      }
     }
   },
   "flags": {
     "hotReload": {
-      "extensions": ["css", "html", "hbs", "json"],
-      "paths": ["css", "lang", "templates"]
+      "extensions": [
+        "css",
+        "html",
+        "hbs",
+        "json"
+      ],
+      "paths": [
+        "css",
+        "lang",
+        "templates"
+      ]
     }
   },
   "url": "Replace this with a link to your public repository",
@@ -56,13 +81,17 @@
       "thumbnail": "systems/synthicide/assets/synthicideTheme2.svg"
     }
   ],
-  "version": "1.0.0",
+  "version": "1.0.3",
   "compatibility": {
     "minimum": "14",
     "verified": "14.357"
   },
-  "esmodules": ["module/synthicide.mjs"],
-  "styles": ["css/synthicide.css"],
+  "esmodules": [
+    "module/synthicide.mjs"
+  ],
+  "styles": [
+    "css/synthicide.css"
+  ],
   "languages": [
     {
       "lang": "en",
