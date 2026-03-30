@@ -40,8 +40,7 @@ jobs:
           echo "Next release version: $VERSION"
 
       - name: Update system.json version in dist and root
-        run: |
-          node scripts/update-system-json-version.js $VERSION
+        run: node scripts/update-system-json-version.js ${{ env.VERSION }}
 
       - name: Debug GitHub Token User
         env:
