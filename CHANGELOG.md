@@ -1,3 +1,10 @@
+## [1.0.12](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.11...1.0.12) (2026-03-30)
+
+
+### Bug Fixes
+
+* add mainfest and download paths ([bb1971e](https://github.com/marvin9257/synthicide-foundryvtt/commit/bb1971ed621c96e7fbcced7e6a6079a4d10fb2dc))
+
 ## [1.0.11](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.10...1.0.11) (2026-03-30)
 
 
