@@ -1,3 +1,10 @@
+## [1.0.9](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.8...1.0.9) (2026-03-30)
+
+
+### Bug Fixes
+
+* another go at reelase ([1332adf](https://github.com/marvin9257/synthicide-foundryvtt/commit/1332adfe77142f9710f70b9ead9d3e7c4edcb951))
+
 ## [1.0.7](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.6...1.0.7) (2026-03-30)
 
 
