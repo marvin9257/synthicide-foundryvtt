@@ -1,4 +1,4 @@
-name: Test and Release (Push)
+name: "Test and Release: ${{ github.event.head_commit.message }}"
 
 on:
   push:
@@ -28,6 +28,7 @@ jobs:
         run: |
           npm install --no-save semantic-release @semantic-release/exec @semantic-release/changelog @semantic-release/git @semantic-release/github
 
+
       - name: Set git remote to use GITHUB_TOKEN
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -35,10 +36,10 @@ jobs:
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/marvin9257/synthicide-foundryvtt.git
           echo "Using GITHUB_TOKEN for git authentication."
 
-      - name: Run semantic-release (handles versioning and system.json update)
+      - name: Run semantic-release prepare (version bump and system.json update only)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: npx semantic-release --branches=${{ github.ref_name }} --prepare
 
       - name: Build (create dist/)
         run: npm run build
@@ -54,6 +55,11 @@ jobs:
         run: |
           cp dist/system.json ./system.json
         shell: bash
+
+      - name: Run semantic-release (publish, upload assets, changelog, tag, release)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release --branches=${{ github.ref_name }} --no-prepare
 
 # Notes:
 # - semantic-release will handle versioning, changelog, manifest update, and GitHub release/tag creation.
