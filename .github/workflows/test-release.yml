@@ -1,4 +1,4 @@
-name: "Test and Release: ${{ github.event.head_commit.message }}"
+name: Test and Release
 
 on:
   push:
