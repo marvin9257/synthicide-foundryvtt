@@ -25,22 +25,32 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+
       - name: Install semantic-release and plugins
         run: |
-          npm install --no-save semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github
+          npm install --no-save semantic-release @semantic-release/exec @semantic-release/changelog @semantic-release/git @semantic-release/github
+
+      - name: Run semantic-release (handles versioning and system.json update)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npx semantic-release
 
       - name: Build (create dist/)
         run: npm run build
 
-      - name: Get next release version from semantic-release
-        id: get_version
+      - name: Zip dist contents for FVTT release
+        if: success()
         run: |
-          VERSION=$(npx semantic-release --dry-run --branches=${{ github.ref_name }} --ci --no-ci false --plugins=@semantic-release/commit-analyzer,@semantic-release/release-notes-generator,@semantic-release/changelog,@semantic-release/git,@semantic-release/github --stdout --json | jq -r '.nextRelease.version // empty')
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Next release version: $VERSION"
+          cd dist
+          zip -r ../synthicide.zip .
+          cd ..
+        shell: bash
 
-      - name: Update system.json version in dist and root
-        run: node scripts/update-system-json-version.js ${{ env.VERSION }}
+      - name: Move manifest for release asset
+        if: success()
+        run: |
+          cp dist/system.json ./system.json
+        shell: bash
 
       - name: Debug GitHub Token User
         env:
