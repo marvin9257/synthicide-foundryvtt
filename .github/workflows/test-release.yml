@@ -58,11 +58,21 @@ jobs:
         run: |
           curl -H "Authorization: token $GH_TOKEN" https://api.github.com/user
 
-      - name: Set git remote to use PAT
+
+      - name: Set git remote to use GITHUB_TOKEN (preferred) or fallback to PAT
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          git remote set-url origin https://$GH_TOKEN@github.com/marvin9257/synthicide-foundryvtt.git
+          if [ -n "$GITHUB_TOKEN" ]; then
+            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/marvin9257/synthicide-foundryvtt.git
+            echo "Using GITHUB_TOKEN for git authentication."
+          elif [ -n "$GH_TOKEN" ]; then
+            git remote set-url origin https://$GH_TOKEN@github.com/marvin9257/synthicide-foundryvtt.git
+            echo "Using GH_TOKEN (PAT) for git authentication."
+          else
+            echo "No authentication token found!" && exit 1
+          fi
 
 
       - name: Zip dist contents for FVTT release
