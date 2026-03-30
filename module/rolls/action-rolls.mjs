@@ -214,6 +214,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   const d10 = Number(evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? 0);
   const equationTerms = buildEquationTerms({ subtype, attributeKey, rollData });
   const messageMode = normalizeMessageMode(input.messageMode);
+  const attributeValue = getActorAttributeValue(actor, attributeKey);
 
   // Shared cardData structure
   let cardData = {
@@ -225,6 +226,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
     dieClass: getDieClass(d10, 10),
     equationTerms,
     attributeKey,
+    attributeValue,
     showEffectOutcomeRow: isChallenge,
     showDamageButton: isAttack && total >= armor,
     showOpposedButton: isChallenge,
@@ -235,6 +237,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
       userId: game.user.id,
       sourceItemUuid: sourceItem?.uuid ?? null,
       messageMode,
+      attributeValue,
     },
     flavor: '',
     metadataRows: [],
@@ -261,7 +264,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
 
 function handleAttackRoll({ cardData, sourceItem }) {
   const attributeKey = cardData.attributeKey;
-  const attributeValue = Number(cardData.equationTerms?.attribute ?? 0);
+  const attributeValue = Number(cardData.attributeValue ?? 0);
   const hit = cardData.total > (cardData.flags.attack?.armor ?? 0);
   const damageBonus = cardData.flags.attack?.damageBonus ?? 0;
   const d10 = cardData.dieValue;
