@@ -102,8 +102,8 @@
   "packs": [],
   "packFolders": [],
   "socket": false,
-  "manifest": "Replace this with a link to the /latest release system.json so people can receive updates after they've installed the system",
-  "download": "This must link to a .zip file of the current version",
+  "manifest": "https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/system.json",
+  "download": "https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/synthicide.zip",
   "background": "systems/synthicide/assets/synthicideTheme2.svg",
   "grid": {
     "type": 1,
