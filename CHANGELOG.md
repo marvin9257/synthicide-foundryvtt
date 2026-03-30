@@ -1,3 +1,11 @@
+## [1.0.4](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.3...1.0.4) (2026-03-30)
+
+
+### Bug Fixes
+
+* update package dependencies ([883fc4e](https://github.com/marvin9257/synthicide-foundryvtt/commit/883fc4eb42fd9855eca39034bdf1fe403b5ba719))
+* update version in system.json ([ba09b1b](https://github.com/marvin9257/synthicide-foundryvtt/commit/ba09b1b3e1a1b12201f2791ed61a033bb8d9541f))
+
 ## [1.0.3](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.2...1.0.3) (2026-03-29)
 
 
