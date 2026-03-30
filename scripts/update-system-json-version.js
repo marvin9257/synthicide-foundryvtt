@@ -12,18 +12,12 @@ if (!version) {
   throw new Error('No version specified. Usage: node update-system-json-version.js <version>');
 }
 
-const filesToUpdate = [
-  path.join(__dirname, '../system.json'),
-  path.join(__dirname, '../dist/system.json'),
-];
-
-filesToUpdate.forEach((file) => {
-  if (fs.existsSync(file)) {
-    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-    data.version = version;
-    fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
-    console.log(`Updated version in ${file} to ${version}`);
-  } else {
-    console.warn(`File not found: ${file}`);
-  }
-});
+const file = path.join(__dirname, '../system.json');
+if (fs.existsSync(file)) {
+  const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+  data.version = version;
+  fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
+  console.log(`Updated version in ${file} to ${version}`);
+} else {
+  console.warn(`File not found: ${file}`);
+}
