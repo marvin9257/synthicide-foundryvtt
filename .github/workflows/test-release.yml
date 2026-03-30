@@ -43,7 +43,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          NEXT_VERSION=$(npx semantic-release --dry-run || true | grep -Eo 'The next release version is [0-9]+\.[0-9]+\.[0-9]+' | head -n1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+          NEXT_VERSION_LINE=$(npx semantic-release --dry-run || true | grep -Eo 'The next release version is [0-9]+\.[0-9]+\.[0-9]+')
+          NEXT_VERSION=$(echo "$NEXT_VERSION_LINE" | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' | head -n1)
           if [ -z "${NEXT_VERSION:-}" ]; then
             echo "No next version determined. Skipping release build."
             exit 0
