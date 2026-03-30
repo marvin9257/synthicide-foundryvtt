@@ -47,9 +47,10 @@ jobs:
           if [ -z "${NEXT_VERSION:-}" ]; then
             echo "No next version determined. Skipping release build."
             exit 0
+          else
+            echo "Next version: $NEXT_VERSION"
+            echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
           fi
-          echo "Next version: $NEXT_VERSION"
-          echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
 
       - name: Update system.json with next version
         run: |
