@@ -25,8 +25,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-
-
       - name: Install semantic-release and plugins
         run: |
           npm install --no-save semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github
@@ -37,7 +35,7 @@ jobs:
       - name: Get next release version from semantic-release
         id: get_version
         run: |
-          VERSION=$(npx semantic-release --dry-run --branches=${{ github.ref_name }} --ci --no-ci false --plugins=@semantic-release/commit-analyzer,@semantic-release/release-notes-generator,@semantic-release/changelog,@semantic-release/git,@semantic-release/github --debug=false --stdout --json | grep '"nextRelease":' -A 10 | grep '"version":' | head -1 | awk -F '"' '{print $4}')
+          VERSION=$(npx semantic-release --dry-run --branches=${{ github.ref_name }} --ci --no-ci false --plugins=@semantic-release/commit-analyzer,@semantic-release/release-notes-generator,@semantic-release/changelog,@semantic-release/git,@semantic-release/github --stdout --json | jq -r '.nextRelease.version // empty')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Next release version: $VERSION"
 
