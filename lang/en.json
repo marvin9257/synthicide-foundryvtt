@@ -125,6 +125,12 @@
           },
           "ForceBarrier": "Force Barrier"
         },
+        "weaponValues": {
+          "attackBonus": "ATT",
+          "damageBonus": "DMG",
+          "lethal": "Lethal",
+          "rangeIncrement": "Range Incr."
+        },
         "Weapons": "Weapons",
         "ChangeEquipped": "Change Equipped State"
       },

@@ -66,7 +66,10 @@
   <ol class='items-list'>
     <li class='item flexrow items-header'>
       <div class='item-name'>{{localize 'Name'}}</div>
-      <div class='item-formula'>{{localize 'SYNTHICIDE.Item.Gear.FIELDS.rollFormula.label'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Actor.Combat.weaponValues.attackBonus'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Actor.Combat.weaponValues.damageBonus'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Actor.Combat.weaponValues.rangeIncrement'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Item.Gear.FIELDS.equipped.label'}}</div>
       <div class='item-controls'>
         {{#if @root.editable}}
           <a
@@ -99,7 +102,10 @@
           </div>
           <div class='item-label'>{{item.name}}</div>
         </div>
-        <div class='item-formula item-prop'>{{item.system.formula}}</div>
+        <div class='item-prop'>{{item.system.attackBonus}}</div>
+        <div class='item-prop'>{{item.system.damageBonus}}</div>
+        <div class='item-prop'>{{item.system.rangeIncrement}}</div>
+        <div class='item-prop'><a class="item-control item-equip" data-action="changeEquippedState" data-tooltip='{{localize "SYNTHICIDE.Actor.Combat.ChangeEquipped"}}'><i class={{#if item.system.equipped}}"fa-solid fa-square-check"{{else}}"fa-regular fa-square"{{/if}}></i></a></div>
         <div class='item-controls'>
           <a
             class='item-control item-attack'
