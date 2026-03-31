@@ -1,3 +1,10 @@
+## [1.0.13](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.12...1.0.13) (2026-03-31)
+
+
+### Bug Fixes
+
+* update verified ([b60632b](https://github.com/marvin9257/synthicide-foundryvtt/commit/b60632b9bfdcc8936cc88d2cf1d007c7a4e971ad))
+
 ## [1.0.12](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.11...1.0.12) (2026-03-30)
 
 
