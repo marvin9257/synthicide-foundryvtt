@@ -1,12 +1,15 @@
-
 import SYNTHICIDE from '../helpers/config.mjs';
+import { prepareAttackCardData } from './attack-card-data.mjs';
+import { prepareChallengeCardData } from './challenge-card-data.mjs';
+import { prepareDamageCardData } from './damage-card-data.mjs';
+import { getStandardizedRollData } from './roll-data-utils.mjs';
+import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 
 const FLAG_PATH = 'actionRoll';
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
 const CARD_TEMPLATE = 'systems/synthicide/templates/chat/action-roll-card.hbs';
 const ACTION_ROLL_DIALOG_ICON = 'systems/synthicide/assets/synthicidePause.svg';
 const ATTRIBUTE_COMBAT = 'combat';
-const ACTION_ROLL_VERSION = 2;
 const FORMULA_CHALLENGE = '1d10 + @attribute + @misc + @modifiers';
 const FORMULA_ATTACK = '1d10 + @attribute + @misc + @attackBonus + @modifiers';
 
@@ -69,93 +72,77 @@ export function registerActionRollHooks() {
 /* -------------------------------------------- */
 
 async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
-  const flags = sourceMessage.getFlag('synthicide', FLAG_PATH);
-  const attack = flags?.attack;
-
-  if (!flags || flags.subtype !== SUBTYPES.ATTACK || !attack) {
+  const rollData = getStandardizedRollData(sourceMessage);
+  if (rollData.subtype !== SUBTYPES.ATTACK) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.AttackDataMissing'));
   }
-  if (!attack.hit) {
+  if (!rollData.hit) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DamageRequiresHit'));
   }
-  
-  const actor = resolveActorFromUuidSync(flags?.actorUuid);
+
+  const actor = resolveActorFromUuidSync(rollData.actorUuid);
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
   // Prefer the attribute value used on the original attack.
-  const combatValue = Number(attack.attributeValue ?? getActorAttributeValue(actor, ATTRIBUTE_COMBAT) ?? 0);
-  const messageMode = normalizeMessageMode(userMessageMode ?? flags?.messageMode ?? 'public');
+  const combatValue = Number(rollData.attributeValue ?? getActorAttributeValue(actor, ATTRIBUTE_COMBAT) ?? 0);
+  const messageMode = normalizeMessageMode(userMessageMode ?? rollData.messageMode ?? 'public');
 
   // Build a simple arithmetic summary rather than re-rolling any dice.
-  const summaryRoll = new Roll(`${attack.d10} + ${combatValue} + ${attack.damageBonus}`);
-  // Evaluate synchronously so the calculation is deterministic and noiseless.
+  const summaryRoll = new Roll(`${rollData.d10} + ${combatValue} + ${rollData.damageBonus}`);
   summaryRoll.evaluateSync();
   const damageTotal = Number(summaryRoll.total ?? 0);
 
+  // Try to resolve the original item from the attack roll, if available
+  let item = null;
+  if (rollData.sourceItemUuid) {
+    item = await fromUuid(rollData.sourceItemUuid).catch(() => null);
+  }
+
+  // Prepare modular card data for damage (unified signature)
+  const cardData = prepareDamageCardData({
+    input: {
+      d10: rollData.d10,
+      damageBonus: rollData.damageBonus,
+      total: damageTotal,
+      source: sourceMessage.speaker?.alias ?? sourceMessage.id,
+      sourceMessageId: sourceMessage.id,
+      sourceItemUuid: rollData.sourceItemUuid ?? null,
+      lethal: rollData.lethal ?? 0,
+      messageMode,
+      userId: game.user.id,
+    },
+    actor,
+    item,
+    attributeValue: combatValue,
+  });
+
   return createActionMessage({
     actor,
-    // No new dice were rolled for derived damage; skip Roll-backed message creation.
-    roll: null,
+    roll: null, // No new dice were rolled for derived damage
     messageMode,
-    cardData: {
-      title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
-      subtype: SUBTYPES.DAMAGE,
-      flavor: localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),
-      equation: `${attack.d10} + ${combatValue} + ${attack.damageBonus}`,
-      total: damageTotal,
-      showEffectOutcomeRow: false,
-      dieValue: attack.d10,
-      dieClass: getDieClass(attack.d10, 10),
-      equationTerms: [
-        { label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(ATTRIBUTE_COMBAT) },
-        { label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: combatValue },
-        { label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: attack.damageBonus },
-      ],
-      metadataRows: [
-        { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: sourceMessage.speaker?.alias ?? sourceMessage.id },
-      ],
-      showDamageButton: false,
-      showOpposedButton: false,
-      flags: {
-        version: ACTION_ROLL_VERSION,
-        subtype: SUBTYPES.DAMAGE,
-        actorUuid: actor.uuid,
-        userId: game.user.id,
-        sourceMessageId: sourceMessage.id,
-        sourceItemUuid: flags.sourceItemUuid ?? null,
-        lethal: flags?.attack?.lethal ?? 0,
-        messageMode,
-        damage: {
-          sourceMessageId: sourceMessage.id,
-          d10: attack.d10,
-          attributeValue: combatValue,
-          damageBonus: attack.damageBonus,
-          total: damageTotal,
-        },
-      },
-    },
+    cardData,
   });
 }
 
 async function executeOpposedChallengeRoll({ sourceMessage }) {
-  const sourceFlags = sourceMessage.getFlag('synthicide', FLAG_PATH);
-  const sourceChallenge = sourceFlags?.challenge;
-  if (!sourceFlags || sourceFlags.subtype !== SUBTYPES.CHALLENGE || !sourceChallenge) {
+  const sourceRollData = getStandardizedRollData(sourceMessage);
+  if (sourceRollData.subtype !== SUBTYPES.CHALLENGE) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ChallengeDataMissing'));
   }
 
-  const actor = resolveActorFromUuidSync(sourceFlags?.actorUuid);
+  // Use robust utility to get the correct actor for the opposed roll
+  const actor = getControlledActor();
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
-  const sourceMode = normalizeMessageMode(sourceFlags?.messageMode ?? 'public');
+  const sourceMode = normalizeMessageMode(sourceRollData.messageMode ?? 'public');
   const result = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.OpposedTitle'),
     defaults: {
       actor,
       subtype: SUBTYPES.CHALLENGE,
-      attribute: sourceChallenge.attribute ?? ATTRIBUTE_COMBAT,
-      difficulty: sourceChallenge.difficulty ?? 6,
-      misc: parseNumeric(sourceChallenge.misc, 0),
+      attribute: sourceRollData.attribute ?? ATTRIBUTE_COMBAT,
+      difficulty: sourceRollData.difficulty ?? 6,
+      misc: parseNumeric(sourceRollData.misc, 0),
       armor: 10,
       attackBonus: 0,
       damageBonus: 0,
@@ -174,9 +161,9 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
   });
   if (!opposedRollMessage) return null;
 
-  const opposedFlags = opposedRollMessage.getFlag('synthicide', FLAG_PATH);
-  const opposedTotal = Number(opposedFlags?.challenge?.total ?? 0);
-  const sourceTotal = Number(sourceChallenge.total ?? 0);
+  const opposedRollData = getStandardizedRollData(opposedRollMessage);
+  const opposedTotal = Number(opposedRollData.total ?? 0);
+  const sourceTotal = Number(sourceRollData.total ?? 0);
 
   let winnerText;
   if (opposedTotal > sourceTotal) {
@@ -211,60 +198,36 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   // Shared setup
   const attributeKey = getActionAttributeKey(subtype, input.attribute);
   const rollData = buildActionRollData({ actor, input, attributeKey });
-  const armor = parseNumeric(input.armor, 0);
+  //const armor = parseNumeric(input.armor, 0);
   const difficulty = parseNumeric(input.difficulty, 6);
   // const damageBonus = parseNumeric(input.damageBonus, 0); // No longer needed, handled in cardData
   const isAttack = isAttackSubtype(subtype);
   const isChallenge = subtype === SUBTYPES.CHALLENGE;
   const formula = isAttack ? FORMULA_ATTACK : FORMULA_CHALLENGE;
   const evaluatedRoll = await new Roll(formula, rollData).evaluate();
-  const total = Number(evaluatedRoll.total ?? 0);
-  const d10 = Number(evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? 0);
-  const equationTerms = buildEquationTerms({ subtype, attributeKey, rollData });
+  //const total = Number(evaluatedRoll.total ?? 0);
+  // d10 and equationTerms are now handled in card data modules
   const messageMode = normalizeMessageMode(input.messageMode);
   const attributeValue = getActorAttributeValue(actor, attributeKey);
 
-  // Shared cardData structure
-  let cardData = {
-    title: isAttack ? localize('SYNTHICIDE.Roll.Card.TitleAttack') : localize('SYNTHICIDE.Roll.Card.TitleChallenge'),
-    subtype,
-    equation: evaluatedRoll.result,
-    total,
-    dieValue: d10,
-    dieClass: getDieClass(d10, 10),
-    equationTerms,
-    attributeKey,
-    attributeValue,
-    showEffectOutcomeRow: isChallenge,
-    // showDamageButton will be set in handleAttackRoll using attack.hit
-    showDamageButton: false,
-    showOpposedButton: isChallenge,
-    flags: {
-      version: ACTION_ROLL_VERSION,
-      subtype,
-      actorUuid: actor.uuid,
-      userId: game.user.id,
-      sourceItemUuid: sourceItem?.uuid ?? null,
-      messageMode,
-      attributeValue,
-      ...(isAttack ? {
-        attack: {
-          armor: parseNumeric(input.armor, 0),
-          attackBonus: parseNumeric(input.attackBonus, 0),
-          damageBonus: parseNumeric(input.damageBonus, 0),
-          // hit will be set in handleAttackRoll
-        }
-      } : {})
-    },
-    flavor: '',
-    metadataRows: [],
-  };
 
-  // Delegate to roll-type-specific handler for cardData customization
+  let cardData;
   if (isAttack) {
-    cardData = handleAttackRoll({ cardData, sourceItem });
+    cardData = prepareAttackCardData({
+      input,
+      actor,
+      sourceItem,
+      rollResult: evaluatedRoll,
+      attributeValue,
+    });
   } else if (isChallenge) {
-    cardData = handleChallengeRoll({ cardData, difficulty });
+    cardData = prepareChallengeCardData({
+      input,
+      actor,
+      rollResult: evaluatedRoll,
+      attributeValue,
+      difficulty,
+    });
   } else {
     return handleOtherRoll({ actor, input, sourceItem, subtype });
   }
@@ -278,75 +241,6 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
 }
 
 // --- Handlers for each roll type ---
-
-function handleAttackRoll({ cardData, sourceItem }) {
-  const attributeKey = cardData.attributeKey;
-  const attributeValue = Number(cardData.attributeValue ?? 0);
-  const d10 = cardData.dieValue;
-  const armor = cardData.flags.attack?.armor ?? 0;
-  const damageBonus = cardData.flags.attack?.damageBonus ?? 0;
-  const hit = cardData.total >= armor;
-  const damageTotal = d10 + attributeValue + damageBonus;
-  cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorAttack', {
-    attribute: getAttributeLabel(attributeKey),
-    armor,
-    item: sourceItem?.name || localize('SYNTHICIDE.Roll.Subtype.Attack'),
-  });
-  cardData.effectText = hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss');
-  cardData.effectClass = hit ? 'outcome-success' : 'outcome-failure';
-  cardData.metadataRows = [
-    { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
-    { label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: damageBonus },
-  ];
-  // Resolve lethal directly from the source item when available; default to 0
-  const lethal = Number(sourceItem?.system?.lethal ?? 0);
-  cardData.flags.attack = {
-    ...cardData.flags.attack,
-    attribute: attributeKey,
-    attributeValue,
-    d10,
-    attackTotal: cardData.total,
-    hit,
-    damageTotal,
-    lethal,
-  };
-  cardData.showEffectOutcomeRow = false;
-  cardData.showDamageButton = hit;
-  cardData.showOpposedButton = false;
-  return cardData;
-}
-
-function handleChallengeRoll({ cardData, difficulty }) {
-  const attributeKey = cardData.attributeKey;
-  const effect = cardData.total - difficulty;
-  const degree = getDegreeLabel(effect);
-  const difficultyLabel = getDifficultyLabel(difficulty);
-  const effectValue = formatSignedNumber(effect);
-  cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorChallenge', {
-    difficulty: difficultyLabel,
-    attribute: getAttributeLabel(attributeKey),
-  });
-  cardData.subtitle = difficultyLabel;
-  cardData.effectText = effectValue;
-  cardData.outcomeLabel = degree;
-  cardData.outcomeClass = getChallengeOutcomeClass(effect);
-  cardData.metadataRows = [
-    { label: localize('SYNTHICIDE.Roll.Card.Difficulty'), value: difficultyLabel },
-    { label: localize('SYNTHICIDE.Roll.Card.Effect'), value: effectValue },
-  ];
-  cardData.flags.challenge = {
-    attribute: attributeKey,
-    difficulty,
-    d10: cardData.dieValue,
-    total: cardData.total,
-    effect,
-    degree,
-  };
-  cardData.showEffectOutcomeRow = true;
-  cardData.showDamageButton = false;
-  cardData.showOpposedButton = true;
-  return cardData;
-}
 
 // Placeholder for future roll types
 async function handleOtherRoll({ _actor, _input, _sourceItem, subtype }) {
@@ -416,8 +310,8 @@ export async function createActionMessage({ actor, roll, cardData, messageMode, 
 
 function activateActionRollChatListeners(message, htmlElement) {
   if (!htmlElement || typeof htmlElement.querySelectorAll !== 'function' || typeof htmlElement.addEventListener !== 'function') return;
-  const flags = message?.getFlag?.('synthicide', FLAG_PATH);
-  if (!flags || (flags.subtype !== SUBTYPES.ATTACK && flags.subtype !== SUBTYPES.CHALLENGE)) return;
+  const rollData = getStandardizedRollData(message);
+  if (!rollData || (rollData.subtype !== SUBTYPES.ATTACK && rollData.subtype !== SUBTYPES.CHALLENGE)) return;
   const root = htmlElement;
   const allowed = canExecuteFollowup(message);
 
@@ -578,7 +472,7 @@ function extractDialogData(formElement) {
 /* Utilities                                    */
 /* -------------------------------------------- */
 
-function localize(key, data) {
+export function localize(key, data) {
   return game.i18n.format(key, data);
 }
 
@@ -587,7 +481,7 @@ function parseNumeric(value, fallback = 0) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-function formatSignedNumber(value) {
+export function formatSignedNumber(value) {
   const numeric = Number(value);
   if (!Number.isFinite(numeric)) return '0';
   if (numeric > 0) return `+${numeric}`;
@@ -623,10 +517,10 @@ function buildActionRollData({ actor, input, attributeKey }) {
   };
 }
 
-function buildEquationTerms({ subtype, attributeKey, rollData }) {
+export function buildEquationTerms({ subtype, attributeKey, rollData }) {
   const terms = [
     { label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(attributeKey) },
-    { label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: rollData.attribute },
+    { label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: rollData.attributeValue ?? rollData.attribute },
     { label: localize('SYNTHICIDE.Roll.Card.MiscModifier'), value: rollData.misc },
   ];
 
@@ -634,7 +528,9 @@ function buildEquationTerms({ subtype, attributeKey, rollData }) {
     terms.push({ label: localize('SYNTHICIDE.Roll.Card.AttackBonus'), value: rollData.attackBonus });
   }
 
-  terms.push({ label: localize('SYNTHICIDE.Roll.Dialog.RollModifiers'), value: rollData.modifiers });
+  // Always show zero if no modifiers
+  const modifiersValue = (rollData.modifiers === undefined || rollData.modifiers === null) ? 0 : rollData.modifiers;
+  terms.push({ label: localize('SYNTHICIDE.Roll.Dialog.RollModifiers'), value: modifiersValue });
   return terms;
 }
 
@@ -642,12 +538,12 @@ function getActorAttributeValue(actor, attributeKey) {
   return Number(actor?.system?.attributes?.[attributeKey]?.value ?? 0);
 }
 
-function getAttributeLabel(attributeKey) {
+export function getAttributeLabel(attributeKey) {
   const key = normalizeAttributeKey(attributeKey);
   return game.i18n.localize(SYNTHICIDE.attributes[key]) || key;
 }
 
-function getAttributeValueHtml(attributeKey) {
+export function getAttributeValueHtml(attributeKey) {
   const key = normalizeAttributeKey(attributeKey);
   const label = foundry.utils.escapeHTML(getAttributeLabel(key));
   return `<span class="synthicide-attr-pill"><img class="synthicide-attr-icon" src="/systems/synthicide/assets/icons/attributes/${key}.png" alt="" /> ${label}</span>`;
@@ -657,27 +553,27 @@ function getDegreeBands() {
   return SYNTHICIDE.rolls?.degreeBands ?? [];
 }
 
-function getDegreeLabel(effect) {
+export function getDegreeLabel(effect) {
   const bands = getDegreeBands();
   const match = bands.find((band) => effect >= Number(band.min)) ?? bands.at(-1);
   return match ? game.i18n.localize(match.label) : game.i18n.localize('SYNTHICIDE.Roll.Degree.Failure');
 }
 
-function getDifficultyLabel(difficulty) {
+export function getDifficultyLabel(difficulty) {
   const normalized = Number(difficulty);
   const list = SYNTHICIDE.rolls?.challengeDifficulties ?? [];
   const match = list.find((entry) => Number(entry.value) === normalized);
   return match ? localize(match.label) : String(difficulty);
 }
 
-function getChallengeOutcomeClass(effect) {
+export function getChallengeOutcomeClass(effect) {
   if (effect < 0) return 'outcome-failure';
   if (effect >= 10) return 'outcome-superb';
   if (effect >= 5) return 'outcome-excellent';
   return 'outcome-standard';
 }
 
-function getDieClass(dieValue, sides = 10) {
+export function getDieClass(dieValue, sides = 10) {
   const value = Number(dieValue);
   if (!Number.isFinite(value)) return '';
   if (value <= 1) return 'min';
@@ -694,8 +590,6 @@ function normalizeMessageMode(mode) {
   return CONFIG.ChatMessage.modes?.[mode] ? mode : 'public';
 }
 
-
-
 function getChatMessageStyle() {
   const styles = CONST.CHAT_MESSAGE_STYLES;
   return styles.ROLL ?? styles.OTHER ?? 0;
@@ -705,13 +599,13 @@ function canExecuteFollowup(message, user = game.user) {
   if (!message || !user) return false;
   if (user.isGM) return true;
 
-  const flags = message.getFlag('synthicide', FLAG_PATH);
-  if (!flags) return false;
+  const rollData = getStandardizedRollData(message);
+  if (!rollData) return false;
 
-  if (flags.userId === user.id) return true;
+  if (rollData.userId === user.id) return true;
 
   // Try UUID resolution first to handle unlinked/temporary actors.
-  const actor = resolveActorFromUuidSync(flags?.actorUuid);
+  const actor = resolveActorFromUuidSync(rollData.actorUuid);
   if (!actor) return false;
   return Boolean(actor?.isOwner);
 }

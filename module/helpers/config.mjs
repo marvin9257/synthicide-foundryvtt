@@ -1,4 +1,19 @@
 const SYNTHICIDE = {};
+// Centralized shocking strike outcome constants and flavor keys
+SYNTHICIDE.SHOCK_OUTCOMES = {
+  LETHAL: 'lethal',
+  SUCCESS: 'success',
+  DEATH: 'death',
+  MINUS_ONE: 'minusOne',
+};
+
+SYNTHICIDE.SHOCK_FLAVOR_KEYS = {
+  [SYNTHICIDE.SHOCK_OUTCOMES.LETHAL]: 'SYNTHICIDE.Chat.Shock.LethalApplied',
+  [SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS]: 'SYNTHICIDE.Chat.Shock.Success',
+  [SYNTHICIDE.SHOCK_OUTCOMES.DEATH]: 'SYNTHICIDE.Chat.Shock.FailureDeath',
+  [SYNTHICIDE.SHOCK_OUTCOMES.MINUS_ONE]: 'SYNTHICIDE.Chat.Shock.FailureMinusOne',
+};
+
 // Shared dropdown options for bodyType and brainType
 SYNTHICIDE.bodyBrainTypes = {
   Organic: 'SYNTHICIDE.Item.BodyType.Organic',
