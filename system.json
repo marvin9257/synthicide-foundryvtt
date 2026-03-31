@@ -84,7 +84,7 @@
   "version": "1.0.12",
   "compatibility": {
     "minimum": "14",
-    "verified": "14.357"
+    "verified": "14.358"
   },
   "esmodules": [
     "module/synthicide.mjs"
