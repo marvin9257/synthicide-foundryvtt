@@ -46,7 +46,7 @@ export function prepareDamageCardData({
     showEffectOutcomeRow: false,
     dieValue: d10,
     dieClass: getDieClass(d10, 10),
-    equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...input, attributeValue } }),
+    equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...input, attributeValue, damageBonus } }),
     metadataRows: [
       { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: source },
     ],

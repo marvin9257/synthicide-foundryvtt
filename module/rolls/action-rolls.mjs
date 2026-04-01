@@ -4,6 +4,7 @@ import { prepareChallengeCardData } from './challenge-card-data.mjs';
 import { prepareDamageCardData } from './damage-card-data.mjs';
 import { getStandardizedRollData } from './roll-data-utils.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
+import { calculateVirtualDistanceBetweenTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
 
 const FLAG_PATH = 'actionRoll';
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
@@ -19,10 +20,20 @@ const SUBTYPES = {
   DAMAGE: 'damage',
 };
 
-/* -------------------------------------------- */
-/* Public API                                   */
-/* -------------------------------------------- */
-
+/**
+ * Open the action roll dialog, pre-populated for either a challenge or attack.
+ *
+ * Attack rolls derive bonus and range defaults from the provided source item so
+ * the dialog shows the same context that the eventual roll executor will use.
+ *
+ * @param {object} [params]
+ * @param {Actor|null} [params.actor]
+ * @param {string} [params.subtype]
+ * @param {string} [params.attribute]
+ * @param {Item|null} [params.sourceItem]
+ * @param {boolean} [params.allowSubtypeChange]
+ * @returns {Promise<ChatMessage|null>}
+ */
 export async function openSynthicideActionRollDialog({
   actor,
   subtype = SUBTYPES.CHALLENGE,
@@ -32,35 +43,22 @@ export async function openSynthicideActionRollDialog({
 } = {}) {
   if (!actor) return null;
   const attributeKey = getActionAttributeKey(subtype, attribute);
- 
-  // Set attackBonus and damageBonus from sourceItem if this is an attack and a weapon/item is provided
-  let attackBonus = 0;
-  let damageBonus = 0;
-  if (isAttackSubtype(subtype) && sourceItem?.system) {
-    attackBonus = Number(sourceItem.system.attackBonus ?? 0);
-    damageBonus = Number(sourceItem.system.damageBonus ?? 0);
-  }
 
-  const result = await renderActionRollDialog({
+  const dialogResult = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.Title'),
-    defaults: {
+    defaults: buildDialogDefaults({
       actor,
       subtype,
-      attribute: attributeKey,
-      difficulty: 6,
-      misc: 0,
-      armor: isAttackSubtype(subtype) ? getTargetArmor() : 0,
-      attackBonus,
-      damageBonus,
-      messageMode: getDefaultMessageMode(),
+      attributeKey,
+      sourceItem,
       allowSubtypeChange,
-    },
+    }),
   });
 
-  if (!result) return null;
+  if (!dialogResult) return null;
 
-  const subtypeToRun = result.subtype === SUBTYPES.ATTACK ? SUBTYPES.ATTACK : SUBTYPES.CHALLENGE;
-  return executeActionRoll({ actor, input: result, sourceItem, subtype: subtypeToRun });
+  const resolvedSubtype = dialogResult.subtype === SUBTYPES.ATTACK ? SUBTYPES.ATTACK : SUBTYPES.CHALLENGE;
+  return executeActionRoll({ actor, input: dialogResult, sourceItem, subtype: resolvedSubtype });
 }
 
 export function registerActionRollHooks() {
@@ -71,43 +69,54 @@ export function registerActionRollHooks() {
 /* Roll Execution                               */
 /* -------------------------------------------- */
 
+/**
+ * Build a damage message from a successful attack card.
+ *
+ * Damage is derived from the stored attack result rather than rolling again, so
+ * the follow-up card reflects the original die value and computed bonuses.
+ *
+ * @param {object} params
+ * @param {ChatMessage} params.sourceMessage
+ * @param {string} [params.userMessageMode]
+ * @returns {Promise<ChatMessage|void|null>}
+ */
 async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
-  const rollData = getStandardizedRollData(sourceMessage);
-  if (rollData.subtype !== SUBTYPES.ATTACK) {
+  const messageRollData = getStandardizedRollData(sourceMessage);
+  if (messageRollData.subtype !== SUBTYPES.ATTACK) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.AttackDataMissing'));
   }
-  if (!rollData.hit) {
+  if (!messageRollData.hit) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DamageRequiresHit'));
   }
 
-  const actor = resolveActorFromUuidSync(rollData.actorUuid);
+  const actor = resolveActorFromUuidSync(messageRollData.actorUuid);
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
   // Prefer the attribute value used on the original attack.
-  const combatValue = Number(rollData.attributeValue ?? getActorAttributeValue(actor, ATTRIBUTE_COMBAT) ?? 0);
-  const messageMode = normalizeMessageMode(userMessageMode ?? rollData.messageMode ?? 'public');
+  const combatValue = Number(messageRollData.attributeValue ?? getActorAttributeValue(actor, ATTRIBUTE_COMBAT) ?? 0);
+  const messageMode = normalizeMessageMode(userMessageMode ?? messageRollData.messageMode ?? 'public');
 
   // Build a simple arithmetic summary rather than re-rolling any dice.
-  const summaryRoll = new Roll(`${rollData.d10} + ${combatValue} + ${rollData.damageBonus}`);
+  const summaryRoll = new Roll(`${messageRollData.d10} + ${combatValue} + ${messageRollData.damageBonus}`);
   summaryRoll.evaluateSync();
   const damageTotal = Number(summaryRoll.total ?? 0);
 
   // Try to resolve the original item from the attack roll, if available
   let item = null;
-  if (rollData.sourceItemUuid) {
-    item = await fromUuid(rollData.sourceItemUuid).catch(() => null);
+  if (messageRollData.sourceItemUuid) {
+    item = await fromUuid(messageRollData.sourceItemUuid).catch(() => null);
   }
 
   // Prepare modular card data for damage (unified signature)
   const cardData = prepareDamageCardData({
     input: {
-      d10: rollData.d10,
-      damageBonus: rollData.damageBonus,
+      d10: messageRollData.d10,
+      damageBonus: messageRollData.damageBonus,
       total: damageTotal,
       source: sourceMessage.speaker?.alias ?? sourceMessage.id,
       sourceMessageId: sourceMessage.id,
-      sourceItemUuid: rollData.sourceItemUuid ?? null,
-      lethal: rollData.lethal ?? 0,
+      sourceItemUuid: messageRollData.sourceItemUuid ?? null,
+      lethal: messageRollData.lethal ?? 0,
       messageMode,
       userId: game.user.id,
     },
@@ -135,7 +144,7 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
   const sourceMode = normalizeMessageMode(sourceRollData.messageMode ?? 'public');
-  const result = await renderActionRollDialog({
+  const dialogResult = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.OpposedTitle'),
     defaults: {
       actor,
@@ -151,11 +160,11 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
     },
   });
 
-  if (!result) return null;
+  if (!dialogResult) return null;
 
   const opposedRollMessage = await executeActionRoll({
     actor,
-    input: result,
+    input: dialogResult,
     sourceItem: null,
     subtype: SUBTYPES.CHALLENGE,
   });
@@ -191,46 +200,108 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
 }
 
 /**
- * Generic action roll executor for challenge and attack.
+ * Route a roll request to the correct execute function.
+ *
+ * @param {object} params
+ * @param {Actor} params.actor
+ * @param {object} params.input
+ * @param {Item|null} params.sourceItem
+ * @param {string} params.subtype
+ * @returns {Promise<ChatMessage|null>}
  */
-
 async function executeActionRoll({ actor, input, sourceItem, subtype }) {
-  // Shared setup
-  const attributeKey = getActionAttributeKey(subtype, input.attribute);
-  const rollData = buildActionRollData({ actor, input, attributeKey });
-  //const armor = parseNumeric(input.armor, 0);
-  const difficulty = parseNumeric(input.difficulty, 6);
-  // const damageBonus = parseNumeric(input.damageBonus, 0); // No longer needed, handled in cardData
   const isAttack = isAttackSubtype(subtype);
   const isChallenge = subtype === SUBTYPES.CHALLENGE;
-  const formula = isAttack ? FORMULA_ATTACK : FORMULA_CHALLENGE;
-  const evaluatedRoll = await new Roll(formula, rollData).evaluate();
-  //const total = Number(evaluatedRoll.total ?? 0);
-  // d10 and equationTerms are now handled in card data modules
-  const messageMode = normalizeMessageMode(input.messageMode);
-  const attributeValue = getActorAttributeValue(actor, attributeKey);
+  const attributeKey = getActionAttributeKey(subtype, input.attribute);
+  const rollData = buildActionRollData({ actor, input, attributeKey });
 
-
-  let cardData;
   if (isAttack) {
-    cardData = prepareAttackCardData({
-      input,
+    return executeAttackActionRoll({
       actor,
+      input,
       sourceItem,
-      rollResult: evaluatedRoll,
-      attributeValue,
+      rollData,
     });
-  } else if (isChallenge) {
-    cardData = prepareChallengeCardData({
-      input,
-      actor,
-      rollResult: evaluatedRoll,
-      attributeValue,
-      difficulty,
-    });
-  } else {
-    return handleOtherRoll({ actor, input, sourceItem, subtype });
   }
+
+  if (isChallenge) {
+    return executeChallengeActionRoll({
+      actor,
+      input,
+      rollData,
+    });
+  }
+
+  return handleOtherRoll({ actor, input, sourceItem, subtype });
+}
+
+/**
+ * Execute an attack roll, including range-rule handling and attack card creation.
+ *
+ * Range handling order:
+ * 1. Compute contextual range data from attacker/target token state.
+ * 2. Abort when melee attacks are impossible due to out-of-zone targeting.
+ * 3. Apply dialog override for range modifier when provided; otherwise use computed value.
+ *
+ * @param {object} params
+ * @param {Actor} params.actor
+ * @param {object} params.input
+ * @param {Item|null} params.sourceItem
+ * @param {string} params.attributeKey
+ * @param {object} params.rollData
+ * @returns {Promise<ChatMessage|null>}
+ */
+async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
+  const messageMode = normalizeMessageMode(input.messageMode);
+  const attackRangeContext = buildAttackRangeContext({ actor, sourceItem });
+  // Hard-stop only for impossible melee attacks; all other range states continue.
+  if (attackRangeContext?.isImpossible) {
+    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.MeleeOutOfRange'));
+    return null;
+  }
+
+  const computedRangeModifier = Number(attackRangeContext?.rangeModifier ?? 0);
+  // Dialog value pre-populated from computed at open time; user may override.
+  const rangeModifier = parseNumeric(input.rangeModifier, computedRangeModifier);
+  rollData.rangeModifier = rangeModifier;
+  rollData.modifiers += rangeModifier;
+
+  const evaluatedRoll = await new Roll(FORMULA_ATTACK, rollData).evaluate();
+
+  // Enrich attack-only payload fields for the chat card and stored roll flags.
+  const resolvedInput = buildResolvedAttackInput({
+    input,
+    rollData,
+    attackRangeContext,
+  });
+  const cardData = prepareAttackCardData({
+    input: resolvedInput,
+    actor,
+    sourceItem,
+    rollResult: evaluatedRoll,
+    attributeValue: rollData.attribute,
+  });
+
+  return createActionMessage({
+    actor,
+    roll: evaluatedRoll,
+    messageMode,
+    cardData,
+  });
+}
+
+async function executeChallengeActionRoll({ actor, input, rollData }) {
+  const messageMode = normalizeMessageMode(input.messageMode);
+  const difficulty = parseNumeric(input.difficulty, 6);
+  const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, rollData).evaluate();
+
+  const cardData = prepareChallengeCardData({
+    input,
+    actor,
+    rollResult: evaluatedRoll,
+    attributeValue: rollData.attribute,
+    difficulty,
+  });
 
   return createActionMessage({
     actor,
@@ -254,28 +325,12 @@ async function handleOtherRoll({ _actor, _input, _sourceItem, subtype }) {
 /* -------------------------------------------- */
 
 export async function createActionMessage({ actor, roll, cardData, messageMode, whisper } = {}) {
-  // If a Roll is provided, render and use Foundry's `toMessage` path so the
-  // roll HTML and message metadata are correct. If no Roll is provided (e.g.
-  // derived deterministic results), skip roll rendering and build the
-  // ChatMessage data directly to avoid dice UI and sounds.
+  // Use Foundry's roll path when dice were actually rolled; otherwise create a
+  // normal chat message so derived summaries do not trigger dice UI or sounds.
   if (roll) {
     const rollHtml = await roll.render();
-    const content = await foundry.applications.handlebars.renderTemplate(CARD_TEMPLATE, {
-      ...cardData,
-      rollHtml,
-    });
-
-    const toMessageOptions = {
-      speaker: ChatMessage.getSpeaker({ actor }),
-      content,
-      style: getChatMessageStyle(),
-      flags: {
-        synthicide: {
-          [FLAG_PATH]: cardData.flags,
-        },
-      },
-    };
-    if (Array.isArray(whisper) && whisper.length) toMessageOptions.whisper = whisper;
+    const cardHtml = await renderActionCardHtml({ cardData, rollHtml });
+    const toMessageOptions = buildChatMessageData({ actor, content: cardHtml, cardData, whisper });
 
     const chatData = await roll.toMessage(toMessageOptions, {
       messageMode: normalizeMessageMode(messageMode),
@@ -288,35 +343,21 @@ export async function createActionMessage({ actor, roll, cardData, messageMode, 
   // No roll: render template without roll HTML and create the chat message
   // directly. This prevents Foundry from treating this as a new dice roll
   // (no sound, no dice term rendering), while keeping our card layout.
-  const content = await foundry.applications.handlebars.renderTemplate(CARD_TEMPLATE, {
-    ...cardData,
-    rollHtml: '',
-  });
-
-  const chatData = {
-    speaker: ChatMessage.getSpeaker({ actor }),
-    content,
-    style: getChatMessageStyle(),
-    flags: {
-      synthicide: {
-        [FLAG_PATH]: cardData.flags,
-      },
-    },
-  };
-  if (Array.isArray(whisper) && whisper.length) chatData.whisper = whisper;
+  const cardHtml = await renderActionCardHtml({ cardData });
+  const chatData = buildChatMessageData({ actor, content: cardHtml, cardData, whisper });
 
   return ChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
 }
 
 function activateActionRollChatListeners(message, htmlElement) {
   if (!htmlElement || typeof htmlElement.querySelectorAll !== 'function' || typeof htmlElement.addEventListener !== 'function') return;
-  const rollData = getStandardizedRollData(message);
-  if (!rollData || (rollData.subtype !== SUBTYPES.ATTACK && rollData.subtype !== SUBTYPES.CHALLENGE)) return;
+  const messageRollData = getStandardizedRollData(message);
+  if (!messageRollData || (messageRollData.subtype !== SUBTYPES.ATTACK && messageRollData.subtype !== SUBTYPES.CHALLENGE)) return;
   const root = htmlElement;
-  const allowed = canExecuteFollowup(message);
+  const followupAllowed = canExecuteFollowup(message);
 
   for (const button of root.querySelectorAll('[data-action="rollDamage"]')) {
-    if (!allowed) button.disabled = true;
+    if (!followupAllowed) button.disabled = true;
   }
 
   if (root.dataset.synthicideActionBound === 'true') return;
@@ -360,7 +401,7 @@ async function onActionRollCardClick(event, message) {
  *
  * Uses DialogV2's `ok` callback to extract form values and return normalized
  * roll input, or `null` if the dialog is cancelled. Also applies the
- * Synthicide SVG to the dialog header icon on render.
+ * Synthicide d10 SVG to the dialog header icon on render.
  *
  * @param {object} params
  * @param {string} params.title
@@ -378,11 +419,7 @@ async function renderActionRollDialog({ title, defaults }) {
       ok: {
         label: localize('SYNTHICIDE.Roll.Dialog.RollButton'),
         callback: (event, button, dialog) => {
-          const form = button?.form
-            ?? event?.currentTarget?.form
-            ?? event?.target?.form
-            ?? dialog?.element?.querySelector?.('form.synthicide-action-roll-form')
-            ?? null;
+          const form = resolveDialogForm(event, button, dialog);
           if (!form) return null;
           return extractDialogData(form);
         },
@@ -401,6 +438,52 @@ async function renderActionRollDialog({ title, defaults }) {
   } catch {
     return null;
   }
+}
+
+/**
+ * Build the default dialog object for a new action roll.
+ *
+ * @param {object} params
+ * @param {Actor} params.actor
+ * @param {string} params.subtype
+ * @param {string} params.attributeKey
+ * @param {Item|null} params.sourceItem
+ * @param {boolean} params.allowSubtypeChange
+ * @returns {object}
+ */
+function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSubtypeChange }) {
+  const attackDefaults = getAttackDialogDefaults({ actor, subtype, sourceItem });
+
+  return {
+    actor,
+    subtype,
+    attribute: attributeKey,
+    difficulty: 6,
+    misc: 0,
+    armor: isAttackSubtype(subtype) ? getTargetArmor() : 0,
+    attackBonus: attackDefaults.attackBonus,
+    damageBonus: attackDefaults.damageBonus,
+    rangeModifier: attackDefaults.rangeModifier,
+    messageMode: getDefaultMessageMode(),
+    allowSubtypeChange,
+  };
+}
+
+function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
+  if (!isAttackSubtype(subtype) || !sourceItem?.system) {
+    return {
+      attackBonus: 0,
+      damageBonus: 0,
+      rangeModifier: 0,
+    };
+  }
+
+  const rangeContext = buildAttackRangeContext({ actor, sourceItem, notify: false });
+  return {
+    attackBonus: Number(sourceItem.system.attackBonus ?? 0),
+    damageBonus: Number(sourceItem.system.damageBonus ?? 0),
+    rangeModifier: Number(rangeContext?.rangeModifier ?? 0),
+  };
 }
 
 function buildDialogContext(defaults) {
@@ -428,6 +511,7 @@ function buildDialogContext(defaults) {
     lockAttribute: isAttack,
     defaultAttackBonus: defaults.attackBonus ?? 0,
     defaultDamageBonus: defaults.damageBonus ?? 0,
+    defaultRangeModifier: defaults.rangeModifier ?? 0,
     defaultMisc: defaults.misc ?? 0,
     subtypeOptions: [
       {
@@ -454,6 +538,14 @@ function buildDialogContext(defaults) {
   };
 }
 
+function resolveDialogForm(event, button, dialog) {
+  return button?.form
+    ?? event?.currentTarget?.form
+    ?? event?.target?.form
+    ?? dialog?.element?.querySelector?.('form.synthicide-action-roll-form')
+    ?? null;
+}
+
 function extractDialogData(formElement) {
   const formData = new globalThis.FormData(formElement);
   return {
@@ -465,6 +557,7 @@ function extractDialogData(formElement) {
     armor: parseNumeric(formData.get('armor'), 0),
     attackBonus: parseNumeric(formData.get('attackBonus'), 0),
     damageBonus: parseNumeric(formData.get('damageBonus'), 0),
+    rangeModifier: parseNumeric(formData.get('rangeModifier'), 0),
   };
 }
 
@@ -474,6 +567,29 @@ function extractDialogData(formElement) {
 
 export function localize(key, data) {
   return game.i18n.format(key, data);
+}
+
+async function renderActionCardHtml({ cardData, rollHtml = '' }) {
+  return foundry.applications.handlebars.renderTemplate(CARD_TEMPLATE, {
+    ...cardData,
+    rollHtml,
+  });
+}
+
+function buildChatMessageData({ actor, content, cardData, whisper }) {
+  const chatData = {
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content,
+    style: getChatMessageStyle(),
+    flags: {
+      synthicide: {
+        [FLAG_PATH]: cardData.flags,
+      },
+    },
+  };
+
+  if (Array.isArray(whisper) && whisper.length) chatData.whisper = whisper;
+  return chatData;
 }
 
 function parseNumeric(value, fallback = 0) {
@@ -509,28 +625,42 @@ function getActionAttributeKey(subtype, requestedAttribute) {
 
 function buildActionRollData({ actor, input, attributeKey }) {
   const modifiers = getActorRollModifiers(actor);
+  const actorModifierTotal = modifiers.reduce((sum, mod) => sum + (Number(mod.value) || 0), 0);
   return {
     attribute: getActorAttributeValue(actor, attributeKey),
     attackBonus: parseNumeric(input.attackBonus, 0),
     misc: parseNumeric(input.misc, 0),
-    modifiers: modifiers.reduce((sum, mod) => sum + (Number(mod.value) || 0), 0),
+    modifiers: actorModifierTotal,
+    actorModifierTotal,
+    rangeModifier: 0,
   };
 }
 
 export function buildEquationTerms({ subtype, attributeKey, rollData }) {
+  const isDamage = subtype === 'damage';
+
   const terms = [
     { label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(attributeKey) },
     { label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: rollData.attributeValue ?? rollData.attribute },
-    { label: localize('SYNTHICIDE.Roll.Card.MiscModifier'), value: rollData.misc },
   ];
+
+  if (isDamage) {
+    terms.push({ label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: rollData.damageBonus ?? 0 });
+    return terms;
+  }
+
+  terms.push({ label: localize('SYNTHICIDE.Roll.Card.MiscModifier'), value: rollData.misc });
 
   if (isAttackSubtype(subtype)) {
     terms.push({ label: localize('SYNTHICIDE.Roll.Card.AttackBonus'), value: rollData.attackBonus });
   }
 
-  // Always show zero if no modifiers
-  const modifiersValue = (rollData.modifiers === undefined || rollData.modifiers === null) ? 0 : rollData.modifiers;
-  terms.push({ label: localize('SYNTHICIDE.Roll.Dialog.RollModifiers'), value: modifiersValue });
+  terms.push({ label: localize('SYNTHICIDE.Roll.Dialog.RollModifiers'), value: rollData.actorModifierTotal ?? 0 });
+
+  if (isAttackSubtype(subtype)) {
+    terms.push({ label: localize('SYNTHICIDE.Roll.Card.RangeModifier'), value: Number(rollData.rangeModifier ?? 0) });
+  }
+
   return terms;
 }
 
@@ -626,7 +756,7 @@ function resolveActorFromUuidSync(uuid) {
 }
 
 function getTargetArmor() {
-  const defaultValue = game.settings.get('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY)
+  const defaultValue = game.settings.get('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY);
   if (game.user.targets?.size === 1) {
     const armorData = game.user.targets.first()?.actor?.system?.armorDefense;
     const armor = Number(armorData?.value ?? armorData);
@@ -639,6 +769,125 @@ function getTargetArmor() {
   return defaultValue;
 }
 
+function getSingleTargetToken({ notify = true } = {}) {
+  if (game.user.targets?.size === 1) return game.user.targets.first() ?? null;
+  if (game.user.targets?.size > 1) {
+    if (notify) ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.TooManyTargets'));
+    return null;
+  }
+
+  if (notify) ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NoTarget'));
+  return null;
+}
+
+/**
+ * Resolve a scene token for an actor using progressively looser fallbacks.
+ *
+ * The active-token lookup is preferred because it respects linked and embedded
+ * actor state. Scene and controlled-token fallbacks keep rolls functional when
+ * Foundry cannot resolve an active token directly.
+ *
+ * @param {Actor|null} actor
+ * @returns {Token|null}
+ */
+function getActorToken(actor) {
+  if (!actor) return null;
+  
+  // First priority: look for active tokens for this actor on the current scene
+  const activeTokens = actor.getActiveTokens?.(false, false) ?? [];
+  if (activeTokens.length > 0) return activeTokens[0];
+
+  // Second priority: direct scene search for a token belonging to this actor
+  if (canvas?.scene?.tokens) {
+    const sceneToken = canvas.scene.tokens.find((token) => token?.actorId === actor.id);
+    if (sceneToken) return sceneToken.object;
+  }
+
+  // Fallback: any token the current user has controlled (last resort)
+  const controlled = canvas?.tokens?.controlled ?? [];
+  const controlledMatch = controlled.find((token) => token?.actor?.id === actor.id);
+  if (controlledMatch) return controlledMatch;
+
+  return null;
+}
+
+function hasWeaponFeature(sourceItem, featureKey) {
+  const features = sourceItem?.system?.features;
+  if (features instanceof Set) return features.has(featureKey);
+  if (Array.isArray(features)) return features.includes(featureKey);
+  return false;
+}
+
+/**
+ * Compute range-related attack context from the current attacker and target.
+ *
+ * This helper never mutates roll state directly. It returns enough information
+ * for the dialog and the attack executor to make the same range decision.
+ *
+ * @param {object} params
+ * @param {Actor} params.actor
+ * @param {Item|null} params.sourceItem
+ * @param {boolean} [params.notify=true]
+ * @returns {{weaponClass: string, rangeIncrement: number, hasCloseFeature: boolean, distance: number|null, rangeModifier: number, isImpossible: boolean}}
+ */
+function buildAttackRangeContext({ actor, sourceItem, notify = true }) {
+  const weaponClass = String(sourceItem?.system?.weaponClass ?? '');
+  const rangeIncrement = Math.max(0, Number(sourceItem?.system?.rangeIncrement ?? 0));
+  const hasCloseFeature = hasWeaponFeature(sourceItem, 'close');
+
+  const context = {
+    weaponClass,
+    rangeIncrement,
+    hasCloseFeature,
+    distance: null,
+    rangeModifier: 0,
+    isImpossible: false,
+  };
+
+  // Only melee and ranged use the distance-based attack modifier rules.
+  if (weaponClass !== 'melee' && weaponClass !== 'ranged') return context;
+
+  const targetToken = getSingleTargetToken({ notify });
+  if (!targetToken?.center) return context;
+
+  const attackerToken = getActorToken(actor);
+  if (!attackerToken?.center) {
+    // Attacker actor is known but token not on scene or not locatable.
+    // Fall back to default context so attack still rolls (range modifier = 0).
+    if (notify && actor) {
+      ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.AttackerTokenMissing'));
+    }
+    return context;
+  }
+
+  const distance = Number(calculateVirtualDistanceBetweenTokens(attackerToken, targetToken) ?? 0);
+  context.distance = Number.isFinite(distance) ? Math.max(0, distance) : 0;
+
+  // Melee attacks with no range increment cannot reach targets outside the same zone.
+  if (weaponClass === 'melee' && rangeIncrement === 0 && context.distance > 0) {
+    context.isImpossible = true;
+    return context;
+  }
+
+  let rangeModifier = 0;
+  if (context.distance > 0) {
+    if (rangeIncrement > 0) {
+      const extraDistance = context.distance - rangeIncrement;
+      if (extraDistance > 0) rangeModifier -= Math.ceil(extraDistance / rangeIncrement);
+    } else if (weaponClass === 'ranged') {
+      // Ranged weapons with zero range increment suffer -1 ATT per zone beyond current.
+      rangeModifier -= context.distance;
+    }
+  }
+
+  if (weaponClass === 'ranged' && hasCloseFeature && context.distance === 0) {
+    rangeModifier += 1;
+  }
+
+  context.rangeModifier = rangeModifier;
+  return context;
+}
+
 function getActorRollModifiers(actor) {
   const rollModifiers = actor?.system?.rollModifiers;
   if (!rollModifiers || typeof rollModifiers !== 'object') return [];
@@ -646,4 +895,17 @@ function getActorRollModifiers(actor) {
   return Object.entries(rollModifiers)
     .map(([key, value]) => ({ key, value: Number(value) }))
     .filter((entry) => Number.isFinite(entry.value) && entry.value !== 0);
+}
+
+function buildResolvedAttackInput({ input, rollData, attackRangeContext }) {
+  return {
+    ...input,
+    modifiers: rollData.modifiers,
+    actorModifierTotal: rollData.actorModifierTotal,
+    rangeModifier: rollData.rangeModifier,
+    rangeDistance: attackRangeContext?.distance ?? null,
+    rangeIncrement: attackRangeContext?.rangeIncrement ?? null,
+    weaponClass: attackRangeContext?.weaponClass ?? null,
+    hasCloseFeature: attackRangeContext?.hasCloseFeature ?? false,
+  };
 }

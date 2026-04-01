@@ -414,6 +414,9 @@
         "TargetArmor": "Target Armor",
         "AttackBonus": "Attack Bonus (ATT)",
         "DamageBonus": "Damage Bonus (DMG)",
+        "RangeIncrement": "Range Increment",
+        "Distance": "Distance (Zones)",
+        "RangeModifier": "Range Modifier",
         "Flavor": "Flavor",
         "OpposedFlavorDefault": "Opposed against roll {id}",
         "General": "General",
@@ -440,6 +443,9 @@
         "MiscModifier": "Misc Modifier",
         "Armor": "Armor",
         "AttackBonus": "ATT Bonus",
+        "RangeModifier": "Range Modifier",
+        "RangeIncrement": "Range Increment",
+        "Distance": "Distance (Zones)",
         "DamageBonus": "DMG Bonus",
         "SourceAttack": "Source Attack",
         "DerivedFromAttack": "Derived from attack",
@@ -482,7 +488,9 @@
         "ChallengeDataMissing": "This message does not contain challenge roll data.",
         "NotPermitted": "You do not have permission to use this action.",
         "NoTarget": "No attack targets selected (using target armor default setting)",
-        "TooManyTargets": "Too many targets selected (using target armor default setting)"
+        "TooManyTargets": "Too many targets selected (using target armor default setting)",
+        "AttackerTokenMissing": "Could not determine the attacker's token for range calculation.",
+        "MeleeOutOfRange": "Melee attack is impossible: target is outside your current zone."
       },
       "Opposed": {
         "SummaryTitle": "Opposed Challenge Result",

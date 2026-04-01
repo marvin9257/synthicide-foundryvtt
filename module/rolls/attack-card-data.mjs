@@ -17,6 +17,9 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
   const armor = Number(input.armor ?? 0);
   const attackBonus = Number(input.attackBonus ?? 0);
   const damageBonus = Number(input.damageBonus ?? 0);
+  const rangeModifier = Number(input.rangeModifier ?? 0);
+  const rangeDistance = Number.isFinite(Number(input.rangeDistance)) ? Number(input.rangeDistance) : null;
+  const rangeIncrement = Number.isFinite(Number(input.rangeIncrement)) ? Number(input.rangeIncrement) : null;
   const hit = total >= armor;
   const damageTotal = d10 + attributeValue + damageBonus;
   const attributeKey = input.attribute;
@@ -43,7 +46,8 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
     effectClass: hit ? 'outcome-success' : 'outcome-failure',
     metadataRows: [
       { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
-      { label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: damageBonus },
+      { label: localize('SYNTHICIDE.Roll.Card.Distance'), value: rangeDistance ?? 'n/a' },
+      { label: localize('SYNTHICIDE.Roll.Card.RangeIncrement'), value: rangeIncrement ?? 'n/a' }
     ],
     flags: {
       version: 2, // Use your ACTION_ROLL_VERSION
@@ -63,6 +67,11 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
         hit,
         damageTotal,
         lethal,
+        rangeModifier,
+        rangeDistance,
+        rangeIncrement,
+        weaponClass: input.weaponClass ?? null,
+        hasCloseFeature: Boolean(input.hasCloseFeature),
       },
     },
   };
