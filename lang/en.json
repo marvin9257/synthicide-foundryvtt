@@ -33,6 +33,10 @@
       "VirtualGridMovement": {
         "Name": "Use Virtual Grids (Zones)",
         "Hint": "Once combat starts, a 3x3 virtual grid overlay appears to mimic Synthicide's 15'x15' zones (assuming 5' core grid units—the default). Each zone represents a 15'x15' area. Movement is shown as the number of zones crossed, rather than individual grid squares. The virtual grid overlay is disabled when combat ends."
+      },
+      "DemolitionAutoScatter": {
+        "Name": "Demolition Auto-Scatter",
+        "Hint": "If enabled, failed demolition throws automatically scatter to a random corner of the target zone. If disabled, failed throws stay at the aimed point."
       }
     },
     "Actor": {
@@ -390,6 +394,7 @@
       "Subtype": {
         "Challenge": "Challenge",
         "Attack": "Attack",
+        "Demolition": "Demolition",
         "Damage": "Damage",
         "ItemRoll": "Item Roll"
       },
@@ -426,6 +431,7 @@
         "TitleChallenge": "Challenge Roll",
         "TitleShock": "Shocking Strike: Toughness Check",
         "TitleAttack": "Attack Roll",
+        "TitleDemolition": "Demolition Roll",
         "TitleDamage": "Calculated Damage",
         "ItemRoll": "Item Roll for [{type}]:{name}",
         "Equation": "Equation",
@@ -446,11 +452,15 @@
         "RangeModifier": "Range Modifier",
         "RangeIncrement": "Range Increment",
         "Distance": "Distance (Zones)",
+        "RangeBands": "Range Bands",
         "DamageBonus": "DMG Bonus",
+        "BlastDiameter": "Blast Diameter",
+        "FinalPoint": "Final Point",
         "SourceAttack": "Source Attack",
         "DerivedFromAttack": "Derived from attack",
         "DefaultFlavorChallenge": "{difficulty} roll made using {attribute}",
         "DefaultFlavorAttack": "{item}: attack roll using {attribute} vs armor {armor}",
+        "DefaultFlavorDemolition": "{item}: demolition roll using {attribute} vs RD {rd}",
         "ShowDetails": "Show Details",
         "SuccessLevel": "Success Level: {level}",
         "AttackResultHit": "Attack Result: Hit",
@@ -478,6 +488,9 @@
       "Outcome": {
         "Hit": "Hit",
         "Miss": "Miss",
+        "OnTarget": "On Target",
+        "Scattered": "Scattered",
+        "OffTargetNoScatter": "Off Target (Scatter Disabled)",
         "DamageApplied": "Damage Applied"
       },
       "Warnings": {
@@ -490,7 +503,11 @@
         "NoTarget": "No attack targets selected (using target armor default setting)",
         "TooManyTargets": "Too many targets selected (using target armor default setting)",
         "AttackerTokenMissing": "Could not determine the attacker's token for range calculation.",
-        "MeleeOutOfRange": "Melee attack is impossible: target is outside your current zone."
+        "MeleeOutOfRange": "Melee attack is impossible: target is outside your current zone.",
+        "DemolitionBlastMissing": "This demolition weapon needs a blast radius before it can be used.",
+        "DemolitionRangeIncrementMissing": "This demolition weapon needs a range increment greater than zero.",
+        "DemolitionPlacementMissing": "Could not determine the placed demolition point.",
+        "DemolitionPlantedNotImplemented": "Planted demolition devices are not on the thrown workflow yet."
       },
       "Opposed": {
         "SummaryTitle": "Opposed Challenge Result",
@@ -530,6 +547,22 @@
         "FailureDeath": "Toughness check failed ({roll} vs RD {rd}) — would be reduced below zero and dies.",
         "FailureMinusOne": "Toughness check failed ({roll} vs RD {rd}) — HP reduced to -1."
       }
+    },
+    "Target": {
+      "AreaEffect": "Area of Effect",
+      "Target": "Target",
+      "None": "none",
+      "Radius": "radius",
+      "Sphere": "sphere",
+      "Cylinder": "cylinder",
+      "Cone": "cone",
+      "Square": "square",
+      "Cube": "cube",
+      "Line": "line",
+      "Wall": "wall",
+      "Width": "Width",
+      "Units": "Units",
+      "TypeArea": "Area Type"
     }
   },
   "TYPES": {

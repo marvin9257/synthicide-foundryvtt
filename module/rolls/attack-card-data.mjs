@@ -1,7 +1,7 @@
 // Attack card data preparation for Synthicide
 // Extracted from action-rolls.mjs for modularity and clarity
 
-import { localize, getAttributeLabel, getDieClass, buildEquationTerms } from './action-rolls.mjs';
+import { localize, getAttributeLabel, getDieClass, buildEquationTerms } from './roll-utils.mjs';
 /**
  * Prepare cardData and flags for an attack roll.
  * @param {object} params

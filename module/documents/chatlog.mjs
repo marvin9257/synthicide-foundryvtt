@@ -1,4 +1,4 @@
-import { getStandardizedRollData } from '../rolls/roll-data-utils.mjs';
+import { getStandardizedRollData } from '../rolls/roll-utils.mjs';
 /**
  * The chat popout
  * @extends {ChatPopout}

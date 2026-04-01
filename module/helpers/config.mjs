@@ -38,6 +38,7 @@ SYNTHICIDE.USE_SHOCKING_STRIKE_KEY = 'useShockingStrike';
 
 // Virtual Grid Movement Setting Key
 SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY = 'virtualGridMovement';
+SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY = 'demolitionAutoScatter';
 
 /**
  * The set of Attribute Scores used within the system.
@@ -267,6 +268,48 @@ SYNTHICIDE.ARMOR_MODIFICATIONS = {
   reactiveCamo: "SYNTHICIDE.Item.Armor.Modification.ReactiveCamo",
   calling: "SYNTHICIDE.Item.Armor.Modification.Calling"
 }
+
+/**
+ * The valid target Area Types in the game system.
+ */
+SYNTHICIDE.AREA_TARGET_TYPES = {
+  none: {
+    label: "SYNTHICIDE.Target.None",
+    template: ""
+  },
+  radius: {
+    label: "SYNTHICIDE.Target.Radius",
+    template: "circle"
+  },
+  sphere: {
+    label: "SYNTHICIDE.Target.Sphere",
+    template: "circle"
+  },
+  cylinder: {
+    label: "SYNTHICIDE.Target.Cylinder",
+    template: "circle"
+  },
+  cone: {
+    label: "SYNTHICIDE.Target.Cone",
+    template: "cone"
+  },
+  square: {
+    label: "SYNTHICIDE.Target.Square",
+    template: "rect"
+  },
+  cube: {
+    label: "SYNTHICIDE.Target.Cube",
+    template: "rect"
+  },
+  line: {
+    label: "SYNTHICIDE.Target.Line",
+    template: "ray"
+  },
+  wall: {
+    label: "SYNTHICIDE.Target.Wall",
+    template: "ray"
+  }
+};
 
 export default SYNTHICIDE;
 

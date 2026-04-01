@@ -1,7 +1,7 @@
 // module/rolls/damage-card-data.js
 // Modular function to prepare card data for derived damage rolls
 
-import { localize, getDieClass, buildEquationTerms } from './action-rolls.mjs';
+import { localize, getDieClass, buildEquationTerms } from './roll-utils.mjs';
 /**
  * Prepare cardData and flags for a derived damage roll.
  * @param {object} params

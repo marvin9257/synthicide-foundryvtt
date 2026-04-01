@@ -34,7 +34,7 @@
       {{/if}}
     </div>
 
-    {{#unless isAttack}}
+    {{#if showDifficulty}}
       <div class="form-group">
         <label>{{localize "SYNTHICIDE.Roll.Dialog.Difficulty"}}</label>
         <select name="difficulty">
@@ -43,7 +43,7 @@
       </div>
     {{else}}
       <input type="hidden" name="difficulty" value="{{difficultySelected}}" />
-    {{/unless}}
+    {{/if}}
   </fieldset>
 
   <fieldset class="roll-modifiers">

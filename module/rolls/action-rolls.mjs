@@ -1,8 +1,11 @@
 import SYNTHICIDE from '../helpers/config.mjs';
+import ItemTemplate from '../documents/ItemTemplate.mjs';
+import { calculateVirtualZoneDistanceBetweenPoints, getRandomScatterCorner } from '../canvas/demolition-scatter-utils.mjs';
+import { formatSignedNumber, getStandardizedRollData, localize, normalizeAttributeKey } from './roll-utils.mjs';
 import { prepareAttackCardData } from './attack-card-data.mjs';
 import { prepareChallengeCardData } from './challenge-card-data.mjs';
+import { prepareDemolitionCardData } from './demolition-card-data.mjs';
 import { prepareDamageCardData } from './damage-card-data.mjs';
-import { getStandardizedRollData } from './roll-data-utils.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { calculateVirtualDistanceBetweenTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
 
@@ -17,6 +20,7 @@ const FORMULA_ATTACK = '1d10 + @attribute + @misc + @attackBonus + @modifiers';
 const SUBTYPES = {
   CHALLENGE: 'challenge',
   ATTACK: 'attack',
+  DEMOLITION: 'demolition',
   DAMAGE: 'damage',
 };
 
@@ -42,13 +46,14 @@ export async function openSynthicideActionRollDialog({
   allowSubtypeChange = false,
 } = {}) {
   if (!actor) return null;
-  const attributeKey = getActionAttributeKey(subtype, attribute);
+  const requestedSubtype = resolveActionSubtype({ subtype, sourceItem });
+  const attributeKey = getActionAttributeKey(requestedSubtype, attribute);
 
   const dialogResult = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.Title'),
     defaults: buildDialogDefaults({
       actor,
-      subtype,
+      subtype: requestedSubtype,
       attributeKey,
       sourceItem,
       allowSubtypeChange,
@@ -57,7 +62,7 @@ export async function openSynthicideActionRollDialog({
 
   if (!dialogResult) return null;
 
-  const resolvedSubtype = dialogResult.subtype === SUBTYPES.ATTACK ? SUBTYPES.ATTACK : SUBTYPES.CHALLENGE;
+  const resolvedSubtype = resolveActionSubtype({ subtype: dialogResult.subtype, sourceItem });
   return executeActionRoll({ actor, input: dialogResult, sourceItem, subtype: resolvedSubtype });
 }
 
@@ -210,10 +215,21 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
  * @returns {Promise<ChatMessage|null>}
  */
 async function executeActionRoll({ actor, input, sourceItem, subtype }) {
-  const isAttack = isAttackSubtype(subtype);
-  const isChallenge = subtype === SUBTYPES.CHALLENGE;
-  const attributeKey = getActionAttributeKey(subtype, input.attribute);
+  const resolvedSubtype = resolveActionSubtype({ subtype, sourceItem });
+  const isDemolition = isDemolitionSubtype(resolvedSubtype);
+  const isAttack = isAttackSubtype(resolvedSubtype);
+  const isChallenge = resolvedSubtype === SUBTYPES.CHALLENGE;
+  const attributeKey = getActionAttributeKey(resolvedSubtype, input.attribute);
   const rollData = buildActionRollData({ actor, input, attributeKey });
+
+  if (isDemolition) {
+    return executeDemolitionActionRoll({
+      actor,
+      input,
+      sourceItem,
+      rollData,
+    });
+  }
 
   if (isAttack) {
     return executeAttackActionRoll({
@@ -233,6 +249,95 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   }
 
   return handleOtherRoll({ actor, input, sourceItem, subtype });
+}
+
+async function executeDemolitionActionRoll({ actor, input, sourceItem, rollData }) {
+  if (isPlantedDemolition(sourceItem)) {
+    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DemolitionPlantedNotImplemented'));
+    return null;
+  }
+
+  const actorToken = getActorToken(actor);
+  if (!actorToken?.center) {
+    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.AttackerTokenMissing'));
+    return null;
+  }
+
+  const target = buildDemolitionTargetData(sourceItem);
+  if (!target) {
+    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DemolitionBlastMissing'));
+    return null;
+  }
+
+  const rangeIncrement = Math.max(0, Number(sourceItem?.system?.rangeIncrement ?? 0));
+  if (rangeIncrement <= 0) {
+    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DemolitionRangeIncrementMissing'));
+    return null;
+  }
+
+  const messageMode = normalizeMessageMode(input.messageMode);
+  const template = await ItemTemplate.fromItem(sourceItem, {
+    name: sourceItem?.name ?? localize('SYNTHICIDE.Roll.Subtype.Demolition'),
+    target,
+  });
+  if (!template) return null;
+
+  const placedRegion = await template.drawPreview();
+  if (!placedRegion) return null;
+
+  const aimedPoint = ItemTemplate.getPlacedPoint(placedRegion);
+  if (!aimedPoint) {
+    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DemolitionPlacementMissing'));
+    return null;
+  }
+
+  const rangeDistance = calculateVirtualZoneDistanceBetweenPoints(actorToken.center, aimedPoint);
+  const rangeBands = rangeDistance > 0 ? Math.ceil(rangeDistance / rangeIncrement) : 0;
+  const difficulty = rangeBands * 3;
+  const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, rollData).evaluate();
+  const success = Number(evaluatedRoll.total ?? 0) >= difficulty;
+  const autoScatterEnabled = Boolean(game.settings.get('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY));
+
+  let finalPoint = aimedPoint;
+  let scatterApplied = false;
+  if (!success && autoScatterEnabled) {
+    const scatterResult = getRandomScatterCorner({
+      zonePoint: aimedPoint,
+    });
+    if (scatterResult?.selectedCorner) {
+      await ItemTemplate.movePlacedRegion(placedRegion, scatterResult.selectedCorner);
+      finalPoint = scatterResult.selectedCorner;
+      scatterApplied = true;
+    }
+  }
+
+  ItemTemplate.targetTokensForPlacedRegion(placedRegion);
+
+  const cardData = prepareDemolitionCardData({
+    input: {
+      ...input,
+      difficulty,
+      rangeDistance,
+      rangeIncrement,
+      rangeBands,
+      blastDiameter: getDemolitionBlastDiameter(sourceItem),
+      success,
+      scatterApplied,
+      aimedPoint,
+      finalPoint,
+    },
+    actor,
+    sourceItem,
+    rollResult: evaluatedRoll,
+    attributeValue: rollData.attribute,
+  });
+
+  return createActionMessage({
+    actor,
+    roll: evaluatedRoll,
+    messageMode,
+    cardData,
+  });
 }
 
 /**
@@ -489,6 +594,7 @@ function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
 function buildDialogContext(defaults) {
   const subtype = defaults.subtype ?? SUBTYPES.CHALLENGE;
   const isAttack = isAttackSubtype(subtype);
+  const isDemolition = isDemolitionSubtype(subtype);
   const difficultyList = SYNTHICIDE.rolls?.challengeDifficulties ?? [];
 
   const actor = defaults.actor;
@@ -507,8 +613,10 @@ function buildDialogContext(defaults) {
     allowSubtypeChange: Boolean(defaults.allowSubtypeChange),
     defaultSubtype: subtype,
     isAttack,
+    isDemolition,
+    showDifficulty: subtype === SUBTYPES.CHALLENGE,
     defaultArmor: defaults.armor ?? game.settings.get('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY) ?? 5,
-    lockAttribute: isAttack,
+    lockAttribute: isAttack || isDemolition,
     defaultAttackBonus: defaults.attackBonus ?? 0,
     defaultDamageBonus: defaults.damageBonus ?? 0,
     defaultRangeModifier: defaults.rangeModifier ?? 0,
@@ -523,6 +631,11 @@ function buildDialogContext(defaults) {
         value: SUBTYPES.ATTACK,
         label: 'SYNTHICIDE.Roll.Subtype.Attack',
         selected: subtype === SUBTYPES.ATTACK,
+      },
+      {
+        value: SUBTYPES.DEMOLITION,
+        label: 'SYNTHICIDE.Roll.Subtype.Demolition',
+        selected: subtype === SUBTYPES.DEMOLITION,
       },
     ],
     messageModeOptions: CONFIG.ChatMessage.modes,
@@ -565,10 +678,6 @@ function extractDialogData(formElement) {
 /* Utilities                                    */
 /* -------------------------------------------- */
 
-export function localize(key, data) {
-  return game.i18n.format(key, data);
-}
-
 async function renderActionCardHtml({ cardData, rollHtml = '' }) {
   return foundry.applications.handlebars.renderTemplate(CARD_TEMPLATE, {
     ...cardData,
@@ -597,13 +706,6 @@ function parseNumeric(value, fallback = 0) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-export function formatSignedNumber(value) {
-  const numeric = Number(value);
-  if (!Number.isFinite(numeric)) return '0';
-  if (numeric > 0) return `+${numeric}`;
-  return `${numeric}`;
-}
-
 function formatModifierKey(key) {
   return String(key ?? '')
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
@@ -611,16 +713,25 @@ function formatModifierKey(key) {
     .replace(/^./, (char) => char.toUpperCase());
 }
 
-function normalizeAttributeKey(attributeKey) {
-  return attributeKey && SYNTHICIDE.attributes?.[attributeKey] ? attributeKey : ATTRIBUTE_COMBAT;
-}
-
 function isAttackSubtype(subtype) {
   return subtype === SUBTYPES.ATTACK;
 }
 
+function isDemolitionSubtype(subtype) {
+  return subtype === SUBTYPES.DEMOLITION;
+}
+
+function resolveActionSubtype({ subtype, sourceItem }) {
+  if (String(sourceItem?.system?.weaponClass ?? '') === 'demolition') return SUBTYPES.DEMOLITION;
+  if (subtype === SUBTYPES.ATTACK) return SUBTYPES.ATTACK;
+  if (subtype === SUBTYPES.DEMOLITION) return SUBTYPES.DEMOLITION;
+  return SUBTYPES.CHALLENGE;
+}
+
 function getActionAttributeKey(subtype, requestedAttribute) {
-  return isAttackSubtype(subtype) ? ATTRIBUTE_COMBAT : normalizeAttributeKey(requestedAttribute);
+  return (isAttackSubtype(subtype) || isDemolitionSubtype(subtype))
+    ? ATTRIBUTE_COMBAT
+    : normalizeAttributeKey(requestedAttribute);
 }
 
 function buildActionRollData({ actor, input, attributeKey }) {
@@ -636,79 +747,8 @@ function buildActionRollData({ actor, input, attributeKey }) {
   };
 }
 
-export function buildEquationTerms({ subtype, attributeKey, rollData }) {
-  const isDamage = subtype === 'damage';
-
-  const terms = [
-    { label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(attributeKey) },
-    { label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: rollData.attributeValue ?? rollData.attribute },
-  ];
-
-  if (isDamage) {
-    terms.push({ label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: rollData.damageBonus ?? 0 });
-    return terms;
-  }
-
-  terms.push({ label: localize('SYNTHICIDE.Roll.Card.MiscModifier'), value: rollData.misc });
-
-  if (isAttackSubtype(subtype)) {
-    terms.push({ label: localize('SYNTHICIDE.Roll.Card.AttackBonus'), value: rollData.attackBonus });
-  }
-
-  terms.push({ label: localize('SYNTHICIDE.Roll.Dialog.RollModifiers'), value: rollData.actorModifierTotal ?? 0 });
-
-  if (isAttackSubtype(subtype)) {
-    terms.push({ label: localize('SYNTHICIDE.Roll.Card.RangeModifier'), value: Number(rollData.rangeModifier ?? 0) });
-  }
-
-  return terms;
-}
-
 function getActorAttributeValue(actor, attributeKey) {
   return Number(actor?.system?.attributes?.[attributeKey]?.value ?? 0);
-}
-
-export function getAttributeLabel(attributeKey) {
-  const key = normalizeAttributeKey(attributeKey);
-  return game.i18n.localize(SYNTHICIDE.attributes[key]) || key;
-}
-
-export function getAttributeValueHtml(attributeKey) {
-  const key = normalizeAttributeKey(attributeKey);
-  const label = foundry.utils.escapeHTML(getAttributeLabel(key));
-  return `<span class="synthicide-attr-pill"><img class="synthicide-attr-icon" src="/systems/synthicide/assets/icons/attributes/${key}.png" alt="" /> ${label}</span>`;
-}
-
-function getDegreeBands() {
-  return SYNTHICIDE.rolls?.degreeBands ?? [];
-}
-
-export function getDegreeLabel(effect) {
-  const bands = getDegreeBands();
-  const match = bands.find((band) => effect >= Number(band.min)) ?? bands.at(-1);
-  return match ? game.i18n.localize(match.label) : game.i18n.localize('SYNTHICIDE.Roll.Degree.Failure');
-}
-
-export function getDifficultyLabel(difficulty) {
-  const normalized = Number(difficulty);
-  const list = SYNTHICIDE.rolls?.challengeDifficulties ?? [];
-  const match = list.find((entry) => Number(entry.value) === normalized);
-  return match ? localize(match.label) : String(difficulty);
-}
-
-export function getChallengeOutcomeClass(effect) {
-  if (effect < 0) return 'outcome-failure';
-  if (effect >= 10) return 'outcome-superb';
-  if (effect >= 5) return 'outcome-excellent';
-  return 'outcome-standard';
-}
-
-export function getDieClass(dieValue, sides = 10) {
-  const value = Number(dieValue);
-  if (!Number.isFinite(value)) return '';
-  if (value <= 1) return 'min';
-  if (value >= sides) return 'max';
-  return '';
 }
 
 function getDefaultMessageMode() {
@@ -895,6 +935,40 @@ function getActorRollModifiers(actor) {
   return Object.entries(rollModifiers)
     .map(([key, value]) => ({ key, value: Number(value) }))
     .filter((entry) => Number.isFinite(entry.value) && entry.value !== 0);
+}
+
+function getDemolitionBlastDiameter(sourceItem) {
+  if (hasWeaponFeature(sourceItem, 'blast5')) return 5;
+  if (hasWeaponFeature(sourceItem, 'blast3')) return 3;
+  return 0;
+}
+
+function getDemolitionPlantNumber(sourceItem) {
+  if (hasWeaponFeature(sourceItem, 'plant12')) return 12;
+  if (hasWeaponFeature(sourceItem, 'plant8')) return 8;
+  return null;
+}
+
+function isPlantedDemolition(sourceItem) {
+  return getDemolitionPlantNumber(sourceItem) !== null;
+}
+
+function buildDemolitionTargetData(sourceItem) {
+  const blastDiameter = getDemolitionBlastDiameter(sourceItem);
+  if (blastDiameter <= 0) return null;
+
+  // Blast features are expressed in base grid cells (not distance units).
+  // Convert diameter-in-cells to radius in scene distance units.
+  const sceneDistancePerGridCell = Number(canvas?.scene?.grid?.distance ?? canvas?.grid?.distance ?? 1);
+  const radiusInDistanceUnits = (blastDiameter * sceneDistancePerGridCell) / 2;
+
+  const target = foundry.utils.deepClone(sourceItem?.system?.target ?? {});
+  return {
+    ...target,
+    type: 'radius',
+    templateType: 'circle',
+    value: radiusInDistanceUnits,
+  };
 }
 
 function buildResolvedAttackInput({ input, rollData, attackRangeContext }) {

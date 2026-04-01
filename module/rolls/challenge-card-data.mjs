@@ -1,6 +1,6 @@
 // Challenge card data preparation for Synthicide
 // Extracted from action-rolls.mjs for modularity and clarity
-import { localize, getAttributeLabel, getDegreeLabel, getDifficultyLabel, formatSignedNumber, getChallengeOutcomeClass, getDieClass, buildEquationTerms } from './action-rolls.mjs';
+import { localize, getAttributeLabel, getDegreeLabel, getDifficultyLabel, formatSignedNumber, getChallengeOutcomeClass, getDieClass, buildEquationTerms } from './roll-utils.mjs';
 
 /**
  * Prepare cardData and flags for a challenge roll.

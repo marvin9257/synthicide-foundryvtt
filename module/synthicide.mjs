@@ -300,4 +300,13 @@ function registerSettings() {
     onChange: () => { if (canvas.ready) canvas.draw(); }
   });
 
+  game.settings.register('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY, {
+    name: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Name',
+    hint: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Hint',
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
 }
