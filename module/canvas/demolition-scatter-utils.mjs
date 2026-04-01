@@ -46,13 +46,7 @@ export function getRandomScatterCorner({ zonePoint, random = Math.random, virtua
   const corners = getVirtualZoneCorners(zonePoint, virtualGridMultiplier);
   if (!corners.length) return null;
 
-  const candidates = corners;
   const roll = Number(random?.() ?? Math.random());
   const normalizedRoll = Number.isFinite(roll) ? Math.min(Math.max(roll, 0), 0.999999) : 0;
-  const selectedCorner = candidates[Math.floor(normalizedRoll * candidates.length)] ?? candidates[0];
-
-  return {
-    candidates,
-    selectedCorner,
-  };
+  return corners[Math.floor(normalizedRoll * corners.length)] ?? corners[0];
 }

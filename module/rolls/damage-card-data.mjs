@@ -1,7 +1,7 @@
 // module/rolls/damage-card-data.js
 // Modular function to prepare card data for derived damage rolls
 
-import { localize, getDieClass, buildEquationTerms } from './roll-utils.mjs';
+import { localize, buildEquationTerms, buildBaseActionCardData, buildBaseActionFlags } from './roll-utils.mjs';
 /**
  * Prepare cardData and flags for a derived damage roll.
  * @param {object} params
@@ -20,8 +20,6 @@ export function prepareDamageCardData({
   // Extract values from input and item
   const d10 = input.d10 ?? 0;
   const damageBonus = input.damageBonus ?? item?.system?.damageBonus ?? 0;
-  const damageType = input.damageType ?? item?.system?.damageType ?? '';
-  const baseDamage = input.baseDamage ?? item?.system?.baseDamage ?? 0;
   const source = input.source ?? item?.name ?? '';
   const total = input.total ?? d10 + attributeValue + damageBonus;
   const messageMode = input.messageMode ?? 'public';
@@ -31,43 +29,42 @@ export function prepareDamageCardData({
   const userId = input.userId ?? (typeof game !== 'undefined' ? game.user.id : null);
   const actorUuid = actor?.uuid ?? null;
 
-  return {
-    actorId: actor?.id,
-    itemId: item?.id,
-    source,
-    baseDamage,
-    damageBonus,
-    damageType,
-    title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
-    subtype: 'damage',
-    flavor: localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),
-    equation: `${d10} + ${attributeValue} + ${damageBonus}`,
+  // Persist only fields needed by chat-log apply damage/healing actions.
+  const payload = {
     total,
-    showEffectOutcomeRow: false,
-    dieValue: d10,
-    dieClass: getDieClass(d10, 10),
-    equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...input, attributeValue, damageBonus } }),
-    metadataRows: [
-      { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: source },
-    ],
-    showDamageButton: false,
-    showOpposedButton: false,
-    flags: {
-      version: 2,
+    lethal,
+  };
+
+  return {
+    ...buildBaseActionCardData({
+      title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
+      subtype: 'damage',
+      equation: `${d10} + ${attributeValue} + ${damageBonus}`,
+      total,
+      dieValue: d10,
+      attributeKey: 'combat',
+      equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...input, attributeValue, damageBonus } }),
+      metadataRows: buildDamageMetadataRows({ source }),
+      showEffectOutcomeRow: false,
+      showDamageButton: false,
+      showOpposedButton: false,
+      flavor: localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),
+    }),
+    flags: buildBaseActionFlags({
       subtype: 'damage',
       actorUuid,
-      userId,
-      sourceMessageId,
       sourceItemUuid,
+      sourceMessageId,
       messageMode,
-      damage: {
-        sourceMessageId,
-        d10,
-        attributeValue,
-        damageBonus,
-        total,
-        lethal,
-      },
-    },
+      userId,
+      payloadKey: 'damage',
+      payload,
+    }),
   };
+}
+
+function buildDamageMetadataRows({ source }) {
+  return [
+    { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: source },
+  ];
 }

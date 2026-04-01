@@ -69,7 +69,7 @@ export default class ItemTemplate extends foundry.canvas.placeables.Region {
           arrayOfTokenIds.push(tok.id);
         }
       }
-      game.user?._onUpdateTokenTargets(arrayOfTokenIds);
+      canvas.tokens?.setTargets(arrayOfTokenIds, {mode: "replace"});
     } else {
       console.warn("[Synthicide] No tokens found on canvas for targeting");
     }

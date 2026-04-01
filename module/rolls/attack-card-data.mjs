@@ -1,7 +1,7 @@
 // Attack card data preparation for Synthicide
 // Extracted from action-rolls.mjs for modularity and clarity
 
-import { localize, getAttributeLabel, getDieClass, buildEquationTerms } from './roll-utils.mjs';
+import { localize, getAttributeLabel, buildEquationTerms, buildBaseActionCardData, buildBaseActionFlags, getRollResultSummary } from './roll-utils.mjs';
 /**
  * Prepare cardData and flags for an attack roll.
  * @param {object} params
@@ -12,67 +12,68 @@ import { localize, getAttributeLabel, getDieClass, buildEquationTerms } from './
  * @param {number} params.attributeValue - The resolved attribute value
  */
 export function prepareAttackCardData({ input, actor, sourceItem, rollResult, attributeValue }) {
-  const d10 = Number(rollResult.dice?.[0]?.results?.[0]?.result ?? 0);
-  const total = Number(rollResult.total ?? 0);
+  const { d10, total, equation, dieClass } = getRollResultSummary(rollResult);
   const armor = Number(input.armor ?? 0);
-  const attackBonus = Number(input.attackBonus ?? 0);
   const damageBonus = Number(input.damageBonus ?? 0);
-  const rangeModifier = Number(input.rangeModifier ?? 0);
   const rangeDistance = Number.isFinite(Number(input.rangeDistance)) ? Number(input.rangeDistance) : null;
   const rangeIncrement = Number.isFinite(Number(input.rangeIncrement)) ? Number(input.rangeIncrement) : null;
   const hit = total >= armor;
-  const damageTotal = d10 + attributeValue + damageBonus;
   const attributeKey = input.attribute;
   const lethal = Number(sourceItem?.system?.lethal ?? 0);
 
+  // Persist only fields needed by follow-up actions (damage, chat context shock resolution).
+  const payload = {
+    armor,
+    damageBonus,
+    attribute: attributeKey,
+    attributeValue,
+    d10,
+    hit,
+    lethal,
+  };
+
   return {
-    title: localize('SYNTHICIDE.Roll.Card.TitleAttack'),
-    subtype: 'attack',
-    equation: rollResult.result,
-    total,
-    dieValue: d10,
-    dieClass: getDieClass(d10, 10),
-    equationTerms: buildEquationTerms({ subtype: 'attack', attributeKey, rollData: { ...input, attributeValue } }),
-    attributeKey,
-    showEffectOutcomeRow: false,
-    showDamageButton: hit,
-    showOpposedButton: false,
-    flavor: localize('SYNTHICIDE.Roll.Card.DefaultFlavorAttack', {
-      attribute: getAttributeLabel(attributeKey),
-      armor,
-      item: sourceItem?.name || localize('SYNTHICIDE.Roll.Subtype.Attack'),
+    ...buildBaseActionCardData({
+      title: localize('SYNTHICIDE.Roll.Card.TitleAttack'),
+      subtype: 'attack',
+      equation,
+      total,
+      dieValue: d10,
+      dieClass,
+      rollResult,
+      attributeKey,
+      equationTerms: buildEquationTerms({ subtype: 'attack', attributeKey, rollData: { ...input, attributeValue } }),
+      showEffectOutcomeRow: false,
+      showDamageButton: hit,
+      showOpposedButton: false,
+      flavor: buildAttackFlavor({ attributeKey, armor, sourceItem }),
+      effectText: hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss'),
+      effectClass: hit ? 'outcome-success' : 'outcome-failure',
+      metadataRows: buildAttackMetadataRows({ armor, rangeDistance, rangeIncrement }),
     }),
-    effectText: hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss'),
-    effectClass: hit ? 'outcome-success' : 'outcome-failure',
-    metadataRows: [
-      { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
-      { label: localize('SYNTHICIDE.Roll.Card.Distance'), value: rangeDistance ?? 'n/a' },
-      { label: localize('SYNTHICIDE.Roll.Card.RangeIncrement'), value: rangeIncrement ?? 'n/a' }
-    ],
-    flags: {
-      version: 2, // Use your ACTION_ROLL_VERSION
+    flags: buildBaseActionFlags({
       subtype: 'attack',
       actorUuid: actor.uuid,
-      userId: game.user.id,
       sourceItemUuid: sourceItem?.uuid ?? null,
       messageMode: input.messageMode,
-      attack: {
-        armor,
-        attackBonus,
-        damageBonus,
-        attribute: attributeKey,
-        attributeValue,
-        d10,
-        attackTotal: total,
-        hit,
-        damageTotal,
-        lethal,
-        rangeModifier,
-        rangeDistance,
-        rangeIncrement,
-        weaponClass: input.weaponClass ?? null,
-        hasCloseFeature: Boolean(input.hasCloseFeature),
-      },
-    },
+      payloadKey: 'attack',
+      payload,
+    }),
   };
+}
+
+function buildAttackFlavor({ attributeKey, armor, sourceItem }) {
+  return localize('SYNTHICIDE.Roll.Card.DefaultFlavorAttack', {
+    attribute: getAttributeLabel(attributeKey),
+    armor,
+    item: sourceItem?.name || localize('SYNTHICIDE.Roll.Subtype.Attack'),
+  });
+}
+
+function buildAttackMetadataRows({ armor, rangeDistance, rangeIncrement }) {
+  return [
+    { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
+    { label: localize('SYNTHICIDE.Roll.Card.Distance'), value: rangeDistance ?? 'n/a' },
+    { label: localize('SYNTHICIDE.Roll.Card.RangeIncrement'), value: rangeIncrement ?? 'n/a' }
+  ];
 }

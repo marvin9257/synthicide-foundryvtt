@@ -102,3 +102,81 @@ export function getDieClass(dieValue, sides = 10) {
   if (value >= sides) return 'max';
   return '';
 }
+
+export function getRollResultSummary(rollResult) {
+  const d10 = Number(rollResult?.dice?.[0]?.results?.[0]?.result ?? 0);
+  const total = Number(rollResult?.total ?? 0);
+  return {
+    d10,
+    total,
+    equation: String(rollResult?.result ?? ''),
+    dieClass: getDieClass(d10, 10),
+  };
+}
+
+export function buildBaseActionCardData({
+  title,
+  subtype,
+  rollResult,
+  total,
+  equation,
+  dieValue,
+  dieClass,
+  attributeKey,
+  equationTerms,
+  showEffectOutcomeRow = false,
+  showDamageButton = false,
+  showOpposedButton = false,
+  flavor,
+  subtitle,
+  effectText,
+  effectClass,
+  outcomeLabel,
+  outcomeClass,
+  metadataRows = [],
+} = {}) {
+  return {
+    title,
+    subtype,
+    equation: equation ?? String(rollResult?.result ?? ''),
+    total: Number(total ?? rollResult?.total ?? 0),
+    dieValue: Number(dieValue ?? rollResult?.dice?.[0]?.results?.[0]?.result ?? 0),
+    dieClass: dieClass ?? getDieClass(dieValue ?? rollResult?.dice?.[0]?.results?.[0]?.result ?? 0, 10),
+    attributeKey,
+    equationTerms,
+    showEffectOutcomeRow,
+    showDamageButton,
+    showOpposedButton,
+    flavor,
+    subtitle,
+    effectText,
+    effectClass,
+    outcomeLabel,
+    outcomeClass,
+    metadataRows,
+  };
+}
+
+export function buildBaseActionFlags({
+  subtype,
+  actorUuid,
+  sourceItemUuid = null,
+  sourceMessageId = null,
+  messageMode,
+  userId,
+  payloadKey,
+  payload,
+} = {}) {
+  const flags = {
+    version: 2,
+    subtype,
+    actorUuid,
+    userId: userId ?? game.user.id,
+    sourceItemUuid,
+    messageMode,
+    [payloadKey]: payload,
+  };
+
+  if (sourceMessageId) flags.sourceMessageId = sourceMessageId;
+  return flags;
+}

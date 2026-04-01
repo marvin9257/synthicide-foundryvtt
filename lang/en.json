@@ -454,6 +454,7 @@
         "Distance": "Distance (Zones)",
         "RangeBands": "Range Bands",
         "DamageBonus": "DMG Bonus",
+        "PlantNumber": "Plant Number",
         "BlastDiameter": "Blast Diameter",
         "FinalPoint": "Final Point",
         "SourceAttack": "Source Attack",
@@ -461,6 +462,7 @@
         "DefaultFlavorChallenge": "{difficulty} roll made using {attribute}",
         "DefaultFlavorAttack": "{item}: attack roll using {attribute} vs armor {armor}",
         "DefaultFlavorDemolition": "{item}: demolition roll using {attribute} vs RD {rd}",
+        "DefaultFlavorDemolitionPlanted": "{item}: plant roll using {attribute} vs Plant {plant}",
         "ShowDetails": "Show Details",
         "SuccessLevel": "Success Level: {level}",
         "AttackResultHit": "Attack Result: Hit",
@@ -489,7 +491,9 @@
         "Hit": "Hit",
         "Miss": "Miss",
         "OnTarget": "On Target",
+        "Planted": "Planted",
         "Scattered": "Scattered",
+        "DetonatedDuringPlanting": "Detonated While Planting",
         "OffTargetNoScatter": "Off Target (Scatter Disabled)",
         "DamageApplied": "Damage Applied"
       },
@@ -504,10 +508,10 @@
         "TooManyTargets": "Too many targets selected (using target armor default setting)",
         "AttackerTokenMissing": "Could not determine the attacker's token for range calculation.",
         "MeleeOutOfRange": "Melee attack is impossible: target is outside your current zone.",
+        "DemolitionDamageRequiresDetonation": "Damage can only be rolled for demolition after detonation.",
         "DemolitionBlastMissing": "This demolition weapon needs a blast radius before it can be used.",
         "DemolitionRangeIncrementMissing": "This demolition weapon needs a range increment greater than zero.",
-        "DemolitionPlacementMissing": "Could not determine the placed demolition point.",
-        "DemolitionPlantedNotImplemented": "Planted demolition devices are not on the thrown workflow yet."
+        "DemolitionPlacementMissing": "Could not determine the placed demolition point."
       },
       "Opposed": {
         "SummaryTitle": "Opposed Challenge Result",

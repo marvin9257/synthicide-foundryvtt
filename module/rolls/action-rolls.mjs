@@ -47,7 +47,9 @@ export async function openSynthicideActionRollDialog({
 } = {}) {
   if (!actor) return null;
   const requestedSubtype = resolveActionSubtype({ subtype, sourceItem });
-  const attributeKey = getActionAttributeKey(requestedSubtype, attribute);
+  const attributeKey = requestedSubtype === SUBTYPES.DEMOLITION
+    ? getDemolitionRollAttributeKey(sourceItem)
+    : getActionAttributeKey(requestedSubtype, attribute);
 
   const dialogResult = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.Title'),
@@ -87,30 +89,28 @@ export function registerActionRollHooks() {
  */
 async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   const messageRollData = getStandardizedRollData(sourceMessage);
-  if (messageRollData.subtype !== SUBTYPES.ATTACK) {
+  const sourceSubtype = messageRollData.subtype;
+  if (sourceSubtype !== SUBTYPES.ATTACK && sourceSubtype !== SUBTYPES.DEMOLITION) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.AttackDataMissing'));
   }
-  if (!messageRollData.hit) {
+  if (sourceSubtype === SUBTYPES.ATTACK && !messageRollData.hit) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DamageRequiresHit'));
   }
 
   const actor = resolveActorFromUuidSync(messageRollData.actorUuid);
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
-  // Prefer the attribute value used on the original attack.
-  const combatValue = Number(messageRollData.attributeValue ?? getActorAttributeValue(actor, ATTRIBUTE_COMBAT) ?? 0);
+  const actorCombatValue = Number(getActorAttributeValue(actor, ATTRIBUTE_COMBAT) ?? 0);
+  // Demolition damage always keys off combat; attack preserves original attack attribute value when available.
+  const combatValue = sourceSubtype === SUBTYPES.ATTACK
+    ? Number(messageRollData.attributeValue ?? actorCombatValue)
+    : actorCombatValue;
   const messageMode = normalizeMessageMode(userMessageMode ?? messageRollData.messageMode ?? 'public');
 
   // Build a simple arithmetic summary rather than re-rolling any dice.
-  const summaryRoll = new Roll(`${messageRollData.d10} + ${combatValue} + ${messageRollData.damageBonus}`);
-  summaryRoll.evaluateSync();
-  const damageTotal = Number(summaryRoll.total ?? 0);
-
-  // Try to resolve the original item from the attack roll, if available
-  let item = null;
-  if (messageRollData.sourceItemUuid) {
-    item = await fromUuid(messageRollData.sourceItemUuid).catch(() => null);
-  }
+  const damageTotal = Number(messageRollData.d10 ?? 0)
+    + combatValue
+    + Number(messageRollData.damageBonus ?? 0);
 
   // Prepare modular card data for damage (unified signature)
   const cardData = prepareDamageCardData({
@@ -126,7 +126,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
       userId: game.user.id,
     },
     actor,
-    item,
+    item: null,
     attributeValue: combatValue,
   });
 
@@ -219,7 +219,9 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   const isDemolition = isDemolitionSubtype(resolvedSubtype);
   const isAttack = isAttackSubtype(resolvedSubtype);
   const isChallenge = resolvedSubtype === SUBTYPES.CHALLENGE;
-  const attributeKey = getActionAttributeKey(resolvedSubtype, input.attribute);
+  const attributeKey = isDemolition
+    ? getDemolitionRollAttributeKey(sourceItem)
+    : getActionAttributeKey(resolvedSubtype, input.attribute);
   const rollData = buildActionRollData({ actor, input, attributeKey });
 
   if (isDemolition) {
@@ -252,20 +254,29 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
 }
 
 async function executeDemolitionActionRoll({ actor, input, sourceItem, rollData }) {
-  if (isPlantedDemolition(sourceItem)) {
-    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DemolitionPlantedNotImplemented'));
-    return null;
+  const plantNumber = getDemolitionPlantNumber(sourceItem);
+  if (plantNumber !== null) {
+    return executePlantedDemolitionActionRoll({
+      actor,
+      input,
+      sourceItem,
+      rollData,
+      plantNumber,
+    });
   }
 
+  return executeThrownDemolitionActionRoll({
+    actor,
+    input,
+    sourceItem,
+    rollData,
+  });
+}
+
+async function executeThrownDemolitionActionRoll({ actor, input, sourceItem, rollData }) {
   const actorToken = getActorToken(actor);
   if (!actorToken?.center) {
     ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.AttackerTokenMissing'));
-    return null;
-  }
-
-  const target = buildDemolitionTargetData(sourceItem);
-  if (!target) {
-    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DemolitionBlastMissing'));
     return null;
   }
 
@@ -275,38 +286,24 @@ async function executeDemolitionActionRoll({ actor, input, sourceItem, rollData 
     return null;
   }
 
-  const messageMode = normalizeMessageMode(input.messageMode);
-  const template = await ItemTemplate.fromItem(sourceItem, {
-    name: sourceItem?.name ?? localize('SYNTHICIDE.Roll.Subtype.Demolition'),
-    target,
-  });
-  if (!template) return null;
+  const placement = await createDemolitionPlacementContext({ input, sourceItem, requirePoint: true });
+  if (!placement) return null;
+  const { messageMode, placedRegion, placedPoint, blastDiameter } = placement;
 
-  const placedRegion = await template.drawPreview();
-  if (!placedRegion) return null;
-
-  const aimedPoint = ItemTemplate.getPlacedPoint(placedRegion);
-  if (!aimedPoint) {
-    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DemolitionPlacementMissing'));
-    return null;
-  }
-
-  const rangeDistance = calculateVirtualZoneDistanceBetweenPoints(actorToken.center, aimedPoint);
+  const rangeDistance = calculateVirtualZoneDistanceBetweenPoints(actorToken.center, placedPoint);
   const rangeBands = rangeDistance > 0 ? Math.ceil(rangeDistance / rangeIncrement) : 0;
   const difficulty = rangeBands * 3;
   const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, rollData).evaluate();
   const success = Number(evaluatedRoll.total ?? 0) >= difficulty;
   const autoScatterEnabled = Boolean(game.settings.get('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY));
 
-  let finalPoint = aimedPoint;
   let scatterApplied = false;
   if (!success && autoScatterEnabled) {
-    const scatterResult = getRandomScatterCorner({
-      zonePoint: aimedPoint,
+    const scatterCorner = getRandomScatterCorner({
+      zonePoint: placedPoint,
     });
-    if (scatterResult?.selectedCorner) {
-      await ItemTemplate.movePlacedRegion(placedRegion, scatterResult.selectedCorner);
-      finalPoint = scatterResult.selectedCorner;
+    if (scatterCorner) {
+      await ItemTemplate.movePlacedRegion(placedRegion, scatterCorner);
       scatterApplied = true;
     }
   }
@@ -320,11 +317,10 @@ async function executeDemolitionActionRoll({ actor, input, sourceItem, rollData 
       rangeDistance,
       rangeIncrement,
       rangeBands,
-      blastDiameter: getDemolitionBlastDiameter(sourceItem),
+      mode: 'throw',
+      blastDiameter,
       success,
       scatterApplied,
-      aimedPoint,
-      finalPoint,
     },
     actor,
     sourceItem,
@@ -338,6 +334,80 @@ async function executeDemolitionActionRoll({ actor, input, sourceItem, rollData 
     messageMode,
     cardData,
   });
+}
+
+async function executePlantedDemolitionActionRoll({ actor, input, sourceItem, rollData, plantNumber }) {
+  const placement = await createDemolitionPlacementContext({ input, sourceItem, requirePoint: false });
+  if (!placement) return null;
+  const { messageMode, placedRegion, blastDiameter } = placement;
+
+  const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, rollData).evaluate();
+  const success = Number(evaluatedRoll.total ?? 0) > plantNumber;
+  const detonated = !success;
+
+  if (detonated) {
+    ItemTemplate.targetTokensForPlacedRegion(placedRegion);
+  }
+
+  const cardData = prepareDemolitionCardData({
+    input: {
+      ...input,
+      attribute: 'operation',
+      difficulty: plantNumber,
+      mode: 'planted',
+      plantNumber,
+      blastDiameter,
+      success,
+      detonated,
+      scatterApplied: false,
+    },
+    actor,
+    sourceItem,
+    rollResult: evaluatedRoll,
+    attributeValue: rollData.attribute,
+  });
+
+  return createActionMessage({
+    actor,
+    roll: evaluatedRoll,
+    messageMode,
+    cardData,
+  });
+}
+
+async function createDemolitionPlacementContext({ input, sourceItem, requirePoint = true }) {
+  const targetData = buildDemolitionTargetData(sourceItem);
+  if (!targetData) {
+    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DemolitionBlastMissing'));
+    return null;
+  }
+  const { target, blastDiameter } = targetData;
+
+  const messageMode = normalizeMessageMode(input.messageMode);
+  const template = await ItemTemplate.fromItem(sourceItem, {
+    name: sourceItem?.name ?? localize('SYNTHICIDE.Roll.Subtype.Demolition'),
+    target,
+  });
+  if (!template) return null;
+
+  const placedRegion = await template.drawPreview();
+  if (!placedRegion) return null;
+
+  let placedPoint = null;
+  if (requirePoint) {
+    placedPoint = ItemTemplate.getPlacedPoint(placedRegion);
+    if (!placedPoint) {
+      ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.DemolitionPlacementMissing'));
+      return null;
+    }
+  }
+
+  return {
+    messageMode,
+    placedRegion,
+    placedPoint,
+    blastDiameter,
+  };
 }
 
 /**
@@ -437,12 +507,10 @@ export async function createActionMessage({ actor, roll, cardData, messageMode, 
     const cardHtml = await renderActionCardHtml({ cardData, rollHtml });
     const toMessageOptions = buildChatMessageData({ actor, content: cardHtml, cardData, whisper });
 
-    const chatData = await roll.toMessage(toMessageOptions, {
+    return roll.toMessage(toMessageOptions, {
       messageMode: normalizeMessageMode(messageMode),
-      create: false,
+      create: true,
     });
-
-    return ChatMessage.create(chatData);
   }
 
   // No roll: render template without roll HTML and create the chat message
@@ -457,7 +525,9 @@ export async function createActionMessage({ actor, roll, cardData, messageMode, 
 function activateActionRollChatListeners(message, htmlElement) {
   if (!htmlElement || typeof htmlElement.querySelectorAll !== 'function' || typeof htmlElement.addEventListener !== 'function') return;
   const messageRollData = getStandardizedRollData(message);
-  if (!messageRollData || (messageRollData.subtype !== SUBTYPES.ATTACK && messageRollData.subtype !== SUBTYPES.CHALLENGE)) return;
+  if (!messageRollData || (messageRollData.subtype !== SUBTYPES.ATTACK
+    && messageRollData.subtype !== SUBTYPES.CHALLENGE
+    && messageRollData.subtype !== SUBTYPES.DEMOLITION)) return;
   const root = htmlElement;
   const followupAllowed = canExecuteFollowup(message);
 
@@ -729,7 +799,7 @@ function resolveActionSubtype({ subtype, sourceItem }) {
 }
 
 function getActionAttributeKey(subtype, requestedAttribute) {
-  return (isAttackSubtype(subtype) || isDemolitionSubtype(subtype))
+  return isAttackSubtype(subtype)
     ? ATTRIBUTE_COMBAT
     : normalizeAttributeKey(requestedAttribute);
 }
@@ -953,6 +1023,10 @@ function isPlantedDemolition(sourceItem) {
   return getDemolitionPlantNumber(sourceItem) !== null;
 }
 
+function getDemolitionRollAttributeKey(sourceItem) {
+  return isPlantedDemolition(sourceItem) ? 'operation' : ATTRIBUTE_COMBAT;
+}
+
 function buildDemolitionTargetData(sourceItem) {
   const blastDiameter = getDemolitionBlastDiameter(sourceItem);
   if (blastDiameter <= 0) return null;
@@ -964,10 +1038,13 @@ function buildDemolitionTargetData(sourceItem) {
 
   const target = foundry.utils.deepClone(sourceItem?.system?.target ?? {});
   return {
-    ...target,
-    type: 'radius',
-    templateType: 'circle',
-    value: radiusInDistanceUnits,
+    blastDiameter,
+    target: {
+      ...target,
+      type: 'radius',
+      templateType: 'circle',
+      value: radiusInDistanceUnits,
+    },
   };
 }
 
