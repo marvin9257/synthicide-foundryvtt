@@ -71,7 +71,7 @@ export function calculateVirtualDistanceBetweenTokens(tokenA, tokenB, virtualGri
 
 /**
  * Find tokens struck by the spread line drawn from shooter through primary target
- * and past the far edge of the target's zone.
+ * to the center of the far directional cell in the target's zone.
  *
  * Collateral tokens are any placed token (excluding shooter and primary target)
  * whose bounds intersect the ray. Callers are responsible for armor filtering.
@@ -86,13 +86,36 @@ export function getSpreadCollateralTokens(shooterToken, targetToken) {
   const origin = shooterToken.center;
   const aim    = targetToken.center;
 
-  // Extend the line past the target's zone edge.
-  const tokenRadius = Math.max(targetToken.w ?? 0, targetToken.h ?? 0);
+  // Extend to the center of the far directional 1x1 cell inside the target's virtual zone.
+  const gridSize = canvas?.grid?.size ?? 100;
+  const vSize = gridSize * 3;
   const dx = aim.x - origin.x;
   const dy = aim.y - origin.y;
-  const length = Math.hypot(dx, dy) || 1;
-  const extension = length + tokenRadius + (canvas?.grid?.size ?? 100);
-  const spreadRay = foundry.canvas.geometry.Ray.towardsPoint(origin, aim, extension);
+  const stepX = Math.sign(dx);
+  const stepY = Math.sign(dy);
+
+  const [zoneCol, zoneRow] = getVirtualGridCell(aim.x, aim.y, vSize);
+  const zoneOriginX = zoneCol * vSize;
+  const zoneOriginY = zoneRow * vSize;
+
+  const targetCellCol = Math.floor(aim.x / gridSize);
+  const targetCellRow = Math.floor(aim.y / gridSize);
+  const zoneStartCol = zoneCol * 3;
+  const zoneStartRow = zoneRow * 3;
+  const localCol = targetCellCol - zoneStartCol;
+  const localRow = targetCellRow - zoneStartRow;
+
+  const clampedLocalCol = Math.clamp(localCol, 0, 2);
+  const clampedLocalRow = Math.clamp(localRow, 0, 2);
+  const farLocalCol = stepX > 0 ? 2 : stepX < 0 ? 0 : clampedLocalCol;
+  const farLocalRow = stepY > 0 ? 2 : stepY < 0 ? 0 : clampedLocalRow;
+
+  const farPoint = {
+    x: zoneOriginX + ((farLocalCol + 0.5) * gridSize),
+    y: zoneOriginY + ((farLocalRow + 0.5) * gridSize),
+  };
+  const farDistance = Math.hypot(farPoint.x - origin.x, farPoint.y - origin.y) || 1;
+  const spreadRay = foundry.canvas.geometry.Ray.towardsPoint(origin, farPoint, farDistance);
 
   return (canvas?.tokens?.placeables ?? []).filter((token) => {
     if (token === shooterToken || token === targetToken) return false;
