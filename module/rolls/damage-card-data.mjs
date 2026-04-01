@@ -16,6 +16,7 @@ export function prepareDamageCardData({
   actor,
   item,
   attributeValue = 0,
+  overrides = {},
 }) {
   // Extract values from input and item
   const d10 = input.d10 ?? 0;
@@ -37,18 +38,18 @@ export function prepareDamageCardData({
 
   return {
     ...buildBaseActionCardData({
-      title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
+      title: overrides.title ?? localize('SYNTHICIDE.Roll.Card.TitleDamage'),
       subtype: 'damage',
       equation: `${d10} + ${attributeValue} + ${damageBonus}`,
       total,
       dieValue: d10,
       attributeKey: 'combat',
       equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...input, attributeValue, damageBonus } }),
-      metadataRows: buildDamageMetadataRows({ source }),
+      metadataRows: overrides.metadataRows ?? buildDamageMetadataRows({ source }),
       showEffectOutcomeRow: false,
       showDamageButton: false,
       showOpposedButton: false,
-      flavor: localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),
+      flavor: overrides.flavor ?? localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),
     }),
     flags: buildBaseActionFlags({
       subtype: 'damage',

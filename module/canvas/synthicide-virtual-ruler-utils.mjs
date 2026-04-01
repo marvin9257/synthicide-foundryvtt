@@ -68,3 +68,35 @@ export function calculateVirtualDistanceBetweenTokens(tokenA, tokenB, virtualGri
   const cellB = getVirtualGridCell(b.x, b.y, vSize);
   return chebyshevCellDistance(cellA, cellB);
 }
+
+/**
+ * Find tokens struck by the spread line drawn from shooter through primary target
+ * and past the far edge of the target's zone.
+ *
+ * Collateral tokens are any placed token (excluding shooter and primary target)
+ * whose bounds intersect the ray. Callers are responsible for armor filtering.
+ *
+ * @param {Token} shooterToken - The attacking token.
+ * @param {Token} targetToken  - The primary target token.
+ * @returns {Token[]} Collateral tokens intersected by the spread ray.
+ */
+export function getSpreadCollateralTokens(shooterToken, targetToken) {
+  if (!shooterToken?.center || !targetToken?.center) return [];
+
+  const origin = shooterToken.center;
+  const aim    = targetToken.center;
+
+  // Extend the line past the target's zone edge.
+  const tokenRadius = Math.max(targetToken.w ?? 0, targetToken.h ?? 0);
+  const dx = aim.x - origin.x;
+  const dy = aim.y - origin.y;
+  const length = Math.hypot(dx, dy) || 1;
+  const extension = length + tokenRadius + (canvas?.grid?.size ?? 100);
+  const spreadRay = foundry.canvas.geometry.Ray.towardsPoint(origin, aim, extension);
+
+  return (canvas?.tokens?.placeables ?? []).filter((token) => {
+    if (token === shooterToken || token === targetToken) return false;
+    if (!token.bounds) return false;
+    return token.bounds.lineSegmentIntersects(spreadRay.A, spreadRay.B, { inside: true });
+  });
+}

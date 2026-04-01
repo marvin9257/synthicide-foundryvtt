@@ -7,7 +7,7 @@ import { prepareChallengeCardData } from './challenge-card-data.mjs';
 import { prepareDemolitionCardData } from './demolition-card-data.mjs';
 import { prepareDamageCardData } from './damage-card-data.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
-import { calculateVirtualDistanceBetweenTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
+import { calculateVirtualDistanceBetweenTokens, getSpreadCollateralTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
 
 const FLAG_PATH = 'actionRoll';
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
@@ -442,6 +442,7 @@ async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
   rollData.modifiers += rangeModifier;
 
   const evaluatedRoll = await new Roll(FORMULA_ATTACK, rollData).evaluate();
+  const attackTotal = Number(evaluatedRoll.total ?? 0);
 
   // Enrich attack-only payload fields for the chat card and stored roll flags.
   const resolvedInput = buildResolvedAttackInput({
@@ -457,12 +458,78 @@ async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
     attributeValue: rollData.attribute,
   });
 
-  return createActionMessage({
+  const attackMessage = await createActionMessage({
     actor,
     roll: evaluatedRoll,
     messageMode,
     cardData,
   });
+
+  // Spread: if the weapon has the spread feature, draw a line from shooter through
+  // the primary target regardless of whether that target was hit. Any other token
+  // intersecting the line has its own independent armor check against the same
+  // attack total. Collateral damage is flat (no die, no crit benefit).
+  if (hasWeaponFeature(sourceItem, 'spread')) {
+    await executeSpreadCollateralCard({
+      actor,
+      sourceItem,
+      attackTotal,
+      attributeValue: rollData.attribute,
+      messageMode,
+    });
+  }
+
+  return attackMessage;
+}
+
+/**
+ * After a spread attack, find collateral tokens along the shooter→target line,
+ * filter by those the attack total can hit, and emit one flat damage card.
+ */
+async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, messageMode }) {
+  const attackerToken = getActorToken(actor);
+  const targetToken = getSingleTargetToken({ notify: false });
+  if (!attackerToken || !targetToken) return;
+
+  const candidates = getSpreadCollateralTokens(attackerToken, targetToken);
+  if (!candidates.length) return;
+
+  // Filter to tokens the attack roll can actually hit (total >= their armor).
+  const hitTokens = candidates.filter((token) => {
+    const armor = Number(token.actor?.system?.armorDefense?.value ?? token.actor?.system?.armorDefense ?? 0);
+    return attackTotal >= armor;
+  });
+  if (!hitTokens.length) return;
+
+  const damageBonus = Number(sourceItem?.system?.damageBonus ?? 0);
+  const lethal = Number(sourceItem?.system?.lethal ?? 0);
+  // Collateral targets take flat DMG: no die result, no crit benefit.
+  const flatDamage = attributeValue + damageBonus;
+  const collateralNames = hitTokens.map((t) => t.name).join(', ');
+
+  const spreadCardData = prepareDamageCardData({
+    input: {
+      d10: 0,
+      damageBonus,
+      total: flatDamage,
+      source: sourceItem?.name ?? '',
+      lethal,
+      messageMode,
+      userId: game.user.id,
+    },
+    actor,
+    item: sourceItem,
+    attributeValue,
+    overrides: {
+      title: localize('SYNTHICIDE.Roll.Card.TitleSpreadDamage'),
+      flavor: localize('SYNTHICIDE.Roll.Card.SpreadFlavor', {
+        item: sourceItem?.name ?? '',
+        targets: collateralNames,
+      }),
+    },
+  });
+
+  await createActionMessage({ actor, roll: null, messageMode, cardData: spreadCardData });
 }
 
 async function executeChallengeActionRoll({ actor, input, rollData }) {
