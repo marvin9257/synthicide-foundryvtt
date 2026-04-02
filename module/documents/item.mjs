@@ -1,6 +1,7 @@
 
 
-import { createActionMessage } from '../rolls/action-rolls.mjs';
+import { createActionMessage, openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
+import { getRollResultSummary } from '../rolls/roll-utils.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 
 /**
@@ -88,64 +89,65 @@ export class SynthicideItem extends Item {
    * @private
    */
   async roll(_event) {
+    // If this is a weapon item, use the attack roll dialog
+    if (this.type === "weapon" && this.actor) {
+      return openSynthicideActionRollDialog({
+        actor: this.actor,
+        subtype: 'attack',
+        sourceItem: this,
+      });
+    }
+
+    return this._rollFormulaItem();
+  }
+
+  async _rollFormulaItem() {
     const item = this;
+    const speaker = ChatMessage.getSpeaker({ actor: item.actor });
+    const label = game.i18n.format('SYNTHICIDE.Roll.Card.ItemRoll', { type: item.type, name: item.name });
 
-    // Initialize chat data.
-    const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-    const label = game.i18n.format('SYNTHICIDE.Roll.Card.ItemRoll', {type: item.type, name: item.name});
-
-    // If there's no roll data, send a chat message.
-    if (!this.system.formula || (this.system.roll.diceSize === "" && this.system.roll.diceBonus === "")) {
+    if (!item.system.formula || (item.system.roll.diceSize === "" && item.system.roll.diceBonus === "")) {
       return ChatMessage.create({
-        speaker: speaker,
+        speaker,
         flavor: label,
         content: item.system.description ?? '',
       }, {
         messageMode: game.settings.get('core', 'messageMode'),
       });
     }
-    // Otherwise, create a roll and render it using the action-roll card.
-    else {
-      const rollData = this.getRollData();
-      const evaluatedRoll = await new Roll(rollData.formula, rollData.actor).evaluate();
-      const total = Number(evaluatedRoll.total ?? 0);
-      const dieValue = Number(evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? 0);
-      let dieClass = '';
-      if (Number.isFinite(dieValue)) {
-        if (dieValue <= 1) dieClass = 'min';
-        else if (dieValue >= 10) dieClass = 'max';
-      }
 
-      const cardData = {
-        title: label,
-        subtype: 'item',
-        equation: evaluatedRoll.result,
-        total,
-        dieValue,
-        dieClass,
-        equationTerms: buildItemEquationTerms(rollData, this),
-        showEffectOutcomeRow: false,
-        showDamageButton: false,
-        showOpposedButton: false,
-        flags: {
-          actorUuid: this.actor?.uuid ?? null,
-          userId: game.user.id,
-          sourceItemUuid: this.uuid,
-          messageMode: game.settings.get('core', 'messageMode'),
-        },
-        flavor: this.system.description ?? '',
-        metadataRows: [
-          { label: 'Formula', valueHtml: `<code>${foundry.utils.escapeHTML(String(rollData.formula ?? ''))}</code>` },
-        ],
-      };
-
-      return createActionMessage({
-        actor: this.actor,
-        roll: evaluatedRoll,
+    const rollData = item.getRollData();
+    const evaluatedRoll = await new Roll(rollData.formula, rollData.actor).evaluate();
+    const { total, d10, equation, dieClass } = getRollResultSummary(evaluatedRoll);
+    const cardData = {
+      title: label,
+      subtype: 'item',
+      equation,
+      total,
+      dieValue: d10,
+      dieClass,
+      equationTerms: buildItemEquationTerms(rollData, item),
+      showEffectOutcomeRow: false,
+      showDamageButton: false,
+      showOpposedButton: false,
+      flags: {
+        actorUuid: item.actor?.uuid ?? null,
+        userId: game.user.id,
+        sourceItemUuid: item.uuid,
         messageMode: game.settings.get('core', 'messageMode'),
-        cardData,
-      });
-    }
+      },
+      flavor: item.system.description ?? '',
+      metadataRows: [
+        { label: 'Formula', valueHtml: `<code>${foundry.utils.escapeHTML(String(rollData.formula ?? ''))}</code>` },
+      ],
+    };
+
+    return createActionMessage({
+      actor: item.actor,
+      roll: evaluatedRoll,
+      messageMode: game.settings.get('core', 'messageMode'),
+      cardData,
+    });
   }
 }
 
