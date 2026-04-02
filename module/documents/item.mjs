@@ -33,24 +33,25 @@ export class SynthicideItem extends Item {
     if (game.userId !== userId) return;
 
     if (!this.actor) return;
-    // Only trigger if this is armor and not from equip logic
-    if (this.type === "armor" && changed?.system?.equipped !== undefined && !options._fromEquipLogic) {
+    // Enforce one-equipped-at-a-time for exclusive types unless this change was
+    // triggered by the actor-level equip orchestration itself.
+    if (SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES.includes(this.type) && changed?.system?.equipped !== undefined && !options._fromEquipLogic) {
       if (changed?.system?.equipped) {
-        await this.actor.equipArmor(this.id);
-      } else {
+        await this.actor.equipExclusiveItemType(this.type, this.id);
+      } else if (this.type === 'armor') {
         await this.actor.update({'system.armorValues.forceBarrier.value': 0}, {render: false});
       }
     }
   }
   
   /**
-   * Equip this item. For armor, ensures only one is equipped. For other items, equips this item if not already equipped.
+   * Equip this item. Exclusive types ensure only one item of that type is
+   * equipped at a time. Other equipable items are toggled on directly.
    */
   async equip() {
     if (!SYNTHICIDE.EQUIPABLE.includes(this.type)) return;
-    if (this.type === "armor" && this.actor) {
-      // Update armor items and unequip where necessary
-      await this.actor.equipArmor(this.id);
+    if (SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES.includes(this.type) && this.actor) {
+      await this.actor.equipExclusiveItemType(this.type, this.id);
     } else if (!this.system.equipped) {
       // Only update if not already equipped
       await this.update({ "system.equipped": true });
@@ -84,7 +85,7 @@ export class SynthicideItem extends Item {
   }
 
   /**
-   * Handle clickable rolls.
+   * Handle clickable and item macro rolls rolls.
    * @param {Event} event   The originating click event
    * @private
    */

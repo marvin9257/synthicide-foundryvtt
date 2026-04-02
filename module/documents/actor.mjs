@@ -30,18 +30,20 @@ export class SynthicideActor extends Actor {
   }
 
   /**
-   * Equip an armor item, unequipping all other armor items for this actor.
-   * In order to prevent an infinite loop with Item._preUpdate, An option flag (_fromEquipLogic) is passed to updateEmbeddedDocuments
-   * to supress further updates when other armor items are being unequipped.
-   * @param {string} armorItemId - The ID of the armor item to equip.
+   * Equip one item of a given exclusive type, unequipping all others of that same type.
+   * In order to prevent an infinite loop with Item._onUpdate, an option flag
+   * (`_fromEquipLogic`) is passed to updateEmbeddedDocuments when other items are
+   * being unequipped.
+   * @param {string} itemType - The exclusive item type to enforce.
+   * @param {string} itemId - The ID of the item to equip.
    */
-  async equipArmor(armorItemId) {
-    const armorItems = this.items.filter(item => item.type === "armor");
+  async equipExclusiveItemType(itemType, itemId) {
+    const exclusiveItems = this.items.filter((item) => item.type === itemType);
     const updates = [];
     let newBarrierHP = undefined;
-    for (const item of armorItems) {
-      if (item.id === armorItemId) {
-        newBarrierHP = item.system.forceBarrier.max;
+    for (const item of exclusiveItems) {
+      if (item.id === itemId) {
+        if (itemType === 'armor') newBarrierHP = item.system.forceBarrier.max;
         if (!item.system.equipped) {
           updates.push({ _id: item.id, "system.equipped": true });
         }
@@ -54,10 +56,18 @@ export class SynthicideActor extends Actor {
     if (updates.length) {
       await this.updateEmbeddedDocuments("Item", updates, {render: false, _fromEquipLogic: true});
     }
-    if (isFinite(newBarrierHP)) {
+    if (itemType === 'armor' && isFinite(newBarrierHP)) {
       await this.update({"system.armorValues.forceBarrier.value": newBarrierHP}, {render: false});
     }
     if (this.sheet && (updates.length || isFinite(newBarrierHP))) await this.sheet?.render(true);
+  }
+
+  /**
+   * Backward-compatible armor equip wrapper.
+   * @param {string} armorItemId - The ID of the armor item to equip.
+   */
+  async equipArmor(armorItemId) {
+    return this.equipExclusiveItemType('armor', armorItemId);
   }
 
   /**

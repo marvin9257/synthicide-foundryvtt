@@ -14,16 +14,18 @@ import { localize, getAttributeLabel, buildEquationTerms, buildBaseActionCardDat
 export function prepareAttackCardData({ input, actor, sourceItem, rollResult, attributeValue }) {
   const { d10, total, equation, dieClass } = getRollResultSummary(rollResult);
   const armor = Number(input.armor ?? 0);
+  const shieldBonus = Number(input.shieldBonus ?? 0);
+  const effectiveArmor = armor + shieldBonus;
   const damageBonus = Number(input.damageBonus ?? 0);
   const rangeDistance = Number.isFinite(Number(input.rangeDistance)) ? Number(input.rangeDistance) : null;
   const rangeIncrement = Number.isFinite(Number(input.rangeIncrement)) ? Number(input.rangeIncrement) : null;
-  const hit = total >= armor;
+  const hit = total >= effectiveArmor;
   const attributeKey = input.attribute;
   const lethal = Number(sourceItem?.system?.lethal ?? 0);
 
   // Persist only fields needed by follow-up actions (damage, chat context shock resolution).
   const payload = {
-    armor,
+    armor: effectiveArmor,
     damageBonus,
     attribute: attributeKey,
     attributeValue,
@@ -46,10 +48,10 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
       showEffectOutcomeRow: false,
       showDamageButton: hit,
       showOpposedButton: false,
-      flavor: buildAttackFlavor({ attributeKey, armor, sourceItem }),
+      flavor: buildAttackFlavor({ attributeKey, armor: effectiveArmor, sourceItem }),
       effectText: hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss'),
       effectClass: hit ? 'outcome-success' : 'outcome-failure',
-      metadataRows: buildAttackMetadataRows({ armor, rangeDistance, rangeIncrement }),
+      metadataRows: buildAttackMetadataRows({ armor, shieldBonus, effectiveArmor, rangeDistance, rangeIncrement }),
     }),
     flags: buildBaseActionFlags({
       subtype: 'attack',
@@ -70,10 +72,17 @@ function buildAttackFlavor({ attributeKey, armor, sourceItem }) {
   });
 }
 
-function buildAttackMetadataRows({ armor, rangeDistance, rangeIncrement }) {
-  return [
+function buildAttackMetadataRows({ armor, shieldBonus, effectiveArmor, rangeDistance, rangeIncrement }) {
+  const rows = [
     { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
+  ];
+  if (shieldBonus !== 0) {
+    rows.push({ label: localize('SYNTHICIDE.Roll.Card.ShieldBonus'), value: shieldBonus > 0 ? `+${shieldBonus}` : String(shieldBonus) });
+    rows.push({ label: localize('SYNTHICIDE.Roll.Card.EffectiveArmor'), value: effectiveArmor });
+  }
+  rows.push(
     { label: localize('SYNTHICIDE.Roll.Card.Distance'), value: rangeDistance ?? 'n/a' },
     { label: localize('SYNTHICIDE.Roll.Card.RangeIncrement'), value: rangeIncrement ?? 'n/a' }
-  ];
+  );
+  return rows;
 }

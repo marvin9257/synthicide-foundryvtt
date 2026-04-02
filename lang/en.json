@@ -135,6 +135,10 @@
           "lethal": "Lethal",
           "rangeIncrement": "Range Incr."
         },
+        "shieldValues": {
+          "adBonus": "Shield AD"
+        },
+        "Shields": "Shields",
         "Weapons": "Weapons",
         "ChangeEquipped": "Change Equipped State"
       },
@@ -222,6 +226,20 @@
           "Radiative": "Radiative",
           "ReactiveCamo": "Reactive Camo",
           "Calling": "Calling"
+        }
+      },
+      "Shield": {
+        "FIELDS": {
+          "adBonus": "Shield AD Bonus",
+          "Protection": "Protection",
+          "Modifications": "Modifications"
+        },
+        "Modification": {
+          "None": "None",
+          "WeaponRest": "Weapon Rest",
+          "Shocking": "Shocking",
+          "Radiodynamic": "Radiodynamic",
+          "Gravatic": "Gravatic"
         }
       },
       "Trait": {
@@ -422,6 +440,11 @@
         "RangeIncrement": "Range Increment",
         "Distance": "Distance (Zones)",
         "RangeModifier": "Range Modifier",
+        "ShieldBonus": "Target Shield Bonus",
+        "ShieldBonusHint": {
+          "Melee": "Auto-filled from the target's equipped shield AD (you can override).",
+          "NonMelee": "Enter manually for cover/shield use against this attack."
+        },
         "Flavor": "Flavor",
         "OpposedFlavorDefault": "Opposed against roll {id}",
         "General": "General",
@@ -451,6 +474,8 @@
         "Margin": "Margin",
         "MiscModifier": "Misc Modifier",
         "Armor": "Armor",
+        "ShieldBonus": "Shield Bonus",
+        "EffectiveArmor": "Effective Armor",
         "AttackBonus": "ATT Bonus",
         "RangeModifier": "Range Modifier",
         "RangeIncrement": "Range Increment",

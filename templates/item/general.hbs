@@ -12,6 +12,8 @@
     {{> "systems/synthicide/templates/item/parts/general-traits.hbs"}}
   {{else if (eq item.type 'armor')}}
     {{> "systems/synthicide/templates/item/parts/general-armor.hbs"}}
+  {{else if (eq item.type 'shield')}}
+    {{> "systems/synthicide/templates/item/parts/general-shield.hbs"}}
   {{else if (eq item.type 'weapon')}}
     {{> "systems/synthicide/templates/item/parts/general-weapon.hbs"}}
   {{/if}}

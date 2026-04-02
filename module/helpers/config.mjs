@@ -153,8 +153,9 @@ SYNTHICIDE.motivations = {
 //Alowed Trait levels
 SYNTHICIDE.ALLOWED_TRAIT_LEVELS = [1, 4, 7];
 //items that have quantity, weight and could be equipped
-SYNTHICIDE.GEAR_TYPES = ["gear", "armor", "weapon", "drugs"];
-SYNTHICIDE.EQUIPABLE = ["armor", "weapon"];
+SYNTHICIDE.GEAR_TYPES = ["gear", "armor", "shield", "weapon", "drugs"];
+SYNTHICIDE.EQUIPABLE = ["armor", "shield", "weapon"];
+SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES = ["armor", "shield"];
 
 /**
  * Weapon Constants
@@ -267,6 +268,14 @@ SYNTHICIDE.ARMOR_MODIFICATIONS = {
   radiative: "SYNTHICIDE.Item.Armor.Modification.Radiative",
   reactiveCamo: "SYNTHICIDE.Item.Armor.Modification.ReactiveCamo",
   calling: "SYNTHICIDE.Item.Armor.Modification.Calling"
+}
+
+SYNTHICIDE.SHIELD_MODIFICATIONS = {
+  none: "SYNTHICIDE.Item.Shield.Modification.None",
+  weaponRest: "SYNTHICIDE.Item.Shield.Modification.WeaponRest",
+  shocking: "SYNTHICIDE.Item.Shield.Modification.Shocking",
+  radiodynamic: "SYNTHICIDE.Item.Shield.Modification.Radiodynamic",
+  gravatic: "SYNTHICIDE.Item.Shield.Modification.Gravatic"
 }
 
 /**

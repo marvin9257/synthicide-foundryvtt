@@ -42,6 +42,11 @@
           "description"
         ]
       },
+      "shield": {
+        "htmlFields": [
+          "description"
+        ]
+      },
       "trait": {
         "htmlFields": [
           "description"

@@ -25,6 +25,7 @@ const ITEM_BASE_PARTS_BY_TYPE = {
   bioclass: ['attributesBioclass', 'cyberneticsBioclass', 'traitsBioclass'],
   aspect: ['abilitiesAspect', 'traitsBioclass'],
   armor: [],
+  shield: [],
   weapon: ['rollGear']
 };
 
@@ -133,6 +134,10 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     generalWeapon: {
       template: 'systems/synthicide/templates/item/parts/general-weapon.hbs',
       scrollable: [""]
+    },
+    generalShield: {
+      template: 'systems/synthicide/templates/item/parts/general-shield.hbs',
+      scrollable: [""]
     }
   };
 
@@ -193,6 +198,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       if (this.item.system.weaponClass === "ranged") {
         context.weaponAmmoOptions = SYNTHICIDE.WEAPON_AMMO;
       }
+    } else if (this.item.type === 'shield') {
+      context.shieldModificationsOptions = SYNTHICIDE.SHIELD_MODIFICATIONS;
     }
     
     return context;

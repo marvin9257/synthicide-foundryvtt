@@ -245,6 +245,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // Initialize containers.
     const gear = this.actor.itemTypes.gear;
     const armor = this.actor.itemTypes.armor;
+    const shield = this.actor.itemTypes.shield;
     const weapon = this.actor.itemTypes.weapon;
     
     const aspectTraits = [];
@@ -286,6 +287,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // Sort then assign
     context.gear = gear?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.armor = armor?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.shield = shield?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.weapon = weapon?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.bioclassTraits = bioclassTraits?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     // Only keep milestone trait levels (1,4,7) for the actor context.
@@ -664,7 +666,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     event.preventDefault();
     const doc = this._getEmbeddedDocument(target);
     if (!doc) return;
-    await doc.update({ 'system.equipped': !doc.system.equipped }, {refresh: !(doc.type === 'armor')});
+    await doc.update(
+      { 'system.equipped': !doc.system.equipped },
+      { refresh: !CONFIG.SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES.includes(doc.type) }
+    );
   }
 
   /***************

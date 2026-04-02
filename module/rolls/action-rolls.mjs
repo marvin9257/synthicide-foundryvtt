@@ -695,6 +695,10 @@ async function renderActionRollDialog({ title, defaults }) {
  */
 function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSubtypeChange }) {
   const attackDefaults = getAttackDialogDefaults({ actor, subtype, sourceItem });
+  const isMeleeAttack = String(sourceItem?.system?.weaponClass ?? '') === 'melee';
+  const targetDefense = isAttackSubtype(subtype)
+    ? getTargetDefense({ notify: true })
+    : { armor: 0, shieldBonus: 0 };
 
   return {
     actor,
@@ -702,10 +706,12 @@ function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSu
     attribute: attributeKey,
     difficulty: 6,
     misc: 0,
-    armor: isAttackSubtype(subtype) ? getTargetArmor() : 0,
+    armor: targetDefense.armor,
     attackBonus: attackDefaults.attackBonus,
     damageBonus: attackDefaults.damageBonus,
     rangeModifier: attackDefaults.rangeModifier,
+    shieldBonus: isMeleeAttack ? targetDefense.shieldBonus : 0,
+    weaponClass: String(sourceItem?.system?.weaponClass ?? ''),
     messageMode: getDefaultMessageMode(),
     allowSubtypeChange,
   };
@@ -732,6 +738,7 @@ function buildDialogContext(defaults) {
   const subtype = defaults.subtype ?? SUBTYPES.CHALLENGE;
   const isAttack = isAttackSubtype(subtype);
   const isDemolition = isDemolitionSubtype(subtype);
+  const isMeleeAttack = isAttack && String(defaults.weaponClass ?? '') === 'melee';
   const difficultyList = SYNTHICIDE.rolls?.challengeDifficulties ?? [];
 
   const actor = defaults.actor;
@@ -757,6 +764,10 @@ function buildDialogContext(defaults) {
     defaultAttackBonus: defaults.attackBonus ?? 0,
     defaultDamageBonus: defaults.damageBonus ?? 0,
     defaultRangeModifier: defaults.rangeModifier ?? 0,
+    defaultShieldBonus: defaults.shieldBonus ?? 0,
+    shieldBonusHintKey: isMeleeAttack
+      ? 'SYNTHICIDE.Roll.Dialog.ShieldBonusHint.Melee'
+      : 'SYNTHICIDE.Roll.Dialog.ShieldBonusHint.NonMelee',
     defaultMisc: defaults.misc ?? 0,
     subtypeOptions: [
       {
@@ -808,6 +819,7 @@ function extractDialogData(formElement) {
     attackBonus: parseNumeric(formData.get('attackBonus'), 0),
     damageBonus: parseNumeric(formData.get('damageBonus'), 0),
     rangeModifier: parseNumeric(formData.get('rangeModifier'), 0),
+    shieldBonus: parseNumeric(formData.get('shieldBonus'), 0),
   };
 }
 
@@ -932,18 +944,43 @@ function resolveActorFromUuidSync(uuid) {
   }
 }
 
-function getTargetArmor() {
+/**
+ * Resolve the currently selected target's defense values for attack dialogs.
+ *
+ * Uses a single-target contract: when exactly one target is selected, returns
+ * both armor and equipped shield bonus for that target. Otherwise it falls back
+ * to world default armor and a zero shield bonus.
+ *
+ * @param {object} [params]
+ * @param {boolean} [params.notify=true] - Whether to warn when target selection
+ * is invalid (none or multiple).
+ * @returns {{ armor: number, shieldBonus: number }}
+ */
+function getTargetDefense({ notify = true } = {}) {
   const defaultValue = game.settings.get('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY);
   if (game.user.targets?.size === 1) {
-    const armorData = game.user.targets.first()?.actor?.system?.armorDefense;
+    const targetActor = game.user.targets.first()?.actor;
+    const armorData = targetActor?.system?.armorDefense;
     const armor = Number(armorData?.value ?? armorData);
-    return Number.isFinite(armor) ? armor : defaultValue;
-  } else if (game.user.targets?.size > 1) {
-    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.TooManyTargets'));
-  } else {
-    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NoTarget'));
+    // Shield bonus is opt-in per table flow; this only seeds the dialog default.
+    const equippedShield = targetActor?.itemTypes?.shield?.find((item) => item.system?.equipped);
+    const shieldBonus = Number(equippedShield?.system?.adBonus ?? 0);
+    return {
+      armor: Number.isFinite(armor) ? armor : defaultValue,
+      shieldBonus: Number.isFinite(shieldBonus) ? shieldBonus : 0,
+    };
   }
-  return defaultValue;
+
+  if (notify) {
+    // Mirror existing warning semantics used by other target-dependent helpers.
+    if (game.user.targets?.size > 1) {
+      ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.TooManyTargets'));
+    } else {
+      ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NoTarget'));
+    }
+  }
+  //return default values
+  return { armor: defaultValue, shieldBonus: 0 };
 }
 
 function getSingleTargetToken({ notify = true } = {}) {

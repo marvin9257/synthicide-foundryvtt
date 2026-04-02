@@ -562,6 +562,27 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   gap: 0.5rem;
 }
 
+.synthicide-action-roll-form .form-group .field-stack {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.synthicide-action-roll-form .form-group .field-stack .notes {
+  margin: 0;
+  font-size: 0.85em;
+  opacity: 0.9;
+}
+
+.synthicide-action-roll-form .form-group > label.shield-bonus-label,
+.dialog-form.standard-form .form-group > label.shield-bonus-label {
+  flex: 1;
+  align-self: flex-start;
+  line-height: 1.2;
+  white-space: normal;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
 .synthicide-action-roll-form hr,
 .synthicide-action-roll-form p {
   grid-column: 1 / -1;

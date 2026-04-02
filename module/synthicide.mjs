@@ -89,6 +89,7 @@ Hooks.once('init', function () {
     aspect: models.SynthicideAspect,
     bioclass: models.SynthicideBioclass,
     gear: models.SynthicideGear,
+    shield: models.SynthicideShield,
     trait: models.SynthicideTrait,
     weapon: models.SynthicideWeapon
   };
