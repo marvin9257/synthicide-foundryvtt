@@ -1,3 +1,10 @@
+## [1.0.14](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.13...1.0.14) (2026-04-02)
+
+
+### Bug Fixes
+
+* let weapons work correctly for rollItemMacros ([58ade0f](https://github.com/marvin9257/synthicide-foundryvtt/commit/58ade0feaaa6365d2c2ba7805de3fcabc923c182))
+
 ## [1.0.13](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.12...1.0.13) (2026-03-31)
 
 
