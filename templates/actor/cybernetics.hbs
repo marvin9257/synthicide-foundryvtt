@@ -26,7 +26,7 @@
           </div>
           <div class='resource flex-group-center'>
             <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.FIELDS.Slots.label'}}</label>
-            <div>{{bioclass.system.bodySlots}}</div>
+            <div>{{system.implantSlots.body.value}} / {{system.implantSlots.body.max}}</div>
           </div>
         </div>
     </fieldset>
@@ -40,7 +40,7 @@
 
         <div class='resource flex-group-center'>
           <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Bioclass.FIELDS.Slots.label'}}</label>
-          <div>{{bioclass.system.brainSlots}}</div>
+          <div>{{system.implantSlots.head.value}} / {{system.implantSlots.head.max}}</div>
         </div>
       </div>
     </fieldset>
@@ -48,4 +48,66 @@
   {{else}}
     <p>{{localize 'SYNTHICIDE.Actor.Bioclass.NoneAssigned'}}</p>
   {{/if}}
+
+  <h4>{{localize 'TYPES.Item.implant'}}</h4>
+  <ol class='items-list implant-list'>
+    <li class='item flexrow items-header'>
+      <div class='item-name'>{{localize 'Name'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.location.label'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.implantType.label'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Item.Gear.FIELDS.equipped.label'}}</div>
+      <div class='item-controls'>
+        {{#if @root.editable}}
+          <a
+            class='item-control item-create'
+            data-tooltip='{{localize "DOCUMENT.Create" type='Item'}}'
+            data-action='createDoc'
+            data-document-class='Item'
+            data-type='implant'
+          >
+            <i class='fas fa-plus'></i>
+            {{localize 'DOCUMENT.New' type='item'}}
+          </a>
+        {{/if}}
+      </div>
+    </li>
+    {{#each implants as |item id|}}
+      <li
+        class='item flexrow draggable'
+        data-item-id='{{item._id}}'
+        data-document-class='Item'
+      >
+        <div class='item-name'>
+          <div class='item-image'>
+            <img
+              src='{{item.img}}'
+              data-tooltip='{{item.name}}'
+            />
+          </div>
+          <div class='item-label'>{{item.name}}</div>
+        </div>
+        <div class='item-prop'>{{localize (lookup @root.SYNTHICIDE.IMPLANT_LOCATIONS item.system.location)}}</div>
+        <div class='item-prop'>{{localize (lookup @root.SYNTHICIDE.IMPLANT_TYPES item.system.implantType)}}</div>
+        <div class='item-prop'><a class="item-control item-equip" data-action="changeEquippedState" data-tooltip='{{localize "SYNTHICIDE.Actor.Combat.ChangeEquipped"}}'><i class={{#if item.system.equipped}}"fa-solid fa-square-check"{{else}}"fa-regular fa-square"{{/if}}></i></a></div>
+        <div class='item-controls'>
+          <a
+            class='item-control item-edit'
+            data-tooltip='{{localize "DOCUMENT.Update" type='Implant'}}'
+            data-action='viewDoc'
+          >
+            <i class='fas fa-edit'></i>
+          </a>
+          {{#if @root.editable}}
+            <a
+              class='item-control item-delete'
+              data-tooltip='{{localize "DOCUMENT.Delete" type='Implant'}}'
+              data-action='deleteDoc'
+            >
+              <i class='fas fa-trash'></i>
+            </a>
+          {{/if}}
+        </div>
+      </li>
+    {{/each}}
+  </ol>
 </section>

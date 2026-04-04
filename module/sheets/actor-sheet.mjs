@@ -247,6 +247,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     const armor = this.actor.itemTypes.armor;
     const shield = this.actor.itemTypes.shield;
     const weapon = this.actor.itemTypes.weapon;
+    const implants = this.actor.itemTypes.implant;
     
     const aspectTraits = [];
     const bioclassTraits = [];
@@ -289,6 +290,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     context.armor = armor?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.shield = shield?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.weapon = weapon?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.implants = implants?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.bioclassTraits = bioclassTraits?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     // Only keep milestone trait levels (1,4,7) for the actor context.
     const ALLOWED_TRAIT_LEVELS = [1, 4, 7];
@@ -915,9 +917,18 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    */
   async _handleGenericItemDrop(itemData) {
     if (!itemData.length) return [];
+
+    // Ensure all gear (including implants) start unequipped when dropped onto actor
+    const normalizedData = itemData.map(data => {
+      if (data.type && CONFIG.SYNTHICIDE.EQUIPABLE?.includes(data.type)) {
+        return { ...data, system: { ...data.system, equipped: false } };
+      }
+      return data;
+    });
+
     // create with render:false so _onCreate's fire-and-forget aggregation doesn't
     // race with our explicit aggregation below
-    const created = await this.actor.createEmbeddedDocuments('Item', itemData, { render: false });
+    const created = await this.actor.createEmbeddedDocuments('Item', normalizedData, { render: false });
     // Explicitly await aggregation so modifier values are up-to-date before we render
     await this.actor.aggregateAndApplyItemModifiers({ render: false });
     await this.render({ force: true });

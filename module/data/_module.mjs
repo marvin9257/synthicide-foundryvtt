@@ -13,3 +13,4 @@ export { default as SynthicideAspect } from './item-aspect.mjs';
 export { default as SynthicideArmor } from './item-armor.mjs';
 export { default as SynthicideShield } from './item-shield.mjs';
 export { default as SynthicideWeapon } from './item-weapon.mjs';
+export { default as SynthicideImplant } from './item-implant.mjs';

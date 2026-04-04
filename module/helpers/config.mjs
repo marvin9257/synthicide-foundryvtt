@@ -20,6 +20,143 @@ SYNTHICIDE.bodyBrainTypes = {
   Rigged: 'SYNTHICIDE.Item.BodyType.Rigged'
 };
 
+SYNTHICIDE.IMPLANT_LOCATIONS = {
+  body: 'SYNTHICIDE.Item.Implant.Location.Body',
+  head: 'SYNTHICIDE.Item.Implant.Location.Head'
+};
+
+SYNTHICIDE.IMPLANT_TYPES_BY_LOCATION = {
+  body: {
+    cyberLimbs: 'SYNTHICIDE.Item.Implant.Type.cyberLimbs',
+    bionites: 'SYNTHICIDE.Item.Implant.Type.bionites',
+    twitchMuscles: 'SYNTHICIDE.Item.Implant.Type.twitchMuscles',
+    techHands: 'SYNTHICIDE.Item.Implant.Type.techHands',
+    jumpJets: 'SYNTHICIDE.Item.Implant.Type.jumpJets',
+    respirator: 'SYNTHICIDE.Item.Implant.Type.respirator',
+    synthSkin: 'SYNTHICIDE.Item.Implant.Type.synthSkin',
+    custom: 'SYNTHICIDE.Item.Implant.Type.custom'
+  },
+  head: {
+    cyberSenses: 'SYNTHICIDE.Item.Implant.Type.cyberSenses',
+    cortexPlug: 'SYNTHICIDE.Item.Implant.Type.cortexPlug',
+    ventromedialImplant: 'SYNTHICIDE.Item.Implant.Type.ventromedialImplant',
+    dataStores: 'SYNTHICIDE.Item.Implant.Type.dataStores',
+    eideticMemoryCore: 'SYNTHICIDE.Item.Implant.Type.eideticMemoryCore',
+    autoPilot: 'SYNTHICIDE.Item.Implant.Type.autoPilot',
+    limbModule: 'SYNTHICIDE.Item.Implant.Type.limbModule',
+    soulCage: 'SYNTHICIDE.Item.Implant.Type.soulCage',
+    custom: 'SYNTHICIDE.Item.Implant.Type.custom'
+  }
+};
+
+// Flattened convenience map for schema choices and generic lookups.
+SYNTHICIDE.IMPLANT_TYPES = {
+  ...SYNTHICIDE.IMPLANT_TYPES_BY_LOCATION.body,
+  ...SYNTHICIDE.IMPLANT_TYPES_BY_LOCATION.head
+};
+
+SYNTHICIDE.IMPLANT_MODIFICATIONS = {
+  cyberLimbs: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    exoLifts: 'SYNTHICIDE.Item.Implant.Modification.exoLifts',
+    burnProtocol: 'SYNTHICIDE.Item.Implant.Modification.burnProtocol',
+    extraArm: 'SYNTHICIDE.Item.Implant.Modification.extraArm',
+    retractableItem: 'SYNTHICIDE.Item.Implant.Modification.retractableItem'
+  },
+  bionites: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    drugStorage: 'SYNTHICIDE.Item.Implant.Modification.drugStorage',
+    recoveryFunctions: 'SYNTHICIDE.Item.Implant.Modification.recoveryFunctions',
+    cellularStacking: 'SYNTHICIDE.Item.Implant.Modification.cellularStacking'
+  },
+  twitchMuscles: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    reflexTraining: 'SYNTHICIDE.Item.Implant.Modification.reflexTraining',
+    catfootProgram: 'SYNTHICIDE.Item.Implant.Modification.catfootProgram',
+    extendedGait: 'SYNTHICIDE.Item.Implant.Modification.extendedGait'
+  },
+  techHands: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    geckoGrip: 'SYNTHICIDE.Item.Implant.Modification.geckoGrip',
+    retractableBlades: 'SYNTHICIDE.Item.Implant.Modification.retractableBlades',
+    fingerTools: 'SYNTHICIDE.Item.Implant.Modification.fingerTools'
+  },
+  jumpJets: {
+    accelerated: 'SYNTHICIDE.Item.Implant.Modification.accelerated',
+    retractable: 'SYNTHICIDE.Item.Implant.Modification.retractable',
+    tacticalSpeed: 'SYNTHICIDE.Item.Implant.Modification.tacticalSpeed'
+  },
+  respirator: {
+    vacuumReady: 'SYNTHICIDE.Item.Implant.Modification.vacuumReady',
+    oxygenPod: 'SYNTHICIDE.Item.Implant.Modification.oxygenPod',
+    ingestionFilter: 'SYNTHICIDE.Item.Implant.Modification.ingestionFilter',
+    nutritionAmplifier: 'SYNTHICIDE.Item.Implant.Modification.nutritionAmplifier'
+  },
+  synthSkin: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    morphSkin: 'SYNTHICIDE.Item.Implant.Modification.morphSkin',
+    stealthSkin: 'SYNTHICIDE.Item.Implant.Modification.stealthSkin'
+  },
+  cyberSenses: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    distanceHearing: 'SYNTHICIDE.Item.Implant.Modification.distanceHearing',
+    zoom: 'SYNTHICIDE.Item.Implant.Modification.zoom',
+    nightvision: 'SYNTHICIDE.Item.Implant.Modification.nightvision',
+    scanningVision: 'SYNTHICIDE.Item.Implant.Modification.scanningVision',
+    gunLink: 'SYNTHICIDE.Item.Implant.Modification.gunLink',
+    psychovision: 'SYNTHICIDE.Item.Implant.Modification.psychovision',
+    proximityAlarm: 'SYNTHICIDE.Item.Implant.Modification.proximityAlarm'
+  },
+  cortexPlug: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    deadface: 'SYNTHICIDE.Item.Implant.Modification.deadface',
+    psychocortex: 'SYNTHICIDE.Item.Implant.Modification.psychocortex'
+  },
+  ventromedialImplant: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    mindshield: 'SYNTHICIDE.Item.Implant.Modification.mindshield',
+    psychonautalis: 'SYNTHICIDE.Item.Implant.Modification.psychonautalis'
+  },
+  dataStores: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    complexStorage: 'SYNTHICIDE.Item.Implant.Modification.complexStorage',
+    computerInterface: 'SYNTHICIDE.Item.Implant.Modification.computerInterface',
+    skullPhone: 'SYNTHICIDE.Item.Implant.Modification.skullPhone'
+  },
+  eideticMemoryCore: {
+    mentalProjection: 'SYNTHICIDE.Item.Implant.Modification.mentalProjection',
+    monkeyProtocol: 'SYNTHICIDE.Item.Implant.Modification.monkeyProtocol'
+  },
+  autoPilot: {
+    complexProcedure: 'SYNTHICIDE.Item.Implant.Modification.complexProcedure'
+  },
+  limbModule: {
+    advancedControl: 'SYNTHICIDE.Item.Implant.Modification.advancedControl',
+    furyProtocol: 'SYNTHICIDE.Item.Implant.Modification.furyProtocol'
+  },
+  soulCage: {
+    acceptanceMeditations: 'SYNTHICIDE.Item.Implant.Modification.acceptanceMeditations',
+    darkSwitch: 'SYNTHICIDE.Item.Implant.Modification.darkSwitch'
+  },
+  custom: {}
+};
+
+SYNTHICIDE.ALL_IMPLANT_MOD_KEYS = [
+  ...new Set(
+    Object.values(SYNTHICIDE.IMPLANT_MODIFICATIONS)
+      .flatMap((modsByType) => Object.keys(modsByType ?? {}))
+  )
+];
+
 // Centralized debug flags for system modules
 SYNTHICIDE.debug = {
   /** Enable detailed modifier aggregation debugging in Actor */
@@ -153,8 +290,8 @@ SYNTHICIDE.motivations = {
 //Alowed Trait levels
 SYNTHICIDE.ALLOWED_TRAIT_LEVELS = [1, 4, 7];
 //items that have quantity, weight and could be equipped
-SYNTHICIDE.GEAR_TYPES = ["gear", "armor", "shield", "weapon", "drugs"];
-SYNTHICIDE.EQUIPABLE = ["armor", "shield", "weapon"];
+SYNTHICIDE.GEAR_TYPES = ["gear", "armor", "shield", "weapon", "implant", "drugs"];
+SYNTHICIDE.EQUIPABLE = ["armor", "shield", "weapon", "implant"];
 SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES = ["armor", "shield"];
 
 /**

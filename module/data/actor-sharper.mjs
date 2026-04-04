@@ -57,6 +57,19 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
         recoveryRate: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }, {persisted: false})})
     });
 
+    schema.implantSlots = new fields.SchemaField({
+      body: new fields.SchemaField({
+        value: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
+        max: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
+        remaining: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
+      }),
+      head: new fields.SchemaField({
+        value: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
+        max: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
+        remaining: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
+      }),
+    });
+
     schema.rollModifiers = new fields.SchemaField({
       starvationPenalty: new fields.NumberField({ ...requiredInteger, initial: 0}, {persisted: false}),
     });
@@ -91,6 +104,45 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
   }
 
   /**
+   * Compute implant slot usage summary for this actor.
+   * Summary keys follow implant item locations:
+   * - body => bioclass body slots
+   * - head => bioclass brain slots
+   * @this {SynthicideSharperData}
+   * @returns {{ body: { value: number, max: number, remaining: number }, head: { value: number, max: number, remaining: number } }}
+   */
+  getImplantSlotSummary() {
+    const actor = this.parent;
+    const bioclass = actor?.itemTypes?.bioclass?.[0]?.system;
+    const summary = {
+      body: {
+        value: 0,
+        max: Number(bioclass?.bodySlots ?? 0),
+        remaining: 0,
+      },
+      head: {
+        value: 0,
+        max: Number(bioclass?.brainSlots ?? 0),
+        remaining: 0,
+      },
+    };
+
+    for (const implant of actor?.itemTypes?.implant ?? []) {
+      if (!implant.system?.equipped) continue;
+
+      const location = implant.system?.location ?? 'body';
+      if (!(location in summary)) continue;
+      summary[location].value += Number(implant.system?.slotSize ?? 1);
+    }
+
+    for (const pool of Object.values(summary)) {
+      pool.remaining = pool.max - pool.value;
+    }
+
+    return summary;
+  }
+
+  /**
   * Calculate and assign derived data for sharper actors (e.g., .value, foodDays.min, hitPoints.max).
    * @override
    * @this {SynthicideSharperData}
@@ -105,6 +157,8 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     }
     //Get worn armor values
     foundry.utils.mergeObject(this.armorValues, getCurrentArmorValues(this.parent));
+    //Get implant slots
+    foundry.utils.mergeObject(this.implantSlots, this.getImplantSlotSummary());
 
     // Constrain speed.value to armor worn (guarding in case attributes are missing)
     if (this.attributes?.speed && Number.isFinite(this.armorValues.speedMax)) {

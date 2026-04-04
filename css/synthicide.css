@@ -1758,6 +1758,24 @@ body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-hea
   color: var(--rb-on-accent);
 }
 
+/* Implant list header should match the standard combat/gear row sizing. */
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header {
+  min-height: 30px;
+  padding: 0 8px;
+  border-left-width: 5px;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header > *,
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-controls a {
+  font-size: 0.72rem;
+}
+
 /* ============================================================ */
 /* ITEMS LIST & EFFECTS LIST                                    */
 /* ============================================================ */
@@ -2100,22 +2118,15 @@ body.theme-dark.synthicide-style-bold .synthicide h4 {
 }
 
 /* Aspect & Combat tab: h4 is a full-width header bar */
-body.synthicide-style-bold .synthicide .tab.aspect h4 {
+body.synthicide-style-bold .synthicide .tab.aspect h4,
+body.synthicide-style-bold .synthicide .tab.combat h4,
+body.synthicide-style-bold .synthicide .tab.cybernetics h4 {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
   border-left: 5px solid var(--rb-accent);
   padding: 6px 14px;
   margin: 0 0 4px;
   font-size: var(--reduced-font-size);
-  border-radius: 0;
-}
-
-body.synthicide-style-bold .synthicide .tab.combat h4 {
-  background: var(--rb-strong);
-  color: var(--rb-on-accent);
-  border-left: 5px solid var(--rb-accent);
-  padding: 6px 14px;
-  margin: 0 0 4px;
   border-radius: 0;
 }
 

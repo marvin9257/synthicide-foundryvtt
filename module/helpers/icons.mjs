@@ -4,6 +4,7 @@ export const ICON_MAP = {
   aspect: 'fa-solid fa-atom',
   attributes: 'fa-solid fa-sliders',
   general: 'fa-solid fa-info-circle',
+  implant: 'fa-solid fa-microchip',
   cybernetics: 'fa-solid fa-microchip',
   biography: 'fa-solid fa-file-lines',
   person: 'fa-solid fa-id-card',

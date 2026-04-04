@@ -37,6 +37,11 @@
           "description"
         ]
       },
+      "implant": {
+        "htmlFields": [
+          "description"
+        ]
+      },
       "gear": {
         "htmlFields": [
           "description"
