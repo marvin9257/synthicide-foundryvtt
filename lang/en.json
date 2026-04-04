@@ -616,7 +616,7 @@
         "NoTarget": "No attack targets selected (using target armor default setting)",
         "TooManyTargets": "Too many targets selected (using target armor default setting)",
         "AttackerTokenMissing": "Could not determine the attacker's token for range calculation.",
-        "ImplantSlotsExceeded": "Cannot equip implant in {location}: {used} slots would be used, but only {capacity} are available.",
+        "ImplantSlotsExceeded": "Update blocked: not enough {location} implant slots ({used}/{capacity}). Unequip another implant or reduce this implant's slot size, then try again.",
         "MeleeOutOfRange": "Melee attack is impossible: target is outside your current zone.",
         "DemolitionDamageRequiresDetonation": "Damage can only be rolled for demolition after detonation.",
         "DemolitionBlastMissing": "This demolition weapon needs a blast radius before it can be used.",

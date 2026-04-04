@@ -223,17 +223,35 @@ export default class SynthicideImplant extends SynthicideGear {
     const wasEquipped = this.equipped === true;
     const becomingEquipped = !wasEquipped && nextEquipped === true;
 
-    if (becomingEquipped) {
+    const locationChanged =
+      Object.prototype.hasOwnProperty.call(nextSystem, 'location')
+      || Object.prototype.hasOwnProperty.call(changedFlat, 'system.location');
+    const slotSizeChanged =
+      Object.prototype.hasOwnProperty.call(nextSystem, 'slotSize')
+      || Object.prototype.hasOwnProperty.call(changedFlat, 'system.slotSize');
+    const needsCapacityValidation =
+      nextEquipped === true && (becomingEquipped || (wasEquipped && (locationChanged || slotSizeChanged)));
+
+    if (needsCapacityValidation) {
       const nextSlotSize = Number(
         nextSystem.slotSize
         ?? changedFlat['system.slotSize']
         ?? this.slotSize
         ?? 1
       );
+
       const pool = actor.system?.implantSlots?.[nextLocation] ?? actor.system?.implantSlots?.body;
       const currentUsed = Number(pool?.value ?? 0);
       const capacity = Number(pool?.max ?? 0);
-      const usedSlots = currentUsed + nextSlotSize;
+
+      // If this implant is already equipped and currently counted in this pool,
+      // remove its current contribution before applying the next slot size.
+      const currentContribution =
+        wasEquipped && this.location === nextLocation
+          ? Number(this.slotSize ?? 1)
+          : 0;
+      const usedSlots = (currentUsed - currentContribution) + nextSlotSize;
+
       const slotCheck = {
         allowed: usedSlots <= capacity,
         capacity,
@@ -242,7 +260,9 @@ export default class SynthicideImplant extends SynthicideGear {
       };
 
       if (!slotCheck.allowed) {
-        if (game.userId === user) this.notifySlotCapacityExceeded(slotCheck);
+        const updateUserId = typeof user === 'string' ? user : user?.id;
+        const shouldNotify = !updateUserId || updateUserId === game.userId;
+        if (shouldNotify) this.notifySlotCapacityExceeded(slotCheck);
         const itemSheet = this.parent?.sheet;
         if (itemSheet?.rendered) itemSheet.render(false);
         return false;
