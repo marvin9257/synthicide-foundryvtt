@@ -1,3 +1,10 @@
+## [1.0.15](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.14...1.0.15) (2026-04-04)
+
+
+### Bug Fixes
+
+* style fixes ([56068ff](https://github.com/marvin9257/synthicide-foundryvtt/commit/56068ff0ce776044ebc24d69597aef72aef0872c))
+
 ## [1.0.14](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.13...1.0.14) (2026-04-02)
 
 
