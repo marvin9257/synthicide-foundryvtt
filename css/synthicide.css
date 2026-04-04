@@ -1761,8 +1761,8 @@ body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-hea
 /* Implant list header should match the standard combat/gear row sizing. */
 body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header {
   min-height: 30px;
-  padding: 0 8px;
-  border-left-width: 5px;
+  padding: 3px 6px;
+  border-left: 5px solid var(--rb-accent);
 }
 
 body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header > *,
@@ -1772,8 +1772,67 @@ body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list
   letter-spacing: 0.06em;
 }
 
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-name {
+  padding-left: 0;
+}
+
 body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-controls a {
   font-size: 0.72rem;
+}
+
+/* Keep implant list header and rows on the same flex grid columns. */
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-prop--location {
+  flex: 0 0 16%;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-prop--type {
+  flex: 0 0 18%;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-prop--equipped {
+  flex: 0 0 12%;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-controls--implant {
+  flex: 0 0 16%;
+}
+
+/* Combat tab list headers should align with combat list rows. */
+body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header {
+  min-height: 32px;
+  padding: 3px 6px;
+  border-left-width: 5px;
+}
+
+body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header > *,
+body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header .item-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header .item-controls a {
+  font-size: 0.72rem;
+}
+
+/* Keep combat list headers and rows on a shared column grid. */
+body.synthicide-style-bold .synthicide .tab.combat .items-list .item-name {
+  flex: 0 0 34%;
+  min-width: 0;
+}
+
+body.synthicide-style-bold .synthicide .tab.combat .items-list .item-prop {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+body.synthicide-style-bold .synthicide .tab.combat .items-list .item-controls {
+  flex: 0 0 16%;
 }
 
 /* ============================================================ */
@@ -1792,6 +1851,7 @@ body.synthicide-style-bold .synthicide .effects-list {
 body.synthicide-style-bold .synthicide .items-list .item:not(.items-header),
 body.synthicide-style-bold .synthicide .effects-list .effect {
   border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  border-left: 5px solid transparent;
   min-height: 32px;
   padding: 3px 6px;
 }

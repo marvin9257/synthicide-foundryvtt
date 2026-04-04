@@ -53,10 +53,10 @@
   <ol class='items-list implant-list'>
     <li class='item flexrow items-header'>
       <div class='item-name'>{{localize 'Name'}}</div>
-      <div class='item-prop'>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.location.label'}}</div>
-      <div class='item-prop'>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.implantType.label'}}</div>
-      <div class='item-prop'>{{localize 'SYNTHICIDE.Item.Gear.FIELDS.equipped.label'}}</div>
-      <div class='item-controls'>
+      <div class='item-prop item-prop--location'>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.location.label'}}</div>
+      <div class='item-prop item-prop--type'>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.implantType.label'}}</div>
+      <div class='item-prop item-prop--equipped'>{{localize 'SYNTHICIDE.Item.Gear.FIELDS.equipped.label'}}</div>
+      <div class='item-controls item-controls--implant'>
         {{#if @root.editable}}
           <a
             class='item-control item-create'
@@ -86,10 +86,10 @@
           </div>
           <div class='item-label'>{{item.name}}</div>
         </div>
-        <div class='item-prop'>{{localize (lookup @root.SYNTHICIDE.IMPLANT_LOCATIONS item.system.location)}}</div>
-        <div class='item-prop'>{{localize (lookup @root.SYNTHICIDE.IMPLANT_TYPES item.system.implantType)}}</div>
-        <div class='item-prop'><a class="item-control item-equip" data-action="changeEquippedState" data-tooltip='{{localize "SYNTHICIDE.Actor.Combat.ChangeEquipped"}}'><i class={{#if item.system.equipped}}"fa-solid fa-square-check"{{else}}"fa-regular fa-square"{{/if}}></i></a></div>
-        <div class='item-controls'>
+        <div class='item-prop item-prop--location'>{{localize (lookup @root.SYNTHICIDE.IMPLANT_LOCATIONS item.system.location)}}</div>
+        <div class='item-prop item-prop--type'>{{localize (lookup @root.SYNTHICIDE.IMPLANT_TYPES item.system.implantType)}}</div>
+        <div class='item-prop item-prop--equipped'><a class="item-control item-equip" data-action="changeEquippedState" data-tooltip='{{localize "SYNTHICIDE.Actor.Combat.ChangeEquipped"}}'><i class={{#if item.system.equipped}}"fa-solid fa-square-check"{{else}}"fa-regular fa-square"{{/if}}></i></a></div>
+        <div class='item-controls item-controls--implant'>
           <a
             class='item-control item-edit'
             data-tooltip='{{localize "DOCUMENT.Update" type='Implant'}}'
