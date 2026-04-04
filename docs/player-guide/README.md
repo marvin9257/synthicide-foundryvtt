@@ -40,7 +40,7 @@ Use these expectations while reading every page in this guide:
 
 1. Only one bioclass and one aspect can be assigned to an actor at a time.
 2. Replacing a bioclass or aspect removes the previous one.
-3. Key setup values are manual and must be verified by players or GMs (example: ATT/DMG, range increment, AD bonuses, and Force Barrier fields on items).
+3. Key setup values must be verified by players or GMs (example: ATT/DMG, range increment, Armor Defense (AD) bonuses, and Force Barrier fields on items).
 4. Bioclass and aspect trait effects that require player choices are not finalized on creation; open, edit, and save the generated trait to implement them.
 5. Trait levels for regular (non-feature) traits are milestone-based (1, 4, 7).
 6. Outcomes tied to situational text still require player/GM judgment at resolution time (example: conditional bonuses and narrative effects in trait text).
@@ -52,7 +52,7 @@ Use these expectations while reading every page in this guide:
 
 ## Key Terms (Plain Language)
 
-1. Derived stats (also called derived values in this guide): Read-only totals the sheet calculates from your attributes and gear. Common examples are Action Points (AP), Battle Reflex (BR), Armor Defense (AD), Nerve Defense (ND), Toughness Defense (TD), and Shock Threshold (ST).
+1. Derived stats (also called derived values in this guide): Read-only totals the sheet calculates from your attributes and gear. Common examples are Action Points (AP), Battle Reflex (BR), Armor Defense (AD), Nerve Defense (ND), Toughness Defense (TD), and Shock Threshold (ST). "AD" always means Armor Defense; roll difficulty is always called "RD".
 2. Source item: The specific item that started a roll or effect. Example: the weapon you clicked to make an attack roll.
 3. Generated trait: A trait item created automatically when you assign a bioclass or aspect.
 4. Milestone trait levels: Standard trait levels supported by this system for normal traits (1, 4, and 7).

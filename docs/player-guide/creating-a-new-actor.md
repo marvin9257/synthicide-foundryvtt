@@ -25,10 +25,10 @@ Build a playable actor and fill in the must-have fields before session one.
 ## What Happens Automatically
 
 1. Resource bars visually reflect current values.
-2. Combat-facing derived stats such as AD, TD, ND, and ST are recalculated from actor stats and equipped items.
+2. Combat-facing derived stats such as Armor Defense (AD), TD, ND, and ST are recalculated from actor stats and equipped items.
 3. Attribute increase controls enforce lower and upper bounds.
 
-Example: after equipping armor or changing attributes, one or more defense totals (like AD or ST) may update.
+Example: after equipping armor or changing attributes, one or more defense totals (like Armor Defense (AD) or ST) may update.
 
 ## What You Must Set Manually
 

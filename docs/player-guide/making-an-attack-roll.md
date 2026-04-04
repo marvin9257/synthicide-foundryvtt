@@ -14,14 +14,14 @@ Run a full attack flow from weapon click to damage follow-up.
 
 1. Open the Combat tab.
 2. Click the weapon attack action.
-3. In the roll dialog, verify attribute, target AD (target armor), ATT (attack bonus), DMG (damage bonus), range modifier, and shield AD bonus.
+3. In the roll dialog, verify attribute, target Armor Defense (AD), ATT (attack bonus), DMG (damage bonus), range modifier, and shield AD bonus.
 4. Submit the attack roll.
 5. Read hit or miss details in chat.
 6. If a hit is confirmed, trigger damage follow-up from chat if available.
 7. Select the target token, right-click the resulting damage card in chat, and choose Apply Damage.
 8. Apply any remaining table-required effects.
 
-Example dialog values: target AD 12, ATT +2, DMG +3, range modifier -1, shield bonus +1.
+Example dialog values: target Armor Defense (AD) 12, ATT +2, DMG +3, range modifier -1, shield bonus +1.
 
 ## What Happens Automatically
 

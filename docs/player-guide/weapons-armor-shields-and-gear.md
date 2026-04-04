@@ -14,13 +14,13 @@ Set up equipment correctly so combat numbers behave the way you expect.
 1. Use the Combat tab to add armor, shields, and weapons.
 2. Use the Gear tab for general non-combat items and formulas.
 3. Open each item and verify key numeric fields.
-4. For armor, confirm AD bonus, ST bonus, and Force Barrier fields.
+4. For armor, confirm Armor Defense (AD) bonus, ST bonus, and Force Barrier fields.
 5. For shields, confirm shield AD bonus fields.
 6. For weapons, confirm ATT, DMG, and range increment.
 7. Toggle equip state for the items you are actively using.
 8. Re-check derived actor defenses after equipment changes.
 
-Example setup: weapon ATT +2, DMG +3, range increment 4; armor AD bonus +2; shield AD bonus +1.
+Example setup: weapon ATT +2, DMG +3, range increment 4; armor AD bonus +2 (Armor Defense), shield AD bonus +1.
 
 ## What Happens Automatically
 

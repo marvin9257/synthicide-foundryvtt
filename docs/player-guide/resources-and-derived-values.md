@@ -25,8 +25,8 @@ Know which values you edit directly and which derived stats are computed for you
 5. Shock Threshold (ST)
 6. Nerve Defense (ND)
 
-Example: equipping armor with an armor bonus usually changes AD.
-Example: changing relevant attributes can affect one or more defenses.
+Example: equipping armor with an armor bonus usually changes Armor Defense (AD).
+Example: changing relevant attributes can affect one or more defenses, including AD.
 
 ## What Happens Automatically
 

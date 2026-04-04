@@ -15,7 +15,7 @@ Explain the shared roll system so you know which roll type to use, what each dia
 1. Trigger a roll from the actor sheet.
 2. Confirm roll type in the dialog (Challenge, Attack, or Demolition).
 3. Set message visibility mode (who can see the roll in chat).
-4. Confirm attribute and challenge difficulty fields (difficulty appears on challenge flow).
+4. Confirm attribute and roll difficulty (RD) fields (RD appears on challenge flow).
 5. Set misc modifier.
 6. For attack or demolition, verify armor, ATT, DMG, range modifier, and shield bonus.
 7. Submit the roll.
@@ -25,7 +25,7 @@ Explain the shared roll system so you know which roll type to use, what each dia
 
 1. Challenge roll:
 Use this for attribute checks that are not weapon attacks.
-It compares your total to selected difficulty and shows success level in chat.
+It compares your total to the selected roll difficulty (RD) and shows success level in chat.
 2. Attack roll:
 Use this for weapon attacks in combat.
 It resolves hit logic against target armor and can unlock a Roll Damage follow-up button.
@@ -48,8 +48,8 @@ Controls chat visibility (for example public or restricted modes).
 3. Attribute:
 Sets the attribute added to the roll.
 Attack and demolition commonly lock this to combat-facing logic.
-4. Difficulty:
-Used by challenge rolls to determine result band.
+4. Roll Difficulty (RD):
+Used by challenge rolls to determine result.
 5. Misc Modifier:
 Manual situational modifier entered for the current roll.
 6. Roll Modifiers total and list:
@@ -105,7 +105,7 @@ Example: an attack roll card can show the computed terms and then expose a follo
 ## What You Must Set Manually
 
 1. Situation-specific modifiers and target assumptions.
-2. Accurate target AD and shield values when auto-sourcing does not match table intent.
+2. Accurate target Armor Defense (AD) and shield values.
 3. Any GM-required interpretation and outcomes after the roll.
 4. Follow-up execution timing (when to click damage/opposed and when to stop for table adjudication).
 5. Token selection before using chat-card Apply Damage or Apply Healing.
