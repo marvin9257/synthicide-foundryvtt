@@ -1,3 +1,10 @@
+## [1.0.16](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.15...1.0.16) (2026-04-05)
+
+
+### Bug Fixes
+
+* update layouts and enforce min maxes better ([6af9c4f](https://github.com/marvin9257/synthicide-foundryvtt/commit/6af9c4f016325703ff850c327a427cea6c5c1c02))
+
 ## [1.0.15](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.14...1.0.15) (2026-04-04)
 
 
