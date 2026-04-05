@@ -65,14 +65,6 @@
           </select>
         </div>
       </div>
-      <div class='header-info-lurans-block'>
-        <div class='header-info-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Wealth'}}</div>
-        <div class='header-info-value header-info-lurans'>
-          <select name='system.npcWealthTier'>
-            {{selectOptions @root.config.npcWealthOptions selected=system.npcWealthTier localize=true}}
-          </select>
-        </div>
-      </div>
     </div>
   </div>
   <div class='synthicide header-resource-flex'>
@@ -111,51 +103,6 @@
       </div>
     </div>
     <div class='resource flex-group-center header-resource'>
-      <label for='system.armorValues.forceBarrier.value' class='resource-label'>
-        {{localize 'SYNTHICIDE.Actor.Combat.armorValues.ForceBarrier'}}
-      </label>
-      <div class='resource-content resource-force-barrier-grid'>
-        <div class='resource-force-barrier-cell'>
-          <input
-            type='number'
-            name='system.armorValues.forceBarrier.value'
-            value='{{system.armorValues.forceBarrier.value}}'
-            data-dtype='Number'
-            min='0'
-          />
-          <span class='resource-force-barrier-caption'>
-            {{localize 'SYNTHICIDE.Actor.Combat.armorValues.forceBarrier.value.label'}}
-          </span>
-        </div>
-        <div class='resource-force-barrier-cell'>
-          <input
-            type='number'
-            name='system.armorValues.forceBarrier.max'
-            value='{{system.armorValues.forceBarrier.max}}'
-            data-dtype='Number'
-            min='0'
-          />
-          <span class='resource-force-barrier-caption'>
-            {{localize 'SYNTHICIDE.Actor.Combat.armorValues.forceBarrier.max.label'}}
-          </span>
-        </div>
-        <div class='resource-force-barrier-cell'>
-          <input
-            type='number'
-            name='system.armorValues.forceBarrier.recoveryRate'
-            value='{{system.armorValues.forceBarrier.recoveryRate}}'
-            data-dtype='Number'
-            min='0'
-            step='1'
-          />
-          <span class='resource-force-barrier-caption'>
-            {{localize 'SYNTHICIDE.Item.Armor.FIELDS.forceBarrier.recoveryRate.label'}}
-          </span>
-        </div>
-      </div>
-      <div class='resource-track resource-track-empty'></div>
-    </div>
-    <div class='resource flex-group-center header-resource'>
       <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.BossQuestion'}}</label>
       <div class='resource-content flexrow flex-center flex-between resource-counter'>
         <label>
@@ -174,6 +121,15 @@
           data-dtype='Number'
           step='1'
         />
+      </div>
+      <div class='resource-track resource-track-empty'></div>
+    </div>
+    <div class='resource flex-group-center header-resource header-resource-wealth'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Wealth'}}</label>
+      <div class='resource-content flexrow flex-center flex-between resource-single'>
+        <select name='system.npcWealthTier'>
+          {{selectOptions @root.config.npcWealthOptions selected=system.npcWealthTier localize=true}}
+        </select>
       </div>
       <div class='resource-track resource-track-empty'></div>
     </div>

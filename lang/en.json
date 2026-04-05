@@ -92,7 +92,8 @@
         "Aspect": "Aspect",
         "Bio": "Bio",
         "Bioclass": "Bioclass",
-        "Combat": "Combat"
+        "Combat": "Combat",
+        "Notes": "Notes"
       },
       "Bioclass": {
         "NoneAssigned": "No bioclass assigned. Drop or create one.",
@@ -178,6 +179,7 @@
           "RoleCalculations": "Role Calculations",
           "RolePower": "Role Power",
           "MasteredAttack": "Mastered Attack",
+          "WeaponTier": "Tier",
           "Weapon": "Weapon",
           "BaseAttDmg": "Base ATT/DMG",
           "WeaponAttDmg": "Weapon ATT/DMG",

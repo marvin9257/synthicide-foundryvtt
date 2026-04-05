@@ -129,6 +129,8 @@
             name='system.armorValues.forceBarrier.value'
             value='{{system.armorValues.forceBarrier.value}}'
             data-dtype='Number'
+            min='0'
+            max='{{system.armorValues.forceBarrier.max}}'
           />
           <span> / </span>
           <input
@@ -136,6 +138,8 @@
             name='system.armorValues.forceBarrier.max'
             value='{{system.armorValues.forceBarrier.max}}'
             data-dtype='Number'
+            min='0'
+            disabled
           />
         </div>
         <div class='resource-track resource-track-empty'></div>

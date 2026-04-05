@@ -78,32 +78,6 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
   }
 
   /**
-   * Clamp certain system values before update (e.g., cynicism, resolve, hitPoints.value).
-   * @override
-   * @this {SynthicideSharperData}
-   * @param {Object} changed - The changed data.
-   * @param {Object} options - Update options.
-   * @param {string} user - The user ID performing the update.
-   * @returns {Promise<boolean|undefined>} False to prevent update, otherwise undefined.
-   */
-  async _preUpdate(changed, options, user) {
-    const allowed = await super._preUpdate?.(changed, options, user);
-    if (allowed === false) return false;
-
-    // Constrain hitPoints.value to not exceed hitPoints.max, but allow
-    // negative HP values (e.g., -1) per updated rules/schema. Previously we
-    // clamped a lower bound of 0 here; that prevented representing negative HP.
-    if (foundry.utils.hasProperty(changed, 'system.hitPoints.value')) {
-      const nextHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.value') ?? 0);
-      // Try to get max from changed or from this
-      let maxHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.max'));
-      if (isNaN(maxHP)) maxHP = Number(this.hitPoints?.max ?? 0);
-      foundry.utils.setProperty(changed, 'system.hitPoints.value', Math.min(maxHP, nextHP));
-    }
-    return allowed;
-  }
-
-  /**
    * Compute implant slot usage summary for this actor.
    * Summary keys follow implant item locations:
    * - body => bioclass body slots

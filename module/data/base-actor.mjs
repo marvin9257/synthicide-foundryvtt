@@ -41,7 +41,6 @@ export default class SynthicideActorBaseData extends foundry.abstract
 
     
   }
-
   /**
    * Prepare flattened roll data, exposing attributes at the top level.
    * @override

@@ -872,6 +872,22 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   font-size: 1rem;
 }
 
+.synthicide .header-resource select {
+  width: 100%;
+  min-width: 0;
+}
+
+.synthicide .header-resource-wealth {
+  flex: 0 1 12rem;
+  width: clamp(9rem, 16vw, 12rem);
+  min-width: 9rem;
+}
+
+.synthicide .header-resource-wealth select {
+  max-width: 10.5rem;
+  margin: 0 auto;
+}
+
 .synthicide .header-resource .resource-force-barrier-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1463,18 +1479,13 @@ img.actions-img {
   width: 100%;
 }
 
-.header-info-level-block,
-.header-info-lurans-block {
+.header-info-level-block {
   grid-column: 3;
   text-align: center; /* center labels and inline values */
 }
 
 .header-info-level-block {
   grid-row: 1;
-}
-
-.header-info-lurans-block {
-  grid-row: 2;
 }
 
 .header-info-bioclass-block {
@@ -1493,8 +1504,7 @@ img.actions-img {
   flex-direction: column;
   align-items: flex-start;
 }
-.header-info-grid > .header-info-level-block,
-.header-info-grid > .header-info-lurans-block {
+.header-info-grid > .header-info-level-block {
   align-items: center;                   /* centre label + input horizontally */
 }
 
@@ -1520,13 +1530,11 @@ img.actions-img {
 }
 
 /* centre inputs and values in narrow right column */
-.header-info-level-block .header-info-value,
-.header-info-lurans-block .header-info-value {
+.header-info-level-block .header-info-value {
   display: flex;
   justify-content: center;
 }
-.header-info-level-block .header-info-label,
-.header-info-lurans-block .header-info-label {
+.header-info-level-block .header-info-label {
   width: 100%;
   text-align: center; /* override generic left-align */
 }
@@ -2734,6 +2742,29 @@ body.synthicide-style-bold .synthicide-action-roll-card .card-title.item-header 
   text-align: center;
 }
 
+.tab.npcStats .npc-section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.65rem;
+}
+
+.tab.npcStats .npc-section-title-row h4 {
+  margin: 0;
+  text-align: left;
+}
+
+.tab.npcStats .npc-tier-indicator {
+  font-size: 0.72rem;
+  line-height: 1;
+  padding: 0.28rem 0.45rem;
+  border: 1px solid var(--synthicide-c-faint);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--synthicide-c-panel-bg) 88%, transparent);
+  white-space: nowrap;
+}
+
 .tab.npcStats .npc-role-section {
   grid-column: 1 / -1;
 }
@@ -2951,6 +2982,70 @@ body.synthicide-style-bold .synthicide .tab.npcStats .attribute-label img.action
   grid-column: span 2;
 }
 
+/* Attributes tab: use available board width for Derived Values with normal-sized labels. */
+.tab.npcStats[data-tab='npcStats'] .npc-derived-section {
+  grid-column: 1 / -1;
+}
+
+.tab.npcStats[data-tab='npcStats'] .npc-stat-box .resource-label {
+  font-size: 0.82rem;
+}
+
+/* Combat tab: Mastered Attack first and full width; Force Barrier compact below. */
+.tab.npcStats[data-tab='combat'] .npc-attack-section {
+  grid-column: 1 / -1;
+  container-type: normal;
+  container-name: none;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-attack-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-attack-weapon,
+.tab.npcStats[data-tab='combat'] .npc-attack-notes,
+.tab.npcStats[data-tab='combat'] .npc-attack-base,
+.tab.npcStats[data-tab='combat'] .npc-attack-weapon-values,
+.tab.npcStats[data-tab='combat'] .npc-attack-total,
+.tab.npcStats[data-tab='combat'] .npc-attack-action {
+  grid-column: span 2;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-attack-total {
+  grid-column: 1 / -1;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-attack-action {
+  grid-column: 1 / -1;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-force-barrier-section {
+  grid-column: 1 / span 6;
+  min-width: 0;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-force-barrier-section .npc-derived-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-force-barrier-section .npc-stat-box .resource-label {
+  font-size: 0.76rem;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-force-barrier-section .npc-stat-box,
+.tab.npcStats[data-tab='combat'] .npc-force-barrier-section .npc-stat-box input {
+  min-width: 0;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-stat-box .resource-label,
+.tab.npcStats[data-tab='combat'] .npc-attack-field .resource-label {
+  font-size: 0.82rem;
+}
+
 body.synthicide-style-bold .synthicide .tab.npcStats .npc-board-section,
 body.synthicide-style-bold .synthicide .tab.npcStats .npc-guidance-chip {
   border-color: color-mix(in srgb, var(--rb-strong) 50%, transparent);
@@ -2978,6 +3073,10 @@ body.synthicide-style-bold .synthicide .tab.npcStats .npc-guidance-chip {
   }
 
   .tab.npcStats .npc-note-field-wide {
+    grid-column: 1 / -1;
+  }
+
+  .tab.npcStats[data-tab='combat'] .npc-force-barrier-section {
     grid-column: 1 / -1;
   }
 }

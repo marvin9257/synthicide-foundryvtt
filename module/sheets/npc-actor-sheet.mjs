@@ -14,7 +14,9 @@ const { api, sheets } = foundry.applications;
  */
 const NPC_TAB_MAP = {
   npcStats: { id: 'npcStats', icon: ICON_MAP.attributes, label: 'Attributes' },
+  combat: { id: 'combat', icon: ICON_MAP.combat, label: 'Combat' },
   gear: { id: 'gear', icon: ICON_MAP.gear, label: 'Gear' },
+  info: { id: 'info', icon: ICON_MAP.general, label: 'Notes' },
   biography: { id: 'biography', icon: ICON_MAP.biography, label: 'Biography' },
   effects: { id: 'effects', icon: ICON_MAP.effects, label: 'Effects' },
 };
@@ -65,8 +67,16 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
       template: 'systems/synthicide/templates/actor/attributes-npc.hbs',
       scrollable: [''],
     },
+    combat: {
+      template: 'systems/synthicide/templates/actor/combat-npc.hbs',
+      scrollable: [''],
+    },
     gear: {
       template: 'systems/synthicide/templates/actor/gear-npc.hbs',
+      scrollable: [''],
+    },
+    info: {
+      template: 'systems/synthicide/templates/actor/info-npc.hbs',
       scrollable: [''],
     },
     biography: {
@@ -88,7 +98,7 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
     super._configureRenderOptions(options);
     options.parts = ['npcHeader', 'tabs'];
     if (this.document.limited) return;
-    options.parts.push('npcStats', 'gear', 'biography', 'effects');
+    options.parts.push('npcStats', 'combat', 'gear', 'info', 'biography', 'effects');
   }
 
   /** @override */
@@ -157,6 +167,16 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
         break;
     }
     return context;
+  }
+
+  /** @override */
+  async _onRender(context, options) {
+    await super._onRender(context, options);
+  }
+
+  /** @override */
+  async _processSubmitData(event, form, submitData) {
+    await this.document.update(submitData);
   }
 
   /**

@@ -16,6 +16,31 @@ export class SynthicideActor extends Actor {
   async _preUpdate(changed, options, user) {
     const allowed = await super._preUpdate(changed, options, user);
     if (allowed === false) return false;
+
+    if (foundry.utils.hasProperty(changed, 'system.hitPoints.value')) {
+      const nextHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.value') ?? 0);
+      let maxHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.max'));
+      if (isNaN(maxHP)) maxHP = Number(this.system?.hitPoints?.max ?? 0);
+      foundry.utils.setProperty(changed, 'system.hitPoints.value', Math.min(maxHP, nextHP));
+    }
+
+    const hasBarrierValue = foundry.utils.hasProperty(changed, 'system.armorValues.forceBarrier.value');
+    const hasBarrierMax = foundry.utils.hasProperty(changed, 'system.armorValues.forceBarrier.max');
+    if (hasBarrierValue || hasBarrierMax) {
+      let maxBarrier = Number(foundry.utils.getProperty(changed, 'system.armorValues.forceBarrier.max'));
+      if (isNaN(maxBarrier)) maxBarrier = Number(this.system?.armorValues?.forceBarrier?.max ?? 0);
+      maxBarrier = Math.max(0, maxBarrier);
+      if (hasBarrierMax) {
+        foundry.utils.setProperty(changed, 'system.armorValues.forceBarrier.max', maxBarrier);
+      }
+
+      const nextBarrier = hasBarrierValue
+        ? Number(foundry.utils.getProperty(changed, 'system.armorValues.forceBarrier.value') ?? 0)
+        : Number(this.system?.armorValues?.forceBarrier?.value ?? 0);
+      const clampedBarrier = Math.clamp(Number.isFinite(nextBarrier) ? nextBarrier : 0, 0, maxBarrier);
+      foundry.utils.setProperty(changed, 'system.armorValues.forceBarrier.value', clampedBarrier);
+    }
+
     return allowed;
   }
 

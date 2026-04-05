@@ -68,6 +68,7 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
       range: new fields.StringField({ ...requiredBlankString }, { persisted: false }),
       notes: new fields.StringField({ ...requiredBlankString }, { persisted: false }),
       label: new fields.StringField({ ...requiredBlankString }, { persisted: false }),
+      tierLabel: new fields.StringField({ ...requiredBlankString }, { persisted: false }),
     });
 
     return schema;
@@ -138,6 +139,7 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     this.masteredAttack.range = weaponProfile.range;
     this.masteredAttack.notes = weaponProfile.notes;
     this.masteredAttack.label = weaponProfile.label;
+    this.masteredAttack.tierLabel = weaponProfile.tierLabel;
   }
 
   getEffectiveAttributeValue(attributeKey, { level = null, roleProfile = null, bioclassItem = null } = {}) {
@@ -203,14 +205,26 @@ function shouldIgnoreWeakRolePenalty(bioclassItem) {
 
 function getWeaponTier(weaponKey, level) {
   const weapon = SYNTHICIDE.npc.masteredWeapons[weaponKey] ?? SYNTHICIDE.npc.masteredWeapons.fist;
-  const tier = weapon.tiers.find((entry) => level <= entry.maxLevel) ?? weapon.tiers.at(-1);
+  const tiers = Array.isArray(weapon.tiers) ? weapon.tiers : [];
+  let tierIndex = tiers.findIndex((entry) => {
+    const minLevel = Number(entry?.minLevel ?? 1);
+    const maxLevel = Number(entry?.maxLevel ?? minLevel);
+    return level >= minLevel && level <= maxLevel;
+  });
+  if (tierIndex < 0) tierIndex = Math.max(0, tiers.length - 1);
+
+  const tier = tiers[tierIndex] ?? null;
+  const minLevel = Number(tier?.minLevel ?? 1);
+  const maxLevel = Number(tier?.maxLevel ?? minLevel);
+  const rawAbility = String(tier?.ability ?? '').trim();
   return {
     label: game.i18n.localize(weapon.label),
     attack: Number(tier?.attack ?? 0),
     damage: Number(tier?.damage ?? 0),
-    ability: tier?.ability ?? '-',
+    ability: rawAbility || '-',
     range: tier?.range ?? 'Engaged',
     notes: tier?.notes ?? '',
+    tierLabel: `${minLevel}-${maxLevel}`,
   };
 }
 
