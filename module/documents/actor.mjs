@@ -111,6 +111,7 @@ export class SynthicideActor extends Actor {
     for (const key of attributeKeys) {
       const attr = this.system?.attributes?.[key];
       if (!attr) continue;
+      if (!Object.hasOwn(attr, 'modifier')) continue;
       const newModifier = Number(attributeModifiers[key] ?? 0);
       if (Number(attr.modifier ?? 0) !== newModifier) {
         updates[`system.attributes.${key}.modifier`] = newModifier;
@@ -121,11 +122,14 @@ export class SynthicideActor extends Actor {
       await this.update(updates, { render });
     }
 
-    // Always recalculate value in memory after aggregation
+    // Always recalculate value in memory after aggregation.
+    // NPC actors use direct editable values and do not have base/modifier/increase triplets.
     for (const key of attributeKeys) {
       const attr = this.system?.attributes?.[key];
       if (!attr) continue;
-      attr.value = attr.base + attr.modifier + attr.increase;
+      if (Object.hasOwn(attr, 'base') && Object.hasOwn(attr, 'modifier') && Object.hasOwn(attr, 'increase')) {
+        attr.value = attr.base + attr.modifier + attr.increase;
+      }
     }
     if (debug) {
       this.debugModifierAggregation(attributeKeys, attributeModifiers, debugItemContrib);

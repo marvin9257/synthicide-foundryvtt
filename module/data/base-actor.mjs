@@ -43,9 +43,8 @@ export default class SynthicideActorBaseData extends foundry.abstract
   }
 
   /**
-   * Prepare flattened roll data for sharper actors, exposing attributes at the top level.
+   * Prepare flattened roll data, exposing attributes at the top level.
    * @override
-   * @this {SynthicideBaseData}
    * @returns {Object} The roll data object.
    */
   getRollData() {

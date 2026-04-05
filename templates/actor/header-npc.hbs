@@ -1,0 +1,181 @@
+{{! NPC Sheet Header }}
+<header class='sheet-header'>
+  <img
+    class='profile-img'
+    src='{{actor.img}}'
+    data-edit='img'
+    data-action='editImage'
+    data-tooltip='{{actor.name}}'
+    height='100'
+    width='100'
+  />
+  <div class='header-fields'>
+    <div class='header-info-grid'>
+      <div class='header-info-name-block'>
+        <div class='header-info-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Name'}}</div>
+        <div class='header-info-value header-info-name'>
+          <input
+            name='name'
+            type='text'
+            value='{{actor.name}}'
+            placeholder='Name'
+            class='header-info-input'
+          />
+        </div>
+      </div>
+      <div class='header-info-level-block'>
+        <div class='header-info-label header-info-label-level'>{{localize 'SYNTHICIDE.Actor.Header.Level'}}</div>
+        <div class='header-info-value header-info-level'>
+          <input
+            id='system.level.value'
+            type='number'
+            name='system.level.value'
+            value='{{system.level.value}}'
+            class='header-info-level-input'
+            min='1'
+            max='11'
+          />
+        </div>
+      </div>
+      <div class='header-info-bioclass-block'>
+        <div class='header-info-label'>{{localize 'SYNTHICIDE.Actor.Header.Bioclass'}}</div>
+        <div class='header-info-value bioclass-value'>
+          {{#if @root.bioclass}}
+            <div class='bioclass-box' data-item-id='{{@root.bioclass.id}}'>
+              <span class='bioclass-name'>{{@root.bioclass.name}}</span>
+              <button type='button' class='icon-button' data-action='viewDoc' data-document-class='Item' data-tooltip='Edit'>
+                <i class='fas fa-edit'></i>
+              </button>
+              <button type='button' class='icon-button' data-action='deleteDoc' data-document-class='Item' data-tooltip='Remove'>
+                <i class='fas fa-trash'></i>
+              </button>
+            </div>
+          {{else}}
+            <div class='bioclass-drop-zone'>
+              <span class='bioclass-empty-hint'>{{localize 'SYNTHICIDE.Actor.NPC.DropBioclassHint'}}</span>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+      <div class='header-info-motivation-block'>
+        <div class='header-info-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Role'}}</div>
+        <div class='header-info-value header-info-motivation'>
+          <select name='system.npcRole'>
+            {{selectOptions @root.config.npcRoleOptions selected=system.npcRole localize=true}}
+          </select>
+        </div>
+      </div>
+      <div class='header-info-lurans-block'>
+        <div class='header-info-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Wealth'}}</div>
+        <div class='header-info-value header-info-lurans'>
+          <select name='system.npcWealthTier'>
+            {{selectOptions @root.config.npcWealthOptions selected=system.npcWealthTier localize=true}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class='synthicide header-resource-flex'>
+    <div class='resource flex-group-center header-resource'>
+      <label for='system.hitPoints.value' class='resource-label'>
+        {{localize 'SYNTHICIDE.Actor.base.FIELDS.hitPoints.value.label'}}
+      </label>
+      <div class='resource-content flexrow flex-center flex-between resource-pair'>
+        <input
+          type='number'
+          name='system.hitPoints.value'
+          value='{{system.hitPoints.value}}'
+          data-dtype='Number'
+          max='{{system.hitPoints.max}}'
+          step='1'
+        />
+        <span> / </span>
+        <input
+          type='number'
+          name='system.hitPoints.max'
+          value='{{system.hitPoints.max}}'
+          data-dtype='Number'
+          disabled
+        />
+      </div>
+      <div class='resource-track'>
+        <div class=
+          {{#if (gte hpPercent 0.5)}}
+            'resource-track-fill resource-track-fill-green'
+          {{else if (gte hpPercent 0.25)}}
+            'resource-track-fill resource-track-fill-yellow'
+          {{else}}
+            'resource-track-fill resource-track-fill-red'
+          {{/if}}
+          style='width: calc({{hpPercent}} * 100%);'></div>
+      </div>
+    </div>
+    <div class='resource flex-group-center header-resource'>
+      <label for='system.armorValues.forceBarrier.value' class='resource-label'>
+        {{localize 'SYNTHICIDE.Actor.Combat.armorValues.ForceBarrier'}}
+      </label>
+      <div class='resource-content resource-force-barrier-grid'>
+        <div class='resource-force-barrier-cell'>
+          <input
+            type='number'
+            name='system.armorValues.forceBarrier.value'
+            value='{{system.armorValues.forceBarrier.value}}'
+            data-dtype='Number'
+            min='0'
+          />
+          <span class='resource-force-barrier-caption'>
+            {{localize 'SYNTHICIDE.Actor.Combat.armorValues.forceBarrier.value.label'}}
+          </span>
+        </div>
+        <div class='resource-force-barrier-cell'>
+          <input
+            type='number'
+            name='system.armorValues.forceBarrier.max'
+            value='{{system.armorValues.forceBarrier.max}}'
+            data-dtype='Number'
+            min='0'
+          />
+          <span class='resource-force-barrier-caption'>
+            {{localize 'SYNTHICIDE.Actor.Combat.armorValues.forceBarrier.max.label'}}
+          </span>
+        </div>
+        <div class='resource-force-barrier-cell'>
+          <input
+            type='number'
+            name='system.armorValues.forceBarrier.recoveryRate'
+            value='{{system.armorValues.forceBarrier.recoveryRate}}'
+            data-dtype='Number'
+            min='0'
+            step='1'
+          />
+          <span class='resource-force-barrier-caption'>
+            {{localize 'SYNTHICIDE.Item.Armor.FIELDS.forceBarrier.recoveryRate.label'}}
+          </span>
+        </div>
+      </div>
+      <div class='resource-track resource-track-empty'></div>
+    </div>
+    <div class='resource flex-group-center header-resource'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.BossQuestion'}}</label>
+      <div class='resource-content flexrow flex-center flex-between resource-counter'>
+        <label>
+          <input type='checkbox' name='system.boss' {{checked system.boss}} /> Enabled
+        </label>
+      </div>
+      <div class='resource-track resource-track-empty'></div>
+    </div>
+    <div class='resource flex-group-center header-resource'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.HPBonus'}}</label>
+      <div class='resource-content flexrow flex-center flex-between resource-counter'>
+        <input
+          type='number'
+          name='system.hitPointBonus'
+          value='{{system.hitPointBonus}}'
+          data-dtype='Number'
+          step='1'
+        />
+      </div>
+      <div class='resource-track resource-track-empty'></div>
+    </div>
+  </div>
+</header>

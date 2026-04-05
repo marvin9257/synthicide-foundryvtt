@@ -457,9 +457,182 @@ SYNTHICIDE.AREA_TARGET_TYPES = {
   }
 };
 
-export default SYNTHICIDE;
+SYNTHICIDE.npc = {
+  roles: {
+    fastTalker: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.fastTalker.Label',
+      strong: 'influence',
+      good: ['awareness', 'operation'],
+      weak: 'toughness',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.fastTalker.Power',
+    },
+    guardian: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.guardian.Label',
+      strong: 'awareness',
+      good: ['combat', 'nerve'],
+      weak: 'influence',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.guardian.Power',
+    },
+    killer: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.killer.Label',
+      strong: 'combat',
+      good: ['toughness', 'nerve'],
+      weak: 'operation',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.killer.Power',
+    },
+    professional: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.professional.Label',
+      strong: 'operation',
+      good: ['awareness', 'nerve'],
+      weak: 'combat',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.professional.Power',
+    },
+    psycherManifestor: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.psycherManifestor.Label',
+      strong: 'nerve',
+      good: ['awareness', 'influence'],
+      weak: 'operation',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.psycherManifestor.Power',
+    },
+    psycherProjector: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.psycherProjector.Label',
+      strong: 'influence',
+      good: ['awareness', 'nerve'],
+      weak: 'combat',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.psycherProjector.Power',
+    },
+    psycherRevelator: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.psycherRevelator.Label',
+      strong: 'influence',
+      good: ['influence', 'nerve'],
+      weak: 'toughness',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.psycherRevelator.Power',
+    },
+    sneak: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.sneak.Label',
+      strong: 'speed',
+      good: ['awareness', 'influence'],
+      weak: 'nerve',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.sneak.Power',
+    },
+  },
+  wealthTiers: {
+    savage: { label: 'SYNTHICIDE.Actor.NPC.Wealth.savage' },
+    destitute: { label: 'SYNTHICIDE.Actor.NPC.Wealth.destitute' },
+    crook: { label: 'SYNTHICIDE.Actor.NPC.Wealth.crook' },
+    established: { label: 'SYNTHICIDE.Actor.NPC.Wealth.established' },
+    wealthy: { label: 'SYNTHICIDE.Actor.NPC.Wealth.wealthy' },
+    rareAnimal: { label: 'SYNTHICIDE.Actor.NPC.Wealth.rareAnimal' },
+    synthetic: { label: 'SYNTHICIDE.Actor.NPC.Wealth.synthetic' },
+    priest: { label: 'SYNTHICIDE.Actor.NPC.Wealth.priest' },
+  },
+  masteredWeapons: {
+    fist: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.fist',
+      tiers: [
+        { maxLevel: 4, attack: 0, damage: 0, ability: '-', range: 'Engaged', notes: '1-handed' },
+        { maxLevel: 8, attack: 2, damage: 3, ability: '-', range: 'Engaged', notes: '1-handed' },
+        { maxLevel: 11, attack: 4, damage: 5, ability: '-', range: 'Engaged', notes: '1-handed' },
+      ],
+    },
+    claws: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.claws',
+      tiers: [
+        { maxLevel: 4, attack: 1, damage: 2, ability: '-', range: 'Engaged', notes: '1-handed, counter' },
+        { maxLevel: 8, attack: 3, damage: 4, ability: 'Lethal 5', range: 'Engaged', notes: '1-handed, counter' },
+        { maxLevel: 11, attack: 3, damage: 6, ability: 'Lethal 7', range: 'Engaged', notes: '1-handed, counter' },
+      ],
+    },
+    bite: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.bite',
+      tiers: [
+        { maxLevel: 4, attack: 1, damage: 4, ability: '-', range: 'Engaged', notes: 'Usable in takedown, slow 1' },
+        { maxLevel: 8, attack: 2, damage: 7, ability: 'Lethal 6', range: 'Engaged', notes: 'Usable in takedown, slow 1' },
+        { maxLevel: 11, attack: 3, damage: 10, ability: 'Lethal 7', range: 'Engaged', notes: 'Usable in takedown, slow 1' },
+      ],
+    },
+    club: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.club',
+      tiers: [
+        { maxLevel: 4, attack: 1, damage: 1, ability: '-', range: 'Engaged', notes: '1-handed' },
+        { maxLevel: 8, attack: 2, damage: 5, ability: 'Lethal 6', range: 'Engaged', notes: '1-handed' },
+        { maxLevel: 11, attack: 3, damage: 8, ability: 'Lethal 7', range: 'Engaged', notes: '1-handed' },
+      ],
+    },
+    knife: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.knife',
+      tiers: [
+        { maxLevel: 4, attack: 2, damage: 1, ability: '-', range: 'Engaged', notes: '1-handed, counter' },
+        { maxLevel: 8, attack: 3, damage: 3, ability: 'Lethal 7', range: 'Engaged', notes: '1-handed, counter' },
+        { maxLevel: 11, attack: 4, damage: 6, ability: 'Lethal 8', range: 'Engaged', notes: '1-handed, counter' },
+      ],
+    },
+    hatchet: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.hatchet',
+      tiers: [
+        { maxLevel: 4, attack: 3, damage: 0, ability: '-', range: 'Engaged', notes: '1-handed, +2 DMG on crit' },
+        { maxLevel: 8, attack: 4, damage: 3, ability: 'Lethal 8', range: 'Engaged', notes: '1-handed, +2 DMG on crit' },
+        { maxLevel: 11, attack: 5, damage: 6, ability: 'Lethal 9', range: 'Engaged', notes: '1-handed, +2 DMG on crit' },
+      ],
+    },
+    sword: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.sword',
+      tiers: [
+        { maxLevel: 4, attack: 2, damage: 3, ability: '-', range: 'Engaged', notes: '2-handed, guard' },
+        { maxLevel: 8, attack: 3, damage: 5, ability: 'Lethal 8', range: 'Engaged', notes: '2-handed, guard' },
+        { maxLevel: 11, attack: 4, damage: 8, ability: 'Lethal 9', range: 'Engaged', notes: '2-handed, guard' },
+      ],
+    },
+    battleHammer: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.battleHammer',
+      tiers: [
+        { maxLevel: 4, attack: 2, damage: 4, ability: '-', range: 'Engaged', notes: '2-handed, +3 DMG on crit' },
+        { maxLevel: 8, attack: 2, damage: 7, ability: 'Lethal 8', range: 'Engaged', notes: '2-handed, +3 DMG on crit' },
+        { maxLevel: 11, attack: 3, damage: 11, ability: 'Lethal 10', range: 'Engaged', notes: '2-handed, +3 DMG on crit' },
+      ],
+    },
+    battleAxe: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.battleAxe',
+      tiers: [
+        { maxLevel: 4, attack: 3, damage: 3, ability: '-', range: 'Engaged', notes: '2-handed' },
+        { maxLevel: 8, attack: 3, damage: 6, ability: 'Lethal 9', range: 'Engaged', notes: '2-handed' },
+        { maxLevel: 11, attack: 4, damage: 9, ability: 'Lethal 11', range: 'Engaged', notes: '2-handed' },
+      ],
+    },
+    pistol: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.pistol',
+      tiers: [
+        { maxLevel: 4, attack: 0, damage: 0, ability: '-', range: '1', notes: '1-handed, guard' },
+        { maxLevel: 8, attack: 1, damage: 1, ability: 'Lethal 6', range: '1', notes: '1-handed, guard' },
+        { maxLevel: 11, attack: 2, damage: 3, ability: 'Lethal 7', range: '1', notes: '1-handed, guard' },
+      ],
+    },
+    rifle: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.rifle',
+      tiers: [
+        { maxLevel: 4, attack: 0, damage: 2, ability: '-', range: '2', notes: '2-handed' },
+        { maxLevel: 8, attack: 1, damage: 4, ability: 'Lethal 7', range: '2', notes: '2-handed' },
+        { maxLevel: 11, attack: 3, damage: 7, ability: 'Lethal 8', range: '2', notes: '2-handed' },
+      ],
+    },
+    shotgun: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.shotgun',
+      tiers: [
+        { maxLevel: 4, attack: 2, damage: 0, ability: '-', range: '1', notes: '2-handed, close, spread' },
+        { maxLevel: 8, attack: 3, damage: 2, ability: 'Lethal 7', range: '1', notes: '2-handed, close, spread' },
+        { maxLevel: 11, attack: 4, damage: 3, ability: 'Lethal 8', range: '1', notes: '2-handed, close, spread' },
+      ],
+    },
+    psycherProjection: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.psycherProjection',
+      tiers: [
+        { maxLevel: 4, attack: 0, damage: 0, ability: 'vs ND', range: '1', notes: 'Psychic, ATT/DMG = level' },
+        { maxLevel: 8, attack: 0, damage: 0, ability: 'vs ND', range: '1', notes: 'Psychic, ATT/DMG = level' },
+        { maxLevel: 11, attack: 0, damage: 0, ability: 'vs ND', range: '1', notes: 'Psychic, ATT/DMG = level' },
+      ],
+    },
+  },
+};
 
-// Example derivation for selectOptions and behaviors:
-// const motivationOptions = Object.fromEntries(Object.entries(SYNTHICIDE.motivations).map(([k, v]) => [k, v.label]));
-// const motivationBehaviors = Object.fromEntries(Object.entries(SYNTHICIDE.motivations).map(([k, v]) => [k, v.behavior]));
+export default SYNTHICIDE;
 

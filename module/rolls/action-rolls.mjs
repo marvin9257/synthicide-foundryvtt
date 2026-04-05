@@ -44,6 +44,9 @@ export async function openSynthicideActionRollDialog({
   attribute = ATTRIBUTE_COMBAT,
   sourceItem = null,
   allowSubtypeChange = false,
+  attackBonusOverride = null,
+  damageBonusOverride = null,
+  miscOverride = null,
 } = {}) {
   if (!actor) return null;
   const requestedSubtype = resolveActionSubtype({ subtype, sourceItem });
@@ -59,6 +62,9 @@ export async function openSynthicideActionRollDialog({
       attributeKey,
       sourceItem,
       allowSubtypeChange,
+      attackBonusOverride,
+      damageBonusOverride,
+      miscOverride,
     }),
   });
 
@@ -693,7 +699,7 @@ async function renderActionRollDialog({ title, defaults }) {
  * @param {boolean} params.allowSubtypeChange
  * @returns {object}
  */
-function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSubtypeChange }) {
+function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSubtypeChange, attackBonusOverride = null, damageBonusOverride = null, miscOverride = null }) {
   const attackDefaults = getAttackDialogDefaults({ actor, subtype, sourceItem });
   const isMeleeAttack = String(sourceItem?.system?.weaponClass ?? '') === 'melee';
   const targetDefense = isAttackSubtype(subtype)
@@ -705,10 +711,10 @@ function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSu
     subtype,
     attribute: attributeKey,
     difficulty: 6,
-    misc: 0,
+    misc: miscOverride !== null ? Number(miscOverride) : 0,
     armor: targetDefense.armor,
-    attackBonus: attackDefaults.attackBonus,
-    damageBonus: attackDefaults.damageBonus,
+    attackBonus: attackBonusOverride !== null ? attackBonusOverride : attackDefaults.attackBonus,
+    damageBonus: damageBonusOverride !== null ? damageBonusOverride : attackDefaults.damageBonus,
     rangeModifier: attackDefaults.rangeModifier,
     shieldBonus: isMeleeAttack ? targetDefense.shieldBonus : 0,
     weaponClass: String(sourceItem?.system?.weaponClass ?? ''),

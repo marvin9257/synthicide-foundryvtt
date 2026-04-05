@@ -121,6 +121,40 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   margin-bottom: 0.5rem;
 }
 
+.bioclass-traits-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.bioclass-traits-top-row .trait-add-row {
+  margin-bottom: 0;
+}
+
+.bioclass-traits-top-row .bioclass-toggle-inline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: none;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.bioclass-traits-top-row .bioclass-toggle-inline .resource-label {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+.bioclass-traits-top-row .bioclass-toggle-inline input[type='checkbox'] {
+  margin: 0;
+  flex: 0 0 auto;
+}
+
 .trait-card-header {
   display: flex;
   gap: 0.5rem;
@@ -792,6 +826,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   margin-top: 6px;
   flex-direction: row;
   justify-content: space-evenly;
+  align-items: stretch;
   width: 100%
 }
 
@@ -804,7 +839,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .synthicide .header-resource .resource-label {
@@ -835,6 +870,35 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   margin: 0 auto;
   box-sizing: border-box;
   font-size: 1rem;
+}
+
+.synthicide .header-resource .resource-force-barrier-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  align-items: start;
+}
+
+.synthicide .header-resource .resource-force-barrier-cell {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.synthicide .header-resource .resource-force-barrier-cell input[type="number"] {
+  width: clamp(2.6ch, 3.2vw, 3.4ch);
+  min-width: 2.6ch;
+  max-width: 3.4ch;
+  margin: 0 auto;
+}
+
+.synthicide .header-resource .resource-force-barrier-caption {
+  font-size: 0.64rem;
+  line-height: 1.1;
+  text-align: center;
+  opacity: 0.9;
 }
 @media (max-width: 840px) {
   .synthicide .header-resource-grid {
@@ -1505,6 +1569,26 @@ img.actions-img {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.header-info-value.bioclass-value .bioclass-box {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.header-info-value.bioclass-value .bioclass-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-info-value.bioclass-value .icon-button {
+  flex: 0 0 auto;
 }
 
 .header-info-value.header-info-motivation,
@@ -2475,6 +2559,49 @@ body.synthicide-style-bold .synthicide .item-form .tab > .grid > .resource {
   margin-bottom: 6px;
 }
 
+body.synthicide-style-bold .synthicide .item-form .resource.bioclass-toggle-inline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+body.synthicide-style-bold .synthicide .item-form .resource.bioclass-toggle-inline .resource-label {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+body.synthicide-style-bold .synthicide .item-form .resource.bioclass-toggle-inline input[type='checkbox'] {
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row .trait-add-row {
+  padding: 0;
+  flex: 0 0 auto;
+}
+
+body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row .trait-add-row > button {
+  width: auto;
+}
+
+body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row .resource.bioclass-toggle-inline {
+  margin-bottom: 0;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
 /* Gear attributes: outer resource container top padding */
 body.synthicide-style-bold .synthicide .item-form .tab.attributes > .resource:first-child {
   padding-top: 8px;
@@ -2552,3 +2679,325 @@ body.synthicide-style-bold .synthicide-action-roll-card .card-title.item-header 
 /*.synthicide .armor-group .resource-pair {
   text-align: center;
 }*/
+
+  /* ========================= */
+  /* NPC Actor Sheet           */
+  /* ========================= */
+
+  /* First column header — icon/label column with no text, sets row height via inner h4 */
+  .tab.npcStats .attributes-table thead th.npc-col-icon-header {
+    margin: 0;
+    padding: 0;
+  }
+
+  .tab.npcStats .attributes-table thead th.npc-col-icon-header .npc-col-icon-h4 {
+    margin: 0;
+    padding: 22px;
+  }
+
+  /* Role Build Guidance section sits inside .attributes-panel, needs top spacing */
+  .tab.npcStats .attributes-panel .derived-list {
+    margin-top: 1rem;
+  }
+
+  /* Sub-section headings (Mastered Attack, NPC Notes) inside the derived panel */
+  .tab.npcStats .attributes-derived h4.npc-section-heading {
+    margin-top: 1rem;
+  }
+
+.tab.npcStats .npc-stats-layout {
+  display: grid;
+  grid-template-columns: minmax(86px, 108px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.tab.npcStats .npc-attributes-panel {
+  overflow: visible;
+}
+
+.tab.npcStats .npc-board {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0.9rem;
+  align-items: start;
+}
+
+.tab.npcStats .npc-board-section {
+  border: 1px solid var(--synthicide-c-faint);
+  padding: 0.7rem;
+  background: color-mix(in srgb, var(--synthicide-c-panel-bg) 94%, transparent);
+}
+
+.tab.npcStats .npc-board-section h4 {
+  margin: 0 0 0.65rem;
+  text-align: center;
+}
+
+.tab.npcStats .npc-role-section {
+  grid-column: 1 / -1;
+}
+
+.tab.npcStats .npc-guidance-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tab.npcStats .npc-guidance-chip,
+.tab.npcStats .npc-stat-box,
+.tab.npcStats .npc-attack-field,
+.tab.npcStats .npc-note-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.tab.npcStats .npc-guidance-chip {
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  padding: 0.4rem;
+  border: 1px solid var(--synthicide-c-faint);
+  background: color-mix(in srgb, var(--synthicide-c-panel-bg) 88%, transparent);
+  text-align: center;
+}
+
+.tab.npcStats .npc-guidance-label,
+.tab.npcStats .npc-guidance-meta {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tab.npcStats .npc-guidance-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tab.npcStats .npc-role-power {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tab.npcStats .npc-role-power.npc-role-power-compact input {
+  font-size: 0.8rem;
+  min-height: 28px;
+}
+
+.tab.npcStats .attributes-table tbody tr {
+  height: 54px;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-label {
+  padding: 4px;
+  width: 72px;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-value {
+  width: 52px;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-label .attr-abbr {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.72rem;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-label .rollable {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-label img.actions-img,
+body.synthicide-style-bold .synthicide .tab.npcStats .attribute-label img.actions-img {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  object-fit: contain;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-value input.attribute-score {
+  width: 42px;
+  min-width: 42px;
+  height: 28px;
+  padding: 0 4px;
+}
+
+.tab.npcStats .npc-derived-section {
+  grid-column: 1 / span 5;
+  container-type: inline-size;
+  container-name: npc-derived;
+}
+
+/* Default: 2-column — always readable regardless of section width */
+.tab.npcStats .npc-derived-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem 0.75rem;
+}
+
+.tab.npcStats .npc-stat-box {
+  min-width: 0;
+}
+
+.tab.npcStats .npc-stat-box .resource-label {
+  font-size: 0.65rem;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+/* Scale to 3-column when the section has enough room */
+@container npc-derived (min-width: 220px) {
+  .tab.npcStats .npc-derived-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .tab.npcStats .npc-stat-box .resource-label {
+    font-size: 0.72rem;
+  }
+}
+
+.tab.npcStats .npc-stat-box input,
+.tab.npcStats .npc-role-power input,
+.tab.npcStats .npc-attack-field input,
+.tab.npcStats .npc-attack-field select,
+.tab.npcStats .npc-note-field input {
+  width: 100%;
+  text-align: center;
+}
+
+.tab.npcStats .npc-attack-section {
+  grid-column: 6 / -1;
+  container-type: inline-size;
+  container-name: npc-attack;
+}
+
+/* Default: 2-column — always readable regardless of section width */
+.tab.npcStats .npc-attack-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem 0.75rem;
+  align-items: end;
+}
+
+.tab.npcStats .npc-attack-field,
+.tab.npcStats .npc-attack-action {
+  min-width: 0;
+}
+
+.tab.npcStats .npc-attack-field .resource-label {
+  font-size: 0.65rem;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+/* These always span full width in the 2-column layout */
+.tab.npcStats .npc-attack-weapon,
+.tab.npcStats .npc-attack-total,
+.tab.npcStats .npc-attack-notes,
+.tab.npcStats .npc-attack-action {
+  grid-column: 1 / -1;
+}
+
+.tab.npcStats .npc-attack-action {
+  display: flex;
+  align-items: end;
+}
+
+.tab.npcStats .npc-attack-action button {
+  width: 100%;
+}
+
+/* Scale up to 4-column when the section has enough room */
+@container npc-attack (min-width: 440px) {
+  .tab.npcStats .npc-attack-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .tab.npcStats .npc-attack-field .resource-label {
+    font-size: 0.72rem;
+  }
+
+  .tab.npcStats .npc-attack-weapon,
+  .tab.npcStats .npc-attack-total,
+  .tab.npcStats .npc-attack-notes {
+    grid-column: span 2;
+  }
+
+  .tab.npcStats .npc-attack-action {
+    grid-column: 3 / -1;
+  }
+}
+
+.tab.npcStats .npc-notes-section {
+  grid-column: 1 / -1;
+}
+
+.tab.npcStats .npc-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.tab.npcStats .npc-note-field-wide {
+  grid-column: span 2;
+}
+
+body.synthicide-style-bold .synthicide .tab.npcStats .npc-board-section,
+body.synthicide-style-bold .synthicide .tab.npcStats .npc-guidance-chip {
+  border-color: color-mix(in srgb, var(--rb-strong) 50%, transparent);
+}
+
+@media (max-width: 1200px) {
+  .tab.npcStats .npc-board {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  .tab.npcStats .npc-stat-box .resource-label,
+  .tab.npcStats .npc-attack-field .resource-label {
+    font-size: 0.78rem;
+  }
+
+  .tab.npcStats .npc-derived-section,
+  .tab.npcStats .npc-attack-section,
+  .tab.npcStats .npc-notes-section,
+  .tab.npcStats .npc-role-section {
+    grid-column: 1 / -1;
+  }
+
+  .tab.npcStats .npc-notes-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tab.npcStats .npc-note-field-wide {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .tab.npcStats .npc-stats-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .tab.npcStats .npc-board,
+  .tab.npcStats .npc-guidance-strip,
+  .tab.npcStats .npc-notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tab.npcStats .npc-derived-section,
+  .tab.npcStats .npc-attack-section,
+  .tab.npcStats .npc-notes-section,
+  .tab.npcStats .npc-role-section,
+  .tab.npcStats .npc-note-field-wide {
+    grid-column: 1 / -1;
+  }
+}

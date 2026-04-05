@@ -11,6 +11,7 @@
     },
     "SheetLabels": {
       "Actor": "Sharper Sheet",
+      "NPCActor": "NPC Sheet",
       "Item": "Synthicide Item Sheet"
     },
     "Settings": {
@@ -99,6 +100,103 @@
         "NoTraits": "No bioclass traits found.",
         "OnlyOneWarning": "Only one bioclass may be assigned to an actor."
       },
+      "NPC": {
+        "DropBioclassHint": "Drop a bioclass item here",
+        "ReplaceBioclassTitle": "Replace Bioclass",
+        "ReplaceBioclassContent": "Replace the current bioclass with \"{name}\"?",
+        "WeakNone": "None",
+        "BossActive": "Boss bonuses active: +1 Combat/Toughness/Nerve, HP doubled.",
+        "Roles": {
+          "fastTalker": {
+            "Label": "Fast Talker",
+            "Power": "1 + 1/2 level to awareness and influence rolls."
+          },
+          "guardian": {
+            "Label": "Guardian",
+            "Power": "1 + 1/2 level to awareness and nerve rolls."
+          },
+          "killer": {
+            "Label": "Killer",
+            "Power": "Gains bonus AD by level."
+          },
+          "professional": {
+            "Label": "Professional",
+            "Power": "+2 Operation and any needed knowledge focus based on story."
+          },
+          "psycherManifestor": {
+            "Label": "Psycher, Manifestor",
+            "Power": "Nerve level bonus has no max. Telekinesis reaches 1 zone and teleport works 1 + 1/2 level times per day."
+          },
+          "psycherProjector": {
+            "Label": "Psycher, Projector",
+            "Power": "Special attack targets ND at range 1 with ATT and DMG equal to level. Illusions/disguise 1 + 1/2 level times per day."
+          },
+          "psycherRevelator": {
+            "Label": "Psycher, Revelator",
+            "Power": "Awareness level bonus has no max. Can see through darkness/objects in zone and auto-succeed awareness rolls 1 + 1/2 level times per day."
+          },
+          "sneak": {
+            "Label": "Sneak",
+            "Power": "1 + 1/2 level to stealth/sleight of hand and 1 + level to chosen setup bonuses."
+          }
+        },
+        "Wealth": {
+          "savage": "Savage",
+          "destitute": "Destitute",
+          "crook": "Crook",
+          "established": "Established",
+          "wealthy": "Wealthy",
+          "rareAnimal": "Rare Animal / Xeno",
+          "synthetic": "Synthetic",
+          "priest": "Priest"
+        },
+        "Weapons": {
+          "fist": "Fist",
+          "claws": "Claws",
+          "bite": "Bite",
+          "club": "Club",
+          "knife": "Knife",
+          "hatchet": "Hatchet",
+          "sword": "Sword",
+          "battleHammer": "Battle Hammer",
+          "battleAxe": "Battle Axe",
+          "pistol": "Pistol",
+          "rifle": "Rifle",
+          "shotgun": "Shotgun",
+          "psycherProjection": "Psychic Projection"
+        },
+        "UI": {
+          "Name": "Name",
+          "Role": "Role",
+          "Wealth": "Wealth",
+          "BossQuestion": "Boss?",
+          "HPBonus": "HP Bonus",
+          "Value": "Value",
+          "Strong": "Strong",
+          "Good": "Good",
+          "Weak": "Weak",
+          "RoleCalculations": "Role Calculations",
+          "RolePower": "Role Power",
+          "MasteredAttack": "Mastered Attack",
+          "Weapon": "Weapon",
+          "BaseAttDmg": "Base ATT/DMG",
+          "WeaponAttDmg": "Weapon ATT/DMG",
+          "TotalAttDmg": "Total ATT/DMG",
+          "Ability": "Ability",
+          "Range": "Range",
+          "WeaponNotes": "Weapon Notes",
+          "RollAttack": "Roll Attack",
+          "NPCNotes": "NPC Notes",
+          "UniquePower": "Unique Power",
+          "BossPower": "Boss Power",
+          "Loot": "Loot",
+          "Notes": "Notes"
+        },
+        "FIELDS": {
+          "cr": {"label": "CR"}
+        },
+        "xp": {"label": "XP"}
+      },
       "Aspect": {
         "NoneAssigned": "No aspect assigned. Drop or create one.",
         "Create": "Create Aspect",
@@ -168,12 +266,6 @@
         "FIELDS": {
           "level.value": {"label": "Level"}
         }
-      },
-      "NPC": {
-        "FIELDS": {
-          "cr": {"label": "CR"}
-        },
-        "xp": {"label": "XP"}
       }
     },
     "Item": {
@@ -373,6 +465,7 @@
             "hp": {"label": "HP"},
             "hpPerLevel": {"label": "HP / Level"}
           },
+          "ignoreRoleWeakPenalty": {"label": "Ignore Weak Penalty"},
           "bodySlots": {"label": "Body Slots"},
           "brainSlots": {"label": "Brain Slots"}
         },

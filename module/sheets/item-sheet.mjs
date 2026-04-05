@@ -156,8 +156,9 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
   /** @override */
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
-    // Not all parts always render
-    options.parts = ['header', 'tabs', 'general'];
+    // Not all parts always render. Bioclasses do not use a general tab.
+    options.parts = ['header', 'tabs'];
+    if (this.document.type !== 'bioclass') options.parts.push('general');
     // Don't show the other tabs if only limited view
     if (this.document.limited) return;
     // Control which parts show based on document subtype
@@ -270,7 +271,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     return buildTabs({
       parts,
       tabGroups: this.tabGroups,
-      defaultTab: 'general',
+      defaultTab: this.item.type === 'bioclass' ? 'attributes' : 'general',
       labelPrefix: 'SYNTHICIDE.Item.Tabs.',
       tabMap: ITEM_TAB_MAP,
     });

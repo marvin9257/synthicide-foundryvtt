@@ -3,6 +3,7 @@ import { SynthicideActor } from './documents/actor.mjs';
 import { SynthicideItem } from './documents/item.mjs';
 // Import sheet classes.
 import { SynthicideActorSheet } from './sheets/actor-sheet.mjs';
+import { SynthicideNPCActorSheet } from './sheets/npc-actor-sheet.mjs';
 import { SynthicideItemSheet } from './sheets/item-sheet.mjs';
 // Import helper/utility classes and constants.
 import SYNTHICIDE from './helpers/config.mjs';
@@ -32,6 +33,7 @@ globalThis.synthicide = {
   },
   applications: {
     SynthicideActorSheet,
+    SynthicideNPCActorSheet,
     SynthicideItemSheet,
   },
   utils: {
@@ -107,9 +109,14 @@ Hooks.once('init', function () {
   // Register sheet application classes
   collections.Actors.unregisterSheet('core', foundry.applications.sheets.ActorSheetV2)
   collections.Actors.registerSheet('synthicide', SynthicideActorSheet, {
-    types:["sharper", "npc"],
+    types: ['sharper'],
     makeDefault: true,
     label: 'SYNTHICIDE.SheetLabels.Actor',
+  });
+  collections.Actors.registerSheet('synthicide', SynthicideNPCActorSheet, {
+    types: ['npc'],
+    makeDefault: true,
+    label: 'SYNTHICIDE.SheetLabels.NPCActor',
   });
   collections.Items.unregisterSheet('core', foundry.applications.sheets.ItemSheetV2);
   collections.Items.registerSheet('synthicide', SynthicideItemSheet, {
