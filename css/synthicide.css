@@ -2285,9 +2285,11 @@ body.synthicide-style-bold .synthicide .tab.cybernetics h4 {
 body.synthicide-style-bold .synthicide .tab.attributes h4 {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
-  padding: 14px;
-  margin: 1px 0 4px 0;
+  border-left: 5px solid var(--rb-accent);
+  padding: 6px 14px;
+  margin: 0 0 4px;
   font-size: var(--reduced-font-size);
+  border-radius: 0;
 }
 
 /* ============================================================ */
@@ -2700,7 +2702,7 @@ body.synthicide-style-bold .synthicide-action-roll-card .card-title.item-header 
 
   .tab.npcStats .attributes-table thead th.npc-col-icon-header .npc-col-icon-h4 {
     margin: 0;
-    padding: 22px;
+    padding: 0;
   }
 
   /* Role Build Guidance section sits inside .attributes-panel, needs top spacing */
@@ -2999,25 +3001,30 @@ body.synthicide-style-bold .synthicide .tab.npcStats .attribute-label img.action
 }
 
 .tab.npcStats[data-tab='combat'] .npc-attack-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
 }
 
-.tab.npcStats[data-tab='combat'] .npc-attack-weapon,
-.tab.npcStats[data-tab='combat'] .npc-attack-notes,
-.tab.npcStats[data-tab='combat'] .npc-attack-base,
-.tab.npcStats[data-tab='combat'] .npc-attack-weapon-values,
-.tab.npcStats[data-tab='combat'] .npc-attack-total,
 .tab.npcStats[data-tab='combat'] .npc-attack-action {
-  grid-column: span 2;
-}
-
-.tab.npcStats[data-tab='combat'] .npc-attack-total {
   grid-column: 1 / -1;
 }
 
-.tab.npcStats[data-tab='combat'] .npc-attack-action {
+.tab.npcStats[data-tab='combat'] .npc-attack-special-note {
   grid-column: 1 / -1;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--synthicide-c-orange) 30%, transparent);
+  background: color-mix(in srgb, var(--synthicide-c-dark) 35%, transparent);
+}
+
+.tab.npcStats[data-tab='combat'] .npc-attack-special-note ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1rem;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-attack-special-note li {
+  margin: 0;
+  line-height: 1.2;
+  font-size: 0.82rem;
 }
 
 .tab.npcStats[data-tab='combat'] .npc-force-barrier-section {
@@ -3049,6 +3056,11 @@ body.synthicide-style-bold .synthicide .tab.npcStats .attribute-label img.action
 body.synthicide-style-bold .synthicide .tab.npcStats .npc-board-section,
 body.synthicide-style-bold .synthicide .tab.npcStats .npc-guidance-chip {
   border-color: color-mix(in srgb, var(--rb-strong) 50%, transparent);
+}
+
+body.synthicide-style-bold .synthicide .tab.npcStats .attributes-table thead th.attributes-col-header {
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 @media (max-width: 1200px) {

@@ -122,7 +122,9 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
         Object.entries(SYNTHICIDE.npc.roles).map(([k, v]) => [k, v.label])
       ),
       npcWeaponOptions: Object.fromEntries(
-        Object.entries(SYNTHICIDE.npc.masteredWeapons).map(([k, v]) => [k, v.label])
+        Object.entries(SYNTHICIDE.npc.masteredWeapons)
+          .filter(([k]) => k !== 'psycherProjection')
+          .map(([k, v]) => [k, v.label])
       ),
       npcWealthOptions: Object.fromEntries(
         Object.entries(SYNTHICIDE.npc.wealthTiers).map(([k, v]) => [k, v.label])
@@ -134,6 +136,7 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
 
     // Role build guidance used in the attributes tab.
     context.npcBuild = this._prepareNPCBuildContext(context.system, context.bioclass);
+    context.npcSpecialAttackNotes = getNPCSpecialAttackNotes(context.system);
 
     // Gear items sorted by drag-order.
     const sortFn = (a, b) => (a.sort || 0) - (b.sort || 0);
@@ -377,7 +380,6 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
    */
   static async _onMasteredAttackRoll(event, _target) {
     event.preventDefault();
-    const isPsycherProjection = this.actor.system?.masteredWeapon === 'psycherProjection';
     const attackBonusOverride = Number(
       this.actor.system.masteredAttack?.attackBonus?.total ?? 0
     );
@@ -387,7 +389,7 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
     return openSynthicideActionRollDialog({
       actor: this.actor,
       subtype: 'attack',
-      attribute: isPsycherProjection ? 'influence' : 'combat',
+      attribute: 'combat',
       attackBonusOverride,
       damageBonusOverride,
     });
@@ -432,4 +434,33 @@ function shouldIgnoreWeakRolePenalty(bioclass) {
 
   const name = String(bioclass?.name ?? '').trim().toLowerCase();
   return /(^|\W)priest(\W|$)/.test(name);
+}
+
+function getNPCSpecialAttackNotes(system = {}) {
+  const notes = [];
+  const uniquePowerText = normalizeSpecialPowerText(system?.uniquePower);
+  const bossPowerText = normalizeSpecialPowerText(system?.bossPower);
+
+  // Projector special attack uses ND and level-based ATT/DMG and is handled manually.
+  if (system?.npcRole === 'psycherProjector') {
+    notes.push('SYNTHICIDE.Actor.NPC.UI.SpecialAttackNotePsycherProjector');
+  }
+
+  if (/\bmutant\s*spit\b/.test(uniquePowerText)) {
+    notes.push('SYNTHICIDE.Actor.NPC.UI.SpecialAttackNoteMutantSpit');
+  }
+
+  if (/\bgrenade\b/.test(uniquePowerText)) {
+    notes.push('SYNTHICIDE.Actor.NPC.UI.SpecialAttackNoteKitGrenade');
+  }
+
+  if (/\bnasty\s*blow\b/.test(bossPowerText)) {
+    notes.push('SYNTHICIDE.Actor.NPC.UI.SpecialAttackNoteNastyBlow');
+  }
+
+  return [...new Set(notes)];
+}
+
+function normalizeSpecialPowerText(value) {
+  return String(value ?? '').trim().toLowerCase();
 }

@@ -33,6 +33,11 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
       choices: Object.keys(SYNTHICIDE.npc.masteredWeapons),
       initial: 'fist',
     });
+    schema.attackWeapon = new fields.StringField({
+      required: true,
+      choices: Object.keys(SYNTHICIDE.npc.masteredWeapons),
+      initial: 'fist',
+    });
     schema.npcWealthTier = new fields.StringField({
       required: true,
       choices: Object.keys(SYNTHICIDE.npc.wealthTiers),
@@ -86,7 +91,9 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
         }
       : { hitPointsBase: 28, hitPointsPerLevel: 4 };
     const roleProfile = SYNTHICIDE.npc.roles[this.npcRole] ?? SYNTHICIDE.npc.roles.guardian;
-    const weaponProfile = getWeaponTier(this.masteredWeapon, level);
+    const attackWeaponKey = this.attackWeapon ?? this.masteredWeapon;
+    const weaponProfile = getWeaponTier(attackWeaponKey, level);
+    const isMasteredAttack = attackWeaponKey === this.masteredWeapon;
 
     this.hitPoints.base = bioclassProfile.hitPointsBase;
     this.hitPoints.perLevel = bioclassProfile.hitPointsPerLevel;
@@ -100,7 +107,6 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
       });
     }
 
-    const combatValue = Number(this.attributes?.combat?.value ?? 0);
     const toughnessValue = Number(this.attributes?.toughness?.value ?? 0);
     const nerveValue = Number(this.attributes?.nerve?.value ?? 0);
     const speedValue = Number(this.attributes?.speed?.value ?? 0);
@@ -120,20 +126,22 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     this.shockThreshold.value = 10 + this.armorDefense.value + halfLevel;
     this.nerveDefense.value = 5 + thirdLevel + nerveValue;
 
-    if (this.masteredWeapon === 'psycherProjection') {
-      this.masteredAttack.attackBonus.base = level;
-      this.masteredAttack.damageBonus.base = level;
-      this.masteredAttack.attackBonus.weapon = 0;
-      this.masteredAttack.damageBonus.weapon = 0;
-      this.masteredAttack.attackBonus.total = level;
-      this.masteredAttack.damageBonus.total = level;
-    } else {
+    if (isMasteredAttack) {
       this.masteredAttack.attackBonus.base = baseAttackDamage;
       this.masteredAttack.damageBonus.base = baseAttackDamage;
       this.masteredAttack.attackBonus.weapon = weaponProfile.attack;
       this.masteredAttack.damageBonus.weapon = weaponProfile.damage;
-      this.masteredAttack.attackBonus.total = baseAttackDamage + weaponProfile.attack + combatValue;
-      this.masteredAttack.damageBonus.total = baseAttackDamage + weaponProfile.damage + combatValue;
+      // total = base + weapon; @attribute (combat) is added by the roll formula
+      this.masteredAttack.attackBonus.total = baseAttackDamage + weaponProfile.attack;
+      this.masteredAttack.damageBonus.total = baseAttackDamage + weaponProfile.damage;
+    } else {
+      this.masteredAttack.attackBonus.base = 0;
+      this.masteredAttack.damageBonus.base = 0;
+      this.masteredAttack.attackBonus.weapon = weaponProfile.attack;
+      this.masteredAttack.damageBonus.weapon = weaponProfile.damage;
+      // total = weapon only; @attribute (combat) is added by the roll formula
+      this.masteredAttack.attackBonus.total = weaponProfile.attack;
+      this.masteredAttack.damageBonus.total = weaponProfile.damage;
     }
     this.masteredAttack.ability = weaponProfile.ability;
     this.masteredAttack.range = weaponProfile.range;

@@ -7,35 +7,38 @@
   <div class='npc-board'>
     <section class='npc-board-section npc-attack-section'>
       <div class='npc-section-title-row'>
-        <h4 class='npc-section-heading'>{{localize 'SYNTHICIDE.Actor.NPC.UI.MasteredAttack'}}</h4>
+        <h4 class='npc-section-heading'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Attack'}}</h4>
         <span class='npc-tier-indicator'>
           {{localize 'SYNTHICIDE.Actor.NPC.UI.WeaponTier'}} {{system.masteredAttack.tierLabel}}
         </span>
       </div>
       <div class='npc-attack-grid'>
-        <div class='npc-attack-field npc-attack-weapon'>
+        <div class='npc-attack-field'>
           <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Weapon'}}</label>
+          <select name='system.attackWeapon'>
+            {{selectOptions @root.config.npcWeaponOptions selected=system.attackWeapon localize=true}}
+          </select>
+        </div>
+        <div class='npc-attack-field'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.MasteredWeapon'}} <span class='master-badge' data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.MasterBadgeTooltip"}}'>★</span></label>
           <select name='system.masteredWeapon'>
-            max='{{system.armorValues.forceBarrier.max}}'
             {{selectOptions @root.config.npcWeaponOptions selected=system.masteredWeapon localize=true}}
           </select>
         </div>
-        <div class='npc-attack-field npc-attack-notes'>
+        <div class='npc-attack-field'>
           <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.WeaponNotes'}}</label>
           <input type='text' value='{{system.masteredAttack.notes}}' disabled>
         </div>
-        <div class='npc-attack-field npc-attack-base'>
+        <div class='npc-attack-field'>
           <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.BaseAttDmg'}}</label>
-            min='0'
-            disabled
           <input type='text' value='+{{system.masteredAttack.attackBonus.base}} / +{{system.masteredAttack.damageBonus.base}}' disabled>
         </div>
-        <div class='npc-attack-field npc-attack-weapon-values'>
+        <div class='npc-attack-field'>
           <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.WeaponAttDmg'}}</label>
           <input type='text' value='+{{system.masteredAttack.attackBonus.weapon}} / +{{system.masteredAttack.damageBonus.weapon}}' disabled>
         </div>
-        <div class='npc-attack-field npc-attack-total'>
-          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.TotalAttDmg'}}</label>
+        <div class='npc-attack-field'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.TotalAttDmg'}} <span class='resource-hint' data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.PreRollTooltip"}}'>{{localize 'SYNTHICIDE.Actor.NPC.UI.PreRollHint'}}</span></label>
           <input type='text' value='+{{system.masteredAttack.attackBonus.total}} / +{{system.masteredAttack.damageBonus.total}}' disabled>
         </div>
         <div class='npc-attack-field'>
@@ -51,11 +54,21 @@
             type='button'
             class='rollable synthicide-roll-button'
             data-action='masteredAttackRoll'
-            data-tooltip='Roll mastered attack'
+            data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.RollAttackTooltip"}}'
           >
             {{localize 'SYNTHICIDE.Actor.NPC.UI.RollAttack'}}
           </button>
         </div>
+        {{#if @root.npcSpecialAttackNotes.length}}
+          <div class='npc-attack-special-note'>
+            <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.SpecialAttackNotesLabel'}}</label>
+            <ul>
+              {{#each @root.npcSpecialAttackNotes as |noteKey|}}
+                <li>{{localize noteKey}}</li>
+              {{/each}}
+            </ul>
+          </div>
+        {{/if}}
       </div>
     </section>
 
