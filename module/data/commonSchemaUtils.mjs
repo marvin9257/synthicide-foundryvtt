@@ -43,6 +43,91 @@ export function makeDerivedField(initialValue = 0, schemaOptions={}) {
 }
 
 /**
+ * Produce actor implant slot summary schema (body/head usage pools).
+ * @param {object} schemaOptions Options passed to the outer schema.
+ * @returns {SchemaField}
+ */
+export function makeImplantSlotsField(schemaOptions = {}) {
+  return new fields.SchemaField({
+    body: new fields.SchemaField({
+      value: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
+      max: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
+      remaining: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
+    }),
+    head: new fields.SchemaField({
+      value: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
+      max: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
+      remaining: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
+    }),
+  }, schemaOptions);
+}
+
+/**
+ * Produce a force-barrier schema with configurable defaults and field options.
+ * @param {object} options
+ * @param {number} options.valueInitial
+ * @param {number} options.maxInitial
+ * @param {number} options.recoveryRateInitial
+ * @param {object} options.valueFieldOptions
+ * @param {object} options.maxFieldOptions
+ * @param {object} options.recoveryRateFieldOptions
+ * @param {object} options.schemaOptions
+ * @returns {SchemaField}
+ */
+export function makeForceBarrierField({
+  valueInitial = 0,
+  maxInitial = 0,
+  recoveryRateInitial = 0,
+  valueFieldOptions = {},
+  maxFieldOptions = {},
+  recoveryRateFieldOptions = {},
+  schemaOptions = {},
+} = {}) {
+  return new fields.SchemaField({
+    value: new fields.NumberField({ ...requiredInteger, initial: valueInitial, min: 0 }, valueFieldOptions),
+    max: new fields.NumberField({ ...requiredInteger, initial: maxInitial, min: 0 }, maxFieldOptions),
+    recoveryRate: new fields.NumberField(
+      { ...requiredInteger, initial: recoveryRateInitial, min: 0 },
+      recoveryRateFieldOptions
+    ),
+  }, schemaOptions);
+}
+
+/**
+ * Compute implant slot usage summary for an actor from bioclass + equipped implants.
+ * @param {Actor|null|undefined} actor
+ * @returns {{ body: { value: number, max: number, remaining: number }, head: { value: number, max: number, remaining: number } }}
+ */
+export function getImplantSlotSummary(actor) {
+  const bioclass = actor?.itemTypes?.bioclass?.[0]?.system;
+  const summary = {
+    body: {
+      value: 0,
+      max: Number(bioclass?.bodySlots ?? 0),
+      remaining: 0,
+    },
+    head: {
+      value: 0,
+      max: Number(bioclass?.brainSlots ?? 0),
+      remaining: 0,
+    },
+  };
+
+  for (const implant of actor?.itemTypes?.implant ?? []) {
+    if (!implant.system?.equipped) continue;
+    const location = implant.system?.location ?? 'body';
+    if (!(location in summary)) continue;
+    summary[location].value += Number(implant.system?.slotSize ?? 1);
+  }
+
+  for (const pool of Object.values(summary)) {
+    pool.remaining = pool.max - pool.value;
+  }
+
+  return summary;
+}
+
+/**
  * Convert field from string to number respecting local number format, if necessary.
  * @param {any} source data source (document.system)
  * @param {string} field  system field to convert.

@@ -105,6 +105,7 @@ Hooks.once('init', function () {
 
   // Register application/document hooks.
   registerSynthicideChatContextHook();
+  registerActionRollHooks();
 
   // Register sheet application classes
   collections.Actors.unregisterSheet('core', foundry.applications.sheets.ActorSheetV2)
@@ -161,7 +162,6 @@ Handlebars.registerHelper('toLowerCase', function (str) {
 
 Hooks.once('ready', async function () {
   await migrateWorld();
-  registerActionRollHooks();
 
   applySheetStyleMode(
     game.settings.get('synthicide', SYNTHICIDE.SHEET_STYLE_SETTING_KEY)

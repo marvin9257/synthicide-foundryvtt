@@ -15,6 +15,7 @@ const { api, sheets } = foundry.applications;
 const NPC_TAB_MAP = {
   npcStats: { id: 'npcStats', icon: ICON_MAP.attributes, label: 'Attributes' },
   combat: { id: 'combat', icon: ICON_MAP.combat, label: 'Combat' },
+  cybernetics: { id: 'cybernetics', icon: ICON_MAP.cybernetics, label: 'Cybernetics' },
   gear: { id: 'gear', icon: ICON_MAP.gear, label: 'Gear' },
   info: { id: 'info', icon: ICON_MAP.general, label: 'Notes' },
   biography: { id: 'biography', icon: ICON_MAP.biography, label: 'Biography' },
@@ -48,6 +49,7 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
       toggleEffect: this._toggleEffect,
       roll: this._onRoll,
       masteredAttackRoll: this._onMasteredAttackRoll,
+      changeEquippedState: this._onChangeEquippedState,
     },
     dragDrop: [{ dropSelector: null }],
     form: {
@@ -69,6 +71,10 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
     },
     combat: {
       template: 'systems/synthicide/templates/actor/combat-npc.hbs',
+      scrollable: [''],
+    },
+    cybernetics: {
+      template: 'systems/synthicide/templates/actor/cybernetics.hbs',
       scrollable: [''],
     },
     gear: {
@@ -98,7 +104,7 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
     super._configureRenderOptions(options);
     options.parts = ['npcHeader', 'tabs'];
     if (this.document.limited) return;
-    options.parts.push('npcStats', 'combat', 'gear', 'info', 'biography', 'effects');
+    options.parts.push('npcStats', 'combat', 'cybernetics', 'gear', 'info', 'biography', 'effects');
   }
 
   /** @override */
@@ -144,6 +150,7 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
     context.armor = this.actor.itemTypes.armor?.sort(sortFn) ?? [];
     context.shield = this.actor.itemTypes.shield?.sort(sortFn) ?? [];
     context.weapon = this.actor.itemTypes.weapon?.sort(sortFn) ?? [];
+    context.implants = this.actor.itemTypes.implant?.sort(sortFn) ?? [];
     context.npcInventory = [
       ...context.gear,
       ...context.armor,
@@ -393,6 +400,22 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
       attackBonusOverride,
       damageBonusOverride,
     });
+  }
+
+  /**
+   * Toggle an item's equipped state from sheet controls.
+   * @this {SynthicideNPCActorSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async _onChangeEquippedState(event, target) {
+    event.preventDefault();
+    const doc = this._getEmbeddedDocument(target);
+    if (!doc) return;
+    await doc.update(
+      { 'system.equipped': !doc.system.equipped },
+      { refresh: !CONFIG.SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES.includes(doc.type) }
+    );
   }
 
   /* -------------------------------------------- */

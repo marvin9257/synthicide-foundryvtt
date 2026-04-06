@@ -1,5 +1,6 @@
 import SynthicideActorBaseData from './base-actor.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
+import { makeForceBarrierField } from './commonSchemaUtils.mjs';
 
 const fields = foundry.data.fields;
 const requiredInteger = { required: true, nullable: false, integer: true };
@@ -47,11 +48,7 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
 
     schema.hitPointBonus = new fields.NumberField({ ...requiredInteger, initial: 0 });
     schema.armorValues = new fields.SchemaField({
-      forceBarrier: new fields.SchemaField({
-        value: new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 }),
-        max: new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 }),
-        recoveryRate: new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 }),
-      }),
+      forceBarrier: makeForceBarrierField(),
     });
     schema.uniquePower = new fields.StringField({ ...requiredBlankString });
     schema.bossPower = new fields.StringField({ ...requiredBlankString });
