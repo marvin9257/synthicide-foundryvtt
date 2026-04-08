@@ -3112,3 +3112,173 @@ body.synthicide-style-bold .synthicide .tab.npcStats .attributes-table thead th.
     grid-column: 1 / -1;
   }
 }
+
+/* ============================= */
+/* Compact NPC Sheet Styles      */
+/* ============================= */
+.npc-compact-sheet {
+  font-family: var(--synthicide-default-font);
+  /*background: var(--synthicide-c-white);
+  color: var(--synthicide-c-black);*/
+  padding: 12px;
+  box-sizing: border-box;
+  min-width: 600px;
+  min-height: 300px;
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow: auto;
+}
+/*
+.npc-compact-sheet.classic {
+  background: var(--synthicide-c-white);
+  color: var(--synthicide-c-black);
+}*/
+.npc-compact-sheet.rulebookBold {
+  background: var(--synthicide-c-dark);
+  color: var(--synthicide-c-beige);
+}
+/*
+.npc-compact-sheet.classic .sheet-header,
+.npc-compact-sheet.classic h1,
+.npc-compact-sheet.classic label {
+  color: var(--synthicide-c-black);
+}*/
+.npc-compact-sheet.rulebookBold .sheet-header,
+.npc-compact-sheet.rulebookBold h1,
+.npc-compact-sheet.rulebookBold label {
+  color: var(--synthicide-c-beige);
+}
+.npc-compact-sheet.rulebookBold .npc-compact-select-attack {
+  background: var(--synthicide-c-panel-bg);
+  border-color: var(--synthicide-c-beige);
+}
+.selected-attack-weapon {
+  max-width: max-content;
+}
+/*
+.npc-compact-sheet.classic .npc-compact-select-attack {
+  background: var(--synthicide-c-panel-bg);
+  border-color: var(--synthicide-c-dark);
+}*/
+.npc-compact-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+  /*font-weight: bold;*/
+  margin-bottom: 8px;
+  /*align-items: center;*/
+}
+.npc-compact-header input[name="name"] {
+  font-size: 1.2em;
+  font-weight: bold;
+  border: none;
+  border-bottom: 1px solid var(--synthicide-c-border-subtle);
+  width: 20ch;
+}
+
+.npc-compact-header h1 {
+  margin-bottom: 0;
+}
+.npc-compact-sheet .sheet-header-fields {
+  display: inline-flex;
+  gap: 2ch;
+  align-items: center;
+  text-align: center;
+}
+
+.npc-compact-sheet .bioclass-box {
+  display: inline-flex;
+  gap: 1ch;
+}
+
+.npc-compact-attributes {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 8px;
+}
+.npc-attr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 10ch;
+}
+.npc-der {
+  /*display: flex;
+  flex-direction: column;*/
+  align-items: center;
+  /*max-width: 9ch;*/
+  text-align: center;
+}
+
+.npc-hp-align  {
+  display: flex;
+  flex-direction: column;
+}
+.one-word-per-line {
+  width: min-content;
+  display: block;
+}
+/*.npc-attr label {
+  font-size: 0.8em;
+  color: var(--synthicide-c-tan);
+}*/
+.npc-attr input,
+.npc-der input {
+  width: 36px;
+  text-align: center;
+  /*border: 1px solid var(--synthicide-c-border-subtle);*/
+  border-radius: 3px;
+  /*background: var(--form-field-bg);*/
+}
+.npc-compact-row {
+  display: flex;
+  margin-bottom: 8px;
+  font-size: 0.95em;
+  justify-content: space-evenly;
+}
+.npc-compact-select-attack {
+  border: 1px solid var(--synthicide-c-dark);
+  background: var(--synthicide-c-panel-bg);
+  padding: 6px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  align-items: center;
+}
+.npc-compact-select-attack label {
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+.npc-compact-powers {
+  display: flex;
+  gap: 2em;
+  margin-bottom: 8px;
+  align-items: center;
+}
+.npc-compact-powers label {
+  font-weight: bold;
+  margin-right: 0.3em;
+}
+.npc-compact-loot {
+  margin-bottom: 8px;
+}
+.npc-compact-loot label {
+  font-weight: bold;
+  margin-right: 0.3em;
+}
+.npc-compact-notes {
+  margin-bottom: 0;
+}
+.npc-compact-notes label {
+  font-weight: bold;
+  margin-right: 0.3em;
+}
+.npc-compact-notes textarea {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--synthicide-c-border-subtle);
+  border-radius: 3px;
+  background: var(--form-field-bg);
+  resize: vertical;
+}

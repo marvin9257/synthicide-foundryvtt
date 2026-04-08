@@ -1,9 +1,9 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs } from './sheet-context.mjs';
 import { ICON_MAP } from '../helpers/icons.mjs';
-import { openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
+
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
-import { computeHpPercent, deleteDocAction, getEmbeddedDocument, prepareBiographyPartContext, showInfoAction, toggleEffectAction, viewDocAction } from './sheet-utils.mjs';
+import { computeHpPercent, deleteDocAction, getEmbeddedDocument, makeRoll, makeSelectedAttackRoll, prepareBiographyPartContext, showInfoAction, toggleEffectAction, viewDocAction } from './sheet-utils.mjs';
 
 const { api, sheets } = foundry.applications;
 
@@ -48,7 +48,7 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
       showInfo: this._showInfo,
       toggleEffect: this._toggleEffect,
       roll: this._onRoll,
-      masteredAttackRoll: this._onMasteredAttackRoll,
+      selectedAttackRoll: this._onSelectedAttackRoll,
       changeEquippedState: this._onChangeEquippedState,
     },
     dragDrop: [{ dropSelector: null }],
@@ -344,62 +344,12 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
    */
   static async _onRoll(event, target) {
     event.preventDefault();
-    const { rollType, attributeKey, roll, label } = target.dataset;
-
-    if (rollType === 'challenge') {
-      const roleChallengeBonus = getRoleChallengeBonus({
-        roleKey: this.actor.system?.npcRole,
-        attributeKey,
-        level: Number(this.actor.system?.level?.value ?? 1),
-      });
-      return openSynthicideActionRollDialog({
-        actor: this.actor,
-        subtype: 'challenge',
-        attribute: attributeKey,
-        miscOverride: roleChallengeBonus,
-      });
-    }
-
-    if (rollType === 'attack') {
-      const item = this._getEmbeddedDocument(target);
-      return openSynthicideActionRollDialog({
-        actor: this.actor,
-        subtype: 'attack',
-        sourceItem: item,
-      });
-    }
-
-    if (roll) {
-      const evaluatedRoll = new Roll(roll, this.actor.getRollData());
-      return evaluatedRoll.toMessage(
-        { speaker: ChatMessage.getSpeaker({ actor: this.actor }), flavor: label ?? '' },
-        { messageMode: game.settings.get('core', 'messageMode') }
-      );
-    }
+    makeRoll(this.actor, target)
   }
 
-  /**
-   * Launches an attack roll pre-populated with this NPC's mastered attack total.
-   * The dialog still allows the GM to override the pre-filled value.
-   * @this {SynthicideNPCActorSheet}
-   * @param {PointerEvent} event
-   * @param {HTMLElement} target
-   */
-  static async _onMasteredAttackRoll(event, _target) {
+  static async _onSelectedAttackRoll(event, _target) {
     event.preventDefault();
-    const attackBonusOverride = Number(
-      this.actor.system.masteredAttack?.attackBonus?.total ?? 0
-    );
-    const damageBonusOverride = Number(
-      this.actor.system.masteredAttack?.damageBonus?.total ?? 0
-    );
-    return openSynthicideActionRollDialog({
-      actor: this.actor,
-      subtype: 'attack',
-      attribute: 'combat',
-      attackBonusOverride,
-      damageBonusOverride,
-    });
+    makeSelectedAttackRoll(this.actor);
   }
 
   /**
@@ -431,25 +381,6 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
   _getEmbeddedDocument(target) {
     return getEmbeddedDocument(this.actor, target);
   }
-}
-
-function getRoleChallengeBonus({ roleKey, attributeKey, level }) {
-  const key = String(attributeKey ?? '');
-  const halfLevelPlusOne = 1 + Math.floor(Math.max(1, Number(level ?? 1)) / 2);
-
-  if (roleKey === 'fastTalker' && ['awareness', 'influence'].includes(key)) {
-    return halfLevelPlusOne;
-  }
-
-  if (roleKey === 'guardian' && ['awareness', 'nerve'].includes(key)) {
-    return halfLevelPlusOne;
-  }
-
-  if (roleKey === 'professional' && key === 'operation') {
-    return 2;
-  }
-
-  return 0;
 }
 
 function shouldIgnoreWeakRolePenalty(bioclass) {

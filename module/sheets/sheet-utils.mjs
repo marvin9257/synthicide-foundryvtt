@@ -1,3 +1,4 @@
+import { openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
 import { enrichSheetHtml } from './sheet-context.mjs';
 
 /**
@@ -149,3 +150,84 @@ export async function prepareBiographyPartContext(actor, context, isOwner) {
   });
 }
 
+/**
+ * Launches an attack roll pre-populated with this NPC's selected attack total.
+ * The dialog still allows the GM to override the pre-filled value.
+ * @this {SynthicideNPCActorSheet}
+ * @param {PointerEvent} event
+ * @param {HTMLElement} target
+ */
+export async function makeSelectedAttackRoll(actor) {
+  const attackBonusOverride = Number(
+    actor.system.selectedAttack?.attackBonus?.total ?? 0
+  );
+  const damageBonusOverride = Number(
+    actor.system.selectedAttack?.damageBonus?.total ?? 0
+  );
+  return openSynthicideActionRollDialog({
+    actor: actor,
+    subtype: 'attack',
+    attribute: 'combat',
+    attackBonusOverride,
+    damageBonusOverride,
+  });
+}
+
+/**
+ * Handles generic roll clicks (challenge or item attacks).
+ * @param {Actor} actor
+ * @param {HTMLElement} target
+ */
+export async function makeRoll(actor, target) {
+  const { rollType, attributeKey, roll, label } = target.dataset;
+
+  if (rollType === 'challenge') {
+    const roleChallengeBonus = getRoleChallengeBonus({
+      roleKey: actor.system?.npcRole,
+      attributeKey,
+      level: Number(actor.system?.level?.value ?? 1),
+    });
+    return openSynthicideActionRollDialog({
+      actor: actor,
+      subtype: 'challenge',
+      attribute: attributeKey,
+      miscOverride: roleChallengeBonus,
+    });
+  }
+
+  if (rollType === 'attack') {
+    const item = getEmbeddedDocument(actor, target);
+    return openSynthicideActionRollDialog({
+      actor: actor,
+      subtype: 'attack',
+      sourceItem: item,
+    });
+  }
+
+  if (roll) {
+    const evaluatedRoll = new Roll(roll, actor.getRollData());
+    return evaluatedRoll.toMessage(
+      { speaker: ChatMessage.getSpeaker({ actor: actor }), flavor: label ?? '' },
+      { messageMode: game.settings.get('core', 'messageMode') }
+    );
+  }
+}
+
+function getRoleChallengeBonus({ roleKey, attributeKey, level }) {
+  const key = String(attributeKey ?? '');
+  const halfLevelPlusOne = 1 + Math.floor(Math.max(1, Number(level ?? 1)) / 2);
+
+  if (roleKey === 'fastTalker' && ['awareness', 'influence'].includes(key)) {
+    return halfLevelPlusOne;
+  }
+
+  if (roleKey === 'guardian' && ['awareness', 'nerve'].includes(key)) {
+    return halfLevelPlusOne;
+  }
+
+  if (roleKey === 'professional' && key === 'operation') {
+    return 2;
+  }
+
+  return 0;
+}

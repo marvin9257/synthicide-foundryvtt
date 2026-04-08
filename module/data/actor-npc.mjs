@@ -55,7 +55,7 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     schema.notes = new fields.StringField({ ...requiredBlankString });
     schema.loot = new fields.StringField({ ...requiredBlankString });
 
-    schema.masteredAttack = new fields.SchemaField({
+    schema.selectedAttack = new fields.SchemaField({
       attackBonus: new fields.SchemaField({
         base: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
         weapon: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
@@ -90,7 +90,7 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     const roleProfile = SYNTHICIDE.npc.roles[this.npcRole] ?? SYNTHICIDE.npc.roles.guardian;
     const attackWeaponKey = this.attackWeapon ?? this.masteredWeapon;
     const weaponProfile = getWeaponTier(attackWeaponKey, level);
-    const isMasteredAttack = attackWeaponKey === this.masteredWeapon;
+    const isSelectedAttackMastered = attackWeaponKey === this.masteredWeapon;
 
     this.hitPoints.base = bioclassProfile.hitPointsBase;
     this.hitPoints.perLevel = bioclassProfile.hitPointsPerLevel;
@@ -123,28 +123,28 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     this.shockThreshold.value = 10 + this.armorDefense.value + halfLevel;
     this.nerveDefense.value = 5 + thirdLevel + nerveValue;
 
-    if (isMasteredAttack) {
-      this.masteredAttack.attackBonus.base = baseAttackDamage;
-      this.masteredAttack.damageBonus.base = baseAttackDamage;
-      this.masteredAttack.attackBonus.weapon = weaponProfile.attack;
-      this.masteredAttack.damageBonus.weapon = weaponProfile.damage;
+    if (isSelectedAttackMastered) {
+      this.selectedAttack.attackBonus.base = baseAttackDamage;
+      this.selectedAttack.damageBonus.base = baseAttackDamage;
+      this.selectedAttack.attackBonus.weapon = weaponProfile.attack;
+      this.selectedAttack.damageBonus.weapon = weaponProfile.damage;
       // total = base + weapon; @attribute (combat) is added by the roll formula
-      this.masteredAttack.attackBonus.total = baseAttackDamage + weaponProfile.attack;
-      this.masteredAttack.damageBonus.total = baseAttackDamage + weaponProfile.damage;
+      this.selectedAttack.attackBonus.total = baseAttackDamage + weaponProfile.attack;
+      this.selectedAttack.damageBonus.total = baseAttackDamage + weaponProfile.damage;
     } else {
-      this.masteredAttack.attackBonus.base = 0;
-      this.masteredAttack.damageBonus.base = 0;
-      this.masteredAttack.attackBonus.weapon = weaponProfile.attack;
-      this.masteredAttack.damageBonus.weapon = weaponProfile.damage;
+      this.selectedAttack.attackBonus.base = 0;
+      this.selectedAttack.damageBonus.base = 0;
+      this.selectedAttack.attackBonus.weapon = weaponProfile.attack;
+      this.selectedAttack.damageBonus.weapon = weaponProfile.damage;
       // total = weapon only; @attribute (combat) is added by the roll formula
-      this.masteredAttack.attackBonus.total = weaponProfile.attack;
-      this.masteredAttack.damageBonus.total = weaponProfile.damage;
+      this.selectedAttack.attackBonus.total = weaponProfile.attack;
+      this.selectedAttack.damageBonus.total = weaponProfile.damage;
     }
-    this.masteredAttack.ability = weaponProfile.ability;
-    this.masteredAttack.range = weaponProfile.range;
-    this.masteredAttack.notes = weaponProfile.notes;
-    this.masteredAttack.label = weaponProfile.label;
-    this.masteredAttack.tierLabel = weaponProfile.tierLabel;
+    this.selectedAttack.ability = weaponProfile.ability;
+    this.selectedAttack.range = weaponProfile.range;
+    this.selectedAttack.notes = weaponProfile.notes;
+    this.selectedAttack.label = weaponProfile.label;
+    this.selectedAttack.tierLabel = weaponProfile.tierLabel;
   }
 
   getEffectiveAttributeValue(attributeKey, { level = null, roleProfile = null, bioclassItem = null } = {}) {
@@ -178,7 +178,7 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     }
 
     data.lvl = this.level.value;
-    data.masteredAttack = foundry.utils.duplicate(this.masteredAttack);
+    data.selectedAttack = foundry.utils.duplicate(this.selectedAttack);
     return data;
   }
 }

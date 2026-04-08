@@ -12,6 +12,7 @@
     "SheetLabels": {
       "Actor": "Sharper Sheet",
       "NPCActor": "NPC Sheet",
+      "NPCCompact": "NPC Compact",
       "Item": "Synthicide Item Sheet"
     },
     "Settings": {
@@ -179,7 +180,7 @@
           "Weak": "Weak",
           "RoleCalculations": "Role Calculations",
           "RolePower": "Role Power",
-          "MasteredAttack": "Mastered Attack",
+          "SelectedAttack": "Selected Attack",
           "MasterBadgeTooltip": "This weapon receives the mastered attack bonus",
           "PreRollHint": "+CMB",
           "PreRollTooltip": "Combat attribute is added at roll time",
