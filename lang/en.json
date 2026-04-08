@@ -226,7 +226,8 @@
         "Base": "Base",
         "Modifier": "Modifier",
         "LevelIncrease": "Level Increase",
-        "Current": "Current"
+        "Current": "Current",
+        "label": "Attributes"
       },
       "Combat": {
         "Armor": "Armor",
