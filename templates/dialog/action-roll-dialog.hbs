@@ -34,7 +34,7 @@
       {{/if}}
     </div>
 
-    {{#unless isAttack}}
+    {{#if showDifficulty}}
       <div class="form-group">
         <label>{{localize "SYNTHICIDE.Roll.Dialog.Difficulty"}}</label>
         <select name="difficulty">
@@ -43,7 +43,7 @@
       </div>
     {{else}}
       <input type="hidden" name="difficulty" value="{{difficultySelected}}" />
-    {{/unless}}
+    {{/if}}
   </fieldset>
 
   <fieldset class="roll-modifiers">
@@ -89,6 +89,19 @@
       <div class="form-group">
         <label>{{localize "SYNTHICIDE.Roll.Dialog.DamageBonus"}}</label>
         <input type="number" name="damageBonus" value="{{defaultDamageBonus}}" step="1" />
+      </div>
+
+      <div class="form-group">
+        <label>{{localize "SYNTHICIDE.Roll.Dialog.RangeModifier"}}</label>
+        <input type="number" name="rangeModifier" value="{{defaultRangeModifier}}" step="1" />
+      </div>
+
+      <div class="form-group">
+        <label class="shield-bonus-label">{{localize "SYNTHICIDE.Roll.Dialog.ShieldBonus"}}</label>
+        <div class="field-stack">
+          <input type="number" name="shieldBonus" value="{{defaultShieldBonus}}" step="1" />
+          <p class="notes">{{localize shieldBonusHintKey}}</p>
+        </div>
       </div>
     </fieldset>
   {{/if}}

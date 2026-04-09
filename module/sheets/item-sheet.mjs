@@ -22,9 +22,12 @@ const { api, sheets } = foundry.applications;
 const ITEM_BASE_PARTS_BY_TYPE = {
   trait: ['attributesTrait'],
   gear: ['rollGear'],
+  implant: ['rollGear', 'attributesImplant'],
   bioclass: ['attributesBioclass', 'cyberneticsBioclass', 'traitsBioclass'],
   aspect: ['abilitiesAspect', 'traitsBioclass'],
-  armor: []
+  armor: [],
+  shield: [],
+  weapon: ['rollGear']
 };
 
 /**
@@ -44,6 +47,7 @@ const ITEM_BASE_PARTS_BY_TYPE = {
 const ITEM_TAB_MAP = {
   general: { id: 'general', icon: ICON_MAP.general, label: 'General' },
   attributesTrait: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
+  attributesImplant: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
   rollGear: { id: 'rollGear', icon: ICON_MAP.roll, label: 'RollData' },
   attributesBioclass: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
   cyberneticsBioclass: { id: 'cybernetics', icon: ICON_MAP.cybernetics, label: 'Cybernetics' },
@@ -132,14 +136,29 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     generalWeapon: {
       template: 'systems/synthicide/templates/item/parts/general-weapon.hbs',
       scrollable: [""]
+    },
+    generalShield: {
+      template: 'systems/synthicide/templates/item/parts/general-shield.hbs',
+      scrollable: [""]
+    },
+    generalImplant: {
+      template: 'systems/synthicide/templates/item/parts/general-implant.hbs',
+      scrollable: [""]
+    },
+    attributesImplant: {
+      template: 'systems/synthicide/templates/item/parts/implant-attributes.hbs',
+    },
+    modifiersTable: {
+      template: 'systems/synthicide/templates/item/parts/modifiers-table.hbs',
     }
   };
 
   /** @override */
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
-    // Not all parts always render
-    options.parts = ['header', 'tabs', 'general'];
+    // Not all parts always render. Bioclasses do not use a general tab.
+    options.parts = ['header', 'tabs'];
+    if (this.document.type !== 'bioclass') options.parts.push('general');
     // Don't show the other tabs if only limited view
     if (this.document.limited) return;
     // Control which parts show based on document subtype
@@ -184,6 +203,20 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     );
     context.isGear = SYNTHICIDE.GEAR_TYPES.includes(this.item.type);
     context.isEquipable = SYNTHICIDE.EQUIPABLE.includes(this.item.type);
+    if (this.item.type === 'implant') {
+      const implantType = this.item.system.implantType ?? 'custom';
+      const implantLocation = this.item.system.location ?? 'body';
+      const implantModel = this.item.system;
+      context.implantLocationOptions = SYNTHICIDE.IMPLANT_LOCATIONS;
+      context.implantTypeOptions =
+        typeof implantModel.getAvailableImplantTypeChoices === 'function'
+          ? implantModel.getAvailableImplantTypeChoices(implantLocation)
+          : SYNTHICIDE.IMPLANT_TYPES;
+      context.implantModificationOptions =
+        typeof implantModel.getAvailableModificationChoices === 'function'
+          ? implantModel.getAvailableModificationChoices(implantType)
+          : (SYNTHICIDE.IMPLANT_MODIFICATIONS[implantType] ?? {});
+    }
     if (this.item.type === "weapon") {
       context.weaponClasses = SYNTHICIDE.WEAPON_CLASSES;
       context.weaponTypes = SYNTHICIDE.WEAPON_TYPES[this.item.system.weaponClass];
@@ -192,6 +225,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       if (this.item.system.weaponClass === "ranged") {
         context.weaponAmmoOptions = SYNTHICIDE.WEAPON_AMMO;
       }
+    } else if (this.item.type === 'shield') {
+      context.shieldModificationsOptions = SYNTHICIDE.SHIELD_MODIFICATIONS;
     }
     
     return context;
@@ -236,7 +271,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     return buildTabs({
       parts,
       tabGroups: this.tabGroups,
-      defaultTab: 'general',
+      defaultTab: this.item.type === 'bioclass' ? 'attributes' : 'general',
       labelPrefix: 'SYNTHICIDE.Item.Tabs.',
       tabMap: ITEM_TAB_MAP,
     });

@@ -1,5 +1,4 @@
 {{! General Tab }}
-{{log this}}
 <section
   class='tab {{tab.cssClass}}'
   data-group='primary'
@@ -12,8 +11,12 @@
     {{> "systems/synthicide/templates/item/parts/general-traits.hbs"}}
   {{else if (eq item.type 'armor')}}
     {{> "systems/synthicide/templates/item/parts/general-armor.hbs"}}
+  {{else if (eq item.type 'shield')}}
+    {{> "systems/synthicide/templates/item/parts/general-shield.hbs"}}
   {{else if (eq item.type 'weapon')}}
     {{> "systems/synthicide/templates/item/parts/general-weapon.hbs"}}
+  {{else if (eq item.type 'implant')}}
+    {{> "systems/synthicide/templates/item/parts/general-implant.hbs"}}
   {{/if}}
 
 </section>

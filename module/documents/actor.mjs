@@ -1,23 +1,10 @@
 import SYNTHICIDE from "../helpers/config.mjs";
 import { createActionMessage } from "../rolls/action-rolls.mjs";
+import { buildShockCardData, resolveShockOutcome } from "../rolls/shock-card-data.mjs";
 
 const DAMAGEABLE_ACTOR_TYPES = new Set(['sharper', 'npc']);
-const FLAG_LAST_SHOCKING_STRIKE = 'flags.synthicide.lastShockingStrike';
 const FLAG_DEAD = 'flags.synthicide.dead';
 
-const SHOCK_OUTCOMES = {
-  LETHAL: 'lethal',
-  SUCCESS: 'success',
-  DEATH: 'death',
-  MINUS_ONE: 'minusOne',
-};
-
-const SHOCK_FLAVOR_KEYS = {
-  [SHOCK_OUTCOMES.LETHAL]: 'SYNTHICIDE.Chat.Shock.LethalApplied',
-  [SHOCK_OUTCOMES.SUCCESS]: 'SYNTHICIDE.Chat.Shock.Success',
-  [SHOCK_OUTCOMES.DEATH]: 'SYNTHICIDE.Chat.Shock.FailureDeath',
-  [SHOCK_OUTCOMES.MINUS_ONE]: 'SYNTHICIDE.Chat.Shock.FailureMinusOne',
-};
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
@@ -29,6 +16,31 @@ export class SynthicideActor extends Actor {
   async _preUpdate(changed, options, user) {
     const allowed = await super._preUpdate(changed, options, user);
     if (allowed === false) return false;
+
+    if (foundry.utils.hasProperty(changed, 'system.hitPoints.value')) {
+      const nextHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.value') ?? 0);
+      let maxHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.max'));
+      if (isNaN(maxHP)) maxHP = Number(this.system?.hitPoints?.max ?? 0);
+      foundry.utils.setProperty(changed, 'system.hitPoints.value', Math.min(maxHP, nextHP));
+    }
+
+    const hasBarrierValue = foundry.utils.hasProperty(changed, 'system.armorValues.forceBarrier.value');
+    const hasBarrierMax = foundry.utils.hasProperty(changed, 'system.armorValues.forceBarrier.max');
+    if (hasBarrierValue || hasBarrierMax) {
+      let maxBarrier = Number(foundry.utils.getProperty(changed, 'system.armorValues.forceBarrier.max'));
+      if (isNaN(maxBarrier)) maxBarrier = Number(this.system?.armorValues?.forceBarrier?.max ?? 0);
+      maxBarrier = Math.max(0, maxBarrier);
+      if (hasBarrierMax) {
+        foundry.utils.setProperty(changed, 'system.armorValues.forceBarrier.max', maxBarrier);
+      }
+
+      const nextBarrier = hasBarrierValue
+        ? Number(foundry.utils.getProperty(changed, 'system.armorValues.forceBarrier.value') ?? 0)
+        : Number(this.system?.armorValues?.forceBarrier?.value ?? 0);
+      const clampedBarrier = Math.clamp(Number.isFinite(nextBarrier) ? nextBarrier : 0, 0, maxBarrier);
+      foundry.utils.setProperty(changed, 'system.armorValues.forceBarrier.value', clampedBarrier);
+    }
+
     return allowed;
   }
 
@@ -43,18 +55,20 @@ export class SynthicideActor extends Actor {
   }
 
   /**
-   * Equip an armor item, unequipping all other armor items for this actor.
-   * In order to prevent an infinite loop with Item._preUpdate, An option flag (_fromEquipLogic) is passed to updateEmbeddedDocuments
-   * to supress further updates when other armor items are being unequipped.
-   * @param {string} armorItemId - The ID of the armor item to equip.
+   * Equip one item of a given exclusive type, unequipping all others of that same type.
+   * In order to prevent an infinite loop with Item._onUpdate, an option flag
+   * (`_fromEquipLogic`) is passed to updateEmbeddedDocuments when other items are
+   * being unequipped.
+   * @param {string} itemType - The exclusive item type to enforce.
+   * @param {string} itemId - The ID of the item to equip.
    */
-  async equipArmor(armorItemId) {
-    const armorItems = this.items.filter(item => item.type === "armor");
+  async equipExclusiveItemType(itemType, itemId) {
+    const exclusiveItems = this.items.filter((item) => item.type === itemType);
     const updates = [];
     let newBarrierHP = undefined;
-    for (const item of armorItems) {
-      if (item.id === armorItemId) {
-        newBarrierHP = item.system.forceBarrier.max;
+    for (const item of exclusiveItems) {
+      if (item.id === itemId) {
+        if (itemType === 'armor') newBarrierHP = item.system.forceBarrier.max;
         if (!item.system.equipped) {
           updates.push({ _id: item.id, "system.equipped": true });
         }
@@ -67,10 +81,18 @@ export class SynthicideActor extends Actor {
     if (updates.length) {
       await this.updateEmbeddedDocuments("Item", updates, {render: false, _fromEquipLogic: true});
     }
-    if (isFinite(newBarrierHP)) {
+    if (itemType === 'armor' && isFinite(newBarrierHP)) {
       await this.update({"system.armorValues.forceBarrier.value": newBarrierHP}, {render: false});
     }
     if (this.sheet && (updates.length || isFinite(newBarrierHP))) await this.sheet?.render(true);
+  }
+
+  /**
+   * Backward-compatible armor equip wrapper.
+   * @param {string} armorItemId - The ID of the armor item to equip.
+   */
+  async equipArmor(armorItemId) {
+    return this.equipExclusiveItemType('armor', armorItemId);
   }
 
   /**
@@ -114,6 +136,7 @@ export class SynthicideActor extends Actor {
     for (const key of attributeKeys) {
       const attr = this.system?.attributes?.[key];
       if (!attr) continue;
+      if (!Object.hasOwn(attr, 'modifier')) continue;
       const newModifier = Number(attributeModifiers[key] ?? 0);
       if (Number(attr.modifier ?? 0) !== newModifier) {
         updates[`system.attributes.${key}.modifier`] = newModifier;
@@ -124,11 +147,14 @@ export class SynthicideActor extends Actor {
       await this.update(updates, { render });
     }
 
-    // Always recalculate value in memory after aggregation
+    // Always recalculate value in memory after aggregation.
+    // NPC actors use direct editable values and do not have base/modifier/increase triplets.
     for (const key of attributeKeys) {
       const attr = this.system?.attributes?.[key];
       if (!attr) continue;
-      attr.value = attr.base + attr.modifier + attr.increase;
+      if (Object.hasOwn(attr, 'base') && Object.hasOwn(attr, 'modifier') && Object.hasOwn(attr, 'increase')) {
+        attr.value = attr.base + attr.modifier + attr.increase;
+      }
     }
     if (debug) {
       this.debugModifierAggregation(attributeKeys, attributeModifiers, debugItemContrib);
@@ -281,33 +307,29 @@ export class SynthicideActor extends Actor {
       success = rollTotal > shockRollDifficulty;
     }
 
-    const outcome = this._resolveShockOutcome({ isLethal, success, wouldDropBelowZero });
+    const outcome = resolveShockOutcome({ isLethal, success, wouldDropBelowZero });
 
-    const cardData = this._buildShockCardData({
-      roll,
-      rollTotal,
-      damageRemaining,
-      shockThreshold,
-      rd: shockRollDifficulty,
-      toughnessValue,
-      outcome,
-      lethal,
+    // Use modular builder for shock card data
+    const cardData = buildShockCardData({
+      actor: this,
+      options: {
+        roll,
+        rollTotal,
+        damageRemaining,
+        shockThreshold,
+        rd: shockRollDifficulty,
+        toughnessValue,
+        outcome,
+        lethal,
+        armor,
+        barrierAbsorbed,
+      }
     });
 
     const { preferredMode, whisper } = this._resolveShockMessageOptions({ options, cardData });
     await createActionMessage({ actor: this, roll, cardData, messageMode: preferredMode, whisper });
 
-    const lastFlag = this._buildShockLastFlag({
-      damageRemaining,
-      rd: shockRollDifficulty,
-      roll: rollTotal,
-      success,
-      armor,
-      barrierAbsorbed,
-      lethal,
-    });
-
-    this._applyShockOutcomeUpdates({ updates, outcome, lastFlag });
+    this._applyShockOutcomeUpdates({ updates, outcome });
   }
 
   /**
@@ -324,58 +346,30 @@ export class SynthicideActor extends Actor {
       : (Number.isFinite(actorArmor) ? actorArmor : 0);
 
     const barrierAbsorbed = Number(options?.barrierAbsorbed ?? 0);
-    let lethal = Number(options?.attack?.lethal ?? options?.lethal ?? 0);
+    let lethal = Number(options?.attack?.lethal ?? 0);
     if (barrierAbsorbed > 0) lethal = 0;
 
     return { armor, barrierAbsorbed, lethal };
   }
 
-  /**
-   * Resolve the final shocking-strike outcome from derived booleans.
-   * @private
-   */
-  _resolveShockOutcome({ isLethal, success, wouldDropBelowZero } = {}) {
-    if (isLethal) return SHOCK_OUTCOMES.LETHAL;
-    if (success) return SHOCK_OUTCOMES.SUCCESS;
-    return wouldDropBelowZero ? SHOCK_OUTCOMES.DEATH : SHOCK_OUTCOMES.MINUS_ONE;
-  }
 
-  /**
-   * Build and normalize a single lastShockingStrike payload.
-   * @private
-   */
-  _buildShockLastFlag({ damageRemaining, rd, roll, success, armor, barrierAbsorbed, lethal } = {}) {
-    return {
-      damage: damageRemaining,
-      rd,
-      roll,
-      success,
-      armor,
-      barrierAbsorbed,
-      lethal,
-    };
-  }
 
   /**
    * Apply post-roll/non-roll shocking-strike outcomes to the pending update payload.
    * @private
    */
-  _applyShockOutcomeUpdates({ updates, outcome, lastFlag } = {}) {
-    if (outcome === SHOCK_OUTCOMES.SUCCESS) {
-      updates[FLAG_LAST_SHOCKING_STRIKE] = lastFlag;
+  _applyShockOutcomeUpdates({ updates, outcome } = {}) {
+    if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS) {
       return;
     }
 
     // Any failed shocking strike outcome forces HP to -1.
     updates['system.hitPoints.value'] = -1;
 
-    if (outcome === SHOCK_OUTCOMES.LETHAL || outcome === SHOCK_OUTCOMES.DEATH) {
-      updates[FLAG_LAST_SHOCKING_STRIKE] = { ...lastFlag, success: false, death: true };
+    if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL || outcome === SYNTHICIDE.SHOCK_OUTCOMES.DEATH) {
       updates[FLAG_DEAD] = true;
       return;
     }
-
-    updates[FLAG_LAST_SHOCKING_STRIKE] = { ...lastFlag, success: false, forcedHP: -1 };
   }
 
   /**
@@ -389,54 +383,15 @@ export class SynthicideActor extends Actor {
     };
   }
 
-  /**
-   * Build cardData for a Shocking Strike toughness check chat card.
-   * @private
-   */
-  _buildShockCardData({ roll, rollTotal, damageRemaining, shockThreshold, rd, toughnessValue, outcome, lethal } = {}) {
-    const isLethal = outcome === SHOCK_OUTCOMES.LETHAL;
-    const d10 = Number(roll?.dice?.[0]?.results?.[0]?.result ?? 0);
-    const baseFlavor = game.i18n.format("SYNTHICIDE.Chat.Shock.Base", {
-      actor: this.name,
-      damage: damageRemaining,
-      threshold: shockThreshold
-    });
-    const outcomeFlavor = this._buildShockOutcomeFlavor({ outcome, lethal, rollTotal, rd });
 
-    return {
-      title: game.i18n.localize("SYNTHICIDE.Roll.Card.TitleShock"),
-      subtype: 'shock',
-      equation: roll?.result ?? '',
-      total: isLethal ? damageRemaining : rollTotal,
-      dieValue: d10,
-      dieClass: '',
-      equationTerms: [
-        { label: game.i18n.localize(SYNTHICIDE.attributes.toughness), value: toughnessValue },
-        { label: game.i18n.localize("SYNTHICIDE.Roll.Card.Difficulty"), value: rd },
-        { label: game.i18n.localize("SYNTHICIDE.Roll.Card.DamageResultApplied"), value: damageRemaining },
-      ],
-      metadataRows: [
-        { label: game.i18n.localize("SYNTHICIDE.Chat.Shock.Threshold"), value: shockThreshold },
-      ],
-      flavor: `${baseFlavor} ${outcomeFlavor}`,
-      flags: {
-        subtype: 'shock',
-        actorUuid: this.uuid,
-        userId: game.user.id,
-        messageMode: game.settings.get('core', 'messageMode'),
-        shock: { damage: damageRemaining, rd, shockThreshold, roll: rollTotal, success: outcome === SHOCK_OUTCOMES.SUCCESS, lethal: isLethal ? lethal : 0 }
-      },
-      showEffectOutcomeRow: false,
-    };
-  }
 
   /**
    * Build localized outcome flavor text for shocking strike cards.
    * @private
    */
   _buildShockOutcomeFlavor({ outcome, lethal, rollTotal, rd } = {}) {
-    const key = SHOCK_FLAVOR_KEYS[outcome] ?? SHOCK_FLAVOR_KEYS[SHOCK_OUTCOMES.MINUS_ONE];
-    if (outcome === SHOCK_OUTCOMES.LETHAL) {
+    const key = SYNTHICIDE.SHOCK_FLAVOR_KEYS[outcome] ?? SYNTHICIDE.SHOCK_FLAVOR_KEYS[SYNTHICIDE.SHOCK_OUTCOMES.MINUS_ONE];
+    if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL) {
       return game.i18n.format(key, { lethal });
     }
     return game.i18n.format(key, { roll: rollTotal, rd });

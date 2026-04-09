@@ -30,6 +30,7 @@ export default class SynthicideBioclass extends SynthicideFeature {
     schema.brainSlots = new fields.NumberField({ required: true, initial: 0 });
     schema.bodyType = new fields.StringField({ required: true, initial: 'Organic' });
     schema.brainType = new fields.StringField({ required: true, initial: 'Organic' });
+    schema.ignoreRoleWeakPenalty = new fields.BooleanField({ initial: false });
 
     // Add startingAttributes for manual entry, using config for core attributes
     const attrFields = {};
@@ -95,7 +96,10 @@ export default class SynthicideBioclass extends SynthicideFeature {
     for (const [key, value] of Object.entries(starting)) {
       if (!(key in actorAttributes)) continue;
       const num = Number(value ?? 0);
-      updates[`system.attributes.${key}.base`] = num;
+      const targetField = foundry.utils.hasProperty(actorAttributes[key], 'base')
+        ? 'base'
+        : 'value';
+      updates[`system.attributes.${key}.${targetField}`] = num;
     }
     if (foundry.utils.hasProperty(starting, 'hp')) {
       const num = Number(starting.hp ?? 0);
@@ -133,18 +137,14 @@ export default class SynthicideBioclass extends SynthicideFeature {
 
     for (const key of Object.keys(starting)) {
       if (!(key in actorAttributes)) continue;
-      updates[`system.attributes.${key}.base`] = 0;
+      const targetField = foundry.utils.hasProperty(actorAttributes[key], 'base')
+        ? 'base'
+        : 'value';
+      updates[`system.attributes.${key}.${targetField}`] = 0;
     }
 
     updates['system.hitPoints.base'] = 0;
     updates['system.hitPoints.perLevel'] = 0;
-
-    if (foundry.utils.hasProperty(owningActor.system, 'bodySlots')) {
-      updates['system.bodySlots'] = 0;
-    }
-    if (foundry.utils.hasProperty(owningActor.system, 'brainSlots')) {
-      updates['system.brainSlots'] = 0;
-    }
 
     await owningActor.update(updates, { render });
   }

@@ -11,6 +11,7 @@
   font-style: normal;
 }
 
+/* Root theme variables */
 :root {
   --synthicide-border-groove: #bdbdbd;
   --synthicide-shadow: 0 1px 2px rgba(0,0,0,0.04);
@@ -35,35 +36,37 @@
   --reduced-font-size: 0.85rem;
   --form-field-bg: #e6e4df;
   --form-field-color: #333;
+  --synthicide-c-icon-bg-dark: #222;
+  --synthicide-c-icon-bg: #222; /* default fallback, overridden by theme */
+}
+
+.theme-light {
+  --color-border-light-tertiary: var(--synthicide-c-border-subtle);
+  --color-icon-bg-light: var(--synthicide-c-faint);
+  --color-icon-filter-light: var(--synthicide-c-black);
+  --synthicide-c-icon-bg: var(--form-field-color);
 }
 
 .theme-dark {
   --synthicide-border-groove: #444;
   --synthicide-shadow: 0 1px 2px rgba(255,255,255,0.06);
-  --synthicide-c-dark: #c9c7b8;
-  --synthicide-c-faint: #191813;
-  --synthicide-c-beige: #444444;
-  --synthicide-c-tan: #b5b3a4;
-  --synthicide-c-white: #000000;
-  --synthicide-c-black: #ffffff;
-  --synthicide-c-groove: #11121f;
-  --synthicide-c-panel-bg: rgba(255, 255, 255, 0.08);
-  --synthicide-c-meter-line: rgba(255, 255, 255, 0.08);
+      background: var(--synthicide-c-icon-bg);
+  --synthicide-c-faint: #444444;
+  --synthicide-c-beige: #b5b3a4;
+  --synthicide-c-tan: #c9c7b8;
+  --synthicide-c-white: #ffffff;
+  --synthicide-c-black: #000000;
+  --synthicide-c-groove: #232323;
+  --synthicide-c-panel-bg: rgba(255,255,255,0.04);
+  --synthicide-c-meter-line: rgba(255,255,255,0.08);
   --synthicide-c-border-subtle: var(--synthicide-c-faint);
-  --synthicide-c-danger: #b42318;
-  --synthicide-c-warning: yellow;
-  --synthicide-c-success: #2f9e44;
-  --synthicide-c-hover-glow: red;
-  --synthicide-c-style-accent: var(--synthicide-c-tan);
+  --color-border-dark-tertiary: var(--synthicide-c-border-subtle);
+  --color-icon-bg-dark: var(--synthicide-c-dark);
+  --color-icon-filter-dark: var(--synthicide-c-white);
+  --form-field-bg: #232323;
+  --form-field-color: #e6e4df;
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --form-field-bg: #232323;
-    --form-field-color: #e6e4df;
-  }
-}
 
 body.theme-light input:disabled, body.theme-light select:disabled, body.theme-light textarea:disabled, body.theme-light code-mirror:disabled, body.theme-light formula-input:disabled {
     --input-border-color: var(--color-dark-6);
@@ -119,6 +122,40 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 /* ============================== */
 .trait-add-row {
   margin-bottom: 0.5rem;
+}
+
+.bioclass-traits-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.bioclass-traits-top-row .trait-add-row {
+  margin-bottom: 0;
+}
+
+.bioclass-traits-top-row .bioclass-toggle-inline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: none;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.bioclass-traits-top-row .bioclass-toggle-inline .resource-label {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+.bioclass-traits-top-row .bioclass-toggle-inline input[type='checkbox'] {
+  margin: 0;
+  flex: 0 0 auto;
 }
 
 .trait-card-header {
@@ -562,6 +599,27 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   gap: 0.5rem;
 }
 
+.synthicide-action-roll-form .form-group .field-stack {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.synthicide-action-roll-form .form-group .field-stack .notes {
+  margin: 0;
+  font-size: 0.85em;
+  opacity: 0.9;
+}
+
+.synthicide-action-roll-form .form-group > label.shield-bonus-label,
+.dialog-form.standard-form .form-group > label.shield-bonus-label {
+  flex: 1;
+  align-self: flex-start;
+  line-height: 1.2;
+  white-space: normal;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
 .synthicide-action-roll-form hr,
 .synthicide-action-roll-form p {
   grid-column: 1 / -1;
@@ -771,6 +829,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   margin-top: 6px;
   flex-direction: row;
   justify-content: space-evenly;
+  align-items: stretch;
   width: 100%
 }
 
@@ -783,7 +842,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .synthicide .header-resource .resource-label {
@@ -814,6 +873,51 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   margin: 0 auto;
   box-sizing: border-box;
   font-size: 1rem;
+}
+
+.synthicide .header-resource select {
+  width: 100%;
+  min-width: 0;
+}
+
+.synthicide .header-resource-wealth {
+  flex: 0 1 12rem;
+  width: clamp(9rem, 16vw, 12rem);
+  min-width: 9rem;
+}
+
+.synthicide .header-resource-wealth select {
+  max-width: 10.5rem;
+  margin: 0 auto;
+}
+
+.synthicide .header-resource .resource-force-barrier-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  align-items: start;
+}
+
+.synthicide .header-resource .resource-force-barrier-cell {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.synthicide .header-resource .resource-force-barrier-cell input[type="number"] {
+  width: clamp(2.6ch, 3.2vw, 3.4ch);
+  min-width: 2.6ch;
+  max-width: 3.4ch;
+  margin: 0 auto;
+}
+
+.synthicide .header-resource .resource-force-barrier-caption {
+  font-size: 0.64rem;
+  line-height: 1.1;
+  text-align: center;
+  opacity: 0.9;
 }
 @media (max-width: 840px) {
   .synthicide .header-resource-grid {
@@ -1346,6 +1450,11 @@ img.actions-img {
   transition: width 120ms ease-in-out;
 }
 
+/* Make background transparent for empty tracks */
+.synthicide .resource-track-empty {
+  background: transparent !important;
+}
+
 .synthicide .resource-track-cynicism .resource-track-fill {
   background: var(--synthicide-c-danger);
 }
@@ -1373,18 +1482,13 @@ img.actions-img {
   width: 100%;
 }
 
-.header-info-level-block,
-.header-info-lurans-block {
+.header-info-level-block {
   grid-column: 3;
   text-align: center; /* center labels and inline values */
 }
 
 .header-info-level-block {
   grid-row: 1;
-}
-
-.header-info-lurans-block {
-  grid-row: 2;
 }
 
 .header-info-bioclass-block {
@@ -1403,8 +1507,7 @@ img.actions-img {
   flex-direction: column;
   align-items: flex-start;
 }
-.header-info-grid > .header-info-level-block,
-.header-info-grid > .header-info-lurans-block {
+.header-info-grid > .header-info-level-block {
   align-items: center;                   /* centre label + input horizontally */
 }
 
@@ -1430,13 +1533,11 @@ img.actions-img {
 }
 
 /* centre inputs and values in narrow right column */
-.header-info-level-block .header-info-value,
-.header-info-lurans-block .header-info-value {
+.header-info-level-block .header-info-value {
   display: flex;
   justify-content: center;
 }
-.header-info-level-block .header-info-label,
-.header-info-lurans-block .header-info-label {
+.header-info-level-block .header-info-label {
   width: 100%;
   text-align: center; /* override generic left-align */
 }
@@ -1479,6 +1580,26 @@ img.actions-img {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.header-info-value.bioclass-value .bioclass-box {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.header-info-value.bioclass-value .bioclass-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-info-value.bioclass-value .icon-button {
+  flex: 0 0 auto;
 }
 
 .header-info-value.header-info-motivation,
@@ -1732,6 +1853,83 @@ body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-hea
   color: var(--rb-on-accent);
 }
 
+/* Implant list header should match the standard combat/gear row sizing. */
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header {
+  min-height: 30px;
+  padding: 3px 6px;
+  border-left: 5px solid var(--rb-accent);
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header > *,
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-name {
+  padding-left: 0;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-controls a {
+  font-size: 0.72rem;
+}
+
+/* Keep implant list header and rows on the same flex grid columns. */
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-prop--location {
+  flex: 0 0 16%;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-prop--type {
+  flex: 0 0 18%;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-prop--equipped {
+  flex: 0 0 12%;
+}
+
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-controls--implant {
+  flex: 0 0 16%;
+}
+
+/* Combat tab list headers should align with combat list rows. */
+body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header {
+  min-height: 32px;
+  padding: 3px 6px;
+  border-left-width: 5px;
+}
+
+body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header > *,
+body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header .item-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header .item-controls a {
+  font-size: 0.72rem;
+}
+
+/* Keep combat list headers and rows on a shared column grid. */
+body.synthicide-style-bold .synthicide .tab.combat .items-list .item-name {
+  flex: 0 0 34%;
+  min-width: 0;
+}
+
+body.synthicide-style-bold .synthicide .tab.combat .items-list .item-prop {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+body.synthicide-style-bold .synthicide .tab.combat .items-list .item-controls {
+  flex: 0 0 16%;
+}
+
 /* ============================================================ */
 /* ITEMS LIST & EFFECTS LIST                                    */
 /* ============================================================ */
@@ -1748,6 +1946,7 @@ body.synthicide-style-bold .synthicide .effects-list {
 body.synthicide-style-bold .synthicide .items-list .item:not(.items-header),
 body.synthicide-style-bold .synthicide .effects-list .effect {
   border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  border-left: 5px solid transparent;
   min-height: 32px;
   padding: 3px 6px;
 }
@@ -2074,31 +2273,26 @@ body.theme-dark.synthicide-style-bold .synthicide h4 {
 }
 
 /* Aspect & Combat tab: h4 is a full-width header bar */
-body.synthicide-style-bold .synthicide .tab.aspect h4 {
+body.synthicide-style-bold .synthicide .tab.aspect h4,
+body.synthicide-style-bold .synthicide .tab.combat h4,
+body.synthicide-style-bold .synthicide .tab.cybernetics h4 {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
   border-left: 5px solid var(--rb-accent);
   padding: 6px 14px;
   margin: 0 0 4px;
   font-size: var(--reduced-font-size);
-  border-radius: 0;
-}
-
-body.synthicide-style-bold .synthicide .tab.combat h4 {
-  background: var(--rb-strong);
-  color: var(--rb-on-accent);
-  border-left: 5px solid var(--rb-accent);
-  padding: 6px 14px;
-  margin: 0 0 4px;
   border-radius: 0;
 }
 
 body.synthicide-style-bold .synthicide .tab.attributes h4 {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
-  padding: 14px;
+  border-left: 5px solid var(--rb-accent);
+  padding: 6px 14px;
   margin: 0 0 4px;
   font-size: var(--reduced-font-size);
+  border-radius: 0;
 }
 
 /* ============================================================ */
@@ -2378,6 +2572,49 @@ body.synthicide-style-bold .synthicide .item-form .tab > .grid > .resource {
   margin-bottom: 6px;
 }
 
+body.synthicide-style-bold .synthicide .item-form .resource.bioclass-toggle-inline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+body.synthicide-style-bold .synthicide .item-form .resource.bioclass-toggle-inline .resource-label {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+body.synthicide-style-bold .synthicide .item-form .resource.bioclass-toggle-inline input[type='checkbox'] {
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row .trait-add-row {
+  padding: 0;
+  flex: 0 0 auto;
+}
+
+body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row .trait-add-row > button {
+  width: auto;
+}
+
+body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row .resource.bioclass-toggle-inline {
+  margin-bottom: 0;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
 /* Gear attributes: outer resource container top padding */
 body.synthicide-style-bold .synthicide .item-form .tab.attributes > .resource:first-child {
   padding-top: 8px;
@@ -2455,3 +2692,691 @@ body.synthicide-style-bold .synthicide-action-roll-card .card-title.item-header 
 /*.synthicide .armor-group .resource-pair {
   text-align: center;
 }*/
+
+  /* ========================= */
+  /* NPC Actor Sheet           */
+  /* ========================= */
+
+  /* First column header — icon/label column with no text, sets row height via inner h4 */
+  .tab.npcStats .attributes-table thead th.npc-col-icon-header {
+    margin: 0;
+    padding: 0;
+  }
+
+  .tab.npcStats .attributes-table thead th.npc-col-icon-header .npc-col-icon-h4 {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Role Build Guidance section sits inside .attributes-panel, needs top spacing */
+  .tab.npcStats .attributes-panel .derived-list {
+    margin-top: 1rem;
+  }
+
+  /* Sub-section headings (Mastered Attack, NPC Notes) inside the derived panel */
+  .tab.npcStats .attributes-derived h4.npc-section-heading {
+    margin-top: 1rem;
+  }
+
+.tab.npcStats .npc-stats-layout {
+  display: grid;
+  grid-template-columns: minmax(86px, 108px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.tab.npcStats .npc-attributes-panel {
+  overflow: visible;
+}
+
+.tab.npcStats .npc-board {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0.9rem;
+  align-items: start;
+}
+
+.tab.npcStats .npc-board-section {
+  border: 1px solid var(--synthicide-c-faint);
+  padding: 0.7rem;
+  background: color-mix(in srgb, var(--synthicide-c-panel-bg) 94%, transparent);
+}
+
+.tab.npcStats .npc-board-section h4 {
+  margin: 0 0 0.65rem;
+  text-align: center;
+}
+
+.tab.npcStats .npc-section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.65rem;
+}
+
+.tab.npcStats .npc-section-title-row h4 {
+  margin: 0;
+  text-align: left;
+}
+
+.tab.npcStats .npc-tier-indicator {
+  font-size: 0.72rem;
+  line-height: 1;
+  padding: 0.28rem 0.45rem;
+  border: 1px solid var(--synthicide-c-faint);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--synthicide-c-panel-bg) 88%, transparent);
+  white-space: nowrap;
+}
+
+.tab.npcStats .npc-role-section {
+  grid-column: 1 / -1;
+}
+
+.tab.npcStats .npc-guidance-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tab.npcStats .npc-guidance-chip,
+.tab.npcStats .npc-stat-box,
+.tab.npcStats .npc-attack-field,
+.tab.npcStats .npc-note-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.tab.npcStats .npc-guidance-chip {
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  padding: 0.4rem;
+  border: 1px solid var(--synthicide-c-faint);
+  background: color-mix(in srgb, var(--synthicide-c-panel-bg) 88%, transparent);
+  text-align: center;
+}
+
+.tab.npcStats .npc-guidance-label,
+.tab.npcStats .npc-guidance-meta {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tab.npcStats .npc-guidance-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tab.npcStats .npc-role-power {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tab.npcStats .npc-role-power.npc-role-power-compact input {
+  font-size: 0.8rem;
+  min-height: 28px;
+}
+
+.tab.npcStats .attributes-table tbody tr {
+  height: 54px;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-label {
+  padding: 4px;
+  width: 72px;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-value {
+  width: 52px;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-label .attr-abbr {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.72rem;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-label .rollable {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-label img.actions-img,
+body.synthicide-style-bold .synthicide .tab.npcStats .attribute-label img.actions-img {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  object-fit: contain;
+}
+
+.tab.npcStats .attributes-table tbody td.attribute-value input.attribute-score {
+  width: 42px;
+  min-width: 42px;
+  height: 28px;
+  padding: 0 4px;
+}
+
+.tab.npcStats .npc-derived-section {
+  grid-column: 1 / span 5;
+  container-type: inline-size;
+  container-name: npc-derived;
+}
+
+/* Default: 2-column — always readable regardless of section width */
+.tab.npcStats .npc-derived-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem 0.75rem;
+}
+
+.tab.npcStats .npc-stat-box {
+  min-width: 0;
+}
+
+.tab.npcStats .npc-stat-box .resource-label {
+  font-size: 0.65rem;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+/* Scale to 3-column when the section has enough room */
+@container npc-derived (min-width: 220px) {
+  .tab.npcStats .npc-derived-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .tab.npcStats .npc-stat-box .resource-label {
+    font-size: 0.72rem;
+  }
+}
+
+.tab.npcStats .npc-stat-box input,
+.tab.npcStats .npc-role-power input,
+.tab.npcStats .npc-attack-field input,
+.tab.npcStats .npc-attack-field select,
+.tab.npcStats .npc-note-field input {
+  width: 100%;
+  text-align: center;
+}
+
+.tab.npcStats .npc-attack-section {
+  grid-column: 6 / -1;
+  container-type: inline-size;
+  container-name: npc-attack;
+}
+
+/* Default: 2-column — always readable regardless of section width */
+.tab.npcStats .npc-attack-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem 0.75rem;
+  align-items: end;
+}
+
+.tab.npcStats .npc-attack-field,
+.tab.npcStats .npc-attack-action {
+  min-width: 0;
+}
+
+.tab.npcStats .npc-attack-field .resource-label {
+  font-size: 0.65rem;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+/* These always span full width in the 2-column layout */
+.tab.npcStats .npc-attack-weapon,
+.tab.npcStats .npc-attack-total,
+.tab.npcStats .npc-attack-notes,
+.tab.npcStats .npc-attack-action {
+  grid-column: 1 / -1;
+}
+
+.tab.npcStats .npc-attack-action {
+  display: flex;
+  align-items: end;
+}
+
+.tab.npcStats .npc-attack-action button {
+  width: 100%;
+}
+
+/* Scale up to 4-column when the section has enough room */
+@container npc-attack (min-width: 440px) {
+  .tab.npcStats .npc-attack-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .tab.npcStats .npc-attack-field .resource-label {
+    font-size: 0.72rem;
+  }
+
+  .tab.npcStats .npc-attack-weapon,
+  .tab.npcStats .npc-attack-total,
+  .tab.npcStats .npc-attack-notes {
+    grid-column: span 2;
+  }
+
+  .tab.npcStats .npc-attack-action {
+    grid-column: 3 / -1;
+  }
+}
+
+.tab.npcStats .npc-notes-section {
+  grid-column: 1 / -1;
+}
+
+.tab.npcStats .npc-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.tab.npcStats .npc-note-field-wide {
+  grid-column: span 2;
+}
+
+/* Attributes tab: use available board width for Derived Values with normal-sized labels. */
+.tab.npcStats[data-tab='npcStats'] .npc-derived-section {
+  grid-column: 1 / -1;
+}
+
+.tab.npcStats[data-tab='npcStats'] .npc-stat-box .resource-label {
+  font-size: 0.82rem;
+}
+
+/* Combat tab: Mastered Attack first and full width; Force Barrier compact below. */
+.tab.npcStats[data-tab='combat'] .npc-attack-section {
+  grid-column: 1 / -1;
+  container-type: normal;
+  container-name: none;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-attack-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-attack-action {
+  grid-column: 1 / -1;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-attack-special-note {
+  grid-column: 1 / -1;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--synthicide-c-orange) 30%, transparent);
+  background: color-mix(in srgb, var(--synthicide-c-dark) 35%, transparent);
+}
+
+.tab.npcStats[data-tab='combat'] .npc-attack-special-note ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1rem;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-attack-special-note li {
+  margin: 0;
+  line-height: 1.2;
+  font-size: 0.82rem;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-force-barrier-section {
+  grid-column: 1 / span 6;
+  min-width: 0;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-force-barrier-section .npc-derived-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-force-barrier-section .npc-stat-box .resource-label {
+  font-size: 0.76rem;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-force-barrier-section .npc-stat-box,
+.tab.npcStats[data-tab='combat'] .npc-force-barrier-section .npc-stat-box input {
+  min-width: 0;
+}
+
+.tab.npcStats[data-tab='combat'] .npc-stat-box .resource-label,
+.tab.npcStats[data-tab='combat'] .npc-attack-field .resource-label {
+  font-size: 0.82rem;
+}
+
+body.synthicide-style-bold .synthicide .tab.npcStats .npc-board-section,
+body.synthicide-style-bold .synthicide .tab.npcStats .npc-guidance-chip {
+  border-color: color-mix(in srgb, var(--rb-strong) 50%, transparent);
+}
+
+body.synthicide-style-bold .synthicide .tab.npcStats .attributes-table thead th.attributes-col-header {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+@media (max-width: 1200px) {
+  .tab.npcStats .npc-board {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  .tab.npcStats .npc-stat-box .resource-label,
+  .tab.npcStats .npc-attack-field .resource-label {
+    font-size: 0.78rem;
+  }
+
+  .tab.npcStats .npc-derived-section,
+  .tab.npcStats .npc-attack-section,
+  .tab.npcStats .npc-notes-section,
+  .tab.npcStats .npc-role-section {
+    grid-column: 1 / -1;
+  }
+
+  .tab.npcStats .npc-notes-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tab.npcStats .npc-note-field-wide {
+    grid-column: 1 / -1;
+  }
+
+  .tab.npcStats[data-tab='combat'] .npc-force-barrier-section {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .tab.npcStats .npc-stats-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .tab.npcStats .npc-board,
+  .tab.npcStats .npc-guidance-strip,
+  .tab.npcStats .npc-notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tab.npcStats .npc-derived-section,
+  .tab.npcStats .npc-attack-section,
+  .tab.npcStats .npc-notes-section,
+  .tab.npcStats .npc-role-section,
+  .tab.npcStats .npc-note-field-wide {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ============================= */
+/* Compact NPC Sheet Styles      */
+/* ============================= */
+
+/* --- Layout and spacing: applies to all modes --- */
+/* Layout and spacing only for all modes (no color, background, border) */
+.npc-compact-sheet {
+  font-family: var(--synthicide-default-font);
+  padding: 12px;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+/* --- Classic mode: subtle section borders for both light and dark --- */
+.npc-compact-sheet:not(.rulebookBold) .npc-compact-header,
+.npc-compact-sheet:not(.rulebookBold) .npc-compact-attributes,
+.npc-compact-sheet:not(.rulebookBold) .npc-compact-row,
+.npc-compact-sheet:not(.rulebookBold) .npc-compact-select-attack,
+.npc-compact-sheet:not(.rulebookBold) .npc-compact-powers,
+.npc-compact-sheet:not(.rulebookBold) .npc-compact-loot,
+.npc-compact-sheet:not(.rulebookBold) .npc-compact-notes {
+  border-bottom: 1.5px solid var(--color-border-light-tertiary);
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+}
+
+body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-header,
+body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-attributes,
+body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-row,
+body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-select-attack,
+body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-powers,
+body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-loot,
+body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-notes {
+  border-bottom: 1.5px solid var(--color-border-dark-tertiary);
+}
+
+/* --- d10 icon contrast for classic mode --- */
+.npc-compact-sheet:not(.rulebookBold) .synthicide-window-icon {
+  border-radius: 3px;
+  padding: 2px;
+}
+.npc-compact-sheet:not(.rulebookBold) .synthicide-window-icon img[src$="synthicidePause.svg"] {
+  background: var(--synthicide-c-icon-bg);
+}
+
+.npc-compact-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+  margin-bottom: 8px;
+}
+.npc-compact-header input[name="name"] {
+  font-size: 1.2em;
+  font-weight: bold;
+  border: none;
+  border-bottom: 1px solid var(--synthicide-c-border-subtle);
+  width: 20ch;
+}
+.npc-compact-header h1 {
+  margin-bottom: 0;
+}
+.npc-compact-sheet .sheet-header-fields {
+  display: inline-flex;
+  gap: 2ch;
+  align-items: center;
+  text-align: center;
+}
+.npc-compact-sheet .bioclass-box {
+  display: inline-flex;
+  gap: 1ch;
+}
+
+.npc-compact-attributes-list {
+  display: flex;
+  justify-content: space-evenly;
+}
+.npc-attr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 10ch;
+}
+.npc-attr .rollable {
+  display: inline-flex;
+  align-items: center;
+}
+.npc-der {
+  align-items: center;
+  text-align: center;
+}
+.npc-hp-align {
+  display: flex;
+  flex-direction: column;
+}
+.one-word-per-line {
+  width: min-content;
+  display: block;
+}
+.npc-attr input,
+.npc-der input {
+  width: 36px;
+  text-align: center;
+  border-radius: 3px;
+}
+.npc-compact-row {
+  font-size: 0.95em;
+}
+
+.npc-compact-select-attack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  align-items: center;
+  padding: 6px;
+  margin-bottom: 8px;
+}
+.npc-compact-select-attack label {
+  font-weight: bold;
+}
+.npc-compact-powers {
+  display: flex;
+  gap: 2em;
+  margin-bottom: 8px;
+  align-items: center;
+}
+.npc-compact-powers label,
+.npc-compact-loot label,
+.npc-compact-notes label {
+  font-weight: bold;
+  margin-right: 0.3em;
+}
+.npc-compact-loot {
+  margin-bottom: 8px;
+}
+.npc-compact-notes {
+  margin-bottom: 0;
+}
+.npc-compact-notes textarea {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--synthicide-c-border-subtle);
+  border-radius: 3px;
+  resize: vertical;
+}
+
+/* --- Rulebook Bold: custom colors, backgrounds, borders --- */
+.npc-compact-sheet.rulebookBold {
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  border: 2px solid var(--synthicide-c-beige);
+  background: var(--synthicide-c-dark);
+  color: var(--synthicide-c-beige);
+}
+.npc-compact-sheet.rulebookBold .sheet-header,
+.npc-compact-sheet.rulebookBold h1,
+.npc-compact-sheet.rulebookBold label {
+  color: var(--synthicide-c-beige);
+}
+.npc-compact-sheet.rulebookBold .npc-compact-select-attack {
+  background: var(--synthicide-c-panel-bg);
+  border-color: var(--synthicide-c-beige);
+  color: var(--synthicide-c-beige);
+  font-weight: 500;
+  border: 2px solid var(--synthicide-c-beige);
+  border-radius: 6px;
+  padding: 0.5em 1em;
+  margin-bottom: 12px;
+}
+.npc-compact-sheet.rulebookBold .bioclass-box {
+  background: var(--synthicide-c-panel-bg);
+  border-radius: 6px;
+  padding: 2px 8px;
+  border: 1px solid var(--synthicide-c-beige);
+  color: var(--synthicide-c-beige);
+}
+.npc-compact-sheet.rulebookBold .npc-compact-attributes {
+  background: var(--synthicide-c-panel-bg);
+  border-radius: 8px;
+  padding: 0.5em 0 0.5em 0;
+  margin-bottom: 12px;
+}
+.npc-compact-sheet.rulebookBold .npc-attr,
+.npc-compact-sheet.rulebookBold .npc-der {
+  background: var(--synthicide-c-dark);
+  border: 1.5px solid var(--synthicide-c-beige);
+  border-radius: 6px;
+  padding: 0.5em 1em;
+  margin: 0 0.5em;
+  color: var(--synthicide-c-beige);
+  font-weight: 500;
+  min-width: 7ch;
+}
+.npc-compact-sheet.rulebookBold .npc-attr label {
+  font-size: 0.9em;
+  color: var(--synthicide-c-tan);
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+.npc-compact-sheet.rulebookBold .npc-attr input,
+.npc-compact-sheet.rulebookBold .npc-der input {
+  background: var(--form-field-bg);
+  color: var(--form-field-color);
+  border: 1px solid var(--synthicide-c-beige);
+  font-weight: bold;
+  font-size: 1em;
+  padding: 2px 0;
+  margin-top: 2px;
+}
+.npc-compact-sheet.rulebookBold .npc-compact-row {
+  background: var(--synthicide-c-panel-bg);
+  border-radius: 8px;
+  padding: 0.5em 0;
+  margin-bottom: 12px;
+  color: var(--synthicide-c-beige);
+  font-weight: 500;
+}
+.npc-compact-sheet.rulebookBold .npc-compact-select-attack label {
+  color: var(--synthicide-c-style-accent);
+  font-size: 1em;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+}
+.npc-compact-sheet.rulebookBold .npc-compact-select-attack select {
+  background: var(--form-field-bg);
+  color: var(--form-field-color);
+  border: 1.5px solid var(--synthicide-c-beige);
+  border-radius: 4px;
+  font-size: 1em;
+  font-weight: 500;
+  padding: 2px 8px;
+  margin: 0 0.5em;
+}
+.npc-compact-sheet.rulebookBold .npc-compact-master-attack span {
+  margin-right: 1.5em;
+  font-size: 1em;
+  color: var(--synthicide-c-beige);
+}
+.npc-compact-sheet.rulebookBold .npc-compact-powers,
+.npc-compact-sheet.rulebookBold .npc-compact-loot,
+.npc-compact-sheet.rulebookBold .npc-compact-notes {
+  background: var(--synthicide-c-panel-bg);
+  border-radius: 6px;
+  border: 1.5px solid var(--synthicide-c-beige);
+  padding: 0.5em 1em;
+  margin-bottom: 10px;
+  color: var(--synthicide-c-beige);
+}
+.npc-compact-sheet.rulebookBold .npc-compact-powers label,
+.npc-compact-sheet.rulebookBold .npc-compact-loot label,
+.npc-compact-sheet.rulebookBold .npc-compact-notes label {
+  color: var(--synthicide-c-style-accent);
+  font-weight: bold;
+  font-size: 1em;
+}
+.npc-compact-sheet.rulebookBold .npc-compact-notes textarea {
+  background: var(--form-field-bg);
+  color: var(--form-field-color);
+  border: 1.5px solid var(--synthicide-c-beige);
+  border-radius: 4px;
+  font-size: 1em;
+  padding: 4px 8px;
+  width: 100%;
+  min-height: 2.5em;
+}

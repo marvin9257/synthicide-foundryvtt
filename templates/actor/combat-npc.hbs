@@ -1,0 +1,113 @@
+{{! NPC Combat Tab }}
+<section
+  class='tab combat npcStats scrollable {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='combat'
+>
+  <div class='npc-board'>
+    <section class='npc-board-section npc-attack-section'>
+      <div class='npc-section-title-row'>
+        <h4 class='npc-section-heading'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Attack'}}</h4>
+        <span class='npc-tier-indicator'>
+          {{localize 'SYNTHICIDE.Actor.NPC.UI.WeaponTier'}} {{system.selectedAttack.tierLabel}}
+        </span>
+      </div>
+      <div class='npc-attack-grid'>
+        <div class='npc-attack-field'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Weapon'}}</label>
+          <select name='system.attackWeapon'>
+            {{selectOptions @root.config.npcWeaponOptions selected=system.attackWeapon localize=true}}
+          </select>
+        </div>
+        <div class='npc-attack-field'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.MasteredWeapon'}} <span class='master-badge' data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.MasterBadgeTooltip"}}'><i class="fa-solid fa-star"></i></span></label>
+          <select name='system.masteredWeapon'>
+            {{selectOptions @root.config.npcWeaponOptions selected=system.masteredWeapon localize=true}}
+          </select>
+        </div>
+        <div class='npc-attack-field'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.WeaponNotes'}}</label>
+          <input type='text' value='{{system.selectedAttack.notes}}' disabled>
+        </div>
+        <div class='npc-attack-field'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.BaseAttDmg'}}</label>
+          <input type='text' value='+{{system.selectedAttack.attackBonus.base}} / +{{system.selectedAttack.damageBonus.base}}' disabled>
+        </div>
+        <div class='npc-attack-field'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.WeaponAttDmg'}}</label>
+          <input type='text' value='+{{system.selectedAttack.attackBonus.weapon}} / +{{system.selectedAttack.damageBonus.weapon}}' disabled>
+        </div>
+        <div class='npc-attack-field'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.TotalAttDmg'}} <span class='resource-hint' data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.PreRollTooltip"}}'>{{localize 'SYNTHICIDE.Actor.NPC.UI.PreRollHint'}}</span></label>
+          <input type='text' value='+{{system.selectedAttack.attackBonus.total}} / +{{system.selectedAttack.damageBonus.total}}' disabled>
+        </div>
+        <div class='npc-attack-field'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Ability'}}</label>
+          <input type='text' value='{{system.selectedAttack.ability}}' disabled>
+        </div>
+        <div class='npc-attack-field'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Range'}}</label>
+          <input type='text' value='{{system.selectedAttack.range}}' disabled>
+        </div>
+        <div class='npc-attack-action'>
+          <button
+            type='button'
+            class='rollable synthicide-roll-button'
+            data-action='selectedAttackRoll'
+            data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.RollAttackTooltip"}}'
+          >
+            {{localize 'SYNTHICIDE.Actor.NPC.UI.RollAttack'}}
+          </button>
+        </div>
+        {{#if @root.npcSpecialAttackNotes.length}}
+          <div class='npc-attack-special-note'>
+            <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.SpecialAttackNotesLabel'}}</label>
+            <ul>
+              {{#each @root.npcSpecialAttackNotes as |noteKey|}}
+                <li>{{localize noteKey}}</li>
+              {{/each}}
+            </ul>
+          </div>
+        {{/if}}
+      </div>
+    </section>
+
+    <section class='npc-board-section npc-derived-section npc-force-barrier-section'>
+      <h4>{{localize 'SYNTHICIDE.Actor.Combat.armorValues.ForceBarrier'}}</h4>
+      <div class='npc-derived-grid'>
+        <div class='npc-stat-box'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.Combat.armorValues.forceBarrier.value.label'}}</label>
+          <input
+            type='number'
+            name='system.armorValues.forceBarrier.value'
+            value='{{system.armorValues.forceBarrier.value}}'
+            data-dtype='Number'
+            min='0'
+            max='{{system.armorValues.forceBarrier.max}}'
+          />
+        </div>
+        <div class='npc-stat-box'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.Combat.armorValues.forceBarrier.max.label'}}</label>
+          <input
+            type='number'
+            name='system.armorValues.forceBarrier.max'
+            value='{{system.armorValues.forceBarrier.max}}'
+            data-dtype='Number'
+            min='0'
+          />
+        </div>
+        <div class='npc-stat-box'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Armor.FIELDS.forceBarrier.recoveryRate.label'}}</label>
+          <input
+            type='number'
+            name='system.armorValues.forceBarrier.recoveryRate'
+            value='{{system.armorValues.forceBarrier.recoveryRate}}'
+            data-dtype='Number'
+            min='0'
+            step='1'
+          />
+        </div>
+      </div>
+    </section>
+  </div>
+</section>

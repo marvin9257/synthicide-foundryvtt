@@ -1,5 +1,10 @@
 import SYNTHICIDE from '../helpers/config.mjs';
-import { makeValueField, makeDerivedField } from './commonSchemaUtils.mjs';
+import {
+  makeValueField,
+  makeDerivedField,
+  makeImplantSlotsField,
+  getImplantSlotSummary,
+} from './commonSchemaUtils.mjs';
 export default class SynthicideActorBaseData extends foundry.abstract
   .TypeDataModel {
   static LOCALIZATION_PREFIXES = ["SYNTHICIDE.Actor.base"];
@@ -24,6 +29,7 @@ export default class SynthicideActorBaseData extends foundry.abstract
     schema.nerveDefense = makeDerivedField();
     schema.shockThreshold = makeDerivedField();
     schema.battleReflex = makeDerivedField();
+    schema.implantSlots = makeImplantSlotsField();
 
     schema.biography = new fields.HTMLField();
 
@@ -38,14 +44,13 @@ export default class SynthicideActorBaseData extends foundry.abstract
           game.i18n.localize(SYNTHICIDE.attributes[key]) ?? key;
       }
     }
-
-    
+    foundry.utils.mergeObject(this.implantSlots, getImplantSlotSummary(this.parent));
   }
 
+
   /**
-   * Prepare flattened roll data for sharper actors, exposing attributes at the top level.
+   * Prepare flattened roll data, exposing attributes at the top level.
    * @override
-   * @this {SynthicideBaseData}
    * @returns {Object} The roll data object.
    */
   getRollData() {

@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
-    "module": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "target": "ES2022",
+    "allowJs": true,
+    "checkJs": false,
     "paths": {
       "@client/*": ["./foundry/client/*"],
       "@common/*": ["./foundry/common/*"]
@@ -9,7 +12,9 @@
   },
   "exclude": ["node_modules", "**/node_modules/*"],
   "include": [
-    "module/synthicide.mjs",
+    "module/**/*.mjs",
+    "scripts/**/*.js",
+    "src/**/*.mjs",
     "foundry/client/client.mjs",
     "foundry/client/global.d.mts",
     "foundry/common/primitives/global.d.mts"

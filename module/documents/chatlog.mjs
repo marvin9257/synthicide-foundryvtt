@@ -1,3 +1,4 @@
+import { getStandardizedRollData } from '../rolls/roll-utils.mjs';
 /**
  * The chat popout
  * @extends {ChatPopout}
@@ -41,7 +42,8 @@ function newContextOptions(coreContext)  {
 
   const canApply = li => {
     const message = game.messages.get(li.dataset?.messageId);
-    return Boolean((message?.isRoll || message?.getFlag('synthicide', 'actionRoll.damage.total'))
+    const rollData = getStandardizedRollData(message);
+    return Boolean((message?.isRoll || (rollData && typeof rollData.total === 'number'))
       && message?.isContentVisible
       && canvas.tokens?.controlled.length);
   };
@@ -75,22 +77,22 @@ function applyChatCardDamage(li, multiplier) {
     ui.notifications.warn("SYNTHICIDE.Warnings.NoDamageToApply", {localize: true});
     return;
   }
-  const actionRollData = message.getFlag('synthicide', 'actionRoll');
-  const baseDamage = actionRollData?.damage?.total ?? message.rolls?.[0]?.total;
+  const rollData = getStandardizedRollData(message);
+  const baseDamage = rollData.total ?? message.rolls?.[0]?.total;
   if (baseDamage > 0) {
     return Promise.all(canvas.tokens.controlled.map(t => {
       const targetActor = t.actor;
       if (["sharper", "npc"].includes(targetActor.type)) {
         const damage = Math.floor(baseDamage * multiplier);
         if (multiplier > 0) {
-          const messageMode = actionRollData?.messageMode ?? undefined;
+          const messageMode = rollData.messageMode ?? undefined;
           const whisper = message.whisper ?? undefined;
-          const lethal = actionRollData?.lethal ?? actionRollData?.attack?.lethal ?? 0;
+          const lethal = rollData.lethal ?? 0;
           const options = {
             messageMode,
             whisper,
-            sourceItemUuid: actionRollData?.sourceItemUuid ?? null,
-            attack: actionRollData?.attack ?? null,
+            sourceItemUuid: rollData.sourceItemUuid ?? null,
+            attack: rollData.subtype === 'attack' ? rollData : null,
             lethal,
           };
           return targetActor.damageActor(damage, options);

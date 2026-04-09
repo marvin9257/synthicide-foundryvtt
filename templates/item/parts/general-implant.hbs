@@ -1,0 +1,43 @@
+<div class="implant-group">
+  <fieldset class="implant">
+    <legend>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.Installation'}}</legend>
+    <div class='trait-top-fields'>
+      <div class='resource resource-pair'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.location.label'}}</label>
+        <select name="system.location">
+          {{selectOptions implantLocationOptions selected=system.location localize=true}}
+        </select>
+      </div>
+      <div class='resource resource-pair'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.implantType.label'}}</label>
+        <select name="system.implantType">
+          {{selectOptions implantTypeOptions selected=system.implantType localize=true}}
+        </select>
+      </div>
+      <div class='resource resource-pair'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.slotSize.label'}}</label>
+        <input
+          type='number'
+          name='system.slotSize'
+          value='{{system.slotSize}}'
+          min='1'
+        />
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="implant">
+    <legend>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.Modifications'}}</legend>
+    <div class='trait-top-fields'>
+      <div class='resource resource-pair'>
+        <multi-select class='select implant-modifications' name='system.modifications' multiple>
+          {{selectOptions implantModificationOptions selected=system.modifications localize=true}}
+        </multi-select>
+      </div>
+      <div class='resource resource-pair'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Implant.FIELDS.customMods.label'}}</label>
+        <textarea name='system.customMods' rows='3'>{{system.customMods}}</textarea>
+      </div>
+    </div>
+  </fieldset>
+</div>

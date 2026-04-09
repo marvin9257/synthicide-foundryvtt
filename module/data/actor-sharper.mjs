@@ -5,6 +5,7 @@
  */
 import SynthicideActorBaseData from './base-actor.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
+import { makeForceBarrierField } from './commonSchemaUtils.mjs';
 const fields = foundry.data.fields;
 const requiredInteger = { required: true, nullable: false, integer: true };
 
@@ -51,10 +52,13 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       armorBonus: new fields.NumberField({ ...requiredInteger, initial: 0}, {persisted: false}),
       stBonus: new fields.NumberField({ ...requiredInteger, initial: 0}, {persisted: false}),
       speedMax: new fields.NumberField({ ...requiredInteger, initial: 5}, {persisted: false}),
-      forceBarrier: new fields.SchemaField({
-        value: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }),
-        max: new fields.NumberField({ ...requiredInteger, initial: 5 }, {persisted: false}),
-        recoveryRate: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }, {persisted: false})})
+      forceBarrier: makeForceBarrierField({
+        valueInitial: 0,
+        maxInitial: 0,
+        recoveryRateInitial: 0,
+        maxFieldOptions: { persisted: false },
+        recoveryRateFieldOptions: { persisted: false },
+      }),
     });
 
     schema.rollModifiers = new fields.SchemaField({
@@ -62,32 +66,6 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     });
     
     return schema;
-  }
-
-  /**
-   * Clamp certain system values before update (e.g., cynicism, resolve, hitPoints.value).
-   * @override
-   * @this {SynthicideSharperData}
-   * @param {Object} changed - The changed data.
-   * @param {Object} options - Update options.
-   * @param {string} user - The user ID performing the update.
-   * @returns {Promise<boolean|undefined>} False to prevent update, otherwise undefined.
-   */
-  async _preUpdate(changed, options, user) {
-    const allowed = await super._preUpdate?.(changed, options, user);
-    if (allowed === false) return false;
-
-    // Constrain hitPoints.value to not exceed hitPoints.max, but allow
-    // negative HP values (e.g., -1) per updated rules/schema. Previously we
-    // clamped a lower bound of 0 here; that prevented representing negative HP.
-    if (foundry.utils.hasProperty(changed, 'system.hitPoints.value')) {
-      const nextHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.value') ?? 0);
-      // Try to get max from changed or from this
-      let maxHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.max'));
-      if (isNaN(maxHP)) maxHP = Number(this.hitPoints?.max ?? 0);
-      foundry.utils.setProperty(changed, 'system.hitPoints.value', Math.min(maxHP, nextHP));
-    }
-    return allowed;
   }
 
   /**

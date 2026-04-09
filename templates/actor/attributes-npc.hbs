@@ -1,0 +1,106 @@
+{{! NPC Attributes Tab }}
+<section
+  class='tab attributes npcStats scrollable {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='npcStats'
+>
+  <div class='npc-stats-layout'>
+    <aside class='attributes-panel npc-attributes-panel'>
+      <table class='attributes-table' role='table' aria-label='NPC Attributes'>
+        <colgroup>
+          <col class='col-icon'>
+          <col class='col-current'>
+        </colgroup>
+        <thead>
+          <tr>
+            <th class='attributes-col-header npc-col-icon-header' scope='col'><h4 class='npc-col-icon-h4'></h4></th>
+            <th class='attributes-col-header' scope='col'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Value'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{#each system.attributes as |attribute key|}}
+          <tr>
+            <td class='attribute-label'>
+              <span class='attr-abbr' data-tooltip='{{localize (lookup @root.SYNTHICIDE.attributes key)}}'>{{localize (lookup @root.SYNTHICIDE.attributeAbbreviations key)}}</span>
+              <span
+                class='rollable'
+                data-action='roll'
+                data-roll-type='challenge'
+                data-attribute-key='{{key}}'
+                data-roll='d10+@attributes.{{key}}.value'
+                data-label='{{localize (lookup @root.SYNTHICIDE.attributes key)}}'
+                tabindex='0'
+                role='button'
+                data-tooltip='{{localize (lookup @root.SYNTHICIDE.attributes key)}}'
+              >
+                <img class='actions-img' src='{{concat '/systems/synthicide/assets/icons/attributes/' key '.png'}}'>
+              </span>
+            </td>
+            <td class='attribute-value'>
+              <input type='number' name='system.attributes.{{key}}.value' value='{{attribute.value}}' class='attribute-score' data-dtype='Number' step='1' disabled>
+            </td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </aside>
+
+    <div class='npc-board'>
+      <section class='npc-board-section npc-role-section'>
+        <h4 class='npc-section-heading'>{{localize 'SYNTHICIDE.Actor.NPC.UI.RoleCalculations'}}</h4>
+        <div class='npc-guidance-strip'>
+          <div class='npc-guidance-chip'>
+            <span class='npc-guidance-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Strong'}}</span>
+            <span class='npc-guidance-value' data-tooltip='{{npcBuild.strongLabel}}'>{{npcBuild.strongAbbr}}</span>
+            <span class='npc-guidance-meta'>+{{npcBuild.strongBonus}}</span>
+          </div>
+          <div class='npc-guidance-chip'>
+            <span class='npc-guidance-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Good'}}</span>
+            <span class='npc-guidance-value' data-tooltip='{{npcBuild.goodLabels}}'>{{npcBuild.goodAbbrs}}</span>
+            <span class='npc-guidance-meta'>+{{npcBuild.goodBonus}}</span>
+          </div>
+          <div class='npc-guidance-chip'>
+            <span class='npc-guidance-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Weak'}}</span>
+            <span class='npc-guidance-value' data-tooltip='{{npcBuild.weakLabel}}'>{{npcBuild.weakAbbr}}</span>
+            <span class='npc-guidance-meta'>{{#if npcBuild.weakPenalty}}{{npcBuild.weakPenalty}}{{else}}0{{/if}}</span>
+          </div>
+        </div>
+        <div class='npc-role-power npc-role-power-compact'>
+          <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.RolePower'}}</label>
+          <input type='text' value='{{npcBuild.rolePowerText}}' disabled data-tooltip='{{npcBuild.rolePowerText}}'>
+        </div>
+      </section>
+
+      <section class='npc-board-section npc-derived-section'>
+        <h4>{{localize 'SYNTHICIDE.Actor.base.FIELDS.DerivedValues'}}</h4>
+        <div class='npc-derived-grid'>
+          <div class='npc-stat-box'>
+            <label for='system.actionPoints.value' class='resource-label'>{{localize 'SYNTHICIDE.Actor.base.FIELDS.actionPoints.value.label'}}</label>
+            <input type='number' name='system.actionPoints.value' value='{{system.actionPoints.value}}' data-dtype='Number' disabled>
+          </div>
+          <div class='npc-stat-box'>
+            <label for='system.battleReflex.value' class='resource-label'>{{localize 'SYNTHICIDE.Actor.base.FIELDS.battleReflex.value.label'}}</label>
+            <input type='number' name='system.battleReflex.value' value='{{system.battleReflex.value}}' data-dtype='Number' disabled>
+          </div>
+          <div class='npc-stat-box'>
+            <label for='system.toughnessDefense.value' class='resource-label'>{{localize 'SYNTHICIDE.Actor.base.FIELDS.toughnessDefense.value.label'}}</label>
+            <input type='number' name='system.toughnessDefense.value' value='{{system.toughnessDefense.value}}' data-dtype='Number' disabled>
+          </div>
+          <div class='npc-stat-box'>
+            <label for='system.armorDefense.value' class='resource-label'>{{localize 'SYNTHICIDE.Actor.base.FIELDS.armorDefense.value.label'}}</label>
+            <input type='number' name='system.armorDefense.value' value='{{system.armorDefense.value}}' data-dtype='Number' disabled>
+          </div>
+          <div class='npc-stat-box'>
+            <label for='system.shockThreshold.value' class='resource-label'>{{localize 'SYNTHICIDE.Actor.base.FIELDS.shockThreshold.value.label'}}</label>
+            <input type='number' name='system.shockThreshold.value' value='{{system.shockThreshold.value}}' data-dtype='Number' disabled>
+          </div>
+          <div class='npc-stat-box'>
+            <label for='system.nerveDefense.value' class='resource-label'>{{localize 'SYNTHICIDE.Actor.base.FIELDS.nerveDefense.value.label'}}</label>
+            <input type='number' name='system.nerveDefense.value' value='{{system.nerveDefense.value}}' data-dtype='Number' disabled>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</section>

@@ -1,9 +1,161 @@
 const SYNTHICIDE = {};
+// Centralized shocking strike outcome constants and flavor keys
+SYNTHICIDE.SHOCK_OUTCOMES = {
+  LETHAL: 'lethal',
+  SUCCESS: 'success',
+  DEATH: 'death',
+  MINUS_ONE: 'minusOne',
+};
+
+SYNTHICIDE.SHOCK_FLAVOR_KEYS = {
+  [SYNTHICIDE.SHOCK_OUTCOMES.LETHAL]: 'SYNTHICIDE.Chat.Shock.LethalApplied',
+  [SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS]: 'SYNTHICIDE.Chat.Shock.Success',
+  [SYNTHICIDE.SHOCK_OUTCOMES.DEATH]: 'SYNTHICIDE.Chat.Shock.FailureDeath',
+  [SYNTHICIDE.SHOCK_OUTCOMES.MINUS_ONE]: 'SYNTHICIDE.Chat.Shock.FailureMinusOne',
+};
+
 // Shared dropdown options for bodyType and brainType
 SYNTHICIDE.bodyBrainTypes = {
   Organic: 'SYNTHICIDE.Item.BodyType.Organic',
   Rigged: 'SYNTHICIDE.Item.BodyType.Rigged'
 };
+
+SYNTHICIDE.IMPLANT_LOCATIONS = {
+  body: 'SYNTHICIDE.Item.Implant.Location.Body',
+  head: 'SYNTHICIDE.Item.Implant.Location.Head'
+};
+
+SYNTHICIDE.IMPLANT_TYPES_BY_LOCATION = {
+  body: {
+    cyberLimbs: 'SYNTHICIDE.Item.Implant.Type.cyberLimbs',
+    bionites: 'SYNTHICIDE.Item.Implant.Type.bionites',
+    twitchMuscles: 'SYNTHICIDE.Item.Implant.Type.twitchMuscles',
+    techHands: 'SYNTHICIDE.Item.Implant.Type.techHands',
+    jumpJets: 'SYNTHICIDE.Item.Implant.Type.jumpJets',
+    respirator: 'SYNTHICIDE.Item.Implant.Type.respirator',
+    synthSkin: 'SYNTHICIDE.Item.Implant.Type.synthSkin',
+    custom: 'SYNTHICIDE.Item.Implant.Type.custom'
+  },
+  head: {
+    cyberSenses: 'SYNTHICIDE.Item.Implant.Type.cyberSenses',
+    cortexPlug: 'SYNTHICIDE.Item.Implant.Type.cortexPlug',
+    ventromedialImplant: 'SYNTHICIDE.Item.Implant.Type.ventromedialImplant',
+    dataStores: 'SYNTHICIDE.Item.Implant.Type.dataStores',
+    eideticMemoryCore: 'SYNTHICIDE.Item.Implant.Type.eideticMemoryCore',
+    autoPilot: 'SYNTHICIDE.Item.Implant.Type.autoPilot',
+    limbModule: 'SYNTHICIDE.Item.Implant.Type.limbModule',
+    soulCage: 'SYNTHICIDE.Item.Implant.Type.soulCage',
+    custom: 'SYNTHICIDE.Item.Implant.Type.custom'
+  }
+};
+
+// Flattened convenience map for schema choices and generic lookups.
+SYNTHICIDE.IMPLANT_TYPES = {
+  ...SYNTHICIDE.IMPLANT_TYPES_BY_LOCATION.body,
+  ...SYNTHICIDE.IMPLANT_TYPES_BY_LOCATION.head
+};
+
+SYNTHICIDE.IMPLANT_MODIFICATIONS = {
+  cyberLimbs: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    exoLifts: 'SYNTHICIDE.Item.Implant.Modification.exoLifts',
+    burnProtocol: 'SYNTHICIDE.Item.Implant.Modification.burnProtocol',
+    extraArm: 'SYNTHICIDE.Item.Implant.Modification.extraArm',
+    retractableItem: 'SYNTHICIDE.Item.Implant.Modification.retractableItem'
+  },
+  bionites: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    drugStorage: 'SYNTHICIDE.Item.Implant.Modification.drugStorage',
+    recoveryFunctions: 'SYNTHICIDE.Item.Implant.Modification.recoveryFunctions',
+    cellularStacking: 'SYNTHICIDE.Item.Implant.Modification.cellularStacking'
+  },
+  twitchMuscles: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    reflexTraining: 'SYNTHICIDE.Item.Implant.Modification.reflexTraining',
+    catfootProgram: 'SYNTHICIDE.Item.Implant.Modification.catfootProgram',
+    extendedGait: 'SYNTHICIDE.Item.Implant.Modification.extendedGait'
+  },
+  techHands: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    geckoGrip: 'SYNTHICIDE.Item.Implant.Modification.geckoGrip',
+    retractableBlades: 'SYNTHICIDE.Item.Implant.Modification.retractableBlades',
+    fingerTools: 'SYNTHICIDE.Item.Implant.Modification.fingerTools'
+  },
+  jumpJets: {
+    accelerated: 'SYNTHICIDE.Item.Implant.Modification.accelerated',
+    retractable: 'SYNTHICIDE.Item.Implant.Modification.retractable',
+    tacticalSpeed: 'SYNTHICIDE.Item.Implant.Modification.tacticalSpeed'
+  },
+  respirator: {
+    vacuumReady: 'SYNTHICIDE.Item.Implant.Modification.vacuumReady',
+    oxygenPod: 'SYNTHICIDE.Item.Implant.Modification.oxygenPod',
+    ingestionFilter: 'SYNTHICIDE.Item.Implant.Modification.ingestionFilter',
+    nutritionAmplifier: 'SYNTHICIDE.Item.Implant.Modification.nutritionAmplifier'
+  },
+  synthSkin: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    morphSkin: 'SYNTHICIDE.Item.Implant.Modification.morphSkin',
+    stealthSkin: 'SYNTHICIDE.Item.Implant.Modification.stealthSkin'
+  },
+  cyberSenses: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    distanceHearing: 'SYNTHICIDE.Item.Implant.Modification.distanceHearing',
+    zoom: 'SYNTHICIDE.Item.Implant.Modification.zoom',
+    nightvision: 'SYNTHICIDE.Item.Implant.Modification.nightvision',
+    scanningVision: 'SYNTHICIDE.Item.Implant.Modification.scanningVision',
+    gunLink: 'SYNTHICIDE.Item.Implant.Modification.gunLink',
+    psychovision: 'SYNTHICIDE.Item.Implant.Modification.psychovision',
+    proximityAlarm: 'SYNTHICIDE.Item.Implant.Modification.proximityAlarm'
+  },
+  cortexPlug: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    deadface: 'SYNTHICIDE.Item.Implant.Modification.deadface',
+    psychocortex: 'SYNTHICIDE.Item.Implant.Modification.psychocortex'
+  },
+  ventromedialImplant: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    mindshield: 'SYNTHICIDE.Item.Implant.Modification.mindshield',
+    psychonautalis: 'SYNTHICIDE.Item.Implant.Modification.psychonautalis'
+  },
+  dataStores: {
+    enhanced: 'SYNTHICIDE.Item.Implant.Modification.enhanced',
+    superior: 'SYNTHICIDE.Item.Implant.Modification.superior',
+    complexStorage: 'SYNTHICIDE.Item.Implant.Modification.complexStorage',
+    computerInterface: 'SYNTHICIDE.Item.Implant.Modification.computerInterface',
+    skullPhone: 'SYNTHICIDE.Item.Implant.Modification.skullPhone'
+  },
+  eideticMemoryCore: {
+    mentalProjection: 'SYNTHICIDE.Item.Implant.Modification.mentalProjection',
+    monkeyProtocol: 'SYNTHICIDE.Item.Implant.Modification.monkeyProtocol'
+  },
+  autoPilot: {
+    complexProcedure: 'SYNTHICIDE.Item.Implant.Modification.complexProcedure'
+  },
+  limbModule: {
+    advancedControl: 'SYNTHICIDE.Item.Implant.Modification.advancedControl',
+    furyProtocol: 'SYNTHICIDE.Item.Implant.Modification.furyProtocol'
+  },
+  soulCage: {
+    acceptanceMeditations: 'SYNTHICIDE.Item.Implant.Modification.acceptanceMeditations',
+    darkSwitch: 'SYNTHICIDE.Item.Implant.Modification.darkSwitch'
+  },
+  custom: {}
+};
+
+SYNTHICIDE.ALL_IMPLANT_MOD_KEYS = [
+  ...new Set(
+    Object.values(SYNTHICIDE.IMPLANT_MODIFICATIONS)
+      .flatMap((modsByType) => Object.keys(modsByType ?? {}))
+  )
+];
 
 // Centralized debug flags for system modules
 SYNTHICIDE.debug = {
@@ -19,7 +171,11 @@ SYNTHICIDE.SHEET_STYLE_SETTING_KEY = 'sheetStyleMode';
 SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY = 'defaultTargetArmor';
 SYNTHICIDE.SHEET_STYLE_CLASSIC = 'classic';
 SYNTHICIDE.SHEET_STYLE_BOLD = 'rulebookBold';
-SYNTHICIDE.USE_SHOCKING_STRIKE_KEY= 'useShockingStrike'
+SYNTHICIDE.USE_SHOCKING_STRIKE_KEY = 'useShockingStrike';
+
+// Virtual Grid Movement Setting Key
+SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY = 'virtualGridMovement';
+SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY = 'demolitionAutoScatter';
 
 /**
  * The set of Attribute Scores used within the system.
@@ -134,8 +290,9 @@ SYNTHICIDE.motivations = {
 //Alowed Trait levels
 SYNTHICIDE.ALLOWED_TRAIT_LEVELS = [1, 4, 7];
 //items that have quantity, weight and could be equipped
-SYNTHICIDE.GEAR_TYPES = ["gear", "armor", "weapon", "drugs"];
-SYNTHICIDE.EQUIPABLE = ["armor", "weapon"];
+SYNTHICIDE.GEAR_TYPES = ["gear", "armor", "shield", "weapon", "implant", "drugs"];
+SYNTHICIDE.EQUIPABLE = ["armor", "shield", "weapon", "implant"];
+SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES = ["armor", "shield"];
 
 /**
  * Weapon Constants
@@ -250,9 +407,232 @@ SYNTHICIDE.ARMOR_MODIFICATIONS = {
   calling: "SYNTHICIDE.Item.Armor.Modification.Calling"
 }
 
-export default SYNTHICIDE;
+SYNTHICIDE.SHIELD_MODIFICATIONS = {
+  none: "SYNTHICIDE.Item.Shield.Modification.None",
+  weaponRest: "SYNTHICIDE.Item.Shield.Modification.WeaponRest",
+  shocking: "SYNTHICIDE.Item.Shield.Modification.Shocking",
+  radiodynamic: "SYNTHICIDE.Item.Shield.Modification.Radiodynamic",
+  gravatic: "SYNTHICIDE.Item.Shield.Modification.Gravatic"
+}
 
-// Example derivation for selectOptions and behaviors:
-// const motivationOptions = Object.fromEntries(Object.entries(SYNTHICIDE.motivations).map(([k, v]) => [k, v.label]));
-// const motivationBehaviors = Object.fromEntries(Object.entries(SYNTHICIDE.motivations).map(([k, v]) => [k, v.behavior]));
+/**
+ * The valid target Area Types in the game system.
+ */
+SYNTHICIDE.AREA_TARGET_TYPES = {
+  none: {
+    label: "SYNTHICIDE.Target.None",
+    template: ""
+  },
+  radius: {
+    label: "SYNTHICIDE.Target.Radius",
+    template: "circle"
+  },
+  sphere: {
+    label: "SYNTHICIDE.Target.Sphere",
+    template: "circle"
+  },
+  cylinder: {
+    label: "SYNTHICIDE.Target.Cylinder",
+    template: "circle"
+  },
+  cone: {
+    label: "SYNTHICIDE.Target.Cone",
+    template: "cone"
+  },
+  square: {
+    label: "SYNTHICIDE.Target.Square",
+    template: "rect"
+  },
+  cube: {
+    label: "SYNTHICIDE.Target.Cube",
+    template: "rect"
+  },
+  line: {
+    label: "SYNTHICIDE.Target.Line",
+    template: "ray"
+  },
+  wall: {
+    label: "SYNTHICIDE.Target.Wall",
+    template: "ray"
+  }
+};
+
+SYNTHICIDE.npc = {
+  roles: {
+    fastTalker: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.fastTalker.Label',
+      strong: 'influence',
+      good: ['awareness', 'operation'],
+      weak: 'toughness',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.fastTalker.Power',
+    },
+    guardian: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.guardian.Label',
+      strong: 'awareness',
+      good: ['combat', 'nerve'],
+      weak: 'influence',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.guardian.Power',
+    },
+    killer: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.killer.Label',
+      strong: 'combat',
+      good: ['toughness', 'nerve'],
+      weak: 'operation',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.killer.Power',
+    },
+    professional: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.professional.Label',
+      strong: 'operation',
+      good: ['awareness', 'nerve'],
+      weak: 'combat',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.professional.Power',
+    },
+    psycherManifestor: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.psycherManifestor.Label',
+      strong: 'nerve',
+      good: ['awareness', 'influence'],
+      weak: 'operation',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.psycherManifestor.Power',
+    },
+    psycherProjector: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.psycherProjector.Label',
+      strong: 'influence',
+      good: ['awareness', 'nerve'],
+      weak: 'combat',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.psycherProjector.Power',
+    },
+    psycherRevelator: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.psycherRevelator.Label',
+      strong: 'influence',
+      good: ['influence', 'nerve'],
+      weak: 'toughness',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.psycherRevelator.Power',
+    },
+    sneak: {
+      label: 'SYNTHICIDE.Actor.NPC.Roles.sneak.Label',
+      strong: 'speed',
+      good: ['awareness', 'influence'],
+      weak: 'nerve',
+      power: 'SYNTHICIDE.Actor.NPC.Roles.sneak.Power',
+    },
+  },
+  wealthTiers: {
+    savage: { label: 'SYNTHICIDE.Actor.NPC.Wealth.savage' },
+    destitute: { label: 'SYNTHICIDE.Actor.NPC.Wealth.destitute' },
+    crook: { label: 'SYNTHICIDE.Actor.NPC.Wealth.crook' },
+    established: { label: 'SYNTHICIDE.Actor.NPC.Wealth.established' },
+    wealthy: { label: 'SYNTHICIDE.Actor.NPC.Wealth.wealthy' },
+    rareAnimal: { label: 'SYNTHICIDE.Actor.NPC.Wealth.rareAnimal' },
+    synthetic: { label: 'SYNTHICIDE.Actor.NPC.Wealth.synthetic' },
+    priest: { label: 'SYNTHICIDE.Actor.NPC.Wealth.priest' },
+  },
+  masteredWeapons: {
+    fist: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.fist',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 0, damage: 0, ability: '-', range: 'Engaged', notes: '1-handed' },
+        { minLevel: 5, maxLevel: 8, attack: 2, damage: 3, ability: '-', range: 'Engaged', notes: '1-handed' },
+        { minLevel: 9, maxLevel: 11, attack: 4, damage: 5, ability: '-', range: 'Engaged', notes: '1-handed' },
+      ],
+    },
+    claws: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.claws',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 1, damage: 2, ability: '-', range: 'Engaged', notes: '1-handed, counter' },
+        { minLevel: 5, maxLevel: 8, attack: 3, damage: 4, ability: 'Lethal 5', range: 'Engaged', notes: '1-handed, counter' },
+        { minLevel: 9, maxLevel: 11, attack: 3, damage: 6, ability: 'Lethal 7', range: 'Engaged', notes: '1-handed, counter' },
+      ],
+    },
+    bite: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.bite',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 1, damage: 4, ability: '-', range: 'Engaged', notes: 'Usable in takedown, slow 1' },
+        { minLevel: 5, maxLevel: 8, attack: 2, damage: 7, ability: 'Lethal 6', range: 'Engaged', notes: 'Usable in takedown, slow 1' },
+        { minLevel: 9, maxLevel: 11, attack: 3, damage: 10, ability: 'Lethal 7', range: 'Engaged', notes: 'Usable in takedown, slow 1' },
+      ],
+    },
+    club: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.club',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 1, damage: 1, ability: '-', range: 'Engaged', notes: '1-handed' },
+        { minLevel: 5, maxLevel: 8, attack: 2, damage: 5, ability: 'Lethal 6', range: 'Engaged', notes: '1-handed' },
+        { minLevel: 9, maxLevel: 11, attack: 3, damage: 8, ability: 'Lethal 7', range: 'Engaged', notes: '1-handed' },
+      ],
+    },
+    knife: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.knife',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 2, damage: 1, ability: '-', range: 'Engaged', notes: '1-handed, counter' },
+        { minLevel: 5, maxLevel: 8, attack: 3, damage: 3, ability: 'Lethal 7', range: 'Engaged', notes: '1-handed, counter' },
+        { minLevel: 9, maxLevel: 11, attack: 4, damage: 6, ability: 'Lethal 8', range: 'Engaged', notes: '1-handed, counter' },
+      ],
+    },
+    hatchet: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.hatchet',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 3, damage: 0, ability: '-', range: 'Engaged', notes: '1-handed, +2 DMG on crit' },
+        { minLevel: 5, maxLevel: 8, attack: 4, damage: 3, ability: 'Lethal 8', range: 'Engaged', notes: '1-handed, +2 DMG on crit' },
+        { minLevel: 9, maxLevel: 11, attack: 5, damage: 6, ability: 'Lethal 9', range: 'Engaged', notes: '1-handed, +2 DMG on crit' },
+      ],
+    },
+    sword: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.sword',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 2, damage: 3, ability: '-', range: 'Engaged', notes: '2-handed, guard' },
+        { minLevel: 5, maxLevel: 8, attack: 3, damage: 5, ability: 'Lethal 8', range: 'Engaged', notes: '2-handed, guard' },
+        { minLevel: 9, maxLevel: 11, attack: 4, damage: 8, ability: 'Lethal 9', range: 'Engaged', notes: '2-handed, guard' },
+      ],
+    },
+    battleHammer: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.battleHammer',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 2, damage: 4, ability: '-', range: 'Engaged', notes: '2-handed, +3 DMG on crit' },
+        { minLevel: 5, maxLevel: 8, attack: 2, damage: 7, ability: 'Lethal 8', range: 'Engaged', notes: '2-handed, +3 DMG on crit' },
+        { minLevel: 9, maxLevel: 11, attack: 3, damage: 11, ability: 'Lethal 10', range: 'Engaged', notes: '2-handed, +3 DMG on crit' },
+      ],
+    },
+    battleAxe: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.battleAxe',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 3, damage: 3, ability: '-', range: 'Engaged', notes: '2-handed' },
+        { minLevel: 5, maxLevel: 8, attack: 3, damage: 6, ability: 'Lethal 9', range: 'Engaged', notes: '2-handed' },
+        { minLevel: 9, maxLevel: 11, attack: 4, damage: 9, ability: 'Lethal 11', range: 'Engaged', notes: '2-handed' },
+      ],
+    },
+    pistol: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.pistol',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 0, damage: 0, ability: '-', range: '1', notes: '1-handed, guard' },
+        { minLevel: 5, maxLevel: 8, attack: 1, damage: 1, ability: 'Lethal 6', range: '1', notes: '1-handed, guard' },
+        { minLevel: 9, maxLevel: 11, attack: 2, damage: 3, ability: 'Lethal 7', range: '1', notes: '1-handed, guard' },
+      ],
+    },
+    rifle: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.rifle',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 0, damage: 2, ability: '-', range: '2', notes: '2-handed' },
+        { minLevel: 5, maxLevel: 8, attack: 1, damage: 4, ability: 'Lethal 7', range: '2', notes: '2-handed' },
+        { minLevel: 9, maxLevel: 11, attack: 3, damage: 7, ability: 'Lethal 8', range: '2', notes: '2-handed' },
+      ],
+    },
+    shotgun: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.shotgun',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 2, damage: 0, ability: '-', range: '1', notes: '2-handed, close, spread' },
+        { minLevel: 5, maxLevel: 8, attack: 3, damage: 2, ability: 'Lethal 7', range: '1', notes: '2-handed, close, spread' },
+        { minLevel: 9, maxLevel: 11, attack: 4, damage: 3, ability: 'Lethal 8', range: '1', notes: '2-handed, close, spread' },
+      ],
+    },
+    psycherProjection: {
+      label: 'SYNTHICIDE.Actor.NPC.Weapons.psycherProjection',
+      tiers: [
+        { minLevel: 1, maxLevel: 4, attack: 0, damage: 0, ability: 'vs ND', range: '1', notes: 'Psychic, ATT/DMG = level' },
+        { minLevel: 5, maxLevel: 8, attack: 0, damage: 0, ability: 'vs ND', range: '1', notes: 'Psychic, ATT/DMG = level' },
+        { minLevel: 9, maxLevel: 11, attack: 0, damage: 0, ability: 'vs ND', range: '1', notes: 'Psychic, ATT/DMG = level' },
+      ],
+    },
+  },
+};
+
+export default SYNTHICIDE;
 

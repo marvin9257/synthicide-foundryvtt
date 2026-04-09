@@ -3,6 +3,8 @@ import { SynthicideActor } from './documents/actor.mjs';
 import { SynthicideItem } from './documents/item.mjs';
 // Import sheet classes.
 import { SynthicideActorSheet } from './sheets/actor-sheet.mjs';
+import { SynthicideNPCActorSheet } from './sheets/npc-actor-sheet.mjs';
+import SynthicideNPCCompactSheet from './sheets/npc-compact-sheet.mjs';
 import { SynthicideItemSheet } from './sheets/item-sheet.mjs';
 // Import helper/utility classes and constants.
 import SYNTHICIDE from './helpers/config.mjs';
@@ -14,6 +16,9 @@ import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
 import { registerSynthicideChatContextHook, SynthicideChatPopout } from './documents/chatlog.mjs';
+import { registerVirtualGridOverlay } from './canvas/virtual-grid-overlay.mjs';
+import SynthicideVirtualRuler from './canvas/synthicide-virtual-ruler.mjs';
+import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler.mjs';
 
 const collections = foundry.documents.collections;
 
@@ -29,6 +34,7 @@ globalThis.synthicide = {
   },
   applications: {
     SynthicideActorSheet,
+    SynthicideNPCActorSheet,
     SynthicideItemSheet,
   },
   utils: {
@@ -85,7 +91,9 @@ Hooks.once('init', function () {
     armor: models.SynthicideArmor,
     aspect: models.SynthicideAspect,
     bioclass: models.SynthicideBioclass,
+    implant: models.SynthicideImplant,
     gear: models.SynthicideGear,
+    shield: models.SynthicideShield,
     trait: models.SynthicideTrait,
     weapon: models.SynthicideWeapon
   };
@@ -98,13 +106,24 @@ Hooks.once('init', function () {
 
   // Register application/document hooks.
   registerSynthicideChatContextHook();
+  registerActionRollHooks();
 
   // Register sheet application classes
   collections.Actors.unregisterSheet('core', foundry.applications.sheets.ActorSheetV2)
   collections.Actors.registerSheet('synthicide', SynthicideActorSheet, {
-    types:["sharper", "npc"],
+    types: ['sharper'],
     makeDefault: true,
     label: 'SYNTHICIDE.SheetLabels.Actor',
+  });
+  collections.Actors.registerSheet('synthicide', SynthicideNPCActorSheet, {
+    types: ['npc'],
+    makeDefault: true,
+    label: 'SYNTHICIDE.SheetLabels.NPCActor',
+  });
+  collections.Actors.registerSheet('synthicide', SynthicideNPCCompactSheet, {
+    types: ['npc'],
+    makeDefault: false,
+    label: 'SYNTHICIDE.SheetLabels.NPCCompact',
   });
   collections.Items.unregisterSheet('core', foundry.applications.sheets.ItemSheetV2);
   collections.Items.registerSheet('synthicide', SynthicideItemSheet, {
@@ -128,6 +147,10 @@ Hooks.once('init', function () {
       { urls: ["systems/synthicide/assets/fonts/Roboto/Roboto-Bold.ttf"], weight: 700 }
     ]
   };
+  registerVirtualGridOverlay();
+  // Use custom ruler for virtual grid measurement
+  CONFIG.Canvas.rulerClass = SynthicideVirtualRuler;
+  CONFIG.Token.rulerClass = SynthicideVirtualTokenRuler;
 });
 
 /* -------------------------------------------- */
@@ -145,7 +168,6 @@ Handlebars.registerHelper('toLowerCase', function (str) {
 
 Hooks.once('ready', async function () {
   await migrateWorld();
-  registerActionRollHooks();
 
   applySheetStyleMode(
     game.settings.get('synthicide', SYNTHICIDE.SHEET_STYLE_SETTING_KEY)
@@ -276,6 +298,26 @@ function registerSettings() {
   game.settings.register('synthicide', SYNTHICIDE.USE_SHOCKING_STRIKE_KEY, {
     name: 'SYNTHICIDE.Settings.UseShockingStrike.Name',
     hint: 'SYNTHICIDE.Settings.UseShockingStrike.Hint',
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
+  // Virtual Grid Movement Display Setting
+  game.settings.register('synthicide', SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY, {
+    name: 'SYNTHICIDE.Settings.VirtualGridMovement.Name',
+    hint: 'SYNTHICIDE.Settings.VirtualGridMovement.Hint',
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: () => { if (canvas.ready) canvas.draw(); }
+  });
+
+  game.settings.register('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY, {
+    name: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Name',
+    hint: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Hint',
     scope: 'world',
     config: true,
     type: Boolean,

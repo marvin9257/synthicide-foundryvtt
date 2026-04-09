@@ -1,10 +1,11 @@
-import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 import SynthicideFeature from '../data/item-feature.mjs';
 import { FEATURE_TYPE, isFeatureType } from '../helpers/feature-types.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
 import { ICON_MAP } from '../helpers/icons.mjs';
 import { openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
+import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
+import { computeHpPercent, deleteDocAction, getEmbeddedDocument, prepareBiographyPartContext, showInfoAction, toggleEffectAction, viewDocAction } from './sheet-utils.mjs';
 const { api, sheets } = foundry.applications;
 
 /**
@@ -17,7 +18,6 @@ const { api, sheets } = foundry.applications;
  */
 const ACTOR_PARTS_BY_TYPE = {
   sharper: ['attributes', 'bioclass', 'aspect', 'combat', 'gear', 'traits', 'cybernetics', 'biography', 'effects'],
-  npc: ['attributes', 'gear', 'biography', 'effects'],
 };
 
 /**
@@ -65,7 +65,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       icon: ICON_MAP.person
     },
     actions: {
-      //onEditImage: this._onEditImage,
       viewDoc: this._viewDoc,
       createDoc: this._createDoc,
       deleteDoc: this._deleteDoc,
@@ -140,13 +139,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   /** @override */
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
-    // Not all parts always render
     options.parts = ['header', 'tabs'];
-    // Don't show the other tabs if only limited view
     if (this.document.limited) return;
-    // Control which parts show based on document subtype
     options.parts.push(...(ACTOR_PARTS_BY_TYPE[this.document.type] ?? []));
-      
   }
 
   /* -------------------------------------------- */
@@ -163,13 +158,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       },
     });
 
-    // Calculate hpPercent for hit points bar coloring. Negative HP should
-    // display as an empty bar while still preserving the numeric value.
-    const hpValue = Number(context.system.hitPoints?.value ?? 0);
-    const hpMax = Number(context.system.hitPoints?.max ?? 1);
-    context.hpPercent = hpMax > 0 ? Math.max(0, hpValue) / hpMax : 0;
+    context.hpPercent = computeHpPercent(context.system);
 
-    // Motivation selectOptions and behaviors
     context.config = context.config || {};
     context.config.motivationOptions = Object.fromEntries(
       Object.entries(SYNTHICIDE.motivations).map(([k, v]) => [k, v.label])
@@ -190,28 +180,16 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     switch (partId) {
       case 'biography':
-        // Use shared helper to keep enrich options consistent across sheets.
-        context.enrichedBiography = await enrichSheetHtml({
-          html: this.actor.system.biography,
-          document: this.actor,
-          isOwner: this.document.isOwner,
-          rollData: this.actor.getRollData(),
-        });
+        await prepareBiographyPartContext(this.actor, context, this.document.isOwner);
         break;
       case 'effects':
-        // Prepare active effects
-        context.effects = prepareActiveEffectCategories(
-          // A generator that returns all effects stored on the actor
-          // as well as any items
-          this.actor.allApplicableEffects()
-        );
+        context.effects = prepareActiveEffectCategories(this.actor.allApplicableEffects());
         break;
       case 'attributes':
-        // Add increaseSegments array (bottom-up) for each attribute for block meter rendering
+        // Add increaseSegments array (bottom-up) for each attribute for block meter rendering.
         if (context.system?.attributes) {
           for (const attribute of Object.values(context.system.attributes)) {
             const filled = Number(attribute.increase) || 0;
-            // Bottom-up: first element is bottom segment
             attribute.increaseSegments = Array.from({length: 5}, (_, i) => i < filled).reverse();
           }
         }
@@ -245,7 +223,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // Initialize containers.
     const gear = this.actor.itemTypes.gear;
     const armor = this.actor.itemTypes.armor;
+    const shield = this.actor.itemTypes.shield;
     const weapon = this.actor.itemTypes.weapon;
+    const implants = this.actor.itemTypes.implant;
     
     const aspectTraits = [];
     const bioclassTraits = [];
@@ -286,12 +266,13 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // Sort then assign
     context.gear = gear?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.armor = armor?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.shield = shield?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.weapon = weapon?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.implants = implants?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.bioclassTraits = bioclassTraits?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     // Only keep milestone trait levels (1,4,7) for the actor context.
-    const ALLOWED_TRAIT_LEVELS = [1, 4, 7];
-    context.traitsByLevel = ALLOWED_TRAIT_LEVELS.map(l => ({ level: l, traits: traitsByLevel[l] }));
-    context.allowedTraitLevels = ALLOWED_TRAIT_LEVELS;
+    context.traitsByLevel = SYNTHICIDE.ALLOWED_TRAIT_LEVELS.map(l => ({ level: l, traits: traitsByLevel[l] }));
+    context.allowedTraitLevels = SYNTHICIDE.ALLOWED_TRAIT_LEVELS;
     context.aspectTraits = aspectTraits?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
   }
 
@@ -318,34 +299,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    **************/
 
   /**
-   * Handle changing a Document's image.
-   *
-   * @this SynthicideActorSheet
-   * @param {PointerEvent} event   The originating click event
-   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
-   * @returns {Promise}
-   * @protected
-   */
-  /*static async _onEditImage(event, target) {
-    const attr = target.dataset.edit;
-    const current = foundry.utils.getProperty(this.document, attr);
-    const { img } =
-      this.document.constructor.getDefaultArtwork?.(this.document.toObject()) ??
-      {};
-    const fp = new foundry.applications.apps.FilePicker.implementation({
-      current,
-      type: 'image',
-      redirectToRoot: img ? [img] : [],
-      callback: (path) => {
-        this.document.update({ [attr]: path });
-      },
-      top: this.position.top + 40,
-      left: this.position.left + 10,
-    });
-    return fp.browse();
-  }*/
-
-  /**
    * Renders an embedded document's sheet
    *
    * @this SynthicideActorSheet
@@ -354,8 +307,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @protected
    */
   static async _viewDoc(event, target) {
-    const doc = this._getEmbeddedDocument(target);
-    doc.sheet.render(true);
+    await viewDocAction(this.actor, target);
   }
 
   /**
@@ -367,9 +319,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @protected
    */
   static async _deleteDoc(event, target) {
-    const doc = this._getEmbeddedDocument(target);
-    if (!doc) return;
-    await doc.delete();
+    await deleteDocAction(this.actor, target);
   }
 
   /**
@@ -382,23 +332,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @private
    */
   static async _showInfo(event, target) {
-    const doc = this._getEmbeddedDocument(target);
-    if (!doc) return;
-    const desc = doc.system?.description || '';
-    const title = doc.name || game.i18n.localize('SYNTHICIDE.Info');
-
-    try {
-      await foundry.applications.api.DialogV2.prompt({
-        window: { title },
-        content: `<div class="synthicide-info">${desc}</div>`,
-        ok: {
-          label: game.i18n.localize('OK'),
-          callback: () => true
-        }
-      });
-    } catch {
-      // user closed the dialog without clicking OK – ignore
-    }
+    await showInfoAction(this.actor, target);
   }
 
 
@@ -450,8 +384,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @private
    */
   static async _toggleEffect(event, target) {
-    const effect = this._getEmbeddedDocument(target);
-    await effect.update({ disabled: !effect.disabled });
+    await toggleEffectAction(this.actor, target);
   }
 
   /**
@@ -637,19 +570,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @returns {Item | ActiveEffect} The embedded Item or ActiveEffect
    */
   _getEmbeddedDocument(target) {
-    const docRow = target.closest('li[data-document-class]');
-    if (!docRow?.dataset?.documentClass) return null;
-    if (docRow.dataset.documentClass === 'Item') {
-      return this.actor.items.get(docRow.dataset.itemId);
-    } else if (docRow.dataset.documentClass === 'ActiveEffect') {
-      const parent =
-        docRow.dataset.parentId === this.actor.id
-          ? this.actor
-          : this.actor.items.get(docRow?.dataset.parentId);
-      return parent?.effects?.get(docRow?.dataset.effectId) ?? null;
-    }
-    console.warn('Could not find document class');
-    return null;
+    return getEmbeddedDocument(this.actor, target);
   }
 
   /**
@@ -664,7 +585,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     event.preventDefault();
     const doc = this._getEmbeddedDocument(target);
     if (!doc) return;
-    await doc.update({ 'system.equipped': !doc.system.equipped }, {refresh: !(doc.type === 'armor')});
+    await doc.update(
+      { 'system.equipped': !doc.system.equipped },
+      { refresh: !CONFIG.SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES.includes(doc.type) }
+    );
   }
 
   /***************
@@ -808,15 +732,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   }
 
   /**
-   * Delegate drop handling to Foundry V2 pipeline.
-   * @param {DragEvent} event
-   * @returns {Promise<void>}
-   */
-  async _onDrop(event) {
-    return super._onDrop(event);
-  }
-
-  /**
    * Handle the final creation of dropped Item data on the Actor.
    * 
    * @param {object[]|object} itemData      The item data requested for creation
@@ -910,9 +825,18 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    */
   async _handleGenericItemDrop(itemData) {
     if (!itemData.length) return [];
+
+    // Ensure all gear (including implants) start unequipped when dropped onto actor
+    const normalizedData = itemData.map(data => {
+      if (data.type && CONFIG.SYNTHICIDE.EQUIPABLE?.includes(data.type)) {
+        return { ...data, system: { ...data.system, equipped: false } };
+      }
+      return data;
+    });
+
     // create with render:false so _onCreate's fire-and-forget aggregation doesn't
     // race with our explicit aggregation below
-    const created = await this.actor.createEmbeddedDocuments('Item', itemData, { render: false });
+    const created = await this.actor.createEmbeddedDocuments('Item', normalizedData, { render: false });
     // Explicitly await aggregation so modifier values are up-to-date before we render
     await this.actor.aggregateAndApplyItemModifiers({ render: false });
     await this.render({ force: true });
@@ -926,7 +850,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    ********************/
 
   /**
-   * Submit a document update based on the processed form data.
+   * Submit a document update based on the processed form data. Avoid updating anything that has an ActiveEffect
    * @param {SubmitEvent} event                   The originating form submission event
    * @param {HTMLFormElement} form                The form element that was submitted
    * @param {object} submitData                   Processed and validated form data to be used for a document update

@@ -11,37 +11,72 @@
   "documentTypes": {
     "Actor": {
       "sharper": {
-        "htmlFields": ["biography"]
+        "htmlFields": [
+          "biography"
+        ]
       },
       "npc": {
-        "htmlFields": ["biography"]
+        "htmlFields": [
+          "biography"
+        ]
       }
     },
     "Item": {
       "armor": {
-        "htmlFields": ["description"]
+        "htmlFields": [
+          "description"
+        ]
       },
       "aspect": {
-        "htmlFields": ["description"]
+        "htmlFields": [
+          "description"
+        ]
       },
       "bioclass": {
-        "htmlFields": ["description"]
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "implant": {
+        "htmlFields": [
+          "description"
+        ]
       },
       "gear": {
-        "htmlFields": ["description"]
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "shield": {
+        "htmlFields": [
+          "description"
+        ]
       },
       "trait": {
-        "htmlFields": ["description"]
+        "htmlFields": [
+          "description"
+        ]
       },
       "weapon": {
-        "htmlFields": ["description"]
-      } 
+        "htmlFields": [
+          "description"
+        ]
+      }
     }
   },
   "flags": {
     "hotReload": {
-      "extensions": ["css", "html", "hbs", "json"],
-      "paths": ["css", "lang", "templates"]
+      "extensions": [
+        "css",
+        "html",
+        "hbs",
+        "json"
+      ],
+      "paths": [
+        "css",
+        "lang",
+        "templates"
+      ]
     }
   },
   "url": "Replace this with a link to your public repository",
@@ -56,13 +91,17 @@
       "thumbnail": "systems/synthicide/assets/synthicideTheme2.svg"
     }
   ],
-  "version": "1.0.0",
+  "version": "1.0.16",
   "compatibility": {
     "minimum": "14",
-    "verified": "14.357"
+    "verified": "14.358"
   },
-  "esmodules": ["module/synthicide.mjs"],
-  "styles": ["css/synthicide.css"],
+  "esmodules": [
+    "module/synthicide.mjs"
+  ],
+  "styles": [
+    "css/synthicide.css"
+  ],
   "languages": [
     {
       "lang": "en",
@@ -73,8 +112,8 @@
   "packs": [],
   "packFolders": [],
   "socket": false,
-  "manifest": "Replace this with a link to the /latest release system.json so people can receive updates after they've installed the system",
-  "download": "This must link to a .zip file of the current version",
+  "manifest": "https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/system.json",
+  "download": "https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/synthicide.zip",
   "background": "systems/synthicide/assets/synthicideTheme2.svg",
   "grid": {
     "type": 1,

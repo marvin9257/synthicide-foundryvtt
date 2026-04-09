@@ -52,7 +52,8 @@ export default defineConfig([
         console: "readonly",
         getDocumentClass: "readonly",
         SortingHelpers: "readonly",
-        fromUuid: "readonly"
+        fromUuid: "readonly",
+        fromUuidSync: "readonly",
       },
     },
     rules: {

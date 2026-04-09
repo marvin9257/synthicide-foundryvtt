@@ -11,6 +11,8 @@
     },
     "SheetLabels": {
       "Actor": "Sharper Sheet",
+      "NPCActor": "NPC Sheet",
+      "NPCCompact": "NPC Compact",
       "Item": "Synthicide Item Sheet"
     },
     "Settings": {
@@ -29,6 +31,14 @@
       "UseShockingStrike": {
         "Name": "Use Shocking Strike Rules",
         "Hint": "Automatically apply riles for a shocking strike where a single, high damage blow (If damage from a single attack exceeds a character’s shock threshold (ST = 10 + AD + modifiers)) might result in incapacitation.  Toughtness save is automated too."
+      },
+      "VirtualGridMovement": {
+        "Name": "Use Virtual Grids (Zones)",
+        "Hint": "Once combat starts, a 3x3 virtual grid overlay appears to mimic Synthicide's 15'x15' zones (assuming 5' core grid units—the default). Each zone represents a 15'x15' area. Movement is shown as the number of zones crossed, rather than individual grid squares. The virtual grid overlay is disabled when combat ends."
+      },
+      "DemolitionAutoScatter": {
+        "Name": "Demolition Auto-Scatter",
+        "Hint": "If enabled, failed demolition throws automatically scatter to a random corner of the target zone. If disabled, failed throws stay at the aimed point."
       }
     },
     "Actor": {
@@ -83,13 +93,123 @@
         "Aspect": "Aspect",
         "Bio": "Bio",
         "Bioclass": "Bioclass",
-        "Combat": "Combat"
+        "Combat": "Combat",
+        "Notes": "Notes"
       },
       "Bioclass": {
         "NoneAssigned": "No bioclass assigned. Drop or create one.",
         "Create": "Create Bioclass",
         "NoTraits": "No bioclass traits found.",
         "OnlyOneWarning": "Only one bioclass may be assigned to an actor."
+      },
+      "NPC": {
+        "DropBioclassHint": "Drop a bioclass item here",
+        "ReplaceBioclassTitle": "Replace Bioclass",
+        "ReplaceBioclassContent": "Replace the current bioclass with \"{name}\"?",
+        "WeakNone": "None",
+        "BossActive": "Boss bonuses active: +1 Combat/Toughness/Nerve, HP doubled.",
+        "Roles": {
+          "fastTalker": {
+            "Label": "Fast Talker",
+            "Power": "1 + 1/2 level to awareness and influence rolls."
+          },
+          "guardian": {
+            "Label": "Guardian",
+            "Power": "1 + 1/2 level to awareness and nerve rolls."
+          },
+          "killer": {
+            "Label": "Killer",
+            "Power": "Gains bonus AD by level."
+          },
+          "professional": {
+            "Label": "Professional",
+            "Power": "+2 Operation and any needed knowledge focus based on story."
+          },
+          "psycherManifestor": {
+            "Label": "Psycher, Manifestor",
+            "Power": "Nerve level bonus has no max. Telekinesis reaches 1 zone and teleport works 1 + 1/2 level times per day."
+          },
+          "psycherProjector": {
+            "Label": "Psycher, Projector",
+            "Power": "Special attack targets ND at range 1 with ATT and DMG equal to level. Illusions/disguise 1 + 1/2 level times per day."
+          },
+          "psycherRevelator": {
+            "Label": "Psycher, Revelator",
+            "Power": "Awareness level bonus has no max. Can see through darkness/objects in zone and auto-succeed awareness rolls 1 + 1/2 level times per day."
+          },
+          "sneak": {
+            "Label": "Sneak",
+            "Power": "1 + 1/2 level to stealth/sleight of hand and 1 + level to chosen setup bonuses."
+          }
+        },
+        "Wealth": {
+          "savage": "Savage",
+          "destitute": "Destitute",
+          "crook": "Crook",
+          "established": "Established",
+          "wealthy": "Wealthy",
+          "rareAnimal": "Rare Animal / Xeno",
+          "synthetic": "Synthetic",
+          "priest": "Priest"
+        },
+        "Weapons": {
+          "fist": "Fist",
+          "claws": "Claws",
+          "bite": "Bite",
+          "club": "Club",
+          "knife": "Knife",
+          "hatchet": "Hatchet",
+          "sword": "Sword",
+          "battleHammer": "Battle Hammer",
+          "battleAxe": "Battle Axe",
+          "pistol": "Pistol",
+          "rifle": "Rifle",
+          "shotgun": "Shotgun",
+          "psycherProjection": "Psychic Projection"
+        },
+        "UI": {
+          "Name": "Name",
+          "Attack": "Attack",
+          "Role": "Role",
+          "Wealth": "Wealth",
+          "BossQuestion": "Boss?",
+          "HPBonus": "HP Bonus",
+          "Value": "Value",
+          "Strong": "Strong",
+          "Good": "Good",
+          "Weak": "Weak",
+          "RoleCalculations": "Role Calculations",
+          "RolePower": "Role Power",
+          "SelectedAttack": "Selected Attack",
+          "MasterBadgeTooltip": "This weapon receives the mastered attack bonus",
+          "PreRollHint": "+CMB",
+          "PreRollTooltip": "Combat attribute is added at roll time",
+          "RollAttackTooltip": "Roll the attack",
+          "SpecialAttackNotesLabel": "Special Attack Notes",
+          "SpecialAttackNotePsycherProjector": "Psycher Projector special attack is manual: range 1, ATT = level vs ND, DMG = level.",
+          "SpecialAttackNoteMutantSpit": "Mutant Spit is manual: additional mastered attack vs TD (+0 ATT / +2 DMG, same zone).",
+          "SpecialAttackNoteKitGrenade": "Kit, Grenade is manual: grenade attacks as a second mastered attack are not automated by this button.",
+          "SpecialAttackNoteNastyBlow": "Nasty Blow is manual: auto-hit mastered attack option is not automated by this button.",
+          "WeaponTier": "Tier",
+          "Weapon": "Weapon",
+          "MasteredWeapon": "Mastered Weapon",
+          "BaseAttDmg": "Base ATT/DMG",
+          "WeaponAttDmg": "Weapon ATT/DMG",
+          "TotalAttDmg": "Pre-Roll ATT/DMG",
+          "Ability": "Ability",
+          "Range": "Range",
+          "WeaponNotes": "Weapon Notes",
+          "RollAttack": "Roll Attack",
+          "NPCNotes": "NPC Notes",
+          "UniquePower": "Unique Power",
+          "BossPower": "Boss Power",
+          "Loot": "Loot",
+          "Notes": "Notes"
+        },
+        "FIELDS": {
+          "cr": {"label": "CR"}
+        },
+        "xp": {"label": "XP"}
       },
       "Aspect": {
         "NoneAssigned": "No aspect assigned. Drop or create one.",
@@ -106,7 +226,8 @@
         "Base": "Base",
         "Modifier": "Modifier",
         "LevelIncrease": "Level Increase",
-        "Current": "Current"
+        "Current": "Current",
+        "label": "Attributes"
       },
       "Combat": {
         "Armor": "Armor",
@@ -121,6 +242,16 @@
           },
           "ForceBarrier": "Force Barrier"
         },
+        "weaponValues": {
+          "attackBonus": "ATT",
+          "damageBonus": "DMG",
+          "lethal": "Lethal",
+          "rangeIncrement": "Range Incr."
+        },
+        "shieldValues": {
+          "adBonus": "Shield AD"
+        },
+        "Shields": "Shields",
         "Weapons": "Weapons",
         "ChangeEquipped": "Change Equipped State"
       },
@@ -150,12 +281,6 @@
         "FIELDS": {
           "level.value": {"label": "Level"}
         }
-      },
-      "NPC": {
-        "FIELDS": {
-          "cr": {"label": "CR"}
-        },
-        "xp": {"label": "XP"}
       }
     },
     "Item": {
@@ -180,6 +305,87 @@
           "weight": {"label": "Weight"},
           "equipped": {"label":"Equipped"},
           "price": {"label": "Price"}
+        }
+      },
+      "Implant": {
+        "FIELDS": {
+          "Installation": "Installation",
+          "location": {"label": "Install Location"},
+          "implantType": {"label": "Implant Type"},
+          "slotSize": {"label": "Slot Size"},
+          "Modifications": "Modifications",
+          "customMods": {"label": "Custom/Homebrew Mods"},
+          "modifiers": {"label": "Attribute Modifiers"}
+        },
+          "ModifiersInactiveWarning": "Attribute modifiers from this implant are not applied because it is not equipped.",
+        "Location": {
+          "Body": "Body",
+          "Head": "Head"
+        },
+        "Type": {
+          "cyberLimbs": "Cyber Limbs",
+          "bionites": "Bionites",
+          "twitchMuscles": "Twitch Muscles",
+          "techHands": "Tech Hands",
+          "jumpJets": "Jump Jets",
+          "respirator": "Respirator",
+          "synthSkin": "Synth Skin",
+          "cyberSenses": "Cyber Senses",
+          "cortexPlug": "Cortex Plug",
+          "ventromedialImplant": "Ventromedial Implant",
+          "dataStores": "Data Stores",
+          "eideticMemoryCore": "Eidetic Memory Core",
+          "autoPilot": "Auto Pilot",
+          "limbModule": "Limb Module",
+          "soulCage": "Soul Cage",
+          "custom": "Custom/Homebrew"
+        },
+        "Modification": {
+          "enhanced": "Enhanced",
+          "superior": "Superior",
+          "exoLifts": "Exo-lifts",
+          "burnProtocol": "Burn Protocol",
+          "extraArm": "Extra Arm",
+          "retractableItem": "Retractable Item",
+          "drugStorage": "Drug Storage",
+          "recoveryFunctions": "Recovery Functions",
+          "cellularStacking": "Cellular Stacking",
+          "reflexTraining": "Reflex Training",
+          "catfootProgram": "Catfoot Program",
+          "extendedGait": "Extended Gait",
+          "geckoGrip": "Gecko Grip",
+          "retractableBlades": "Retractable Blades",
+          "fingerTools": "Finger Tools",
+          "accelerated": "Accelerated",
+          "retractable": "Retractable",
+          "tacticalSpeed": "Tactical Speed",
+          "vacuumReady": "Vacuum Ready",
+          "oxygenPod": "Oxygen Pod",
+          "ingestionFilter": "Ingestion Filter",
+          "nutritionAmplifier": "Nutrition Amplifier",
+          "morphSkin": "Morph Skin",
+          "stealthSkin": "Stealth Skin",
+          "distanceHearing": "Distance Hearing",
+          "zoom": "Zoom",
+          "nightvision": "Nightvision",
+          "scanningVision": "Scanning Vision",
+          "gunLink": "Gun Link",
+          "psychovision": "Psychovision",
+          "proximityAlarm": "Proximity Alarm",
+          "deadface": "Deadface",
+          "psychocortex": "Psychocortex",
+          "mindshield": "Mindshield",
+          "psychonautalis": "Psychonautalis",
+          "complexStorage": "Complex Storage",
+          "computerInterface": "Computer Interface",
+          "skullPhone": "Skull Phone",
+          "mentalProjection": "Mental Projection",
+          "monkeyProtocol": "Monkey Protocol",
+          "complexProcedure": "Complex Procedure",
+          "advancedControl": "Advanced Control",
+          "furyProtocol": "Fury Protocol",
+          "acceptanceMeditations": "Acceptance Meditations",
+          "darkSwitch": "Dark Switch"
         }
       },
       "Armor": {
@@ -208,6 +414,20 @@
           "Radiative": "Radiative",
           "ReactiveCamo": "Reactive Camo",
           "Calling": "Calling"
+        }
+      },
+      "Shield": {
+        "FIELDS": {
+          "adBonus": "Shield AD Bonus",
+          "Protection": "Protection",
+          "Modifications": "Modifications"
+        },
+        "Modification": {
+          "None": "None",
+          "WeaponRest": "Weapon Rest",
+          "Shocking": "Shocking",
+          "Radiodynamic": "Radiodynamic",
+          "Gravatic": "Gravatic"
         }
       },
       "Trait": {
@@ -260,6 +480,7 @@
             "hp": {"label": "HP"},
             "hpPerLevel": {"label": "HP / Level"}
           },
+          "ignoreRoleWeakPenalty": {"label": "Ignore Weak Penalty"},
           "bodySlots": {"label": "Body Slots"},
           "brainSlots": {"label": "Brain Slots"}
         },
@@ -380,6 +601,7 @@
       "Subtype": {
         "Challenge": "Challenge",
         "Attack": "Attack",
+        "Demolition": "Demolition",
         "Damage": "Damage",
         "ItemRoll": "Item Roll"
       },
@@ -404,6 +626,14 @@
         "TargetArmor": "Target Armor",
         "AttackBonus": "Attack Bonus (ATT)",
         "DamageBonus": "Damage Bonus (DMG)",
+        "RangeIncrement": "Range Increment",
+        "Distance": "Distance (Zones)",
+        "RangeModifier": "Range Modifier",
+        "ShieldBonus": "Target Shield Bonus",
+        "ShieldBonusHint": {
+          "Melee": "Auto-filled from the target's equipped shield AD (you can override).",
+          "NonMelee": "Enter manually for cover/shield use against this attack."
+        },
         "Flavor": "Flavor",
         "OpposedFlavorDefault": "Opposed against roll {id}",
         "General": "General",
@@ -413,7 +643,11 @@
         "TitleChallenge": "Challenge Roll",
         "TitleShock": "Shocking Strike: Toughness Check",
         "TitleAttack": "Attack Roll",
+        "TitleDemolition": "Demolition Roll",
         "TitleDamage": "Calculated Damage",
+        "TitleSpreadDamage": "Spread Damage",
+        "SpreadCollateralHit": "Collateral Targets",
+        "SpreadFlavor": "{item}: collateral spread damage (no die) to {targets}",
         "ItemRoll": "Item Roll for [{type}]:{name}",
         "Equation": "Equation",
         "Total": "Total",
@@ -429,12 +663,23 @@
         "Margin": "Margin",
         "MiscModifier": "Misc Modifier",
         "Armor": "Armor",
+        "ShieldBonus": "Shield Bonus",
+        "EffectiveArmor": "Effective Armor",
         "AttackBonus": "ATT Bonus",
+        "RangeModifier": "Range Modifier",
+        "RangeIncrement": "Range Increment",
+        "Distance": "Distance (Zones)",
+        "RangeBands": "Range Bands",
         "DamageBonus": "DMG Bonus",
+        "PlantNumber": "Plant Number",
+        "BlastDiameter": "Blast Diameter",
+        "FinalPoint": "Final Point",
         "SourceAttack": "Source Attack",
         "DerivedFromAttack": "Derived from attack",
         "DefaultFlavorChallenge": "{difficulty} roll made using {attribute}",
         "DefaultFlavorAttack": "{item}: attack roll using {attribute} vs armor {armor}",
+        "DefaultFlavorDemolition": "{item}: demolition roll using {attribute} vs RD {rd}",
+        "DefaultFlavorDemolitionPlanted": "{item}: plant roll using {attribute} vs Plant {plant}",
         "ShowDetails": "Show Details",
         "SuccessLevel": "Success Level: {level}",
         "AttackResultHit": "Attack Result: Hit",
@@ -462,6 +707,11 @@
       "Outcome": {
         "Hit": "Hit",
         "Miss": "Miss",
+        "OnTarget": "On Target",
+        "Planted": "Planted",
+        "Scattered": "Scattered",
+        "DetonatedDuringPlanting": "Detonated While Planting",
+        "OffTargetNoScatter": "Off Target (Scatter Disabled)",
         "DamageApplied": "Damage Applied"
       },
       "Warnings": {
@@ -472,7 +722,14 @@
         "ChallengeDataMissing": "This message does not contain challenge roll data.",
         "NotPermitted": "You do not have permission to use this action.",
         "NoTarget": "No attack targets selected (using target armor default setting)",
-        "TooManyTargets": "Too many targets selected (using target armor default setting)"
+        "TooManyTargets": "Too many targets selected (using target armor default setting)",
+        "AttackerTokenMissing": "Could not determine the attacker's token for range calculation.",
+        "ImplantSlotsExceeded": "Update blocked: not enough {location} implant slots ({used}/{capacity}). Unequip another implant or reduce this implant's slot size, then try again.",
+        "MeleeOutOfRange": "Melee attack is impossible: target is outside your current zone.",
+        "DemolitionDamageRequiresDetonation": "Damage can only be rolled for demolition after detonation.",
+        "DemolitionBlastMissing": "This demolition weapon needs a blast radius before it can be used.",
+        "DemolitionRangeIncrementMissing": "This demolition weapon needs a range increment greater than zero.",
+        "DemolitionPlacementMissing": "Could not determine the placed demolition point."
       },
       "Opposed": {
         "SummaryTitle": "Opposed Challenge Result",
@@ -512,6 +769,22 @@
         "FailureDeath": "Toughness check failed ({roll} vs RD {rd}) — would be reduced below zero and dies.",
         "FailureMinusOne": "Toughness check failed ({roll} vs RD {rd}) — HP reduced to -1."
       }
+    },
+    "Target": {
+      "AreaEffect": "Area of Effect",
+      "Target": "Target",
+      "None": "none",
+      "Radius": "radius",
+      "Sphere": "sphere",
+      "Cylinder": "cylinder",
+      "Cone": "cone",
+      "Square": "square",
+      "Cube": "cube",
+      "Line": "line",
+      "Wall": "wall",
+      "Width": "Width",
+      "Units": "Units",
+      "TypeArea": "Area Type"
     }
   },
   "TYPES": {
@@ -524,6 +797,7 @@
       "bioclass": "Bioclass",
       "aspect": "Aspect",
       "trait": "Trait",
+      "implant": "Implant",
       "armor": "Armor",
       "weapon" : "Weapon",
       "shield": "Shield"

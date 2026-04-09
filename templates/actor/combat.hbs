@@ -62,11 +62,74 @@
     {{/each}}
   </ol>
 
+  <h4>{{localize 'SYNTHICIDE.Actor.Combat.Shields'}}</h4>
+  <ol class='items-list'>
+    <li class='item flexrow items-header'>
+      <div class='item-name'>{{localize 'Name'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Actor.Combat.shieldValues.adBonus'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Item.Gear.FIELDS.equipped.label'}}</div>
+      <div class='item-controls'>
+        {{#if @root.editable}}
+          <a
+            class='item-control item-create'
+            data-tooltip='{{localize "DOCUMENT.Create" type='Item'}}'
+            data-action='createDoc'
+            data-document-class='Item'
+            data-type='shield'
+          >
+            <i class='fas fa-plus'></i>
+            {{localize 'DOCUMENT.New' type='item'}}
+          </a>
+        {{/if}}
+      </div>
+    </li>
+    {{#each shield as |item id|}}
+      <li
+        class='item flexrow draggable'
+        data-item-id='{{item._id}}'
+        data-document-class='Item'
+      >
+        <div class='item-name'>
+          <div class='item-image'>
+            <img
+              src='{{item.img}}'
+              data-tooltip='{{item.name}}'
+            />
+          </div>
+          <div class='item-label'>{{item.name}}</div>
+        </div>
+        <div class='item-prop'>{{item.system.adBonus}}</div>
+        <div class='item-prop'><a class="item-control item-equip" data-action="changeEquippedState" data-tooltip='{{localize "SYNTHICIDE.Actor.Combat.ChangeEquipped"}}'><i class={{#if item.system.equipped}}"fa-solid fa-square-check"{{else}}"fa-regular fa-square"{{/if}}></i></a></div>
+        <div class='item-controls'>
+          <a
+            class='item-control item-edit'
+            data-tooltip='{{localize "DOCUMENT.Update" type='Shield'}}'
+            data-action='viewDoc'
+          >
+            <i class='fas fa-edit'></i>
+          </a>
+          {{#if @root.editable}}
+            <a
+              class='item-control item-delete'
+              data-tooltip='{{localize "DOCUMENT.Delete" type='Shield'}}'
+              data-action='deleteDoc'
+            >
+              <i class='fas fa-trash'></i>
+            </a>
+          {{/if}}
+        </div>
+      </li>
+    {{/each}}
+  </ol>
+
   <h4>{{localize 'SYNTHICIDE.Actor.Combat.Weapons'}}</h4>
   <ol class='items-list'>
     <li class='item flexrow items-header'>
       <div class='item-name'>{{localize 'Name'}}</div>
-      <div class='item-formula'>{{localize 'SYNTHICIDE.Item.Gear.FIELDS.rollFormula.label'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Actor.Combat.weaponValues.attackBonus'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Actor.Combat.weaponValues.damageBonus'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Actor.Combat.weaponValues.rangeIncrement'}}</div>
+      <div class='item-prop'>{{localize 'SYNTHICIDE.Item.Gear.FIELDS.equipped.label'}}</div>
       <div class='item-controls'>
         {{#if @root.editable}}
           <a
@@ -99,7 +162,10 @@
           </div>
           <div class='item-label'>{{item.name}}</div>
         </div>
-        <div class='item-formula item-prop'>{{item.system.formula}}</div>
+        <div class='item-prop'>{{item.system.attackBonus}}</div>
+        <div class='item-prop'>{{item.system.damageBonus}}</div>
+        <div class='item-prop'>{{item.system.rangeIncrement}}</div>
+        <div class='item-prop'><a class="item-control item-equip" data-action="changeEquippedState" data-tooltip='{{localize "SYNTHICIDE.Actor.Combat.ChangeEquipped"}}'><i class={{#if item.system.equipped}}"fa-solid fa-square-check"{{else}}"fa-regular fa-square"{{/if}}></i></a></div>
         <div class='item-controls'>
           <a
             class='item-control item-attack'
