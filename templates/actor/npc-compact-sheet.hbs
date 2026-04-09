@@ -1,3 +1,4 @@
+{{log this}}
 <div class="synthicide actor npc npc-compact-sheet">
   <header class="npc-compact-header">
     <h1>
@@ -44,6 +45,12 @@
           </label>
         </div>
       </span>
+      <div class="header-resource npc-hp-align">
+        <span class="resource-label one-word-per-line">{{localize 'SYNTHICIDE.Actor.base.FIELDS.hitPoints.value.label'}}</span>
+        <div class = "resource resource-pair">
+          <input type="number" name="system.hitPoints.value" value="{{system.hitPoints.value}}" max="{{system.hitPoints.max}}" min="0"/> / <input type="number" name="system.hitPoints.max" value="{{system.hitPoints.max}}" disabled/> 
+        </div>
+      </div>
     </div>
   </header>
   <section class="npc-compact-attributes">
@@ -73,40 +80,55 @@
   <section class="npc-compact-row">
     <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.base.FIELDS.DerivedValues'}}</label>
     <div class="npc-compact-attributes-list">
-      <div class="header-resource npc-der one-word-per-line">{{localize 'SYNTHICIDE.Actor.base.FIELDS.nerveDefense.value.label'}} <input type="number" name="system.nerveDefense.value" value="{{system.nerveDefense.value}}" disabled/></div>
-      <div class="header-resource npc-der one-word-per-line">{{localize 'SYNTHICIDE.Actor.base.FIELDS.toughnessDefense.value.label'}} <input type="number" name="system.toughnessDefense.value" value="{{system.toughnessDefense.value}}" disabled/></div>
-      <div class="header-resource npc-der one-word-per-line">{{localize 'SYNTHICIDE.Actor.base.FIELDS.armorDefense.value.label'}} <input type="number" name="system.armorDefense.value" value="{{system.armorDefense.value}}" disabled/></div>
-      <div class="header-resource npc-der one-word-per-line">{{localize 'SYNTHICIDE.Actor.base.FIELDS.shockThreshold.value.label'}} <input type="number" name="system.shockThreshold.value" value="{{system.shockThreshold.value}}" disabled/></div>
-      <div class="header-resource npc-der npc-hp-align">
-        <span class="one-word-per-line">{{localize 'SYNTHICIDE.Actor.base.FIELDS.hitPoints.value.label'}}</span>
-        <div class = "resource resource-pair">
-          <input type="number" name="system.hitPoints.value" value="{{system.hitPoints.value}}" max="{{system.hitPoints.max}}" min="0"/> / <input type="number" name="system.hitPoints.max" value="{{system.hitPoints.max}}" disabled/> 
-        </div>
+      <div class="header-resource npc-der">
+        <span class="one-word-per-line"> {{localize 'SYNTHICIDE.Actor.base.FIELDS.nerveDefense.value.label'}}</span>
+        <input type="number" name="system.nerveDefense.value" value="{{system.nerveDefense.value}}" disabled/>
       </div>
-      <div class="header-resource npc-der one-word-per-line"><span class="one-word-per-line">{{localize 'SYNTHICIDE.Actor.base.FIELDS.actionPoints.value.label'}}</span> <input type="number" name="system.actionPoints.value" value="{{system.actionPoints.value}}" disabled/></div>
-      <div class="header-resource npc-der one-word-per-line">{{localize 'SYNTHICIDE.Actor.base.FIELDS.battleReflex.value.label'}} <input type="number" name="system.battleReflex.value" value="{{system.battleReflex.value}}" disabled/></div>
+      <div class="header-resource npc-der">
+        <span class="one-word-per-line"> {{localize 'SYNTHICIDE.Actor.base.FIELDS.toughnessDefense.value.label'}}</span>
+        <input type="number" name="system.toughnessDefense.value" value="{{system.toughnessDefense.value}}" disabled/>
+      </div>
+      <div class="header-resource npc-der">
+        <span class="one-word-per-line"> {{localize 'SYNTHICIDE.Actor.base.FIELDS.armorDefense.value.label'}}</span>
+        <input type="number" name="system.armorDefense.value" value="{{system.armorDefense.value}}" disabled/>
+      </div>
+      <div class="header-resource npc-der">
+        <span class="one-word-per-line"> {{localize 'SYNTHICIDE.Actor.base.FIELDS.shockThreshold.value.label'}}</span>
+        <input type="number" name="system.shockThreshold.value" value="{{system.shockThreshold.value}}" disabled/>
+      </div>
+      
+      <div class="header-resource npc-der">
+        <span class="one-word-per-line"> {{localize 'SYNTHICIDE.Actor.base.FIELDS.actionPoints.value.label'}}</span> 
+        <input type="number" name="system.actionPoints.value" value="{{system.actionPoints.value}}" disabled/>
+      </div>
+      <div class="header-resource npc-der">
+        <span class="one-word-per-line"> {{localize 'SYNTHICIDE.Actor.base.FIELDS.battleReflex.value.label'}} </span>
+        <input type="number" name="system.battleReflex.value" value="{{system.battleReflex.value}}" disabled/>
+      </div>
     </div>
   </section>
-  <section class="npc-compact-select-attack">
+  <section class="npc-compact-attack">
     <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Weapon'}}</label>
-    <select name='system.attackWeapon' class="selected-attack-weapon">
+    <div class="npc-compact-select-attack">
+      <select name='system.attackWeapon' class="selected-attack-weapon">
       {{selectOptions @root.config.npcWeaponOptions selected=system.attackWeapon localize=true}}
-    </select>
-    <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.BaseAttDmg'}}: {{system.selectedAttack.attackBonus.base}} / {{system.selectedAttack.damageBonus.base}}</span>
-    <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.WeaponAttDmg'}}: {{system.selectedAttack.attackBonus.weapon}} / {{system.selectedAttack.damageBonus.weapon}}</span>
-    <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.TotalAttDmg'}}: {{system.selectedAttack.attackBonus.total}} / {{system.selectedAttack.damageBonus.total}}</span>
-    {{#if (eq system.attackWeapon system.masteredWeapon)}}<i class="fa-solid fa-star" data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.MasterBadgeTooltip"}}'></i>{{/if}}
-    <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.Ability'}}: {{system.selectedAttack.ability}}</span>
-    <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.Range'}}: {{system.selectedAttack.range}}</span>
-    <div class='npc-attack-action'>
-      <button
-        type='button'
-        class='rollable synthicide-roll-button'
-        data-action='selectedAttackRoll'
-        data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.RollAttackTooltip"}}'
-      >
-        {{localize 'SYNTHICIDE.Actor.NPC.UI.RollAttack'}}
-      </button>
+      </select>
+      <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.BaseAttDmg'}}: {{system.selectedAttack.attackBonus.base}} / {{system.selectedAttack.damageBonus.base}}</span>
+      <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.WeaponAttDmg'}}: {{system.selectedAttack.attackBonus.weapon}} / {{system.selectedAttack.damageBonus.weapon}}</span>
+      <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.TotalAttDmg'}}: {{system.selectedAttack.attackBonus.total}} / {{system.selectedAttack.damageBonus.total}}</span>
+      {{#if (eq system.attackWeapon system.masteredWeapon)}}<i class="fa-solid fa-star" data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.MasterBadgeTooltip"}}'></i>{{/if}}
+      <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.Ability'}}: {{system.selectedAttack.ability}}</span>
+      <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.Range'}}: {{system.selectedAttack.range}}</span>
+      <div class='npc-attack-action'>
+        <button
+          type='button'
+          class='rollable synthicide-roll-button'
+          data-action='selectedAttackRoll'
+          data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.RollAttackTooltip"}}'
+        >
+          {{localize 'SYNTHICIDE.Actor.NPC.UI.RollAttack'}}
+        </button>
+      </div>
     </div>
   </section>
   <section class="npc-compact-powers">
@@ -116,11 +138,11 @@
     <span>{{system.bossPower}}</span>
   </section>
   <section class="npc-compact-loot">
-    <label><b>{{localize 'SYNTHICIDE.Actor.NPC.UI.Loot'}}</b></label>
+    <label><b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Actor.NPC.UI.Loot'}}</b></label>
     <span>{{system.loot}}</span>
   </section>
   <section class="npc-compact-notes">
-    <label><b>{{localize 'SYNTHICIDE.Actor.NPC.UI.Notes'}}</b></label>
+    <label><b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Actor.NPC.UI.Notes'}}</b></label>
     <textarea name="system.notes">{{system.notes}}</textarea>
   </section>
 </div>
