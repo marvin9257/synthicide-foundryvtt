@@ -16,16 +16,16 @@
   --synthicide-border-groove: #bdbdbd;
   --synthicide-shadow: 0 1px 2px rgba(0,0,0,0.04);
   --synthicide-c-dark: #191813;
-  --synthicide-c-faint: #c9c7b8;
   --synthicide-c-beige: #b5b3a4;
-  --synthicide-c-tan: #444444;
+  --synthicide-c-tan: #c9c7b8;
+  --synthicide-c-ltgrey: #444444;
   --synthicide-c-white: #ffffff;
   --synthicide-c-black: #000000;
   --synthicide-c-groove: #eeede0;
   --synthicide-c-danger: #b42318;
   --synthicide-c-warning: yellow;
   --synthicide-c-success: #2f9e44;
-  --synthicide-c-panel-bg: rgba(0, 0, 0, 0.05);
+  --synthicide-c-panel-bg: rgba(0, 0, 0, 0.04);
   --synthicide-c-meter-line: rgba(0, 0, 0, 0.02);
   --synthicide-c-border-subtle: var(--synthicide-c-faint);
   --synthicide-c-hover-glow: red;
@@ -41,7 +41,8 @@
 }
 
 .theme-light {
-  --color-border-light-tertiary: var(--synthicide-c-border-subtle);
+  --synthicide-c-faint: var(--synthicide-c-beige);
+  --color-border-light-tertiary: var(--synthicide-c-beige);
   --color-icon-bg-light: var(--synthicide-c-faint);
   --color-icon-filter-light: var(--synthicide-c-black);
   --synthicide-c-icon-bg: var(--form-field-color);
@@ -50,12 +51,9 @@
 .theme-dark {
   --synthicide-border-groove: #444;
   --synthicide-shadow: 0 1px 2px rgba(255,255,255,0.06);
-      background: var(--synthicide-c-icon-bg);
-  --synthicide-c-faint: #444444;
+  --synthicide-c-faint: var(--synthicide-c-ltgrey);
   --synthicide-c-beige: #b5b3a4;
   --synthicide-c-tan: #c9c7b8;
-  --synthicide-c-white: #ffffff;
-  --synthicide-c-black: #000000;
   --synthicide-c-groove: #232323;
   --synthicide-c-panel-bg: rgba(255,255,255,0.04);
   --synthicide-c-meter-line: rgba(255,255,255,0.08);
@@ -848,7 +846,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 .synthicide .header-resource .resource-label {
   font-size: 0.95rem;
   line-height: 1.1;
-  width: 100%;
+  /*width: 100%;*/
   text-align: center;
   white-space: normal;
 }
@@ -1060,7 +1058,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   margin: 0;
   padding: 0;
   overflow-y: auto;
-  color: var(--synthicide-c-tan);
+  /*color: var(--synthicide-c-tan);*/
 }
 
 .synthicide .items-list::-webkit-scrollbar {
@@ -1113,9 +1111,9 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
 .synthicide .items-list .item:not(.items-header):last-child {
   border-bottom: none;
 }
-.synthicide .items-list .item .item-name {
+/*.synthicide .items-list .item .item-name {
   color: var(--synthicide-c-dark);
-}
+}*/
 .synthicide .items-list .item .item-name .item-image {
   flex: 0 0 22px;
   height: 22px;
@@ -1145,7 +1143,7 @@ body.theme-light input:disabled, body.theme-light select:disabled, body.theme-li
   margin: 0;
   padding: 0;
   overflow-y: auto;
-  color: var(--synthicide-c-tan);
+  /*color: var(--synthicide-c-tan);*/
 }
 
 .synthicide .effects-list::-webkit-scrollbar {
@@ -3130,34 +3128,34 @@ body.synthicide-style-bold .synthicide .tab.npcStats .attributes-table thead th.
 }
 
 /* --- Classic mode: subtle section borders for both light and dark --- */
-.npc-compact-sheet:not(.rulebookBold) .npc-compact-header,
-.npc-compact-sheet:not(.rulebookBold) .npc-compact-attributes,
-.npc-compact-sheet:not(.rulebookBold) .npc-compact-row,
-.npc-compact-sheet:not(.rulebookBold) .npc-compact-select-attack,
-.npc-compact-sheet:not(.rulebookBold) .npc-compact-powers,
-.npc-compact-sheet:not(.rulebookBold) .npc-compact-loot,
-.npc-compact-sheet:not(.rulebookBold) .npc-compact-notes {
+body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-header,
+body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attributes,
+body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-row,
+body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attack,
+body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-powers,
+body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-loot,
+body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-notes {
   border-bottom: 1.5px solid var(--color-border-light-tertiary);
   margin-bottom: 10px;
   padding-bottom: 5px;
 }
 
-body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-header,
-body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-attributes,
-body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-row,
-body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-select-attack,
-body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-powers,
-body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-loot,
-body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-notes {
+body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-header,
+body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attributes,
+body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-row,
+body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attack,
+body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-powers,
+body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-loot,
+body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-notes {
   border-bottom: 1.5px solid var(--color-border-dark-tertiary);
 }
 
 /* --- d10 icon contrast for classic mode --- */
-.npc-compact-sheet:not(.rulebookBold) .synthicide-window-icon {
+body:not(.synthicide-style-bold) .npc-compact-sheet .synthicide-window-icon {
   border-radius: 3px;
   padding: 2px;
 }
-.npc-compact-sheet:not(.rulebookBold) .synthicide-window-icon img[src$="synthicidePause.svg"] {
+body:not(.synthicide-style-bold) .npc-compact-sheet .synthicide-window-icon img[src$="synthicidePause.svg"] {
   background: var(--synthicide-c-icon-bg);
 }
 
@@ -3167,6 +3165,7 @@ body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-notes {
   gap: 1.5em;
   margin-bottom: 8px;
 }
+
 .npc-compact-header input[name="name"] {
   font-size: 1.2em;
   font-weight: bold;
@@ -3174,18 +3173,28 @@ body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-notes {
   border-bottom: 1px solid var(--synthicide-c-border-subtle);
   width: 20ch;
 }
+
 .npc-compact-header h1 {
   margin-bottom: 0;
 }
+
 .npc-compact-sheet .sheet-header-fields {
-  display: inline-flex;
+  display: flex;
   gap: 2ch;
   align-items: center;
   text-align: center;
+  width: 90%;
+  width: -webkit-fill-available;
+  justify-content: space-evenly;
 }
+
 .npc-compact-sheet .bioclass-box {
   display: inline-flex;
   gap: 1ch;
+}
+
+.npc-compact-sheet .header-resource .resource-label {
+    padding-bottom: 4px;
 }
 
 .npc-compact-attributes-list {
@@ -3202,10 +3211,17 @@ body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-notes {
   display: inline-flex;
   align-items: center;
 }
+
 .npc-der {
   align-items: center;
   text-align: center;
 }
+
+.header-resource.npc-attr,
+.header-resource.npc-der {
+  min-width: 14ch;
+}
+
 .npc-hp-align {
   display: flex;
   flex-direction: column;
@@ -3214,6 +3230,7 @@ body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-notes {
   width: min-content;
   display: block;
 }
+
 .npc-attr input,
 .npc-der input {
   width: 36px;
@@ -3262,121 +3279,78 @@ body.theme-dark .npc-compact-sheet:not(.rulebookBold) .npc-compact-notes {
 }
 
 /* --- Rulebook Bold: custom colors, backgrounds, borders --- */
-.npc-compact-sheet.rulebookBold {
+body.synthicide-style-bold .npc-compact-sheet {
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
   border: 2px solid var(--synthicide-c-beige);
-  background: var(--synthicide-c-dark);
+}
+body.synthicide-style-bold .npc-compact-sheet .sheet-header,
+body.synthicide-style-bold .npc-compact-sheet h1,
+body.synthicide-style-bold .npc-compact-sheet label {
   color: var(--synthicide-c-beige);
 }
-.npc-compact-sheet.rulebookBold .sheet-header,
-.npc-compact-sheet.rulebookBold h1,
-.npc-compact-sheet.rulebookBold label {
-  color: var(--synthicide-c-beige);
-}
-.npc-compact-sheet.rulebookBold .npc-compact-select-attack {
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-attack {
   background: var(--synthicide-c-panel-bg);
-  border-color: var(--synthicide-c-beige);
-  color: var(--synthicide-c-beige);
   font-weight: 500;
-  border: 2px solid var(--synthicide-c-beige);
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 0.5em 1em;
   margin-bottom: 12px;
 }
-.npc-compact-sheet.rulebookBold .bioclass-box {
+body.synthicide-style-bold .npc-compact-sheet .bioclass-box {
   background: var(--synthicide-c-panel-bg);
   border-radius: 6px;
   padding: 2px 8px;
-  border: 1px solid var(--synthicide-c-beige);
-  color: var(--synthicide-c-beige);
+  border: 1px solid var(--synthicide-c-faint);
 }
-.npc-compact-sheet.rulebookBold .npc-compact-attributes {
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-attributes {
   background: var(--synthicide-c-panel-bg);
   border-radius: 8px;
-  padding: 0.5em 0 0.5em 0;
+  padding: 0.5em 1em;
   margin-bottom: 12px;
 }
-.npc-compact-sheet.rulebookBold .npc-attr,
-.npc-compact-sheet.rulebookBold .npc-der {
-  background: var(--synthicide-c-dark);
-  border: 1.5px solid var(--synthicide-c-beige);
+body.synthicide-style-bold .npc-compact-sheet .npc-attr,
+body.synthicide-style-bold .npc-compact-sheet .npc-der {
+  border: 1px solid var(--synthicide-c-faint);
   border-radius: 6px;
   padding: 0.5em 1em;
   margin: 0 0.5em;
-  color: var(--synthicide-c-beige);
-  font-weight: 500;
-  min-width: 7ch;
 }
-.npc-compact-sheet.rulebookBold .npc-attr label {
+body.synthicide-style-bold .npc-compact-sheet .npc-attr label {
   font-size: 0.9em;
   color: var(--synthicide-c-tan);
   font-weight: bold;
   margin-bottom: 2px;
 }
-.npc-compact-sheet.rulebookBold .npc-attr input,
-.npc-compact-sheet.rulebookBold .npc-der input {
-  background: var(--form-field-bg);
-  color: var(--form-field-color);
-  border: 1px solid var(--synthicide-c-beige);
+body.synthicide-style-bold .npc-compact-sheet .npc-attr input,
+body.synthicide-style-bold .npc-compact-sheet .npc-der input {
   font-weight: bold;
   font-size: 1em;
   padding: 2px 0;
   margin-top: 2px;
 }
-.npc-compact-sheet.rulebookBold .npc-compact-row {
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-row {
   background: var(--synthicide-c-panel-bg);
   border-radius: 8px;
-  padding: 0.5em 0;
-  margin-bottom: 12px;
-  color: var(--synthicide-c-beige);
-  font-weight: 500;
-}
-.npc-compact-sheet.rulebookBold .npc-compact-select-attack label {
-  color: var(--synthicide-c-style-accent);
-  font-size: 1em;
-  font-weight: bold;
-  letter-spacing: 0.02em;
-}
-.npc-compact-sheet.rulebookBold .npc-compact-select-attack select {
-  background: var(--form-field-bg);
-  color: var(--form-field-color);
-  border: 1.5px solid var(--synthicide-c-beige);
-  border-radius: 4px;
-  font-size: 1em;
-  font-weight: 500;
-  padding: 2px 8px;
-  margin: 0 0.5em;
-}
-.npc-compact-sheet.rulebookBold .npc-compact-master-attack span {
-  margin-right: 1.5em;
-  font-size: 1em;
-  color: var(--synthicide-c-beige);
-}
-.npc-compact-sheet.rulebookBold .npc-compact-powers,
-.npc-compact-sheet.rulebookBold .npc-compact-loot,
-.npc-compact-sheet.rulebookBold .npc-compact-notes {
-  background: var(--synthicide-c-panel-bg);
-  border-radius: 6px;
-  border: 1.5px solid var(--synthicide-c-beige);
   padding: 0.5em 1em;
-  margin-bottom: 10px;
-  color: var(--synthicide-c-beige);
+  margin-bottom: 12px;
+  font-weight: 500;
 }
-.npc-compact-sheet.rulebookBold .npc-compact-powers label,
-.npc-compact-sheet.rulebookBold .npc-compact-loot label,
-.npc-compact-sheet.rulebookBold .npc-compact-notes label {
+
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-powers,
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-loot,
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes {
+  background: var(--synthicide-c-panel-bg);
+  border-radius: 8px;
+  padding: 0.5em 1em;
+}
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-powers label,
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-loot label,
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes label {
   color: var(--synthicide-c-style-accent);
   font-weight: bold;
   font-size: 1em;
 }
-.npc-compact-sheet.rulebookBold .npc-compact-notes textarea {
-  background: var(--form-field-bg);
-  color: var(--form-field-color);
-  border: 1.5px solid var(--synthicide-c-beige);
-  border-radius: 4px;
-  font-size: 1em;
-  padding: 4px 8px;
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes textarea {
   width: 100%;
   min-height: 2.5em;
 }
