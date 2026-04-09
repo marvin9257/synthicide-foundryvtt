@@ -1,3 +1,10 @@
+## [1.0.17](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.16...1.0.17) (2026-04-09)
+
+
+### Bug Fixes
+
+* cleanup rolls ([27ba5ff](https://github.com/marvin9257/synthicide-foundryvtt/commit/27ba5ff7d3e64e7678516e707624ccd3ebd93b29))
+
 ## [1.0.16](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.15...1.0.16) (2026-04-05)
 
 
