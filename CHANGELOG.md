@@ -1,3 +1,10 @@
+## [1.0.18](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.17...1.0.18) (2026-04-10)
+
+
+### Bug Fixes
+
+* cleanup on npc-compact sheet ([097d6df](https://github.com/marvin9257/synthicide-foundryvtt/commit/097d6df34c5aa1e32670f4445f131bb48a7cce39))
+
 ## [1.0.17](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.16...1.0.17) (2026-04-09)
 
 
