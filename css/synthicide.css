@@ -63,11 +63,16 @@
   --color-icon-filter-dark: var(--synthicide-c-white);
   --form-field-bg: #232323;
   --form-field-color: #e6e4df;
+  --background: rgba(0,0,0,1);
 }
 
 
 body.theme-light input:disabled, body.theme-light select:disabled, body.theme-light textarea:disabled, body.theme-light code-mirror:disabled, body.theme-light formula-input:disabled {
     --input-border-color: var(--color-dark-6);
+}
+
+body.theme-dark .npc-compact .window-content {
+    background: #111111;
 }
 
 /* ============================== */
@@ -1677,8 +1682,7 @@ body.synthicide-style-bold {
   --rb-on-accent:     #ffffff;
   --synthicide-c-style-accent: var(--rb-accent);
   --rb-line:          color-mix(in srgb, var(--synthicide-c-dark) 55%, transparent);
-  --rb-cell:          color-mix(in srgb, var(--synthicide-c-panel-bg) 90%, transparent);
-  --rb-cell-alt:      color-mix(in srgb, var(--synthicide-c-panel-bg) 160%, transparent);
+  --rb-cell-alt:      rgba(25, 25, 25, 0.1);
 }
 
 /* ---- Color tokens: dark mode ---- */
@@ -1689,8 +1693,7 @@ body.theme-dark.synthicide-style-bold {
   --rb-on-accent:     #ffffff;
   --synthicide-c-style-accent: var(--rb-accent);
   --rb-line:          color-mix(in srgb, var(--synthicide-c-black) 65%, transparent);
-  --rb-cell:          color-mix(in srgb, var(--synthicide-c-panel-bg) 70%, transparent);
-  --rb-cell-alt:      color-mix(in srgb, var(--synthicide-c-panel-bg) 110%, transparent);
+  --rb-cell-alt:       rgba(251, 251, 251, 0.1);
 }
 
 /* ============================================================ */
@@ -1831,7 +1834,9 @@ body.synthicide-style-bold .synthicide .effects-header .effect-name {
 /* ---- Large section name bars (bioclass / aspect / cybernetics) ---- */
 body.synthicide-style-bold .synthicide .tab.bioclass .items-list > .items-header,
 body.synthicide-style-bold .synthicide .tab.aspect   .items-list > .items-header,
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-header {
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-header,
+body.synthicide-style-bold .synthicide .tab.biography   .items-list > .items-header,
+body.synthicide-style-bold .synthicide .tab.notes .items-list > .items-header {
   min-height: 42px;
   padding: 0 14px;
   border-left-width: 6px;
@@ -1839,7 +1844,9 @@ body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-hea
 
 body.synthicide-style-bold .synthicide .tab.bioclass .items-list > .items-header .item-name,
 body.synthicide-style-bold .synthicide .tab.aspect   .items-list > .items-header .item-name,
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-header .item-name {
+body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-header .item-name,
+body.synthicide-style-bold .synthicide .tab.biography .items-list > .items-header .item-name,
+body.synthicide-style-bold .synthicide .tab.notes .items-list > .items-header .item-name {
   font-size: 1.15rem;
   letter-spacing: 0.05em;
 }
@@ -1932,22 +1939,25 @@ body.synthicide-style-bold .synthicide .tab.combat .items-list .item-controls {
 /* ITEMS LIST & EFFECTS LIST                                    */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide .items-list,
-body.synthicide-style-bold .synthicide .effects-list {
-  border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
+body.synthicide-style-bold .synthicide .items-list .item:not(.items-header),
+body.synthicide-style-bold .synthicide .effects-list .effect:not(.items-header) {
+  border-left: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
   border-radius: 2px;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin: 0;
+  min-height: 4ch;
 }
 
 /* Individual list rows */
-body.synthicide-style-bold .synthicide .items-list .item:not(.items-header),
+/*body.synthicide-style-bold .synthicide .items-list .item:not(.items-header),
 body.synthicide-style-bold .synthicide .effects-list .effect {
   border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
   border-left: 5px solid transparent;
   min-height: 32px;
   padding: 3px 6px;
-}
+}*/
 
 /* Alternating row stripe */
 body.synthicide-style-bold .synthicide .items-list .item:not(.items-header):nth-child(even),
@@ -2102,9 +2112,9 @@ body.synthicide-style-bold .synthicide table.attributes-table tbody th[scope="ro
   background: var(--rb-cell);
 }
 
-body.synthicide-style-bold .synthicide table.attributes-table tbody tr:nth-child(even) td {
+/*body.synthicide-style-bold .synthicide table.attributes-table tbody tr:nth-child(even) td {
   background: var(--rb-cell-alt);
-}
+}*/
 
 /* Attribute row label cell – bold overrides */
 body.synthicide-style-bold .synthicide .attribute-label {
@@ -2273,7 +2283,9 @@ body.theme-dark.synthicide-style-bold .synthicide h4 {
 /* Aspect & Combat tab: h4 is a full-width header bar */
 body.synthicide-style-bold .synthicide .tab.aspect h4,
 body.synthicide-style-bold .synthicide .tab.combat h4,
-body.synthicide-style-bold .synthicide .tab.cybernetics h4 {
+body.synthicide-style-bold .synthicide .tab.cybernetics h4,
+body.synthicide-style-bold .synthicide .tab.info h4,
+body.synthicide-style-bold .synthicide .tab.biography h4 {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
   border-left: 5px solid var(--rb-accent);
@@ -2358,35 +2370,6 @@ body.synthicide-style-bold .synthicide .tab.combat .item-formula.item-prop {
   padding: 2px 6px;
   font-style: italic;
   white-space: nowrap;
-}
-
-
-/* ============================================================ */
-/* BIOGRAPHY TAB                                               */
-/* ============================================================ */
-
-body.synthicide-style-bold .synthicide .tab.biography {
-  border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
-  border-left: 4px solid var(--rb-accent);
-  border-radius: 2px;
-  padding: 0;
-  overflow: hidden;
-}
-
-body.synthicide-style-bold .synthicide .tab.biography::before {
-  content: "Biography";
-  display: flex;
-  align-items: center;
-  background: var(--rb-strong);
-  color: var(--rb-on-accent);
-  font-size: 1.1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  min-height: 42px;
-  padding: 0 14px;
-  border-left: 6px solid var(--rb-accent);
-  margin-bottom: 8px;
 }
 
 /* ============================================================ */
@@ -3055,7 +3038,8 @@ body.synthicide-style-bold .synthicide .tab.npcStats .attribute-label img.action
 }
 
 body.synthicide-style-bold .synthicide .tab.npcStats .npc-board-section,
-body.synthicide-style-bold .synthicide .tab.npcStats .npc-guidance-chip {
+body.synthicide-style-bold .synthicide .tab.npcStats .npc-guidance-chip,
+body.synthicide-style-bold .synthicide .tab.biography .editor-content  {
   border-color: color-mix(in srgb, var(--rb-strong) 50%, transparent);
 }
 
@@ -3237,6 +3221,12 @@ body:not(.synthicide-style-bold) .npc-compact-sheet .synthicide-window-icon img[
   text-align: center;
   border-radius: 3px;
 }
+
+.npc-attr .synthicide-window-icon,
+.npc-attack-action .synthicide-window-icon {
+  background-color: var(--synthicide-c-icon-bg-dark);
+  border-radius: 10px;
+}
 .npc-compact-row {
   font-size: 0.95em;
 }
@@ -3328,6 +3318,12 @@ body.synthicide-style-bold .npc-compact-sheet .npc-der input {
   padding: 2px 0;
   margin-top: 2px;
 }
+
+body.synthicide-style-bold .npc-attr .synthicide-window-icon,
+body.synthicide-style-bold .npc-attack-action .synthicide-window-icon {
+  background-color: var(--rb-strong);
+}
+
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-row {
   background: var(--synthicide-c-panel-bg);
   border-radius: 8px;

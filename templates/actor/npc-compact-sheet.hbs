@@ -51,6 +51,33 @@
           <input type="number" name="system.hitPoints.value" value="{{system.hitPoints.value}}" max="{{system.hitPoints.max}}" min="0"/> / <input type="number" name="system.hitPoints.max" value="{{system.hitPoints.max}}" disabled/> 
         </div>
       </div>
+      {{#if (gt system.armorValues.forceBarrier.max 0)}}
+        <!-- Force Barrier Resource -->
+        <div class='resource flex-group-center header-resource'>
+          <label for='system.armorValues.forceBarrier.value' class='resource-label'>
+            {{localize 'SYNTHICIDE.Actor.Combat.armorValues.ForceBarrier'}}
+          </label>
+          <div class='resource-content flexrow flex-center flex-between resource-pair'>
+            <input
+              type='number'
+              name='system.armorValues.forceBarrier.value'
+              value='{{system.armorValues.forceBarrier.value}}'
+              data-dtype='Number'
+              min='0'
+              max='{{system.armorValues.forceBarrier.max}}'
+            />
+            <span> / </span>
+            <input
+              type='number'
+              name='system.armorValues.forceBarrier.max'
+              value='{{system.armorValues.forceBarrier.max}}'
+              data-dtype='Number'
+              min='0'
+            />
+          </div>
+          <div class='resource-track resource-track-empty'></div>
+        </div>
+      {{/if}}
     </div>
   </header>
   <section class="npc-compact-attributes">
@@ -126,7 +153,7 @@
           data-action='selectedAttackRoll'
           data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.RollAttackTooltip"}}'
         >
-          {{localize 'SYNTHICIDE.Actor.NPC.UI.RollAttack'}}
+          {{localize 'SYNTHICIDE.Actor.NPC.UI.RollAttack'}}<i class="window-icon synthicide-window-icon" inert=""><img src="systems/synthicide/assets/synthicidePause.svg" alt="roll"></i>
         </button>
       </div>
     </div>
@@ -134,8 +161,10 @@
   <section class="npc-compact-powers">
     <label><b>{{localize 'SYNTHICIDE.Actor.NPC.UI.UniquePower'}}</b></label>
     <span>{{system.uniquePower}}</span>
-    <label><b>{{localize 'SYNTHICIDE.Actor.NPC.UI.BossPower'}}</b></label>
-    <span>{{system.bossPower}}</span>
+    {{#if system.boss}}
+      <label><b>{{localize 'SYNTHICIDE.Actor.NPC.UI.BossPower'}}</b></label>
+      <span>{{system.bossPower}}</span>
+    {{/if}}
   </section>
   <section class="npc-compact-loot">
     <label><b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Actor.NPC.UI.Loot'}}</b></label>
