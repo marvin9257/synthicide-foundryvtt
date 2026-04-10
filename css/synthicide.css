@@ -46,6 +46,7 @@
   --color-icon-bg-light: var(--synthicide-c-faint);
   --color-icon-filter-light: var(--synthicide-c-black);
   --synthicide-c-icon-bg: var(--form-field-color);
+  --synthicide-c-border-subtle: var(--synthicide-c-faint);
 }
 
 .theme-dark {
@@ -975,6 +976,7 @@ body.theme-dark .npc-compact .window-content {
 }
 .synthicide .tab.biography .editor {
   height: 100%;
+  border: 1px solid var(--synthicide-c-border-subtle);
 }
 
 /* ============================== */
@@ -1087,10 +1089,10 @@ body.theme-dark .npc-compact .window-content {
   flex: 2;
   margin: 0;
   overflow: hidden;
-  font-size: 13px;
   text-align: left;
   align-items: center;
   display: flex;
+  padding-left: 5px;
 }
 .synthicide .items-list .item-name h3, .synthicide .items-list .item-name h4 {
   margin: 0;
@@ -1103,7 +1105,7 @@ body.theme-dark .npc-compact .window-content {
   justify-content: center;
 }
 .synthicide .items-list .item-controls a {
-  font-size: 12px;
+  /*font-size: 12px;*/
   text-align: center;
   margin: 0 6px;
 }
@@ -1135,8 +1137,8 @@ body.theme-dark .npc-compact .window-content {
 }
 .synthicide .items-list .item-prop {
   text-align: center;
-  border-left: 1px solid var(--synthicide-c-border-subtle);
-  border-right: 1px solid var(--synthicide-c-border-subtle);
+  /*border-left: 1px solid var(--synthicide-c-border-subtle);
+  border-right: 1px solid var(--synthicide-c-border-subtle);*/
   /*font-size: 12px;*/
 }
 .synthicide .item-formula {
@@ -3030,6 +3032,10 @@ body.synthicide-style-bold .synthicide .tab.npcStats .attribute-label img.action
 .tab.npcStats[data-tab='combat'] .npc-force-barrier-section .npc-stat-box,
 .tab.npcStats[data-tab='combat'] .npc-force-barrier-section .npc-stat-box input {
   min-width: 0;
+}
+
+.npc-force-barrier-section .npc-stat-box {
+    justify-content: end;
 }
 
 .tab.npcStats[data-tab='combat'] .npc-stat-box .resource-label,

@@ -1,5 +1,6 @@
 
 import SYNTHICIDE from '../helpers/config.mjs';
+import { ICON_MAP } from '../helpers/icons.mjs';
 import { buildBaseSheetContext } from './sheet-context.mjs';
 import { deleteDocAction, makeRoll, makeSelectedAttackRoll, showInfoAction, viewDocAction } from './sheet-utils.mjs';
 const { api, sheets } = foundry.applications;
@@ -8,7 +9,10 @@ class SynthicideNPCCompactSheet extends api.HandlebarsApplicationMixin(sheets.Ac
   static DEFAULT_OPTIONS = {
     classes: ["synthicide", "actor", "npc", "npc-compact"],
     position: { width: 'auto', height: 'auto' },
-    window: { resizable: true },
+    window: { 
+      resizable: true,
+      icon: ICON_MAP.person
+    },
     actions: {
       viewDoc: this._viewDoc,
       deleteDoc: this._deleteDoc,
