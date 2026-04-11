@@ -20,13 +20,14 @@ jobs:
         run: npm run lint
       - name: Semantic Release
         run: npx semantic-release
-      - name: "Debug: Show version in dist/system.json"
+      - name: "Debug: Show version in dist/system.json (if exists)"
         run: |
           if [ -f dist/system.json ]; then
             echo "dist/system.json version:" && jq .version dist/system.json
           else
-            echo "dist/system.json not found!"
-            exit 1
+            echo "dist/system.json not found (no release made, or build failed)."
+            # Do not fail the workflow if no release was made
+            exit 0
           fi
 
 
