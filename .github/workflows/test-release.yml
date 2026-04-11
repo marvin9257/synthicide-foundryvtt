@@ -1,29 +1,23 @@
-on:
 name: Release
-
+on:
   push:
     branches: [ main, beta ]
-
-
+jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
-
       - name: Install dependencies
         run: npm ci
-
       - name: Semantic Release
         run: npx semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Debug: Show version in dist/system.json
         run: |
           if [ -f dist/system.json ]; then
@@ -32,4 +26,5 @@ name: Release
             echo "dist/system.json not found!"
             exit 1
           fi
+
 
