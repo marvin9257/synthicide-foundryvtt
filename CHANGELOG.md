@@ -1,3 +1,10 @@
+## [1.0.20](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.19...1.0.20) (2026-04-11)
+
+
+### Bug Fixes
+
+* update build release to sync system.json ([e81f7f3](https://github.com/marvin9257/synthicide-foundryvtt/commit/e81f7f308c8f0c5f6c419e7eee39be95e19aa262))
+
 ## [1.0.19](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.18...1.0.19) (2026-04-10)
 
 
