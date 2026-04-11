@@ -1,16 +1,11 @@
-name: Test and Release
-
 on:
+name: Release
+
   push:
-    branches: [ main, beta ]  # Run on direct push to main or beta
+    branches: [ main, beta ]
 
-env:
-  node_version: 24
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
-jobs:
   release:
-    name: Semantic Release (Push)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,76 +14,22 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.node_version }}
+          node-version: 'lts/*'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Install semantic-release and plugins
-        run: |
-          npm install --no-save semantic-release @semantic-release/exec @semantic-release/changelog @semantic-release/git @semantic-release/github
-
-
-      - name: Set git remote to use GITHUB_TOKEN
+      - name: Semantic Release
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/marvin9257/synthicide-foundryvtt.git
-          echo "Using GITHUB_TOKEN for git authentication."
 
-
-      - name: Get next version (semantic-release dry run)
-        id: get_next_version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Debug: Show version in dist/system.json
         run: |
-          set -euo pipefail
-          NEXT_VERSION_LINE=$(npx semantic-release --dry-run 2>&1 | grep -E '^.*The next release version is [0-9]+\.[0-9]+\.[0-9]+')
-          NEXT_VERSION=$(echo "$NEXT_VERSION_LINE" | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
-          if [[ -z "$NEXT_VERSION" ]]; then
-            echo "Could not determine a valid next release version from semantic-release output."
-            exit 1
+          if [ -f dist/system.json ]; then
+            echo "dist/system.json version:" && jq .version dist/system.json
           else
-            echo "Next version: $NEXT_VERSION"
-            echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
+            echo "dist/system.json not found!"
+            exit 1
           fi
 
-      - name: Update system.json with next version
-        run: |
-          node scripts/update-system-json-version.js $NEXT_VERSION
-
-      - name: Build (create dist/)
-        run: npm run build
-
-      - name: Verify dist/system.json version
-        run: |
-          set -euo pipefail
-          DIST_VERSION=$(jq -r .version dist/system.json)
-          if [ "$DIST_VERSION" != "$NEXT_VERSION" ]; then
-            echo "Version mismatch: dist/system.json has $DIST_VERSION, expected $NEXT_VERSION"
-            exit 1
-          else
-            echo "dist/system.json version matches: $DIST_VERSION"
-          fi
-
-      - name: Zip dist contents for FVTT release
-        run: |
-          cd dist
-          zip -r ../synthicide.zip .
-          cd ..
-        shell: bash
-
-      - name: Move manifest for release asset
-        run: |
-          cp dist/system.json ./system.json
-        shell: bash
-
-      - name: Run semantic-release (publish, upload assets, changelog, tag, release)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release --branches=${{ github.ref_name }}
-
-# Notes:
-# - semantic-release will handle versioning, changelog, manifest update, and GitHub release/tag creation.
-# - Configure .releaserc to update system.json, CHANGELOG.md, and upload assets as needed.
-# - This workflow will only run on direct push to main or beta (not on PRs or manual runs).
