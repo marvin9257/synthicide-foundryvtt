@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 'lts/*'
       - name: Install dependencies
-        run: npm ci
+        run: npm install
       - name: Semantic Release
         run: npx semantic-release
       - name: "Debug: Show version in dist/system.json"
