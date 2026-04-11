@@ -1,3 +1,13 @@
+## [1.0.19](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.18...1.0.19) (2026-04-11)
+
+
+### Bug Fixes
+
+* last try ([40472b4](https://github.com/marvin9257/synthicide-foundryvtt/commit/40472b48bb624b7aabf7e11dfa59e85078f788f7))
+* more fun with build ([7f01955](https://github.com/marvin9257/synthicide-foundryvtt/commit/7f01955b45ac6ebfe9bfc68950c6b4df1e7f02db))
+* try a simplification ([49d9095](https://github.com/marvin9257/synthicide-foundryvtt/commit/49d9095c94228fa11f93943c70e6a9f5f48b9d6c))
+* try to fix simplification ([e26f5cd](https://github.com/marvin9257/synthicide-foundryvtt/commit/e26f5cd49167eda84e423dae0d7d08b40982557e))
+
 ## [1.0.18](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.17...1.0.18) (2026-04-11)
 
 
