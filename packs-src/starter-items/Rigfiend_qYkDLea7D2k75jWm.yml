@@ -1,0 +1,49 @@
+folder: yx3Le5deK5c72izk
+name: Rigfiend
+type: bioclass
+_id: qYkDLea7D2k75jWm
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    Someone with both a rigged body and rigged mind is entirely dependent on
+    cybernetics. This bioclass may gain any cybernetic upgrade. However, a
+    Rigfiend may not access mutations or psychic powers.
+  featureType: bioclass
+  traits:
+    - name: Mod Focused
+      sort: 10
+      description: >-
+        You cannot gain psychic powers and cannot permanently mutate through
+        traits. General traits cost 3 TP instead of 2.
+      key: ''
+  startingAttributes:
+    awareness: 1
+    combat: 1
+    toughness: 0
+    influence: -1
+    operation: 2
+    nerve: 2
+    speed: 1
+    hp: 42
+    hpPerLevel: 6
+  bodySlots: 0
+  brainSlots: 2
+  bodyType: Rigged
+  brainType: Rigged
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.355'
+  systemId: synthicide
+  systemVersion: 1.0.0
+  createdTime: 1772635388564
+  modifiedTime: 1772635388564
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!items!qYkDLea7D2k75jWm'

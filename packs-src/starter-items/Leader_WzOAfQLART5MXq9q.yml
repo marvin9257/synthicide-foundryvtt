@@ -1,0 +1,38 @@
+name: Leader
+type: aspect
+_id: WzOAfQLART5MXq9q
+img: icons/svg/item-bag.svg
+system:
+  description: You empower everyone around you; the universe just can't keep you down.
+  featureType: aspect
+  traits:
+    - sort: 10
+      name: Attribute Increase
+      description: +2 Awareness
+      key: ''
+    - sort: 20
+      name: Attribute Penalty (Mandatory)
+      description: '-1 to any one attribute except Awareness or Nerve'
+      key: ''
+  aspectType: leader
+  abilities:
+    - description: Gain any 2 tactical powers for which you meet the requirements.
+    - description: New tactical powers cost 1 less TP
+effects: []
+folder: OL8WfY5Fhoh6AVQP
+flags: {}
+_stats:
+  coreVersion: '14.355'
+  systemId: synthicide
+  systemVersion: 1.0.0
+  createdTime: 1772636180124
+  modifiedTime: 1772636202336
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+sort: 150000
+_key: '!items!WzOAfQLART5MXq9q'

@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import rollupConfig from './rollup.config.mjs';
 
 const distDirectory = './dist';
-const staticFiles = ['assets', 'css', 'lang', 'templates', 'system.json', 'README.md', 'LICENSE', 'LICENSE.txt'];
+const staticFiles = ['assets', 'css', 'lang', 'templates', 'system.json', 'README.md', 'LICENSE', 'LICENSE.txt', 'packs'];
 
 async function clean() {
   if (await fs.pathExists(distDirectory)) {

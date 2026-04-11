@@ -1,0 +1,45 @@
+folder: OL8WfY5Fhoh6AVQP
+name: Scoundrel
+type: aspect
+_id: 0ECTH9dLibBWDkR8
+img: icons/svg/item-bag.svg
+system:
+  description: You are a tricky individual who favors the element of surprise.
+  featureType: aspect
+  traits:
+    - sort: 10
+      name: Attribute Increase
+      description: +1 Influence, +1 Speed
+      key: ''
+    - sort: 20
+      name: Attribute Penalty (Mandatory)
+      description: '-1 to any one attribute except Influence, Operation, or Speed'
+      key: ''
+  aspectType: scoundrel
+  abilities:
+    - description: Gain access to any 1 knowledge focus you meet requirements for
+    - description: >-
+        Battle Opportunist ability:  You also gain the Battle Opportunist
+        ability, which grants the following: 1) Add +2 DMG to attacks against
+        overpowered and unaware targets, 2) After or just before you gain
+        advantage, you may move 4 squares at no AP cost, 3) If you choose the
+        attack bonus effect from gain advantage add +3 ATT to your attack roll
+        instead of +2., and 4) Battle Opportunist can be improved via general
+        traits purchased at 4th and 7th level.
+effects: []
+flags: {}
+_stats:
+  coreVersion: '14.355'
+  systemId: synthicide
+  systemVersion: 1.0.0
+  createdTime: 1772636180124
+  modifiedTime: 1772636203527
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+sort: 125000
+_key: '!items!0ECTH9dLibBWDkR8'

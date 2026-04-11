@@ -1,0 +1,43 @@
+folder: OL8WfY5Fhoh6AVQP
+name: Thug
+type: aspect
+_id: wqFTuFeHu8fXWXjg
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    Death has visited you more times than you can count, yet your innate martial
+    prowess has kept you alive.
+  featureType: aspect
+  traits:
+    - sort: 10
+      name: Attribute Increase
+      description: +1 Combat, +1 Toughness
+      key: ''
+    - sort: 20
+      name: Attribute Penalty (Mandatory)
+      description: '-1 to any one attribute except Combat or Toughness'
+      key: ''
+  aspectType: thug
+  abilities:
+    - description: You gain 1 weapon proficiency and 1 attack skill.
+    - description: You also gain an extra 4 maximum hit points.
+    - description: >-
+        After character creation, you may purchase new attack skills with 1 less
+        trait point.
+effects: []
+flags: {}
+_stats:
+  coreVersion: '14.355'
+  systemId: synthicide
+  systemVersion: 1.0.0
+  createdTime: 1772636180124
+  modifiedTime: 1772636204688
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+sort: 112500
+_key: '!items!wqFTuFeHu8fXWXjg'

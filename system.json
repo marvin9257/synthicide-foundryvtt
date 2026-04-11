@@ -109,8 +109,26 @@
       "path": "lang/en.json"
     }
   ],
-  "packs": [],
-  "packFolders": [],
+  "packs": [
+    {
+      "name": "starter-items",
+      "label": "Starter Items",
+      "system": "synthicide",
+      "module": "synthicide",
+      "path": "./packs/starter-items",
+      "entity": "Item",
+      "type": "Item"
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Synthicide Core",
+      "sorting": "m",
+      "packs": [
+        "starter-items"
+      ]
+    }
+  ],
   "socket": false,
   "manifest": "https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/system.json",
   "download": "https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/synthicide.zip",

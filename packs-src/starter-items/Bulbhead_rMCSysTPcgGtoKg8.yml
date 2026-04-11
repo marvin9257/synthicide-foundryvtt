@@ -1,0 +1,50 @@
+folder: OL8WfY5Fhoh6AVQP
+name: Bulbhead
+type: aspect
+_id: rMCSysTPcgGtoKg8
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    You are a psychic that struggles to function without Illuminix, an addictive
+    and illegal substance traded underground.
+  featureType: aspect
+  traits:
+    - sort: 10
+      name: Attribute Increase
+      description: +2 Influence
+      key: ''
+    - sort: 20
+      name: Attribute Penalty (Mandatory)
+      description: '-1 to any one attribute except Influence'
+      key: ''
+  aspectType: bulbhead
+  abilities:
+    - description: Gain any 2 psychic powers, so long as you meet the requirements.
+    - description: >-
+        You are a psychic that struggles to function without Illuminix, an
+        addictive and illegal substance traded underground. Every day you must
+        consume doses of Illuminix equal to the highest level psychic power you
+        want to use (1 dose to access 1st level powers, 4 doses for 4th level
+        powers, etc). A Bulbhead who fails to score a dose of Illuminix is
+        wracked with withdrawal, unable to access psychic powers and suffering
+        -2 to every attribute. A single dose lifts the penalty.
+    - description: >-
+        After character creation, you may purchase new psychic powers with 1
+        less trait point.
+effects: []
+flags: {}
+_stats:
+  coreVersion: '14.355'
+  systemId: synthicide
+  systemVersion: 1.0.0
+  createdTime: 1772636180123
+  modifiedTime: 1772636201088
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+sort: 200000
+_key: '!items!rMCSysTPcgGtoKg8'

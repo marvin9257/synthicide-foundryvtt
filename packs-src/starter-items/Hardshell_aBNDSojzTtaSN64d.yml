@@ -1,0 +1,49 @@
+folder: yx3Le5deK5c72izk
+name: Hardshell
+type: bioclass
+_id: aBNDSojzTtaSN64d
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    Body rigs are specialized for physical tasks. This bioclass may buy
+    cybernetic body upgrades, but not brain upgrades. You have access to
+    mutations and can learn psychic powers.
+  featureType: bioclass
+  traits:
+    - name: Starter Hardware
+      sort: 10
+      description: >-
+        Choose one permanent increase: Cyber Eyes (+1 Awareness) or Servo Limbs
+        (+1 Combat).
+      key: ''
+  startingAttributes:
+    awareness: 2
+    combat: 0
+    toughness: 0
+    influence: 1
+    operation: 0
+    nerve: 1
+    speed: 1
+    hp: 42
+    hpPerLevel: 6
+  bodySlots: 2
+  brainSlots: 0
+  bodyType: Rigged
+  brainType: Organic
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.355'
+  systemId: synthicide
+  systemVersion: 1.0.0
+  createdTime: 1772635388563
+  modifiedTime: 1772635388563
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!items!aBNDSojzTtaSN64d'

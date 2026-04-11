@@ -1,0 +1,57 @@
+folder: yx3Le5deK5c72izk
+name: Skinbag
+type: bioclass
+_id: P7lNEPiUcVkZ2oY3
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    To be totally organic means you can never benefit from cybernetic upgrades,
+    yet you may develop psychic powers. Players who select this bioclass must
+    decide if their character is a mutant or among the few remaining genetically
+    unaltered humans.
+  featureType: bioclass
+  traits:
+    - name: Techless Will
+      sort: 10
+      description: >-
+        Three times per day, add +3 to any attribute check (including Speed). In
+        battle this lasts 1 round; in roleplay it applies to one check.
+      key: ''
+    - name: Genetic Legacy
+      sort: 20
+      description: >-
+        Choose one: Mutant Dog or Dying Breed. Mutant Dog grants 4 mutation-only
+        trait points and -2 Nerve. Dying Breed grants milestone attribute and
+        trait bonuses as described by the bioclass.
+      key: ''
+  startingAttributes:
+    awareness: 2
+    combat: 0
+    toughness: -1
+    influence: 1
+    operation: 0
+    nerve: 1
+    speed: 1
+    hp: 35
+    hpPerLevel: 5
+  bodySlots: 0
+  brainSlots: 0
+  bodyType: Organic
+  brainType: Organic
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.355'
+  systemId: synthicide
+  systemVersion: 1.0.0
+  createdTime: 1772635388564
+  modifiedTime: 1772635388564
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!items!P7lNEPiUcVkZ2oY3'

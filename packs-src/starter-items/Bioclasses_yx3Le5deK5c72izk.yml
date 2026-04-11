@@ -1,0 +1,20 @@
+type: Item
+folder: null
+name: Bioclasses
+color: null
+sorting: a
+_id: yx3Le5deK5c72izk
+description: ''
+sort: 100000
+flags: {}
+_stats:
+  coreVersion: '14.355'
+  systemId: synthicide
+  systemVersion: 1.0.0
+  createdTime: 1772635388554
+  modifiedTime: 1772635388575
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!folders!yx3Le5deK5c72izk'

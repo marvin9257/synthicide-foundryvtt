@@ -38,3 +38,9 @@ package-lock.json
 
 # Ignore References
 reference/
+
+# Ignore generated Foundry packs
+packs/
+
+# Ignore exported YAML packs
+packs-export/

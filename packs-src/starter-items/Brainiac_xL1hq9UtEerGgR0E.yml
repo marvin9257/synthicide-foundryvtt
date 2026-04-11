@@ -1,0 +1,44 @@
+folder: OL8WfY5Fhoh6AVQP
+name: Brainiac
+type: aspect
+_id: xL1hq9UtEerGgR0E
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    Gifted with prodigal intellect, you take great pride in your research and
+    talent.
+  featureType: aspect
+  traits:
+    - sort: 10
+      name: Attribute Increase
+      description: +2 Operation
+      key: ''
+    - sort: 20
+      name: Attribute Penalty (Mandatory)
+      description: '-1 to any one attribute except Operation'
+      key: ''
+  aspectType: brainiac
+  abilities:
+    - description: >-
+        So long as requirements are met, select 3 knowledge focuses and gain 2
+        powers from each.
+    - description: >-
+        After character creation, you may purchase new knowledge focuses with 1
+        less trait point.
+effects: []
+flags: {}
+_stats:
+  coreVersion: '14.355'
+  systemId: synthicide
+  systemVersion: 1.0.0
+  createdTime: 1772636180123
+  modifiedTime: 1772636199962
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+sort: 100000
+_key: '!items!xL1hq9UtEerGgR0E'
