@@ -60,6 +60,17 @@ jobs:
       - name: Build (create dist/)
         run: npm run build
 
+      - name: Verify dist/system.json version
+        run: |
+          set -euo pipefail
+          DIST_VERSION=$(jq -r .version dist/system.json)
+          if [ "$DIST_VERSION" != "$NEXT_VERSION" ]; then
+            echo "Version mismatch: dist/system.json has $DIST_VERSION, expected $NEXT_VERSION"
+            exit 1
+          else
+            echo "dist/system.json version matches: $DIST_VERSION"
+          fi
+
       - name: Zip dist contents for FVTT release
         run: |
           cd dist
