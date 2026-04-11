@@ -18,7 +18,7 @@ jobs:
         run: npm ci
       - name: Semantic Release
         run: npx semantic-release
-      - name: Debug: Show version in dist/system.json
+      - name: "Debug: Show version in dist/system.json"
         run: |
           if [ -f dist/system.json ]; then
             echo "dist/system.json version:" && jq .version dist/system.json
