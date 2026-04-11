@@ -7,6 +7,18 @@
 * cleanup rolls ([27ba5ff](https://github.com/marvin9257/synthicide-foundryvtt/commit/27ba5ff7d3e64e7678516e707624ccd3ebd93b29))
 * small fixes ([c3440d8](https://github.com/marvin9257/synthicide-foundryvtt/commit/c3440d852b711a609bdab1516560de586e0a8852))
 * try to get release working correctly ([819a8f6](https://github.com/marvin9257/synthicide-foundryvtt/commit/819a8f62696294399fbbc1e42c78771f2763be84))
+* try try again ([b24fd06](https://github.com/marvin9257/synthicide-foundryvtt/commit/b24fd06ec9a10e30b5668ae093fa19174c1b5717))
+* update build release to sync system.json ([e81f7f3](https://github.com/marvin9257/synthicide-foundryvtt/commit/e81f7f308c8f0c5f6c419e7eee39be95e19aa262))
+
+## [1.0.17](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.16...1.0.17) (2026-04-11)
+
+
+### Bug Fixes
+
+* cleanup on npc-compact sheet ([097d6df](https://github.com/marvin9257/synthicide-foundryvtt/commit/097d6df34c5aa1e32670f4445f131bb48a7cce39))
+* cleanup rolls ([27ba5ff](https://github.com/marvin9257/synthicide-foundryvtt/commit/27ba5ff7d3e64e7678516e707624ccd3ebd93b29))
+* small fixes ([c3440d8](https://github.com/marvin9257/synthicide-foundryvtt/commit/c3440d852b711a609bdab1516560de586e0a8852))
+* try to get release working correctly ([819a8f6](https://github.com/marvin9257/synthicide-foundryvtt/commit/819a8f62696294399fbbc1e42c78771f2763be84))
 * update build release to sync system.json ([e81f7f3](https://github.com/marvin9257/synthicide-foundryvtt/commit/e81f7f308c8f0c5f6c419e7eee39be95e19aa262))
 
 ## [1.0.20](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.19...1.0.20) (2026-04-11)
