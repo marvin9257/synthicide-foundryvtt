@@ -21,7 +21,7 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
   const rangeIncrement = Number.isFinite(Number(input.rangeIncrement)) ? Number(input.rangeIncrement) : null;
   const hit = total >= effectiveArmor;
   const attributeKey = input.attribute;
-  const lethal = Number(sourceItem?.system?.lethal ?? 0);
+  const lethal = Number(sourceItem?.system?.bonuses.lethal ?? 0);
 
   // Persist only fields needed by follow-up actions (damage, chat context shock resolution).
   const payload = {

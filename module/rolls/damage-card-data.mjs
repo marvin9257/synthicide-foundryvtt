@@ -20,11 +20,11 @@ export function prepareDamageCardData({
 }) {
   // Extract values from input and item
   const d10 = input.d10 ?? 0;
-  const damageBonus = input.damageBonus ?? item?.system?.damageBonus ?? 0;
+  const damageBonus = input.damageBonus ?? item?.system?.bonuses.damage ?? 0;
   const source = input.source ?? item?.name ?? '';
   const total = input.total ?? d10 + attributeValue + damageBonus;
   const messageMode = input.messageMode ?? 'public';
-  const lethal = input.flags?.damage?.lethal ?? item?.system?.lethal ?? 0;
+  const lethal = input.flags?.damage?.lethal ?? item?.system?.bonuses.lethal ?? 0;
   const sourceMessageId = input.sourceMessageId ?? null;
   const sourceItemUuid = input.sourceItemUuid ?? null;
   const userId = input.userId ?? (typeof game !== 'undefined' ? game.user.id : null);

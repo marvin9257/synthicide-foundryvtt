@@ -27,7 +27,7 @@ const ITEM_BASE_PARTS_BY_TYPE = {
   aspect: ['abilitiesAspect', 'traitsBioclass'],
   armor: [],
   shield: [],
-  weapon: ['rollGear']
+  weapon: ['rollGear', 'npcTiers']
 };
 
 /**
@@ -54,6 +54,7 @@ const ITEM_TAB_MAP = {
   traitsBioclass: { id: 'traits', icon: ICON_MAP.trait, label: 'Traits' },
   abilitiesAspect: { id: 'abilities', icon: ICON_MAP.abilities, label: 'Abilities' },
   effects: { id: 'effects', icon: ICON_MAP.effects, label: 'Effects' },
+  npcTiers: { id: 'npcTiers', icon: ICON_MAP.npcTiers, label: 'NPCTiers' },
   description: { id: 'description', icon: ICON_MAP.description, label: 'Description'}
 };
 
@@ -62,7 +63,6 @@ const ITEM_TAB_MAP = {
  * @extends {ItemSheetV2}
  */
 export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2) {
-    
   /** @override */
   static DEFAULT_OPTIONS = {
     classes: ['synthicide', 'item'],
@@ -91,6 +91,9 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
 
   /** @override */
   static PARTS = {
+        npcTiers: {
+          template: 'systems/synthicide/templates/item/parts/npc-tiers.hbs',
+        },
     header: {
       template: 'systems/synthicide/templates/item/header.hbs',
     },
@@ -162,7 +165,14 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     // Don't show the other tabs if only limited view
     if (this.document.limited) return;
     // Control which parts show based on document subtype
-    options.parts.push(...(ITEM_BASE_PARTS_BY_TYPE[this.document.type] ?? []));
+    let baseParts = [...(ITEM_BASE_PARTS_BY_TYPE[this.document.type] ?? [])];
+    // Only include npcTiers for weapons if allowed
+    if (this.document.type === 'weapon') {
+      if (!this._shouldShowNpcTiersTab()) {
+        baseParts = baseParts.filter(p => p !== 'npcTiers');
+      }
+    }
+    options.parts.push(...baseParts);
     // every item type can have effects
     options.parts.push('effects');
     // every item type has a description
@@ -275,6 +285,19 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       labelPrefix: 'SYNTHICIDE.Item.Tabs.',
       tabMap: ITEM_TAB_MAP,
     });
+  }
+
+  /**
+   * Only show the NPC Tiers tab for weapon items if:
+   * - The item is not embedded in an actor (unassociated), or
+   * - The parent actor is an NPC
+   */
+  _shouldShowNpcTiersTab() {
+    if (this.item.type !== 'weapon') return false;
+    // If not embedded, show
+    if (!this.item.parent) return true;
+    // If embedded in an NPC actor, show
+    return this.item.parent.type === 'npc';
   }
 
   /**************

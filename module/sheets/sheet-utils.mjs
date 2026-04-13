@@ -158,18 +158,18 @@ export async function prepareBiographyPartContext(actor, context, isOwner) {
  * @param {HTMLElement} target
  */
 export async function makeSelectedAttackRoll(actor) {
-  const attackBonusOverride = Number(
-    actor.system.selectedAttack?.attackBonus?.total ?? 0
-  );
-  const damageBonusOverride = Number(
-    actor.system.selectedAttack?.damageBonus?.total ?? 0
-  );
+  // Use selectedWeaponId to get the selected weapon item
+  const selectedWeaponId = actor.system.selectedWeaponId;
+  const weapon = actor.items?.get(selectedWeaponId) ?? null;
+  const attackBonusOverride = weapon ? Number(weapon.system.bonuses.attack ?? 0) : 0;
+  const damageBonusOverride = weapon ? Number(weapon.system.bonuses.damage ?? 0) : 0;
   return openSynthicideActionRollDialog({
     actor: actor,
     subtype: 'attack',
     attribute: 'combat',
     attackBonusOverride,
     damageBonusOverride,
+    sourceItem: weapon,
   });
 }
 

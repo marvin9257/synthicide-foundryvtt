@@ -47,9 +47,7 @@ class SynthicideNPCCompactSheet extends api.HandlebarsApplicationMixin(sheets.Ac
             Object.entries(SYNTHICIDE.npc.roles).map(([k, v]) => [k, v.label])
           ),
           npcWeaponOptions: Object.fromEntries(
-            Object.entries(SYNTHICIDE.npc.masteredWeapons)
-              .filter(([k]) => k !== 'psycherProjection')
-              .map(([k, v]) => [k, v.label])
+            (this.actor.itemTypes.weapon ?? []).map(w => [w._id, w.name])
           ),
           npcWealthOptions: Object.fromEntries(
             Object.entries(SYNTHICIDE.npc.wealthTiers).map(([k, v]) => [k, v.label])
@@ -62,9 +60,18 @@ class SynthicideNPCCompactSheet extends api.HandlebarsApplicationMixin(sheets.Ac
         sheetStyle: game.settings.get('synthicide', SYNTHICIDE.SHEET_STYLE_SETTING_KEY) || SYNTHICIDE.SHEET_STYLE_CLASSIC
       }
     });
-    // Ensure selectedAttack.options is always defined (empty object if missing)
-    if (!context.system.selectedAttack) context.system.selectedAttack = {};
-    if (!context.system.selectedAttack.options) context.system.selectedAttack.options = {};
+    // Expose the selected weapon item for the template
+    const selectedWeaponId = context.system.selectedWeaponId;
+    const selectedWeapon = this.actor.items.get(selectedWeaponId) ?? null;
+    context.selectedWeapon = selectedWeapon;
+
+    // Precompute tier attack/damage for template simplicity
+    let tierObj = null;
+    if (selectedWeapon && selectedWeapon.system?.tierBonuses && selectedWeapon.system?.weaponTier) {
+      tierObj = selectedWeapon.system.tierBonuses[selectedWeapon.system.weaponTier] || null;
+    }
+    context.selectedWeaponTier = tierObj;
+
     // Bioclass item (max 1); null when no bioclass is assigned.
     context.bioclass = this.actor.itemTypes.bioclass?.[0] ?? null;
     return context;

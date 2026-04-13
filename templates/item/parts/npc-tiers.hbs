@@ -1,0 +1,41 @@
+<section
+  class='tab attributes {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='npcTiers'
+>
+  <div class="npc-tiers-tab">
+    <h4>{{localize 'SYNTHICIDE.Item.Tabs.NPCTiers'}}</h4>
+    <table class="npc-tiers-table">
+      <thead>
+        <tr>
+          <th>{{localize 'SYNTHICIDE.Item.Tabs.NPC.Tier'}}</th>
+          <th>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.AttackBonus'}}</th>
+          <th>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.DamageBonus'}}</th>
+          <th>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.Lethal'}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each item.system.tierBonuses as |bonus tier|}}
+        <tr>
+          <td>{{tier}}</td>
+          <td>
+            <input type="number" name="system.tierBonuses.{{tier}}.attack" value="{{bonus.attack}}" data-dtype="Number" />
+          </td>
+          <td>
+            <input type="number" name="system.tierBonuses.{{tier}}.damage" value="{{bonus.damage}}" data-dtype="Number" />
+          </td>
+          <td>
+            <input type="number" name="system.tierBonuses.{{tier}}.lethal" value="{{bonus.lethal}}" data-dtype="Number" />
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <div class="npc-mastered-weapon">
+      <label>
+        <input type="checkbox" name="system.masteredWeapon" {{checked item.system.masteredWeapon}} data-dtype="Boolean" />
+        <strong>{{localize 'SYNTHICIDE.Item.Tabs.NPC.MasteredWeapon'}}</strong>
+      </label>
+    </div>
+  </div>
+</section>

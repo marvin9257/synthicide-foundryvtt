@@ -18,7 +18,8 @@ export const ICON_MAP = {
   default: 'fa-solid fa-box',
   description: 'fa-solid fa-file-lines',
   roll: 'fa-solid fa-dice-d20',
-  combat: 'fa-solid fa-person-rifle'
+  combat: 'fa-solid fa-person-rifle',
+  npcTiers: 'fa-solid fa-ranking-star'
 };
 
 /**

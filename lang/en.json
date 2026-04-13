@@ -194,7 +194,7 @@
           "Weapon": "Weapon",
           "MasteredWeapon": "Mastered Weapon",
           "BaseAttDmg": "Base ATT/DMG",
-          "WeaponAttDmg": "Weapon ATT/DMG",
+          "WeaponAttDmg": "ATT/DMG",
           "TotalAttDmg": "Pre-Roll ATT/DMG",
           "Ability": "Ability",
           "Range": "Range",
@@ -204,7 +204,8 @@
           "UniquePower": "Unique Power",
           "BossPower": "Boss Power",
           "Loot": "Loot",
-          "Notes": "Notes"
+          "Notes": "Notes",
+          "Lethal": "Lethal"
         },
         "FIELDS": {
           "cr": {"label": "CR"}
@@ -293,7 +294,14 @@
         "Information": "Information",
         "General": "General",
         "Effects": "Effects",
-        "RollData": "Roll Data"
+        "RollData": "Roll Data",
+        "NPCTiers": "NPC Tiers",
+        "NPC": {
+          "Tier": "Tier",
+          "Bonus": "Bonus",
+          "NoTierBonuses": "No tier bonuses defined.",
+          "MasteredWeapon": "Mastered Weapon"
+        }
       },
       "Gear": {
         "FIELDS": {

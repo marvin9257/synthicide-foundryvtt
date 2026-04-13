@@ -162,8 +162,8 @@
           </div>
           <div class='item-label'>{{item.name}}</div>
         </div>
-        <div class='item-prop'>{{item.system.attackBonus}}</div>
-        <div class='item-prop'>{{item.system.damageBonus}}</div>
+        <div class='item-prop'>{{item.system.bonuses.attack}}</div>
+        <div class='item-prop'>{{item.system.bonuses.damage}}</div>
         <div class='item-prop'>{{item.system.rangeIncrement}}</div>
         <div class='item-prop'><a class="item-control item-equip" data-action="changeEquippedState" data-tooltip='{{localize "SYNTHICIDE.Actor.Combat.ChangeEquipped"}}'><i class={{#if item.system.equipped}}"fa-solid fa-square-check"{{else}}"fa-regular fa-square"{{/if}}></i></a></div>
         <div class='item-controls'>

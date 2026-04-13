@@ -169,9 +169,12 @@ export class SynthicideActor extends Actor {
    * but have slightly different data preparation needs.
    */
   getRollData() {
+    // Deep clone both sources to ensure all properties are mutable
+    const base = foundry.utils.duplicate(super.getRollData());
+    const system = foundry.utils.duplicate(this.system.getRollData?.() ?? {});
     const rollData = foundry.utils.mergeObject(
-      super.getRollData(),
-      this.system.getRollData?.() ?? {},
+      base,
+      system,
       { inplace: false, recursive: true }
     );
     return rollData;

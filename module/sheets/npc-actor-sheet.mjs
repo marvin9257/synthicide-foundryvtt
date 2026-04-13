@@ -127,11 +127,6 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
       npcRoleOptions: Object.fromEntries(
         Object.entries(SYNTHICIDE.npc.roles).map(([k, v]) => [k, v.label])
       ),
-      npcWeaponOptions: Object.fromEntries(
-        Object.entries(SYNTHICIDE.npc.masteredWeapons)
-          .filter(([k]) => k !== 'psycherProjection')
-          .map(([k, v]) => [k, v.label])
-      ),
       npcWealthOptions: Object.fromEntries(
         Object.entries(SYNTHICIDE.npc.wealthTiers).map(([k, v]) => [k, v.label])
       ),
@@ -154,8 +149,7 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
     context.npcInventory = [
       ...context.gear,
       ...context.armor,
-      ...context.shield,
-      ...context.weapon,
+      ...context.shield
     ].sort((a, b) => {
       const sortDelta = (a.sort || 0) - (b.sort || 0);
       if (sortDelta !== 0) return sortDelta;

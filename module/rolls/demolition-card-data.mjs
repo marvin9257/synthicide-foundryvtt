@@ -35,8 +35,8 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
   const payload = {
     d10,
     total,
-    damageBonus: Number(sourceItem?.system?.damageBonus ?? 0),
-    lethal: Number(sourceItem?.system?.lethal ?? 0),
+    damageBonus: Number(sourceItem?.system?.bonuses.damage ?? 0),
+    lethal: Number(sourceItem?.system?.bonuses.lethal ?? 0),
   };
 
   return {

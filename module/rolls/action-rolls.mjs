@@ -507,8 +507,8 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
   });
   if (!hitTokens.length) return;
 
-  const damageBonus = Number(sourceItem?.system?.damageBonus ?? 0);
-  const lethal = Number(sourceItem?.system?.lethal ?? 0);
+  const damageBonus = Number(sourceItem?.system?.bonuses.damage ?? 0);
+  const lethal = Number(sourceItem?.system?.bonuses.lethal ?? 0);
   // Collateral targets take flat DMG: no die result, no crit benefit.
   const flatDamage = attributeValue + damageBonus;
   const collateralNames = hitTokens.map((t) => t.name).join(', ');
@@ -734,8 +734,8 @@ function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
 
   const rangeContext = buildAttackRangeContext({ actor, sourceItem, notify: false });
   return {
-    attackBonus: Number(sourceItem.system.attackBonus ?? 0),
-    damageBonus: Number(sourceItem.system.damageBonus ?? 0),
+    attackBonus: Number(sourceItem.system.bonuses.attack ?? 0),
+    damageBonus: Number(sourceItem.system.bonuses.damage ?? 0),
     rangeModifier: Number(rangeContext?.rangeModifier ?? 0),
   };
 }

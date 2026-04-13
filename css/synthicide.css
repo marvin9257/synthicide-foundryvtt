@@ -2287,7 +2287,8 @@ body.synthicide-style-bold .synthicide .tab.aspect h4,
 body.synthicide-style-bold .synthicide .tab.combat h4,
 body.synthicide-style-bold .synthicide .tab.cybernetics h4,
 body.synthicide-style-bold .synthicide .tab.info h4,
-body.synthicide-style-bold .synthicide .tab.biography h4 {
+body.synthicide-style-bold .synthicide .tab.biography h4,
+body.synthicide-style-bold .synthicide .tab.npcTiers h4 {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
   border-left: 5px solid var(--rb-accent);
@@ -3274,6 +3275,10 @@ body:not(.synthicide-style-bold) .npc-compact-sheet .synthicide-window-icon img[
   resize: vertical;
 }
 
+.npc-compact-select-attack .selected-attack-weapon {
+  width: max-content;
+}
+
 /* --- Rulebook Bold: custom colors, backgrounds, borders --- */
 body.synthicide-style-bold .npc-compact-sheet {
   border-radius: 10px;
@@ -3355,4 +3360,73 @@ body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes label {
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes textarea {
   width: 100%;
   min-height: 2.5em;
+}
+
+/* ============================== */
+/* NPC Tiers Tab Styles           */
+/* ============================== */
+
+.npc-tiers-tab h3 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  color: var(--synthicide-c-dark);
+}
+.npc-tiers-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+.npc-tiers-table th, .npc-tiers-table td {
+  border: 1px solid var(--synthicide-c-border-subtle);
+  padding: 0.3em 0.6em;
+  text-align: center;
+  font-size: 0.98em;
+}
+.npc-tiers-table th {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.npc-tiers-table input[type="number"] {
+  width: 4ch;
+  text-align: center;
+}
+.npc-mastered-weapon {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 1em;
+}
+.npc-mastered-weapon label {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+/* Rulebook Bold mode overrides */
+
+body.synthicide-style-bold .npc-tiers-table th {
+  background: var(--rb-strong);
+  color: var(--rb-on-accent);
+  font-size: 0.92em;
+}
+body.synthicide-style-bold .npc-tiers-table td {
+  background: var(--rb-cell-alt);
+}
+body.synthicide-style-bold .npc-tiers-table input[type="number"] {
+  background: var(--rb-cell-alt);
+  font-weight: 700;
+}
+body.synthicide-style-bold .npc-mastered-weapon label {
+  color: var(--rb-strong);
+  font-weight: 700;
+  font-size: 1.05em;
+}
+body.synthicide-style-bold .npc-mastered-weapon input[type="checkbox"] {
+  accent-color: var(--rb-accent);
+  width: 1.1em;
+  height: 1.1em;
 }

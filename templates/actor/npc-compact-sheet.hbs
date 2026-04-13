@@ -137,15 +137,19 @@
   <section class="npc-compact-attack">
     <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Weapon'}}</label>
     <div class="npc-compact-select-attack">
-      <select name='system.attackWeapon' class="selected-attack-weapon">
-      {{selectOptions @root.config.npcWeaponOptions selected=system.attackWeapon localize=true}}
+      <select name='system.selectedWeaponId' class="selected-attack-weapon">
+        {{selectOptions @root.config.npcWeaponOptions selected=system.selectedWeaponId localize=false}}
       </select>
-      <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.BaseAttDmg'}}: {{system.selectedAttack.attackBonus.base}} / {{system.selectedAttack.damageBonus.base}}</span>
-      <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.WeaponAttDmg'}}: {{system.selectedAttack.attackBonus.weapon}} / {{system.selectedAttack.damageBonus.weapon}}</span>
-      <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.TotalAttDmg'}}: {{system.selectedAttack.attackBonus.total}} / {{system.selectedAttack.damageBonus.total}}</span>
-      {{#if (eq system.attackWeapon system.masteredWeapon)}}<i class="fa-solid fa-star" data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.MasterBadgeTooltip"}}'></i>{{/if}}
-      <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.Ability'}}: {{system.selectedAttack.ability}}</span>
-      <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.Range'}}: {{system.selectedAttack.range}}</span>
+      {{#if selectedWeapon}}
+        <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.BaseAttDmg'}}: {{selectedWeaponTier.attack}} / {{selectedWeaponTier.damage}} </span>
+        <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.Lethal'}}: {{selectedWeaponTier.lethal}}</span>
+        <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.TotalAttDmg'}}: {{selectedWeapon.system.bonuses.attack}} / {{selectedWeapon.system.bonuses.damage}}</span>
+        {{#if selectedWeapon.system.masteredWeapon}}<i class="fa-solid fa-star" data-tooltip='{{localize "SYNTHICIDE.Actor.NPC.UI.MasterBadgeTooltip"}}'></i>{{/if}}
+        {{#if selectedWeapon.system.ability}}<span>{{localize 'SYNTHICIDE.Actor.NPC.UI.Ability'}}: {{selectedWeapon.system.ability}}</span>{{/if}}
+        <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.Range'}}: {{selectedWeapon.system.rangeIncrement}}</span>
+      {{else}}
+        <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.NoWeaponSelected'}}</span>
+      {{/if}}
       <div class='npc-attack-action'>
         <button
           type='button'

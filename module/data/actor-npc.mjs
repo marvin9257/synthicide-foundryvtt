@@ -29,16 +29,7 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
       choices: Object.keys(SYNTHICIDE.npc.roles),
       initial: 'guardian',
     });
-    schema.masteredWeapon = new fields.StringField({
-      required: true,
-      choices: Object.keys(SYNTHICIDE.npc.masteredWeapons),
-      initial: 'fist',
-    });
-    schema.attackWeapon = new fields.StringField({
-      required: true,
-      choices: Object.keys(SYNTHICIDE.npc.masteredWeapons),
-      initial: 'fist',
-    });
+    
     schema.npcWealthTier = new fields.StringField({
       required: true,
       choices: Object.keys(SYNTHICIDE.npc.wealthTiers),
@@ -55,23 +46,7 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     schema.notes = new fields.StringField({ ...requiredBlankString });
     schema.loot = new fields.StringField({ ...requiredBlankString });
 
-    schema.selectedAttack = new fields.SchemaField({
-      attackBonus: new fields.SchemaField({
-        base: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
-        weapon: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
-        total: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
-      }),
-      damageBonus: new fields.SchemaField({
-        base: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
-        weapon: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
-        total: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
-      }),
-      ability: new fields.StringField({ ...requiredBlankString }, { persisted: false }),
-      range: new fields.StringField({ ...requiredBlankString }, { persisted: false }),
-      notes: new fields.StringField({ ...requiredBlankString }, { persisted: false }),
-      label: new fields.StringField({ ...requiredBlankString }, { persisted: false }),
-      tierLabel: new fields.StringField({ ...requiredBlankString }, { persisted: false }),
-    });
+    schema.selectedWeaponId = new fields.DocumentIdField({required: true, blank: true});
 
     return schema;
   }
@@ -88,9 +63,6 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
         }
       : { hitPointsBase: 28, hitPointsPerLevel: 4 };
     const roleProfile = SYNTHICIDE.npc.roles[this.npcRole] ?? SYNTHICIDE.npc.roles.guardian;
-    const attackWeaponKey = this.attackWeapon ?? this.masteredWeapon;
-    const weaponProfile = getWeaponTier(attackWeaponKey, level);
-    const isSelectedAttackMastered = attackWeaponKey === this.masteredWeapon;
 
     this.hitPoints.base = bioclassProfile.hitPointsBase;
     this.hitPoints.perLevel = bioclassProfile.hitPointsPerLevel;
@@ -111,7 +83,6 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
 
     const halfLevel = Math.floor(level / 2);
     const thirdLevel = Math.floor(level / 3);
-    const baseAttackDamage = this.npcRole === 'killer' ? halfLevel : thirdLevel;
     const bonusHitPoints = Number(this.hitPointBonus ?? 0);
     const baseHitPoints = this.hitPoints.base + (this.hitPoints.perLevel * Math.max(0, level - 1)) + bonusHitPoints;
 
@@ -122,29 +93,6 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     this.armorDefense.value = 7 + halfLevel + toughnessValue + getKillerArmorBonus(level, this.npcRole);
     this.shockThreshold.value = 10 + this.armorDefense.value + halfLevel;
     this.nerveDefense.value = 5 + thirdLevel + nerveValue;
-
-    if (isSelectedAttackMastered) {
-      this.selectedAttack.attackBonus.base = baseAttackDamage;
-      this.selectedAttack.damageBonus.base = baseAttackDamage;
-      this.selectedAttack.attackBonus.weapon = weaponProfile.attack;
-      this.selectedAttack.damageBonus.weapon = weaponProfile.damage;
-      // total = base + weapon; @attribute (combat) is added by the roll formula
-      this.selectedAttack.attackBonus.total = baseAttackDamage + weaponProfile.attack;
-      this.selectedAttack.damageBonus.total = baseAttackDamage + weaponProfile.damage;
-    } else {
-      this.selectedAttack.attackBonus.base = 0;
-      this.selectedAttack.damageBonus.base = 0;
-      this.selectedAttack.attackBonus.weapon = weaponProfile.attack;
-      this.selectedAttack.damageBonus.weapon = weaponProfile.damage;
-      // total = weapon only; @attribute (combat) is added by the roll formula
-      this.selectedAttack.attackBonus.total = weaponProfile.attack;
-      this.selectedAttack.damageBonus.total = weaponProfile.damage;
-    }
-    this.selectedAttack.ability = weaponProfile.ability;
-    this.selectedAttack.range = weaponProfile.range;
-    this.selectedAttack.notes = weaponProfile.notes;
-    this.selectedAttack.label = weaponProfile.label;
-    this.selectedAttack.tierLabel = weaponProfile.tierLabel;
   }
 
   getEffectiveAttributeValue(attributeKey, { level = null, roleProfile = null, bioclassItem = null } = {}) {
@@ -163,12 +111,11 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     return baseValue + roleBonus + bossBonus;
   }
 
+  
   getRollData() {
-    const data = foundry.utils.mergeObject(
-      super.getRollData ? super.getRollData() : {},
-      this,
-      { inplace: false, recursive: true }
-    );
+    // Always start with a deep clone of the base data to ensure mutability
+    const baseData = super.getRollData ? super.getRollData() : {};
+    const data = foundry.utils.duplicate(baseData);
 
     if (this.attributes) {
       for (const [key, attribute] of Object.entries(this.attributes)) {
@@ -178,7 +125,6 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     }
 
     data.lvl = this.level.value;
-    data.selectedAttack = foundry.utils.duplicate(this.selectedAttack);
     return data;
   }
 }
@@ -206,31 +152,6 @@ function shouldIgnoreWeakRolePenalty(bioclassItem) {
   // Legacy fallback for existing worlds before the flag is set.
   const name = String(bioclassItem?.name ?? '').trim().toLowerCase();
   return /(^|\W)priest(\W|$)/.test(name);
-}
-
-function getWeaponTier(weaponKey, level) {
-  const weapon = SYNTHICIDE.npc.masteredWeapons[weaponKey] ?? SYNTHICIDE.npc.masteredWeapons.fist;
-  const tiers = Array.isArray(weapon.tiers) ? weapon.tiers : [];
-  let tierIndex = tiers.findIndex((entry) => {
-    const minLevel = Number(entry?.minLevel ?? 1);
-    const maxLevel = Number(entry?.maxLevel ?? minLevel);
-    return level >= minLevel && level <= maxLevel;
-  });
-  if (tierIndex < 0) tierIndex = Math.max(0, tiers.length - 1);
-
-  const tier = tiers[tierIndex] ?? null;
-  const minLevel = Number(tier?.minLevel ?? 1);
-  const maxLevel = Number(tier?.maxLevel ?? minLevel);
-  const rawAbility = String(tier?.ability ?? '').trim();
-  return {
-    label: game.i18n.localize(weapon.label),
-    attack: Number(tier?.attack ?? 0),
-    damage: Number(tier?.damage ?? 0),
-    ability: rawAbility || '-',
-    range: tier?.range ?? 'Engaged',
-    notes: tier?.notes ?? '',
-    tierLabel: `${minLevel}-${maxLevel}`,
-  };
 }
 
 function getKillerArmorBonus(level, roleKey) {
