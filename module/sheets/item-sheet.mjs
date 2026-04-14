@@ -198,6 +198,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       extra: {
         isBioclass: this.item.system.featureType === FEATURE_TYPE.BIOCLASS,
         isAspect: this.item.system.featureType === FEATURE_TYPE.ASPECT,
+        onNPC: this.item.actor?.type === 'npc',
         SYNTHICIDE,
         tabs: this._getTabs(options.parts),
       },

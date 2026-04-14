@@ -20,6 +20,7 @@
   <fieldset class ="weapon">
     <legend>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.Attack'}}</legend>
     <div class='trait-top-fields'>
+      {{#unless onNPC}}
       <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.AttackBonus'}}</label>
         <input
@@ -37,14 +38,6 @@
         />
       </div>
       <div class='resource resource-pair'>
-        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.RangeIncrement'}}</label>
-        <input
-          type='number'
-          name='system.rangeIncrement'
-          value='{{system.rangeIncrement}}'
-        />
-      </div>
-      <div class='resource resource-pair'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.Lethal'}}</label>
         <input
           type='number'
@@ -52,8 +45,18 @@
           value='{{system.lethal}}'
         />
       </div>
+      {{/unless}}
+      <div class='resource resource-pair'>
+        <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.RangeIncrement'}}</label>
+        <input
+          type='number'
+          name='system.rangeIncrement'
+          value='{{system.rangeIncrement}}'
+        />
+      </div>
     </div>
   </fieldset>
+ 
 
   <fieldset class ="weapon">
     <legend>{{localize 'SYNTHICIDE.Item.Weapon.FIELDS.Features'}}</legend>
