@@ -179,19 +179,19 @@ export async function makeSelectedAttackRoll(actor) {
  * @param {HTMLElement} target
  */
 export async function makeRoll(actor, target) {
+
   const { rollType, attributeKey, roll, label } = target.dataset;
 
   if (rollType === 'challenge') {
-    const roleChallengeBonus = getRoleChallengeBonus({
-      roleKey: actor.system?.npcRole,
-      attributeKey,
-      level: Number(actor.system?.level?.value ?? 1),
-    });
+    let situationalModifiers = undefined;
+    if (actor.type === 'npc') {
+      situationalModifiers = getSituationalRoleModifiers(actor, attributeKey);
+    }
     return openSynthicideActionRollDialog({
       actor: actor,
       subtype: 'challenge',
       attribute: attributeKey,
-      miscOverride: roleChallengeBonus,
+      rollModifiers: situationalModifiers,
     });
   }
 
@@ -211,6 +211,22 @@ export async function makeRoll(actor, target) {
       { messageMode: game.settings.get('core', 'messageMode') }
     );
   }
+}
+
+
+/**
+ * Returns an object of situational role modifiers for an NPC, e.g. { fastTalker: 3 }
+ * Returns undefined for non-NPCs or if no bonus applies.
+ */
+export function getSituationalRoleModifiers(actor, attributeKey) {
+  if (actor?.type !== 'npc') return undefined;
+  const roleKey = actor.system?.npcRole;
+  const level = Number(actor.system?.level?.value ?? 1);
+  const value = getRoleChallengeBonus({ roleKey, attributeKey, level });
+  if (value) {
+    return { [roleKey]: value };
+  }
+  return undefined;
 }
 
 function getRoleChallengeBonus({ roleKey, attributeKey, level }) {

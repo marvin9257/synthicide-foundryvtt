@@ -47,6 +47,10 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     schema.loot = new fields.StringField({ ...requiredBlankString });
 
     schema.selectedWeaponId = new fields.DocumentIdField({required: true, blank: true});
+    schema.rollModifiers = new fields.TypedObjectField(
+      new fields.NumberField({ required: true, nullable: false, integer: true }, {persisted: false}),
+      { initial: {}, persisted: false }
+    );
 
     return schema;
   }

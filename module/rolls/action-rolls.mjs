@@ -47,6 +47,7 @@ export async function openSynthicideActionRollDialog({
   attackBonusOverride = null,
   damageBonusOverride = null,
   miscOverride = null,
+  rollModifiers = undefined,
 } = {}) {
   if (!actor) return null;
   const requestedSubtype = resolveActionSubtype({ subtype, sourceItem });
@@ -65,6 +66,7 @@ export async function openSynthicideActionRollDialog({
       attackBonusOverride,
       damageBonusOverride,
       miscOverride,
+      rollModifiers
     }),
   });
 
@@ -699,7 +701,7 @@ async function renderActionRollDialog({ title, defaults }) {
  * @param {boolean} params.allowSubtypeChange
  * @returns {object}
  */
-function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSubtypeChange, attackBonusOverride = null, damageBonusOverride = null, miscOverride = null }) {
+function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSubtypeChange, attackBonusOverride = null, damageBonusOverride = null, miscOverride = null, rollModifiers = undefined }) {
   const attackDefaults = getAttackDialogDefaults({ actor, subtype, sourceItem });
   const isMeleeAttack = String(sourceItem?.system?.weaponClass ?? '') === 'melee';
   const targetDefense = isAttackSubtype(subtype)
@@ -720,6 +722,7 @@ function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSu
     weaponClass: String(sourceItem?.system?.weaponClass ?? ''),
     messageMode: getDefaultMessageMode(),
     allowSubtypeChange,
+    rollModifiers
   };
 }
 
@@ -749,7 +752,13 @@ function buildDialogContext(defaults) {
 
   const actor = defaults.actor;
   const attributeKey = getActionAttributeKey(subtype, defaults.attribute ?? ATTRIBUTE_COMBAT);
-  const rawRollModifiers = getActorRollModifiers(actor);
+  // Merge persistent and situational (passed) rollModifiers
+  let persistent = getActorRollModifiers(actor);
+  let situational = [];
+  if (defaults.rollModifiers && typeof defaults.rollModifiers === 'object') {
+    situational = Object.entries(defaults.rollModifiers).map(([key, value]) => ({ key, value: Number(value) }));
+  }
+  const rawRollModifiers = [...persistent, ...situational];
   const rollModifiers = rawRollModifiers.map((modifier) => ({
     ...modifier,
     label: formatModifierKey(modifier.key),

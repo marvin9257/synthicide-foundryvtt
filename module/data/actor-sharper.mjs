@@ -61,9 +61,10 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       }),
     });
 
-    schema.rollModifiers = new fields.SchemaField({
-      starvationPenalty: new fields.NumberField({ ...requiredInteger, initial: 0}, {persisted: false}),
-    });
+    schema.rollModifiers = new fields.TypedObjectField(
+      new fields.NumberField({ required: true, nullable: false, integer: true }, {persisted: false}),
+      { initial: { starvationPenalty: 0 }}
+    );
     
     return schema;
   }
