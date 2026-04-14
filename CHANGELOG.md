@@ -1,3 +1,10 @@
+## [1.0.20](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.19...1.0.20) (2026-04-14)
+
+
+### Bug Fixes
+
+* hide weapon data fields on item attached to NPC that are sharper specific ([80149aa](https://github.com/marvin9257/synthicide-foundryvtt/commit/80149aa7586010f1cf3713e020c8f72d81c199f1))
+
 ## [1.0.19](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.18...1.0.19) (2026-04-11)
 
 
