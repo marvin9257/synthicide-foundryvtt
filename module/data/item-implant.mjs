@@ -1,6 +1,5 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import SynthicideGear from './item-gear.mjs';
-import { applyModifiable } from './modifiable-mixin.mjs';
 
 /**
  * Implant item system model.
@@ -10,7 +9,7 @@ import { applyModifiable } from './modifiable-mixin.mjs';
  *
  * @extends {SynthicideGear}
  */
-export default class SynthicideImplant extends applyModifiable(SynthicideGear) {
+export default class SynthicideImplant extends SynthicideGear {
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
     'SYNTHICIDE.Item.Gear',
@@ -60,26 +59,7 @@ export default class SynthicideImplant extends applyModifiable(SynthicideGear) {
   }
 
   /**
-   * Override to gate attribute modifier contributions on the implant being equipped.
-   * Returns zero contributions for all attributes when the implant is not equipped.
-   * @this {SynthicideImplant}
-   * @override
-   * @param {Array<string>} attributeKeys
-   * @param {Array<Object>} [debugArr]
-   * @returns {{ attributeModifiers: Object, nonAttributeModifiers: Array }}
-   */
-  aggregateAttributeModifiers(attributeKeys, debugArr) {
-    if (!this.equipped) {
-      return {
-        attributeModifiers: Object.fromEntries(attributeKeys.map((k) => [k, 0])),
-        nonAttributeModifiers: [],
-      };
-    }
-    return super.aggregateAttributeModifiers(attributeKeys, debugArr);
-  }
-
-  /**
-   * Re-aggregate actor modifiers when `equipped` or `modifiers` changes.
+   * Stub for now.
    * @this {SynthicideImplant}
    * @override
    * @param {object} changed
@@ -90,11 +70,6 @@ export default class SynthicideImplant extends applyModifiable(SynthicideGear) {
   async _onUpdate(changed, options, userId) {
     super._onUpdate(changed, options, userId);
     if (game.userId !== userId) return;
-    const changedFlat = foundry.utils.flattenObject(changed ?? {});
-    const equippedChanged = 'system.equipped' in changedFlat;
-    if (equippedChanged) {
-      await this.triggerActorModifierAggregation({ render: true });
-    }
   }
 
   /**

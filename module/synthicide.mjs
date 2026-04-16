@@ -154,7 +154,6 @@ Hooks.once('init', function () {
   CONFIG.Token.rulerClass = SynthicideVirtualTokenRuler;
 
   foundry.applications.apps.DocumentSheetConfig.registerSheet(CONFIG.ActiveEffect.documentClass, 'synthicide', SynthicideActiveEffectConfig, { makeDefault: true });
-
 });
 
 /* -------------------------------------------- */
@@ -191,6 +190,7 @@ Hooks.once('ready', async function () {
   });
 
 });
+
 
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */

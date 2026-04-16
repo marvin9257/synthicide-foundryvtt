@@ -1,30 +1,3 @@
-import SYNTHICIDE from '../helpers/config.mjs';
-
-/**
- * Return a standardized modifiers ArrayField for item schemas.
- * Targets are a curated list (attributes + common derived/roll/flag paths).
- */
-export function makeModifiersField() {
-  const fields = foundry.data.fields;
-
-  // Use the canonical modifier target keys from the central config so there
-  // is a single source of truth for exposed modifier targets (attributes,
-  // derived slots, etc.)
-  const targetChoicesMap = Object.assign({}, SYNTHICIDE.MODIFIER_TARGETS || {});
-
-  return new fields.ArrayField(
-    new fields.SchemaField({
-      target: new fields.StringField({ required: true, choices: targetChoicesMap }),
-      formula: new fields.StringField({ required: true, blank: false, initial: '+0' }),
-      condition: new fields.StringField({ required: false, blank: true, initial: '' }),
-      priority: new fields.NumberField({ required: false, integer: true, initial: 0 }),
-      stacking: new fields.StringField({ required: false, choices: { stack: 'stack', highest: 'highest', replace: 'replace' }, initial: 'stack' }),
-      source: new fields.StringField({ required: false, blank: true, initial: '' }),
-      needsReview: new fields.BooleanField({ required: false, initial: false }, { persisted: false })
-    }),
-    { initial: [] }
-  );
-}
 const fields = foundry.data.fields;
 const requiredInteger = { required: true, nullable: false, integer: true };
 

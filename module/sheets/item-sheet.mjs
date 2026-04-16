@@ -20,9 +20,9 @@ const { api, sheets } = foundry.applications;
  * This map is the single source of truth for item sheet part selection.
  */
 const ITEM_BASE_PARTS_BY_TYPE = {
-  trait: ['attributesTrait'],
+  trait: [],
   gear: ['rollGear'],
-  implant: ['rollGear', 'attributesImplant'],
+  implant: ['rollGear'],
   bioclass: ['attributesBioclass', 'cyberneticsBioclass', 'traitsBioclass'],
   aspect: ['abilitiesAspect', 'traitsBioclass'],
   armor: [],
@@ -46,7 +46,6 @@ const ITEM_BASE_PARTS_BY_TYPE = {
  */
 const ITEM_TAB_MAP = {
   general: { id: 'general', icon: ICON_MAP.general, label: 'General' },
-  attributesTrait: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
   attributesImplant: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
   rollGear: { id: 'rollGear', icon: ICON_MAP.roll, label: 'RollData' },
   attributesBioclass: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
@@ -76,8 +75,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       createDoc: this._createEffect,
       deleteDoc: this._deleteEffect,
       toggleEffect: this._toggleEffect,
-      addModifier: this._onAddModifier,
-      removeModifier: this._onRemoveModifier,
       addTrait: this._onAddTrait,
       removeTrait: this._onRemoveTrait,
       addAbility: this._onAddAbility,
@@ -91,9 +88,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
 
   /** @override */
   static PARTS = {
-        npcTiers: {
-          template: 'systems/synthicide/templates/item/parts/npc-tiers.hbs',
-        },
     header: {
       template: 'systems/synthicide/templates/item/header.hbs',
     },
@@ -104,9 +98,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     general: {
       template: 'systems/synthicide/templates/item/general.hbs',
       scrollable: [""]
-    },
-    attributesTrait: {
-      template: 'systems/synthicide/templates/item/parts/trait.hbs',
     },
     rollGear: {
       template: 'systems/synthicide/templates/item/parts/rollGear.hbs',
@@ -148,11 +139,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       template: 'systems/synthicide/templates/item/parts/general-implant.hbs',
       scrollable: [""]
     },
-    attributesImplant: {
-      template: 'systems/synthicide/templates/item/parts/implant-attributes.hbs',
-    },
-    modifiersTable: {
-      template: 'systems/synthicide/templates/item/parts/modifiers-table.hbs',
+    npcTiers: {
+      template: 'systems/synthicide/templates/item/parts/npc-tiers.hbs',
     }
   };
 
@@ -249,7 +237,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
 
     switch (partId) {
       case 'description':
-        // Use shared helper to keep enrich options consistent across sheets.
         context.enrichedDescription = await enrichSheetHtml({
           html: this.item.system.description,
           document: this.item,
@@ -258,7 +245,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         });
         break;
       case 'effects':
-        // Prepare active effects for easier access
         context.effects = prepareActiveEffectCategories(this.item.effects);
         break;
     }
@@ -376,30 +362,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
   static async _toggleEffect(event, target) {
     const effect = this._getEffect(target);
     await effect.update({ disabled: !effect.disabled });
-  }
-
-  /**
-   * Handle adding a new modifier row to the feature item.
-   * @param {PointerEvent} event
-   * @param {HTMLElement} target
-   */
-  static async _onAddModifier(event, _target) {
-    event.preventDefault();
-    const firstAttr = Object.keys(SYNTHICIDE.attributes)[0] ?? 'awareness';
-    const defaultTarget = `attributes.${firstAttr}.modifier`;
-    await mutateSystemArray(this.item, 'modifiers', modifiers => {
-      modifiers.push({ target: defaultTarget, formula: '+0', stacking: 'stack', condition: '', source: '' });
-    });
-  }
-
-  /**
-   * Handle removing a modifier row from the feature item.
-   * @param {PointerEvent} event
-   * @param {HTMLElement} target
-   */
-  static async _onRemoveModifier(event, target) {
-    event.preventDefault();
-    await removeSystemArrayIndex(this.item, 'modifiers', target.dataset.index);
   }
 
   /**

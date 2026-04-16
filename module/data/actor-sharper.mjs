@@ -23,7 +23,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       Object.keys(SYNTHICIDE.attributes).reduce((obj, attribute) => {
         obj[attribute] = new fields.SchemaField({
           base: new fields.NumberField({...requiredInteger, initial: 0}),
-          modifier: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+          modifier: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
           increase: new fields.NumberField({ ...requiredInteger, initial: 0, max: 5 }),
           value: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
         });

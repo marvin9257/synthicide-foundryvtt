@@ -549,7 +549,13 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     event.preventDefault();
     const itemId = target.dataset.itemId;
     const item = this.actor.items.get(itemId);
-    if (item) item.sheet.render(true);
+    if (!item) return;
+    try {
+      await item.sheet.render(true);
+    } catch (err) {
+      console.error('[Synthicide] Error rendering trait item sheet', { err, itemId, item });
+      throw err;
+    }
   }
 
   /**

@@ -1,5 +1,4 @@
 import SYNTHICIDE from "../helpers/config.mjs";
-import { resolveStacking } from "../helpers/modifier-engine.mjs";
 import { createActionMessage } from "../rolls/action-rolls.mjs";
 import { buildShockCardData, resolveShockOutcome } from "../rolls/shock-card-data.mjs";
 
@@ -16,6 +15,19 @@ export class SynthicideActor extends Actor {
   async _preUpdate(changed, options, user) {
     const allowed = await super._preUpdate(changed, options, user);
     if (allowed === false) return false;
+
+    // Defensive logging: detect unexpected non-string change keys which
+    // can cause runtime errors in downstream code that assumes string paths.
+    try {
+      const flat = foundry.utils.flattenObject(changed ?? {});
+      for (const key of Object.keys(flat)) {
+        if (typeof key !== 'string') {
+          console.warn('[Synthicide] Non-string change key detected in _preUpdate:', { key, value: flat[key], changed });
+        }
+      }
+    } catch (err) {
+      console.warn('[Synthicide] Error while inspecting change keys in _preUpdate', err);
+    }
 
     if (foundry.utils.hasProperty(changed, 'system.hitPoints.value')) {
       const nextHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.value') ?? 0);
@@ -51,26 +63,7 @@ export class SynthicideActor extends Actor {
    * This is synchronous because item system models expose a sync
    * `aggregateAttributeModifiers(attributeKeys, debugArr)` helper.
    */
-  computeAggregatedItemModifiers(attributeKeys, { debug = false } = {}) {
-    const attributeModifiers = Object.fromEntries(attributeKeys.map(k => [k, 0]));
-    const nonAttributeModifiers = [];
-    const debugItemContrib = [];
-
-    for (const item of this.items) {
-      const { system: dataModel } = item ?? {};
-      if (typeof dataModel?.aggregateAttributeModifiers !== 'function') continue;
-      const debugArr = debug ? [] : undefined;
-      const { attributeModifiers: itemAttrMods, nonAttributeModifiers: itemNonAttrMods } =
-        dataModel.aggregateAttributeModifiers(attributeKeys, debugArr);
-      for (const [k, v] of Object.entries(itemAttrMods ?? {})) {
-        attributeModifiers[k] += Number(v ?? 0);
-      }
-      if (Array.isArray(itemNonAttrMods)) nonAttributeModifiers.push(...itemNonAttrMods);
-      if (debugArr && debugArr.length) debugItemContrib.push(...debugArr);
-    }
-
-    return { attributeModifiers, nonAttributeModifiers, debugItemContrib };
-  }
+  // computeAggregatedItemModifiers removed: aggregation is no longer supported.
 
   /**
    * @override
@@ -124,56 +117,6 @@ export class SynthicideActor extends Actor {
   }
 
   /**
-   * Aggregate all item modifiers and apply to this actor.
-   *
-   * This method sums up all attribute and non-attribute modifiers from the actor's owned items,
-   * applies the aggregated attribute modifiers to the actor's attributes (persisting .modifier if changed),
-   * recalculates .value in memory, and applies non-attribute modifiers to arbitrary system paths.
-   *
-   * This should be called from item data model hooks (e.g., _onCreate, _onUpdate, _onDelete) when item changes
-   * may affect actor attributes or other system data.
-   *
-   * @async
-   * @param {Object} [options] - Options for aggregation.
-   * @param {boolean} [options.debug=false] - If true, collects and outputs debug information about modifier aggregation.
-   * @returns {Promise<void>} Resolves when aggregation and updates are complete.
-   */
-  async aggregateAndApplyItemModifiers({ debug = false, render = true } = {}) {
-    const attributeKeys = Object.keys(SYNTHICIDE.attributes);
-    let attributeModifiers = {};
-    let nonAttributeModifiers = [];
-    let debugItemContrib = [];
-
-    try {
-      const aggregated = this.computeAggregatedItemModifiers(attributeKeys, { debug });
-      attributeModifiers = aggregated.attributeModifiers ?? {};
-      nonAttributeModifiers = aggregated.nonAttributeModifiers ?? [];
-      debugItemContrib = aggregated.debugItemContrib ?? [];
-    } catch (err) {
-      console.warn('[Synthicide] Error aggregating item modifiers', err);
-    }
-
-    // Build a single update payload for both attribute modifier slots and
-    // other derived modifier targets, then perform one Actor.update call.
-    const updates = {};
-    for (const key of attributeKeys) {
-      const attr = this.system?.attributes?.[key];
-      if (!attr) continue;
-      if (!Object.hasOwn(attr, 'modifier')) continue;
-      const newModifier = Number(attributeModifiers[key] ?? 0);
-      if (Number(attr.modifier ?? 0) !== newModifier) {
-        updates[`system.attributes.${key}.modifier`] = newModifier;
-      }
-    }
-
-    Object.assign(updates, this.buildNonAttributeModifierUpdates(nonAttributeModifiers));
-    if (Object.keys(updates).length > 0) await this.update(updates, { render });
-    if (debug) {
-      this.debugModifierAggregation(attributeKeys, attributeModifiers, debugItemContrib);
-    }
-  }
-
-  /**
    * @override
    * Augment the actor's default getRollData() method by appending the data object
    * generated by the its DataModel's getRollData(), or null. This polymorphic
@@ -198,75 +141,14 @@ export class SynthicideActor extends Actor {
    * @param {Object} attributeModifiers - The aggregated attribute modifiers.
    * @param {Array<Object>} debugItemContrib - The debug info array.
    */
-  debugModifierAggregation(attributeKeys, attributeModifiers, debugItemContrib) {
-    console.groupCollapsed(`[Synthicide] Modifier aggregation: ${this.name}`);
-    console.table(
-      attributeKeys.map((key) => ({
-        attribute: key,
-        preparedModifier: Number(
-          this.system?.attributes?.[key]?.modifier - Number(attributeModifiers[key] ?? 0)
-        ),
-        aggregatedDelta: Number(attributeModifiers[key] ?? 0),
-        finalModifier: Number(this.system?.attributes?.[key]?.modifier ?? 0),
-        value: Number(this.system?.attributes?.[key]?.value ?? 0),
-      }))
-    );
-    if (debugItemContrib.length) console.table(debugItemContrib);
-    console.groupEnd();
-  }
+  // debugModifierAggregation removed: aggregation is no longer supported.
 
   /**
    * Build update payload for non-attribute modifiers.
    * @param {Array<Object>} nonAttributeModifiers - The non-attribute modifiers to apply.
    * @returns {Object} flat update payload compatible with Actor.update
    */
-  buildNonAttributeModifierUpdates(nonAttributeModifiers) {
-    const updates = {};
-    if (!Array.isArray(nonAttributeModifiers) || nonAttributeModifiers.length === 0) return updates;
-
-    // Group modifiers by normalized target path across ALL items, then resolve stacking
-    const grouped = Object.create(null);
-    for (const mod of nonAttributeModifiers) {
-      const target = mod.target ?? mod.rawTarget ?? null;
-      if (!target) continue;
-      let path = String(target);
-      if (!path.startsWith('system.')) path = `system.${path}`;
-      if (!grouped[path]) grouped[path] = [];
-      // Ensure value is numeric
-      grouped[path].push({
-        value: Number(mod.value ?? 0),
-        type: mod.type,
-        stacking: mod.stacking,
-        priority: mod.priority,
-        source: mod.source,
-        condition: mod.condition,
-        rawTarget: mod.rawTarget ?? mod.target,
-      });
-    }
-
-    for (const [path, group] of Object.entries(grouped)) {
-      if (!Array.isArray(group) || group.length === 0) continue;
-      // Resolve stacking across the whole actor for this path
-      const resolved = resolveStacking(group);
-      updates[path] = Number(resolved.value ?? 0);
-    }
-    // Ensure known derived modifier targets are cleared when no active modifiers target them.
-    // This mirrors attribute handling where every attribute key is initialized to 0
-    // so attributes with no modifiers are persisted as 0.
-    try {
-      const knownDerived = Object.keys(SYNTHICIDE.MODIFIER_TARGETS || {})
-        .filter(k => !k.startsWith('attributes.'));
-      for (const t of knownDerived) {
-        let p = t;
-        if (!p.startsWith('system.')) p = `system.${p}`;
-        if (updates[p] === undefined) updates[p] = 0;
-      }
-    } catch (err) {
-      console.warn('[Synthicide] Could not clear derived modifier targets', err);
-    }
-
-    return updates;
-  }
+  // buildNonAttributeModifierUpdates removed: aggregation is no longer supported.
 
   async damageActor(damage, options = {}) {
     if (!damage || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return;

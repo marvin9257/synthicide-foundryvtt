@@ -9,6 +9,7 @@ export default class SynthicideActiveEffectConfig extends foundry.applications.s
     return context;
   }
 
+
   /** @override */
   async _renderChange(context) {
     const { change, index } = context;

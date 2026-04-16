@@ -219,11 +219,9 @@ SYNTHICIDE.MODIFIER_TARGETS = {
   // Flags (removed: flags are not exposed as modifier targets)
 };
 
-SYNTHICIDE.MODIFIER_STACKING = {
-  stack: 'SYNTHICIDE.Item.Modifier.Stacking.stack',
-  highest: 'SYNTHICIDE.Item.Modifier.Stacking.highest',
-  replace: 'SYNTHICIDE.Item.Modifier.Stacking.replace'
-};
+// NOTE: modifier stacking behavior was removed as part of the
+// modifiers UI/refactor. Keep `SYNTHICIDE.MODIFIER_TARGETS` intact
+// (it's used by ActiveEffect UI) but do not expose a stacking constant.
 
 /**
  * The set of Attribute Scores abbreviations used within the system.

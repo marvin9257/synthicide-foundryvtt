@@ -38,46 +38,10 @@ export default class SynthicideActorBaseData extends foundry.abstract
   }
 
   prepareDerivedData() {
-    // Apply aggregated item modifiers into the DataModel in-memory before
-    // running derived-data calculations so derived fields see up-to-date
-    // modifiers on initial load.
-    try {
-      if (this.parent && typeof this.parent.computeAggregatedItemModifiers === 'function') {
-        const attributeKeys = Object.keys(SYNTHICIDE.attributes);
-        const { attributeModifiers, nonAttributeModifiers } = this.parent.computeAggregatedItemModifiers(attributeKeys, { debug: false });
-
-        // Apply attribute modifiers into this DataModel (in-memory)
-        for (const key of Object.keys(attributeModifiers)) {
-          const newModifier = Number(attributeModifiers[key] ?? 0);
-          if (this.attributes && Object.prototype.hasOwnProperty.call(this.attributes, key)) {
-            if (Object.prototype.hasOwnProperty.call(this.attributes[key], 'modifier')) {
-              this.attributes[key].modifier = newModifier;
-            }
-          }
-        }
-
-        // Recalculate attribute.value in-memory for attributes that use base/modifier/increase
-        for (const key of attributeKeys) {
-          const attr = this.attributes?.[key];
-          if (!attr) continue;
-          if (Object.hasOwn(attr, 'base') && Object.hasOwn(attr, 'modifier') && Object.hasOwn(attr, 'increase')) {
-            attr.value = Number(attr.base ?? 0) + Number(attr.modifier ?? 0) + Number(attr.increase ?? 0);
-          }
-        }
-
-        // Apply non-attribute modifier targets into this DataModel in-memory
-        if (typeof this.parent.buildNonAttributeModifierUpdates === 'function') {
-          const nonAttrUpdates = this.parent.buildNonAttributeModifierUpdates(nonAttributeModifiers);
-          for (const [path, val] of Object.entries(nonAttrUpdates)) {
-            let inner = path;
-            if (inner.startsWith('system.')) inner = inner.slice(7);
-            foundry.utils.setProperty(this, inner, val);
-          }
-        }
-      }
-    } catch (err) {
-      console.warn('[Synthicide] Error applying aggregated modifiers in DataModel.prepareDerivedData', err);
-    }
+    // Modifier aggregation has been disabled as part of the refactor.
+    // Previously this block applied aggregated item modifiers into the
+    // DataModel prior to derived-data calculation. Modifiers are currently
+    // inert/no-op; retaining this comment for historical context.
 
     super.prepareDerivedData();
     if (this.attributes) {

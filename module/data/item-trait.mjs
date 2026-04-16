@@ -1,6 +1,5 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import SynthicideItemBase from './base-item.mjs';
-import { applyModifiable } from './modifiable-mixin.mjs';
 
 /**
  * Trait item system model.
@@ -10,7 +9,7 @@ import { applyModifiable } from './modifiable-mixin.mjs';
  *
  * @extends {SynthicideItemBase}
  */
-export default class SynthicideTrait extends applyModifiable(SynthicideItemBase) {
+export default class SynthicideTrait extends SynthicideItemBase {
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
     'SYNTHICIDE.Item.Trait',

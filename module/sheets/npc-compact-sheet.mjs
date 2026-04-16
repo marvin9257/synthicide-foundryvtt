@@ -58,8 +58,9 @@ class SynthicideNPCCompactSheet extends api.HandlebarsApplicationMixin(sheets.Ac
         },
         configAttributes: SYNTHICIDE.attributes,
         sheetStyle: game.settings.get('synthicide', SYNTHICIDE.SHEET_STYLE_SETTING_KEY) || SYNTHICIDE.SHEET_STYLE_CLASSIC
-      }
+      },
     });
+
     // Expose the selected weapon item for the template
     const selectedWeaponId = context.system.selectedWeaponId;
     const selectedWeapon = this.actor.items.get(selectedWeaponId) ?? null;

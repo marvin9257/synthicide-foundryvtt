@@ -338,8 +338,7 @@ export default class SynthicideFeature extends SynthicideItemBase {
       await this._cleanupOnDelete(actor, { render });
     }
 
-    const debug = Boolean(SYNTHICIDE.debug?.synthicideModifiers);
-    await actor.aggregateAndApplyItemModifiers({ debug, render: options?.render ?? true });
+    // Modifier aggregation removed; no action required here.
   }
 
   /**
