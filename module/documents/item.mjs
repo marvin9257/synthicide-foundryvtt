@@ -16,23 +16,23 @@ export class SynthicideItem extends Item {
   async _preUpdate(changed, options, user) {
     const allowed = await super._preUpdate(changed, options, user);
     // Defensive logging for non-string change keys which can crash core.
-    try {
-      const flat = foundry.utils.flattenObject(changed ?? {});
-      for (const [path, value] of Object.entries(flat)) {
-        try {
-          if (typeof path === 'string' && /effects\.\d+\.system\.changes\.\d+\.key$/.test(path)) {
-            if (typeof value !== 'string') {
-              console.warn('[Synthicide] Rejecting update: non-string ActiveEffect change.key detected in Item._preUpdate', { itemId: this?.id, path, value, changed });
-              return false;
-            }
-          }
-        } catch (innerErr) {
-          // Swallow per-entry errors to avoid masking the true update flow
-        }
-      }
-    } catch (err) {
-      console.warn('[Synthicide] Error inspecting change keys in Item._preUpdate', err);
-    }
+    //try {
+    //  const flat = foundry.utils.flattenObject(changed ?? {});
+    //  for (const [path, value] of Object.entries(flat)) {
+    //    try {
+    //      if (typeof path === 'string' && /effects\.\d+\.system\.changes\.\d+\.key$/.test(path)) {
+    //        if (typeof value !== 'string') {
+    //          console.warn('[Synthicide] Rejecting update: non-string ActiveEffect change.key detected in Item._preUpdate', { itemId: this?.id, path, value, changed });
+    //          return false;
+    //        }
+    //      }
+    //    } catch {
+    //      // Swallow per-entry errors to avoid masking the true update flow
+    //    }
+    //  }
+    //} catch (err) {
+    //  console.warn('[Synthicide] Error inspecting change keys in Item._preUpdate', err);
+    //}
     return allowed;
   }
 
