@@ -160,7 +160,7 @@ SYNTHICIDE.ALL_IMPLANT_MOD_KEYS = [
 // Centralized debug flags for system modules
 SYNTHICIDE.debug = {
   /** Enable detailed modifier aggregation debugging in Actor */
-  synthicideModifiers: false,
+  synthicideModifiers: true,
   /** Enable detailed bioclass application debugging in Item-Bioclass */
   synthicideBioclass: false,
   // Add more debug flags as needed
@@ -190,6 +190,39 @@ SYNTHICIDE.attributes = {
   operation: 'SYNTHICIDE.Attribute.Operation.long',
   nerve: 'SYNTHICIDE.Attribute.Nerve.long',
   speed: 'SYNTHICIDE.Attribute.Speed.long',
+};
+
+/**
+ * Localizable display keys for modifier target choices.
+ * Keys are the canonical target paths used in schemas (e.g. "attributes.awareness.modifier").
+ * Values are translation keys found in lang/en.json under SYNTHICIDE.Item.ModifierTargets.
+ */
+SYNTHICIDE.MODIFIER_TARGETS = {
+  // Attributes (modifier slots only)
+  'attributes.awareness.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_awareness_modifier',
+  'attributes.combat.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_combat_modifier',
+  'attributes.toughness.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_toughness_modifier',
+  'attributes.influence.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_influence_modifier',
+  'attributes.operation.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_operation_modifier',
+  'attributes.nerve.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_nerve_modifier',
+  'attributes.speed.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_speed_modifier',
+
+  // Derived values
+  'hitPoints.modifier': 'SYNTHICIDE.Item.ModifierTargets.hitPoints_modifier',
+  'armorDefense.modifier': 'SYNTHICIDE.Item.ModifierTargets.armorDefense_modifier',
+  'toughnessDefense.modifier': 'SYNTHICIDE.Item.ModifierTargets.toughnessDefense_modifier',
+  'nerveDefense.modifier': 'SYNTHICIDE.Item.ModifierTargets.nerveDefense_modifier',
+  'battleReflex.modifier': 'SYNTHICIDE.Item.ModifierTargets.battleReflex_modifier',
+  'actionPoints.modifier': 'SYNTHICIDE.Item.ModifierTargets.actionPoints_modifier',
+  'shockThreshold.modifier': 'SYNTHICIDE.Item.ModifierTargets.shockThreshold_modifier',
+
+  // Flags (removed: flags are not exposed as modifier targets)
+};
+
+SYNTHICIDE.MODIFIER_STACKING = {
+  stack: 'SYNTHICIDE.Item.Modifier.Stacking.stack',
+  highest: 'SYNTHICIDE.Item.Modifier.Stacking.highest',
+  replace: 'SYNTHICIDE.Item.Modifier.Stacking.replace'
 };
 
 /**

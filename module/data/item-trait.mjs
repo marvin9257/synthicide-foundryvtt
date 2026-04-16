@@ -1,5 +1,6 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import SynthicideItemBase from './base-item.mjs';
+import { applyModifiable } from './modifiable-mixin.mjs';
 
 /**
  * Trait item system model.
@@ -9,7 +10,7 @@ import SynthicideItemBase from './base-item.mjs';
  *
  * @extends {SynthicideItemBase}
  */
-export default class SynthicideTrait extends SynthicideItemBase {
+export default class SynthicideTrait extends applyModifiable(SynthicideItemBase) {
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
     'SYNTHICIDE.Item.Trait',
@@ -21,21 +22,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = super.defineSchema();
 
-    // Modifiers: array of { target, value, type, condition }
-    schema.modifiers = new fields.ArrayField(
-      new fields.SchemaField({
-        target: new fields.StringField({
-          required: true,
-          choices: Object.keys(SYNTHICIDE.attributes),
-        }),
-        value: new fields.NumberField({ required: true }),
-        type: new fields.StringField({
-          required: true,
-          choices: ['bonus', 'penalty', 'set'],
-        }),
-        condition: new fields.StringField({ required: false }),
-      })
-    );
+    // Modifiers are provided by the Modifiable mixin (standardized schema)
 
     // Trait categories/types (bioclass, attack skill, knowledge focus, etc.)
     schema.traitType = new fields.StringField({

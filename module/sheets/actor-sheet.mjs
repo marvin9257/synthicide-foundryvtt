@@ -171,6 +171,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // Offloading item context prep to a helper function
     await this._prepareItems(context);
 
+    // Modifiers are aggregated during actor preparation; no pre-render aggregation needed.
+
     return context;
   }
 
@@ -837,8 +839,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // create with render:false so _onCreate's fire-and-forget aggregation doesn't
     // race with our explicit aggregation below
     const created = await this.actor.createEmbeddedDocuments('Item', normalizedData, { render: false });
-    // Explicitly await aggregation so modifier values are up-to-date before we render
-    await this.actor.aggregateAndApplyItemModifiers({ render: false });
+    // Render after creation; item _onCreate hooks trigger aggregation as needed
     await this.render({ force: true });
     return created;
   }

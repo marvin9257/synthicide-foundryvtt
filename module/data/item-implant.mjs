@@ -1,5 +1,6 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import SynthicideGear from './item-gear.mjs';
+import { applyModifiable } from './modifiable-mixin.mjs';
 
 /**
  * Implant item system model.
@@ -9,7 +10,7 @@ import SynthicideGear from './item-gear.mjs';
  *
  * @extends {SynthicideGear}
  */
-export default class SynthicideImplant extends SynthicideGear {
+export default class SynthicideImplant extends applyModifiable(SynthicideGear) {
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
     'SYNTHICIDE.Item.Gear',
@@ -53,21 +54,7 @@ export default class SynthicideImplant extends SynthicideGear {
     // Support larger implants that consume multiple slots.
     schema.slotSize = new fields.NumberField({ ...requiredInteger, initial: 1, min: 1 });
 
-    // Attribute modifiers granted by this implant (only applied when equipped).
-    schema.modifiers = new fields.ArrayField(
-      new fields.SchemaField({
-        target: new fields.StringField({
-          required: true,
-          choices: Object.keys(SYNTHICIDE.attributes),
-        }),
-        value: new fields.NumberField({ required: true }),
-        type: new fields.StringField({
-          required: true,
-          choices: ['bonus', 'penalty', 'set'],
-        }),
-        condition: new fields.StringField({ required: false }),
-      })
-    );
+    // Modifiers are provided by the Modifiable mixin (standardized schema)
 
     return schema;
   }

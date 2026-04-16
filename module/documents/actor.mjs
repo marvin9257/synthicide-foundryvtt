@@ -1,9 +1,9 @@
 import SYNTHICIDE from "../helpers/config.mjs";
+import { resolveStacking } from "../helpers/modifier-engine.mjs";
 import { createActionMessage } from "../rolls/action-rolls.mjs";
 import { buildShockCardData, resolveShockOutcome } from "../rolls/shock-card-data.mjs";
 
 const DAMAGEABLE_ACTOR_TYPES = new Set(['sharper', 'npc']);
-const FLAG_DEAD = 'flags.synthicide.dead';
 
 
 /**
@@ -24,6 +24,8 @@ export class SynthicideActor extends Actor {
       foundry.utils.setProperty(changed, 'system.hitPoints.value', Math.min(maxHP, nextHP));
     }
 
+    
+
     const hasBarrierValue = foundry.utils.hasProperty(changed, 'system.armorValues.forceBarrier.value');
     const hasBarrierMax = foundry.utils.hasProperty(changed, 'system.armorValues.forceBarrier.max');
     if (hasBarrierValue || hasBarrierMax) {
@@ -40,18 +42,44 @@ export class SynthicideActor extends Actor {
       const clampedBarrier = Math.clamp(Number.isFinite(nextBarrier) ? nextBarrier : 0, 0, maxBarrier);
       foundry.utils.setProperty(changed, 'system.armorValues.forceBarrier.value', clampedBarrier);
     }
-
     return allowed;
+  }
+
+  /**
+   * Synchronously compute aggregated modifiers across all owned items.
+   * Returns an object { attributeModifiers, nonAttributeModifiers, debugItemContrib }.
+   * This is synchronous because item system models expose a sync
+   * `aggregateAttributeModifiers(attributeKeys, debugArr)` helper.
+   */
+  computeAggregatedItemModifiers(attributeKeys, { debug = false } = {}) {
+    const attributeModifiers = Object.fromEntries(attributeKeys.map(k => [k, 0]));
+    const nonAttributeModifiers = [];
+    const debugItemContrib = [];
+
+    for (const item of this.items) {
+      const { system: dataModel } = item ?? {};
+      if (typeof dataModel?.aggregateAttributeModifiers !== 'function') continue;
+      const debugArr = debug ? [] : undefined;
+      const { attributeModifiers: itemAttrMods, nonAttributeModifiers: itemNonAttrMods } =
+        dataModel.aggregateAttributeModifiers(attributeKeys, debugArr);
+      for (const [k, v] of Object.entries(itemAttrMods ?? {})) {
+        attributeModifiers[k] += Number(v ?? 0);
+      }
+      if (Array.isArray(itemNonAttrMods)) nonAttributeModifiers.push(...itemNonAttrMods);
+      if (debugArr && debugArr.length) debugItemContrib.push(...debugArr);
+    }
+
+    return { attributeModifiers, nonAttributeModifiers, debugItemContrib };
   }
 
   /**
    * @override
    */
   prepareDerivedData() {
+    // Delegates to the DataModel; in-memory aggregation now occurs in
+    // `BaseData.prepareDerivedData` to ensure derived calculations see
+    // modifiers during the data-model lifecycle.
     super.prepareDerivedData();
-    // Only calculate derived data here; aggregation is triggered by item changes
-    // Derived data for sharper actors is now handled in the data model.
-    // ...existing code for other derived data...
   }
 
   /**
@@ -112,26 +140,21 @@ export class SynthicideActor extends Actor {
    */
   async aggregateAndApplyItemModifiers({ debug = false, render = true } = {}) {
     const attributeKeys = Object.keys(SYNTHICIDE.attributes);
-    const attributeModifiers = Object.fromEntries(attributeKeys.map(key => [key, 0]));
-    const nonAttributeModifiers = [];
+    let attributeModifiers = {};
+    let nonAttributeModifiers = [];
     let debugItemContrib = [];
 
-    for (const item of this.items) {
-      const { system: dataModel } = item || {};
-      if (typeof dataModel?.aggregateAttributeModifiers !== "function") continue;
-      const debugArr = debug ? [] : undefined;
-      const { attributeModifiers: itemAttrMods, nonAttributeModifiers: itemNonAttrMods } =
-        dataModel.aggregateAttributeModifiers(attributeKeys, debugArr);
-
-      for (const [key, val] of Object.entries(itemAttrMods)) {
-        attributeModifiers[key] += Number(val ?? 0);
-      }
-      if (Array.isArray(itemNonAttrMods)) nonAttributeModifiers.push(...itemNonAttrMods);
-      if (debugArr && debugArr.length) debugItemContrib.push(...debugArr);
+    try {
+      const aggregated = this.computeAggregatedItemModifiers(attributeKeys, { debug });
+      attributeModifiers = aggregated.attributeModifiers ?? {};
+      nonAttributeModifiers = aggregated.nonAttributeModifiers ?? [];
+      debugItemContrib = aggregated.debugItemContrib ?? [];
+    } catch (err) {
+      console.warn('[Synthicide] Error aggregating item modifiers', err);
     }
 
-    // Persist any modifier values that changed
-    // so Foundry merges individual fields rather than replacing the whole attributes object.
+    // Build a single update payload for both attribute modifier slots and
+    // other derived modifier targets, then perform one Actor.update call.
     const updates = {};
     for (const key of attributeKeys) {
       const attr = this.system?.attributes?.[key];
@@ -142,20 +165,9 @@ export class SynthicideActor extends Actor {
         updates[`system.attributes.${key}.modifier`] = newModifier;
       }
     }
-    Object.assign(updates, this.buildNonAttributeModifierUpdates(nonAttributeModifiers));
-    if (Object.keys(updates).length > 0) {
-      await this.update(updates, { render });
-    }
 
-    // Always recalculate value in memory after aggregation.
-    // NPC actors use direct editable values and do not have base/modifier/increase triplets.
-    for (const key of attributeKeys) {
-      const attr = this.system?.attributes?.[key];
-      if (!attr) continue;
-      if (Object.hasOwn(attr, 'base') && Object.hasOwn(attr, 'modifier') && Object.hasOwn(attr, 'increase')) {
-        attr.value = attr.base + attr.modifier + attr.increase;
-      }
-    }
+    Object.assign(updates, this.buildNonAttributeModifierUpdates(nonAttributeModifiers));
+    if (Object.keys(updates).length > 0) await this.update(updates, { render });
     if (debug) {
       this.debugModifierAggregation(attributeKeys, attributeModifiers, debugItemContrib);
     }
@@ -210,28 +222,49 @@ export class SynthicideActor extends Actor {
    */
   buildNonAttributeModifierUpdates(nonAttributeModifiers) {
     const updates = {};
+    if (!Array.isArray(nonAttributeModifiers) || nonAttributeModifiers.length === 0) return updates;
+
+    // Group modifiers by normalized target path across ALL items, then resolve stacking
+    const grouped = Object.create(null);
     for (const mod of nonAttributeModifiers) {
-      if (!mod.target) continue;
-      let path = mod.target;
+      const target = mod.target ?? mod.rawTarget ?? null;
+      if (!target) continue;
+      let path = String(target);
       if (!path.startsWith('system.')) path = `system.${path}`;
-
-      const stagedValue = updates[path];
-      let current = stagedValue;
-      if (current === undefined) current = foundry.utils.getProperty(this, path);
-      if (current === undefined) current = 0;
-
-      const numericCurrent = Number(current);
-      const baseValue = Number.isFinite(numericCurrent) ? numericCurrent : 0;
-      const numericModValue = Number(mod.value ?? 0);
-
-      const newValue = mod.type === 'set'
-        ? mod.value
-        : mod.type === 'penalty'
-          ? baseValue - numericModValue
-          : baseValue + numericModValue;
-
-      updates[path] = newValue;
+      if (!grouped[path]) grouped[path] = [];
+      // Ensure value is numeric
+      grouped[path].push({
+        value: Number(mod.value ?? 0),
+        type: mod.type,
+        stacking: mod.stacking,
+        priority: mod.priority,
+        source: mod.source,
+        condition: mod.condition,
+        rawTarget: mod.rawTarget ?? mod.target,
+      });
     }
+
+    for (const [path, group] of Object.entries(grouped)) {
+      if (!Array.isArray(group) || group.length === 0) continue;
+      // Resolve stacking across the whole actor for this path
+      const resolved = resolveStacking(group);
+      updates[path] = Number(resolved.value ?? 0);
+    }
+    // Ensure known derived modifier targets are cleared when no active modifiers target them.
+    // This mirrors attribute handling where every attribute key is initialized to 0
+    // so attributes with no modifiers are persisted as 0.
+    try {
+      const knownDerived = Object.keys(SYNTHICIDE.MODIFIER_TARGETS || {})
+        .filter(k => !k.startsWith('attributes.'));
+      for (const t of knownDerived) {
+        let p = t;
+        if (!p.startsWith('system.')) p = `system.${p}`;
+        if (updates[p] === undefined) updates[p] = 0;
+      }
+    } catch (err) {
+      console.warn('[Synthicide] Could not clear derived modifier targets', err);
+    }
+
     return updates;
   }
 
@@ -370,7 +403,7 @@ export class SynthicideActor extends Actor {
     updates['system.hitPoints.value'] = -1;
 
     if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL || outcome === SYNTHICIDE.SHOCK_OUTCOMES.DEATH) {
-      updates[FLAG_DEAD] = true;
+      updates['flags.synthicide.dead'] = true;
       return;
     }
   }

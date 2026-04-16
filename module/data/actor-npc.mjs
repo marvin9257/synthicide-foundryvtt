@@ -89,8 +89,10 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     const thirdLevel = Math.floor(level / 3);
     const bonusHitPoints = Number(this.hitPointBonus ?? 0);
     const baseHitPoints = this.hitPoints.base + (this.hitPoints.perLevel * Math.max(0, level - 1)) + bonusHitPoints;
+    // Include any active modifiers to hit points so derived modifiers affect max HP
+    const effectiveBase = baseHitPoints + (this.hitPoints?.modifier ?? 0);
 
-    this.hitPoints.max = this.boss ? baseHitPoints * 2 : baseHitPoints;
+    this.hitPoints.max = this.boss ? effectiveBase * 2 : effectiveBase;
     this.actionPoints.value = Math.floor(speedValue / 2) + 3;
     this.battleReflex.value = awarenessValue + speedValue;
     this.toughnessDefense.value = 5 + thirdLevel + toughnessValue;

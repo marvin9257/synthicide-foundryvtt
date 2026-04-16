@@ -285,6 +285,38 @@
       }
     },
     "Item": {
+      "ModifierTargets": {
+        "attributes_awareness_modifier": "Awareness",
+        "attributes_combat_modifier": "Combat",
+        "attributes_toughness_modifier": "Toughness",
+        "attributes_influence_modifier": "Influence",
+        "attributes_operation_modifier": "Operation",
+        "attributes_nerve_modifier": "Nerve",
+        "attributes_speed_modifier": "Speed",
+
+        "hitPoints_modifier": "Hit Points",
+        "armorDefense_modifier": "Armor Defense",
+        "toughnessDefense_modifier": "Toughness Defense",
+        "nerveDefense_modifier": "Nerve Defense",
+        "battleReflex_modifier": "Battle Reflex",
+        "actionPoints_modifier": "Action Points",
+        "shockThreshold_modifier": "Shock Threshold"
+      },
+      "Modifier": {
+        "Header": {
+          "Formula": "Formula",
+          "Stacking": "Stacking"
+        },
+        "Contexts": {
+          "actor": "Actor"
+        },
+        "Stacking": {
+          "stack": "Stack",
+          "highest": "Highest",
+          "replace": "Replace"
+        }
+      },
+
       "Tabs": {
         "Attributes": "Attributes",
         "Cybernetics": "Cybernetics",

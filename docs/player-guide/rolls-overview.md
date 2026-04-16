@@ -54,6 +54,8 @@ Used by challenge rolls to determine result.
 Manual situational modifier entered for the current roll.
 6. Roll Modifiers total and list:
 Read-only summary of actor-level modifiers currently affecting the roll.
+
+Note: Persistent modifiers come from owned items and actor state and are aggregated during actor preparation. Item modifiers must be authored as a deterministic formula string (the `formula` field) and are evaluated synchronously during actor preparation; per-roll evaluation of item formulas or per-roll "modifier contexts" is not supported.
 7. Target Armor:
 Defense value the attack compares against.
 8. Attack Bonus (ATT):
@@ -68,7 +70,7 @@ Target shield contribution used in attack context.
 ## Chat Output: What You See and How to Use It
 
 1. Card header:
-Shows roll title and context tags (such as difficulty info).
+Shows roll title and metadata tags (such as difficulty info).
 2. Inline die display:
 Shows the d10 result used in the roll.
 3. Effect or outcome row:
@@ -99,6 +101,7 @@ Example: attack card -> open details to verify ATT, attribute, and range terms -
 3. Equation breakdown and card details are rendered in chat.
 4. Follow-up actions such as Roll Damage or Roll Opposed appear on qualifying cards.
 5. Chat message context menu includes Apply Damage and Apply Healing when a visible roll card exists and at least one token is controlled.
+6. Actor-level modifiers are aggregated during actor preparation and used as the read-only roll modifiers shown in the dialog.
 
 Example: an attack roll card can show the computed terms and then expose a follow-up damage action when valid.
 
@@ -117,7 +120,8 @@ Example: an attack roll card can show the computed terms and then expose a follo
 3. Opposed rolls and certain post-roll actions still require manual follow-up in chat (they are separate clicks, not an auto-chain).
 4. Special ammo effects from the rules kit are not auto-resolved in roll math/cards (example: cryo AP reduction, cinder ongoing fire, and homing follow-up behavior are handled manually).
 5. Weapon modification labels do not apply all rules text by themselves (example: long range, slug shot mode, and full auto behavior only affect math when explicit item stats/modifiers are authored).
-6. Demolition and attack follow-up output can depend on correct target/token setup; missing context may block or degrade expected automation.
+6. Item modifiers are evaluated during actor preparation and must be deterministic: authors should use the `formula` field. Per-roll evaluation of item formulas or "roll-context" modifier behavior is not supported.
+7. Demolition and attack follow-up output can depend on correct target/token setup; missing context may block or degrade expected automation.
 7. Apply Damage and Apply Healing use currently controlled tokens, so applying to the wrong token is possible if selection is wrong.
 
 ## Troubleshooting

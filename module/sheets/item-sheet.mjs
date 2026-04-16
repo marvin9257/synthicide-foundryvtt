@@ -385,9 +385,10 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
    */
   static async _onAddModifier(event, _target) {
     event.preventDefault();
-    const defaultTarget = Object.keys(SYNTHICIDE.attributes)[0] ?? 'awareness';
+    const firstAttr = Object.keys(SYNTHICIDE.attributes)[0] ?? 'awareness';
+    const defaultTarget = `attributes.${firstAttr}.modifier`;
     await mutateSystemArray(this.item, 'modifiers', modifiers => {
-      modifiers.push({ target: defaultTarget, value: 0, type: 'bonus', condition: '', source: '' });
+      modifiers.push({ target: defaultTarget, formula: '+0', stacking: 'stack', condition: '', source: '' });
     });
   }
 

@@ -1,35 +1,26 @@
 <div class="modifiers-table">
   <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Trait.Attribute'}}</div>
-  <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Trait.Value'}}</div>
-  <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Trait.Type'}}</div>
-  <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Trait.Condition'}}</div>
-  <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Trait.Source'}}</div>
+  <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Modifier.Header.Formula'}}</div>
+  <div class="modifiers-header">{{localize 'SYNTHICIDE.Item.Modifier.Header.Stacking'}}</div>
+  {{!-- Condition and Source hidden in attributes UI to prioritize formula input space --}}
   <div class="modifiers-header"><button type="button" class="modifiers-add" data-action="addModifier" data-tooltip="SYNTHICIDE.Item.Trait.AddTrait"><i class="fas fa-plus"></i></button></div>
   {{#if system.modifiers.length}}
     {{#each system.modifiers as |mod i|}}
       <div class='modifiers-cell'>
         <select name="system.modifiers.{{i}}.target">
-          {{#each @root.SYNTHICIDE.attributes as |label key|}}
-            <option value="{{key}}" {{#if (eq key mod.target)}}selected{{/if}}>{{localize label}}</option>
-          {{/each}}
+          {{selectOptions @root.SYNTHICIDE.MODIFIER_TARGETS selected=mod.target localize=true}}
         </select>
       </div>
       <div class='modifiers-cell'>
-        <input type="number" name="system.modifiers.{{i}}.value" value="{{mod.value}}" step="1"/>
+        <input type="text" name="system.modifiers.{{i}}.formula" value="{{mod.formula}}" placeholder="+0 or 2*@level"/>
       </div>
+      {{!-- context removed: modifiers are always actor-scoped and evaluated during actor preparation --}}
       <div class='modifiers-cell'>
-        <select name="system.modifiers.{{i}}.type">
-          <option value="bonus" {{#if (eq mod.type "bonus")}}selected{{/if}}>Bonus</option>
-          <option value="penalty" {{#if (eq mod.type "penalty")}}selected{{/if}}>Penalty</option>
-          <option value="set" {{#if (eq mod.type "set")}}selected{{/if}}>Set</option>
+        <select name="system.modifiers.{{i}}.stacking">
+          {{selectOptions @root.SYNTHICIDE.MODIFIER_STACKING selected=mod.stacking localize=true}}
         </select>
       </div>
-      <div class='modifiers-cell'>
-        <input type="text" name="system.modifiers.{{i}}.condition" value="{{mod.condition}}" placeholder="Optional"/>
-      </div>
-      <div class='modifiers-cell'>
-        <input type="text" name="system.modifiers.{{i}}.source" value="{{mod.source}}" placeholder="Optional"/>
-      </div>
+      {{!-- condition and source fields intentionally omitted from attribute UI to save space --}}
       <div class='modifiers-cell modifiers-cell-action'>
         <a class="modifiers-remove" data-action="removeModifier" data-index="{{i}}" title="Remove Modifier"><i class="fas fa-trash"></i></a>
       </div>

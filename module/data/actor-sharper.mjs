@@ -75,7 +75,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
    * @this {SynthicideSharperData}
    */
   prepareDerivedData() {
-     super.prepareDerivedData();
+    super.prepareDerivedData();
 
     if (this.attributes) {
       for (const attr of Object.values(this.attributes)) {
@@ -97,8 +97,10 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     }
     const level = this.level.value ?? 1;
     
-    //Dervived data calculated a bit differently for NPC's so make it sharper specicifc
-    this.hitPoints.max = (this.hitPoints.base ?? 32) + (this.hitPoints.perLevel ?? 0) * Math.max(0, level - 1);
+    //Derived data calculated a bit differently for player characters; include any modifiers
+    this.hitPoints.max = (this.hitPoints.base ?? 32)
+      + (this.hitPoints.perLevel ?? 0) * Math.max(0, level - 1)
+      + (this.hitPoints?.modifier ?? 0);
     this.actionPoints.value = Math.floor(this.attributes.speed.value / 2) + this.actionPoints.modifier + 3;
     this.battleReflex.value = this.attributes.awareness.value + this.attributes.speed.value + this.battleReflex.modifier;
     this.toughnessDefense.value = 5 + this.attributes.toughness.value + this.toughnessDefense.modifier;
