@@ -199,22 +199,22 @@ SYNTHICIDE.attributes = {
  */
 SYNTHICIDE.MODIFIER_TARGETS = {
   // Attributes (modifier slots only)
-  'attributes.awareness.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_awareness_modifier',
-  'attributes.combat.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_combat_modifier',
-  'attributes.toughness.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_toughness_modifier',
-  'attributes.influence.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_influence_modifier',
-  'attributes.operation.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_operation_modifier',
-  'attributes.nerve.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_nerve_modifier',
-  'attributes.speed.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_speed_modifier',
+  'system.attributes.awareness.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_awareness_modifier',
+  'system.attributes.combat.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_combat_modifier',
+  'system.attributes.toughness.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_toughness_modifier',
+  'system.attributes.influence.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_influence_modifier',
+  'system.attributes.operation.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_operation_modifier',
+  'system.attributes.nerve.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_nerve_modifier',
+  'system.attributes.speed.modifier': 'SYNTHICIDE.Item.ModifierTargets.attributes_speed_modifier',
 
   // Derived values
-  'hitPoints.modifier': 'SYNTHICIDE.Item.ModifierTargets.hitPoints_modifier',
-  'armorDefense.modifier': 'SYNTHICIDE.Item.ModifierTargets.armorDefense_modifier',
-  'toughnessDefense.modifier': 'SYNTHICIDE.Item.ModifierTargets.toughnessDefense_modifier',
-  'nerveDefense.modifier': 'SYNTHICIDE.Item.ModifierTargets.nerveDefense_modifier',
-  'battleReflex.modifier': 'SYNTHICIDE.Item.ModifierTargets.battleReflex_modifier',
-  'actionPoints.modifier': 'SYNTHICIDE.Item.ModifierTargets.actionPoints_modifier',
-  'shockThreshold.modifier': 'SYNTHICIDE.Item.ModifierTargets.shockThreshold_modifier',
+  'system.hitPoints.modifier': 'SYNTHICIDE.Item.ModifierTargets.hitPoints_modifier',
+  'system.armorDefense.modifier': 'SYNTHICIDE.Item.ModifierTargets.armorDefense_modifier',
+  'system.toughnessDefense.modifier': 'SYNTHICIDE.Item.ModifierTargets.toughnessDefense_modifier',
+  'system.nerveDefense.modifier': 'SYNTHICIDE.Item.ModifierTargets.nerveDefense_modifier',
+  'system.battleReflex.modifier': 'SYNTHICIDE.Item.ModifierTargets.battleReflex_modifier',
+  'system.actionPoints.modifier': 'SYNTHICIDE.Item.ModifierTargets.actionPoints_modifier',
+  'system.shockThreshold.modifier': 'SYNTHICIDE.Item.ModifierTargets.shockThreshold_modifier',
 
   // Flags (removed: flags are not exposed as modifier targets)
 };

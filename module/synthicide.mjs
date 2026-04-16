@@ -8,6 +8,7 @@ import SynthicideNPCCompactSheet from './sheets/npc-compact-sheet.mjs';
 import { SynthicideItemSheet } from './sheets/item-sheet.mjs';
 // Import helper/utility classes and constants.
 import SYNTHICIDE from './helpers/config.mjs';
+import SynthicideActiveEffectConfig from './applications/synthicide-active-effect-config.mjs';
 // Import DataModel classes
 import * as models from './data/_module.mjs';
 //Import Combat Class
@@ -151,6 +152,9 @@ Hooks.once('init', function () {
   // Use custom ruler for virtual grid measurement
   CONFIG.Canvas.rulerClass = SynthicideVirtualRuler;
   CONFIG.Token.rulerClass = SynthicideVirtualTokenRuler;
+
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(CONFIG.ActiveEffect.documentClass, 'synthicide', SynthicideActiveEffectConfig, { makeDefault: true });
+
 });
 
 /* -------------------------------------------- */
