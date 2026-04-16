@@ -1,3 +1,10 @@
+## [1.0.21](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.20...1.0.21) (2026-04-16)
+
+
+### Bug Fixes
+
+* remove some defensive code that is odd ([1b66240](https://github.com/marvin9257/synthicide-foundryvtt/commit/1b662400d58c5f868e12b601b0e48fe7417a3290))
+
 ## [1.0.20](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.19...1.0.20) (2026-04-14)
 
 
