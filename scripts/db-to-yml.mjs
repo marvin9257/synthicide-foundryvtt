@@ -21,12 +21,6 @@ async function main() {
   for (const dir of allDirs) {
     const fullPath = path.join(PACKS_INPUT_DIR, dir);
     if ((await fs.stat(fullPath)).isDirectory()) {
-      console.log('[TRACE] db-to-yml.mjs: checking if dir startsWith .', { dir });
-      if (!dir.startsWith('.')) {
-        console.log('[TRACE] db-to-yml.mjs: dir does NOT startWith .', { dir });
-      } else {
-        console.log('[TRACE] db-to-yml.mjs: dir startsWith .', { dir });
-      }
       packDirs.push(dir);
     }
   }

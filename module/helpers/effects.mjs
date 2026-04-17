@@ -1,4 +1,4 @@
-import SYNTHICIDE from "./config.mjs";
+//import SYNTHICIDE from "./config.mjs";
 
 /**
  * Prepare the data structure for Active Effects which are currently embedded in an Actor or Item.
@@ -52,14 +52,11 @@ export function prepareActiveEffectCategories(effects) {
  * @param {string} key
  * @returns {string}
  */
-export function resolveEffectKey(key) {
+/*export function resolveEffectKey(key) {
   if (!key || typeof key !== 'string') return key;
-  console.log('[TRACE] resolveEffectKey: checking if key startsWith system.', { key });
   if (key.startsWith('system.')) {
-    console.log('[TRACE] resolveEffectKey: key startsWith system.', { key });
     return key;
   }
-  console.log('[TRACE] resolveEffectKey: key does NOT startWith system.', { key });
   const candidate = `system.${key}`;
   if (typeof SYNTHICIDE !== 'undefined' && SYNTHICIDE.MODIFIER_TARGETS?.[candidate]) return candidate;
 
@@ -70,4 +67,4 @@ export function resolveEffectKey(key) {
   }
 
   return key;
-}
+}*/

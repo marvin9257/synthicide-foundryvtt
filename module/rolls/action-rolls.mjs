@@ -2,7 +2,7 @@ import SYNTHICIDE from '../helpers/config.mjs';
 import ItemTemplate from '../documents/ItemTemplate.mjs';
 import { calculateVirtualZoneDistanceBetweenPoints, getRandomScatterCorner } from '../canvas/demolition-scatter-utils.mjs';
 import { formatSignedNumber, getStandardizedRollData, localize, normalizeAttributeKey } from './roll-utils.mjs';
-import { resolveEffectKey } from '../helpers/effects.mjs';
+//import { resolveEffectKey } from '../helpers/effects.mjs';
 import { prepareAttackCardData } from './attack-card-data.mjs';
 import { prepareChallengeCardData } from './challenge-card-data.mjs';
 import { prepareDemolitionCardData } from './demolition-card-data.mjs';
@@ -871,8 +871,8 @@ function parseNumeric(value, fallback = 0) {
 }
 
 function formatModifierKey(key) {
-  const resolved = resolveEffectKey(key);
-  return String(resolved ?? '')
+  //const resolved = resolveEffectKey(key);
+  return String(key ?? '')
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
     .replace(/[_-]+/g, ' ')
     .replace(/^./, (char) => char.toUpperCase());
