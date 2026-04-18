@@ -80,58 +80,6 @@ body.theme-dark .npc-compact .window-content {
 /* Theme Tokens                  */
 /* ============================== */
 
-/* ============================== */
-/* Feature Modifier Table Layout  */
-/* ============================== */
-.modifiers-table {
-  display: grid;
-  /* Attribute | Formula | Stacking | Action */
-  /* Make stacking wider and preserve formula space */
-  grid-template-columns: 1.5fr 2.6fr 1.2fr 0.45fr;
-  gap: 4px;
-  align-items: center;
-  margin: 10px 0 10px 0;
-}
-
-.modifiers-table .modifiers-cell input,
-.modifiers-table .modifiers-cell select {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Make the attribute select wider and truncate long labels with ellipsis */
-.modifiers-table select[name$=".target"] {
-  min-width: 160px;
-  max-width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Ensure the select's displayed value uses ellipsis when needed */
-.modifiers-table select[name$=".target"] option {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Give stacking column selects a minimum width so they're not squeezed */
-.modifiers-table select[name$=".stacking"] {
-  min-width: 10ch;
-}
-
-.modifiers-table .modifiers-cell.modifiers-cell-action {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 6px;
-}
-
-.modifiers-table .modifiers-header:last-child {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 /* ============================== */
 /* Shared item/effect text labels */
@@ -2259,45 +2207,6 @@ body.synthicide-style-bold .synthicide .resource-stepper input {
   font-weight: 700;
 }
 
-/* ============================================================ */
-/* MODIFIERS TABLE                                              */
-/* ============================================================ */
-
-body.synthicide-style-bold .synthicide .modifiers-table {
-  gap: 0;
-  border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
-  overflow: hidden;
-  border-radius: 2px;
-  padding: 0;
-  align-items: stretch;
-}
-
-body.synthicide-style-bold .synthicide .modifiers-table .modifiers-header {
-  background: var(--rb-strong);
-  color: var(--rb-on-accent);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  min-height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 2px 3px;
-  border: none;
-  border-right: 1px solid color-mix(in srgb, var(--rb-accent) 50%, transparent);
-}
-
-body.synthicide-style-bold .synthicide .modifiers-table > *:not(.modifiers-header),
-body.synthicide-style-bold .synthicide .modifiers-cell {
-  background: var(--rb-cell);
-  box-sizing: border-box;
-  border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
-  padding: 2px 3px;
-  font-size: 0.75rem;
-  line-height: 1.15;
-}
 
 /* ============================================================ */
 /* h3 / h4 SECTION HEADINGS                                    */
@@ -2544,13 +2453,6 @@ body.synthicide-style-bold .synthicide .item-form .ability-row:last-child {
   border-bottom: none;
 }
 
-/* ============================================================ */
-/* ITEM SHEET – MODIFIERS TABLE (trait / feature attributes tab)*/
-/* ============================================================ */
-
-body.synthicide-style-bold .synthicide .item-form .modifiers-table {
-  margin-top: 6px;
-}
 
 /* ============================================================ */
 /* ITEM SHEET – DEEPER STYLING                                  */
@@ -3471,9 +3373,4 @@ body.synthicide-style-bold .npc-mastered-weapon input[type="checkbox"] {
   accent-color: var(--rb-accent);
   width: 1.1em;
   height: 1.1em;
-}
-
-/* Modifier table: give the formula column more space in item modifier tables */
-.synthicide .item-form .modifiers-table {
-  grid-template-columns: 2.4fr 1.2fr 0.6fr 1fr 1fr 0.5fr;
 }

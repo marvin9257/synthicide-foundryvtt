@@ -16,8 +16,7 @@ The CSS file is split into two logical halves:
 ### Classic block sections (in order)
 
 - Global resets, fonts, layout primitives
-- `modifiers-table` base grid
-- Shared utility classes: `.item-label`, `.effect-label`, `.ability-row`, `.trait-card-*`, `.modifiers-cell`
+- Shared utility classes: `.item-label`, `.effect-label`, `.ability-row`, `.trait-card-*`
 - Progress bars, ability list, bioclass trait cards
 - Sheet header, tabs, resources
 - Items list / effects list (`.items-list`, `.effects-list`)
@@ -174,30 +173,8 @@ Wraps a titled card with name + textarea content:
 
 Automatically gets border, border-left accent, and spacing in bold mode.
 
-### 5. Modifiers / data table
 
-Use a CSS grid with header + data cells:
-```html
-<div class='modifiers-table'>
-  <div class='modifiers-header'>Column A</div>
-  <div class='modifiers-header'>Column B</div>
-  <div class='modifiers-header'><button …>+</button></div>
-  {{#each items}}
-    <div class='modifiers-cell'><select …></select></div>
-    <div class='modifiers-cell'><input …/></div>
-    <div class='modifiers-cell modifiers-cell-action'><a …>🗑</a></div>
-  {{/each}}
-</div>
-```
-
-The column count must match `grid-template-columns` in the base `.modifiers-table` rule (currently 6 columns). If you need a different column layout, add a scoped override:
-```css
-.synthicide .tab.mynewatab .modifiers-table {
-  grid-template-columns: 2fr 1fr 0.5fr; /* adjust per-context */
-}
-```
-
-### 6. Add-item button row
+### 5. Add-item button row
 
 Use `ability-add` or `trait-add-row` class on the wrapper — NOT `.resource` (which gets card borders):
 ```html
@@ -211,14 +188,14 @@ Use `ability-add` or `trait-add-row` class on the wrapper — NOT `.resource` (w
 
 In bold mode this gets the styled accent-bordered button automatically.
 
-### 7. `h3` / `h4` section headings (inside content area)
+### 6. `h3` / `h4` section headings (inside content area)
 
 Plain `<h3>` or `<h4>` elements inside `.synthicide` automatically get:
 - Bold block: deep-maroon tinted background, accent `border-left`, `1rem / uppercase`
 
 For the Aspect tab specifically, `h4` is overridden to a full-width dark header bar. If you add a new tab that should use the same treatment, add a selector to the `.tab.aspect h4` rule.
 
-### 8. Cybernetics fieldset
+### 7. Cybernetics fieldset
 
 ```html
 <fieldset class='cybernetics'>
@@ -229,7 +206,7 @@ For the Aspect tab specifically, `h4` is overridden to a full-width dark header 
 
 Gets accent border-left and styled legend in bold mode automatically.
 
-### 9. Description block (rich-text prose)
+### 8. Description block (rich-text prose)
 
 ```html
 <div class='description-header'>My Section</div>
@@ -305,10 +282,6 @@ Add bold-mode overrides at the **end of the appropriate section** in the bold bl
 | `.resource-label` | Small-caps label above an input |
 | `fieldset.resource` | Bordered card (bioclass trait card) |
 | `fieldset.cybernetics` | Cybernetics category block |
-| `.modifiers-table` | CSS-grid data table |
-| `.modifiers-header` | Dark header cell in modifiers grid |
-| `.modifiers-cell` | Data cell in modifiers grid |
-| `.modifiers-cell-action` | Delete/action cell in modifiers grid |
 | `.trait-add-row` / `.ability-add` | Styled add-item button wrapper |
 | `.trait-card-header/.name/.actions` | Bioclass trait card layout helpers |
 | `.ability-row` | Single ability entry (flex row) |

@@ -159,8 +159,6 @@ SYNTHICIDE.ALL_IMPLANT_MOD_KEYS = [
 
 // Centralized debug flags for system modules
 SYNTHICIDE.debug = {
-  /** Enable detailed modifier aggregation debugging in Actor */
-  synthicideModifiers: true,
   /** Enable detailed bioclass application debugging in Item-Bioclass */
   synthicideBioclass: false,
   // Add more debug flags as needed
