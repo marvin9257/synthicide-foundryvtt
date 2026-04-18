@@ -97,6 +97,11 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     },
     general: {
       template: 'systems/synthicide/templates/item/general.hbs',
+      templates:['systems/synthicide/templates/item/parts/general-traits.hbs',
+                  'systems/synthicide/templates/item/parts/general-armor.hbs',
+                  'systems/synthicide/templates/item/parts/general-weapon.hbs',
+                  'systems/synthicide/templates/item/parts/general-shield.hbs',
+                  'systems/synthicide/templates/item/parts/general-implant.hbs'],
       scrollable: [""]
     },
     rollGear: {
@@ -119,25 +124,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     },
     description: {
       template: 'systems/synthicide/templates/item/description.hbs'
-    },
-    generalTraits: {
-      template: 'systems/synthicide/templates/item/parts/general-traits.hbs'
-    },
-    generalArmor: {
-      template: 'systems/synthicide/templates/item/parts/general-armor.hbs',
-      scrollable: [""]
-    },
-    generalWeapon: {
-      template: 'systems/synthicide/templates/item/parts/general-weapon.hbs',
-      scrollable: [""]
-    },
-    generalShield: {
-      template: 'systems/synthicide/templates/item/parts/general-shield.hbs',
-      scrollable: [""]
-    },
-    generalImplant: {
-      template: 'systems/synthicide/templates/item/parts/general-implant.hbs',
-      scrollable: [""]
     },
     npcTiers: {
       template: 'systems/synthicide/templates/item/parts/npc-tiers.hbs',
