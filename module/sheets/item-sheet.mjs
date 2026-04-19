@@ -20,14 +20,14 @@ const { api, sheets } = foundry.applications;
  * This map is the single source of truth for item sheet part selection.
  */
 const ITEM_BASE_PARTS_BY_TYPE = {
-  trait: [],
+  trait: ['general'],
   gear: ['rollGear'],
-  implant: ['rollGear'],
+  implant: ['general', 'rollGear'],
   bioclass: ['attributesBioclass', 'cyberneticsBioclass', 'traitsBioclass'],
   aspect: ['abilitiesAspect', 'traitsBioclass'],
-  armor: [],
-  shield: [],
-  weapon: ['rollGear', 'npcTiers']
+  armor: ['general'],
+  shield: ['general'],
+  weapon: ['general', 'rollGear', 'npcTiers']
 };
 
 /**
@@ -133,22 +133,23 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
   /** @override */
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
-    // Not all parts always render. Bioclasses do not use a general tab.
-    options.parts = ['header', 'tabs'];
-    if (this.document.type !== 'bioclass') options.parts.push('general');
-    // Don't show the other tabs if only limited view
-    if (this.document.limited) return;
     // Control which parts show based on document subtype
-    let baseParts = [...(ITEM_BASE_PARTS_BY_TYPE[this.document.type] ?? [])];
-    // Only include npcTiers for weapons if allowed
-    if (this.document.type === 'weapon') {
-      if (!this._shouldShowNpcTiersTab()) {
-        baseParts = baseParts.filter(p => p !== 'npcTiers');
+    // Not all parts always render.
+    options.parts = ['header', 'tabs'];
+
+    // Don't show the other tabs if only limited view
+    if (!this.document.limited) {
+      let baseParts = [...(ITEM_BASE_PARTS_BY_TYPE[this.document.type] ?? [])];
+      // Only include npcTiers for weapons if allowed
+      if (this.document.type === 'weapon') {
+        if (!this._shouldShowNpcTiersTab()) {
+          baseParts = baseParts.filter(p => p !== 'npcTiers');
+        }
       }
+      options.parts.push(...baseParts);
+      // every item type can have effects
+      options.parts.push('effects');
     }
-    options.parts.push(...baseParts);
-    // every item type can have effects
-    options.parts.push('effects');
     // every item type has a description
     options.parts.push('description');
   }
@@ -239,8 +240,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
 
   /** @override */
   async _processSubmitData(event, form, submitData) {
-
-
     await this.document.update(submitData);
   }
 
@@ -254,9 +253,9 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     return buildTabs({
       parts,
       tabGroups: this.tabGroups,
-      defaultTab: this.item.type === 'bioclass' ? 'attributes' : 'general',
+      defaultTab: this._getDefaultTab(),
       labelPrefix: 'SYNTHICIDE.Item.Tabs.',
-      tabMap: ITEM_TAB_MAP,
+      tabMap: ITEM_TAB_MAP
     });
   }
 
@@ -271,6 +270,20 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     if (!this.item.parent) return true;
     // If embedded in an NPC actor, show
     return this.item.parent.type === 'npc';
+  }
+
+  _getDefaultTab() {
+    if (this.document.limited) {
+      return 'description';
+    } else if (this.item.type === 'bioclass' ) {
+      return 'attributes';
+    } else if (this.item.type === 'aspect') {
+      return 'abilities';
+    } else if (this.item.type === 'gear') {
+      return 'rollGear';
+    } else {
+      return 'general';
+    }
   }
 
   /**************
@@ -466,5 +479,3 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
   }
 
 }
-
-// Icon resolution is provided by module/helpers/icons.mjs (getItemIcon).
