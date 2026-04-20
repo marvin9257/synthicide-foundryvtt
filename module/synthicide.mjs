@@ -1,18 +1,20 @@
 // Import document classes.
 import { SynthicideActor } from './documents/actor.mjs';
 import { SynthicideItem } from './documents/item.mjs';
+import { SynthicideActiveEffect } from './documents/active-effect.mjs';
 // Import sheet classes.
 import { SynthicideActorSheet } from './sheets/actor-sheet.mjs';
 import { SynthicideNPCActorSheet } from './sheets/npc-actor-sheet.mjs';
 import SynthicideNPCCompactSheet from './sheets/npc-compact-sheet.mjs';
 import { SynthicideItemSheet } from './sheets/item-sheet.mjs';
+import SynthicideActiveEffectConfig from './applications/synthicide-active-effect-config.mjs';
 // Import helper/utility classes and constants.
 import SYNTHICIDE from './helpers/config.mjs';
-import SynthicideActiveEffectConfig from './applications/synthicide-active-effect-config.mjs';
 // Import DataModel classes
 import * as models from './data/_module.mjs';
 //Import Combat Class
 import  SynthicideCombat from './documents/combat.mjs';
+// Misc Imports
 import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
@@ -32,15 +34,16 @@ globalThis.synthicide = {
   documents: {
     SynthicideActor,
     SynthicideItem,
+    SynthicideActiveEffect
   },
   applications: {
     SynthicideActorSheet,
     SynthicideNPCActorSheet,
-    SynthicideItemSheet,
+    SynthicideItemSheet
   },
   utils: {
     rollItemMacro,
-    openSynthicideActionRollDialog,
+    openSynthicideActionRollDialog
   },
   models,
 };
@@ -102,10 +105,10 @@ Hooks.once('init', function () {
   // Internal settings used by world migrations
   registerMigrationSettings();
 
-  // Client and Workds settings for Synthicide
+  // Client and World settings for Synthicide
   registerSettings();
 
-  // Register application/document hooks.
+  // Register application/document hooks
   registerSynthicideChatContextHook();
   registerActionRollHooks();
 
@@ -153,7 +156,11 @@ Hooks.once('init', function () {
   CONFIG.Canvas.rulerClass = SynthicideVirtualRuler;
   CONFIG.Token.rulerClass = SynthicideVirtualTokenRuler;
 
+  // Register extened ActiveEffects and custom config sheet
+  CONFIG.ActiveEffect.documentClass = SynthicideActiveEffect;
   foundry.applications.apps.DocumentSheetConfig.registerSheet(CONFIG.ActiveEffect.documentClass, 'synthicide', SynthicideActiveEffectConfig, { makeDefault: true });
+
+
 });
 
 /* -------------------------------------------- */
@@ -254,7 +261,6 @@ function rollItemMacro(itemUuid) {
     }
 
     // Trigger the item roll
-    /** @type {import('./documents/item.mjs').SynthicideItem} */
     const sItem = /** @type {import('./documents/item.mjs').SynthicideItem} */ (item);
     sItem.roll();
   });
