@@ -8,7 +8,7 @@ import SYNTHICIDE from '../helpers/config.mjs';
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class SynthicideItem extends Item {
+export class SynthicideItem extends foundry.documents.Item {
   /**
    * Intercept equipped checkbox changes and trigger equip logic.
    * Now handled in _onUpdate for consistency.

@@ -1,4 +1,4 @@
-export default class SynthicideCombat extends Combat {
+export default class SynthicideCombat extends foundry.documents.Combat {
   /** @override */
   async startCombat() {
     const result = await super.startCombat();
