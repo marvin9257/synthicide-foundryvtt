@@ -9,34 +9,20 @@ const DAMAGEABLE_ACTOR_TYPES = new Set(['sharper', 'npc']);
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
  */
-export class SynthicideActor extends Actor {
+export class SynthicideActor extends foundry.documents.Actor {
 
   /** @override */
   async _preUpdate(changed, options, user) {
     const allowed = await super._preUpdate(changed, options, user);
     if (allowed === false) return false;
 
-    // Defensive logging: detect unexpected non-string change keys which
-    // can cause runtime errors in downstream code that assumes string paths.
-    try {
-      const flat = foundry.utils.flattenObject(changed ?? {});
-      for (const key of Object.keys(flat)) {
-        if (typeof key !== 'string') {
-          console.warn('[Synthicide] Non-string change key detected in _preUpdate:', { key, value: flat[key], changed });
-        }
-      }
-    } catch (err) {
-      console.warn('[Synthicide] Error while inspecting change keys in _preUpdate', err);
-    }
-
     if (foundry.utils.hasProperty(changed, 'system.hitPoints.value')) {
       const nextHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.value') ?? 0);
       let maxHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.max'));
       if (isNaN(maxHP)) maxHP = Number(this.system?.hitPoints?.max ?? 0);
       foundry.utils.setProperty(changed, 'system.hitPoints.value', Math.min(maxHP, nextHP));
+      foundry.utils.setProperty(changed, 'system.hitPoints.previous', this.system.hitPoints.value);
     }
-
-    
 
     const hasBarrierValue = foundry.utils.hasProperty(changed, 'system.armorValues.forceBarrier.value');
     const hasBarrierMax = foundry.utils.hasProperty(changed, 'system.armorValues.forceBarrier.max');
@@ -55,6 +41,43 @@ export class SynthicideActor extends Actor {
       foundry.utils.setProperty(changed, 'system.armorValues.forceBarrier.value', clampedBarrier);
     }
     return allowed;
+  }
+
+  /** @override */
+  async _onUpdate(changed, options, user) {
+    await super._onUpdate?.(changed, options, user);
+
+    // Only the client that initiated the change should apply actor-level toggles
+    if (user !== game.user.id) return;
+
+    const hpPath = "system.hitPoints.value";
+    if (!foundry.utils.hasProperty(changed, hpPath)) return;
+
+    const currHP = foundry.utils.getProperty(changed, hpPath);
+    const prevHP = this.system.hitPoints.previous;
+    if (prevHP === currHP) return;
+
+    const actorIsDead = this.statuses?.has("dead");
+    const actorIsBleeding = this.statuses?.has("bleeding");
+
+    // Recovery: above 0 clears downed/dead
+    if (currHP > 0) {
+      if (actorIsBleeding) await this.toggleStatusEffect("bleeding", { active: false });
+      if (actorIsDead) await this.toggleStatusEffect("dead", { active: false });
+      return;
+    }
+
+    // Immediate death: was already bleeding and took additional damage (HP dropped further)
+    if (prevHP <= 0 && currHP < prevHP /* && actorIsBleeding*/) {
+      if (actorIsBleeding) await this.toggleStatusEffect("bleeding", { active: false });
+      if (!actorIsDead) await this.toggleStatusEffect("dead", { active: true });
+      return;
+    }
+
+    // Otherwise, ensure bleeding is applied when HP <= 0 (but don't auto-kill)
+    if (currHP <= 0 && !actorIsBleeding && !actorIsDead) {
+      await this.toggleStatusEffect("bleeding", { active: true });
+    }
   }
 
   /**
