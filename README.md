@@ -75,7 +75,7 @@ Relevant constants live in `module/sheets/item-sheet.mjs`:
 
 In `_configureRenderOptions`:
 
-1. The sheet always starts with: `['header', 'tabs', 'general']`
+1. The sheet always starts with: `['header', 'tabs']`
 2. It appends base parts from `ITEM_BASE_PARTS_BY_TYPE[this.document.type]`
 3. It always appends `effects`
 
