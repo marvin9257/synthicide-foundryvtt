@@ -24,7 +24,7 @@ export function prepareDamageCardData({
   const source = input.source ?? item?.name ?? '';
   const total = input.total ?? d10 + attributeValue + damageBonus;
   const messageMode = input.messageMode ?? 'public';
-  const lethal = input.flags?.damage?.lethal ?? item?.system?.bonuses.lethal ?? 0;
+  const lethal = input.lethal ?? item?.system?.bonuses.lethal ?? 0;
   const sourceMessageId = input.sourceMessageId ?? null;
   const sourceItemUuid = input.sourceItemUuid ?? null;
   const userId = input.userId ?? (typeof game !== 'undefined' ? game.user.id : null);

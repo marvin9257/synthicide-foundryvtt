@@ -807,7 +807,8 @@
         "Threshold": "Shock Threshold",
         "Success": "Toughness check succeeded ({roll} vs RD {rd}).",
         "FailureDeath": "Toughness check failed ({roll} vs RD {rd}) — would be reduced below zero and dies.",
-        "FailureMinusOne": "Toughness check failed ({roll} vs RD {rd}) — HP reduced to -1."
+        "FailureMinusOne": "Toughness check failed ({roll} vs RD {rd}) — HP reduced to -1.",
+        "LethalApplied": "Lethal shock applied as weapon's lethal value exceeds target's shock treshold."
       }
     },
     "Target": {

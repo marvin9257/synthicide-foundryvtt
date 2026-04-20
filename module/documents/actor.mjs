@@ -51,6 +51,8 @@ export class SynthicideActor extends foundry.documents.Actor {
     if (user !== game.user.id) return;
 
     const hpPath = "system.hitPoints.value";
+
+    // If HP isn't part of the change, nothing more to do here.
     if (!foundry.utils.hasProperty(changed, hpPath)) return;
 
     const currHP = foundry.utils.getProperty(changed, hpPath);
@@ -81,12 +83,32 @@ export class SynthicideActor extends foundry.documents.Actor {
   }
 
   /**
-   * Synchronously compute aggregated modifiers across all owned items.
-   * Returns an object { attributeModifiers, nonAttributeModifiers, debugItemContrib }.
-   * This is synchronous because item system models expose a sync
-   * `aggregateAttributeModifiers(attributeKeys, debugArr)` helper.
+   * @param {string} attribute    The characteristic attribute (full name) being changed or generic "hits" attribute
+   * @param {number} value  The change to the attribute (either a delta or direct value)
+   * @param {boolean} isDelta Whether the value is a delta or an absolute number
+   * @param {boolean} isBar Whether the value is a bar on token
+   * @returns {Promise}
    */
-  // computeAggregatedItemModifiers removed: aggregation is no longer supported.
+  async modifyTokenAttribute(attribute, value, isDelta, isBar) {
+    //Must override hipPoints to allow negative values, super clamps a min at zero
+    if (attribute === 'hitPoints') {
+      const attr = foundry.utils.getProperty(this.system, attribute);
+      const current = isBar ? attr.value : attr;
+      const update = isDelta ? current + value : value;
+      if ( update === current ) return this;
+
+      // Determine the updates to make to the actor data
+      let updates;
+      //override clamp preventing negative values
+      if ( isBar ) updates = {[`system.${attribute}.value`]: Math.min(update, attr.max)};
+      else updates = {[`system.${attribute}`]: update};
+
+      this.update(updates);
+    } else {
+      return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
+    }
+    
+  }
 
   /**
    * @override
@@ -187,15 +209,19 @@ export class SynthicideActor extends foundry.documents.Actor {
       }
     }
 
-    // Compute outcomes against pre-damage HP before persisting updates.
+    // Compute outcomes if not dead.
     const preHP = Number(this.system.hitPoints.value ?? 0);
-    if (damageRemaining > 0) {
-      const hpDamage = Math.min(preHP, damageRemaining);
-      if (hpDamage > 0) {
-        updates['system.hitPoints.value'] = preHP - hpDamage;
-      }
+
+    if (damageRemaining > 0 && !this.statuses?.has("dead")) {
+      updates['system.hitPoints.value'] = preHP - damageRemaining;
+
       if (game.settings.get('synthicide', SYNTHICIDE.USE_SHOCKING_STRIKE_KEY)) {
-        await this._handleShockingStrike(damageRemaining, preHP, updates, { ...options, barrierAbsorbed });
+        const outcome = await this._handleShockingStrike(damageRemaining, preHP, updates, { ...options, barrierAbsorbed });
+        if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL || outcome === SYNTHICIDE.SHOCK_OUTCOMES.DEATH) {
+          if (!this.statuses?.has("dead")) {
+            await this.toggleStatusEffect("dead", { active: true });
+          }
+        }
       }
     }
 
@@ -271,6 +297,9 @@ export class SynthicideActor extends foundry.documents.Actor {
     await createActionMessage({ actor: this, roll, cardData, messageMode: preferredMode, whisper });
 
     this._applyShockOutcomeUpdates({ updates, outcome });
+
+    // Return the computed outcome so callers can apply client-only visuals.
+    return outcome;
   }
 
   /**
@@ -287,7 +316,7 @@ export class SynthicideActor extends foundry.documents.Actor {
       : (Number.isFinite(actorArmor) ? actorArmor : 0);
 
     const barrierAbsorbed = Number(options?.barrierAbsorbed ?? 0);
-    let lethal = Number(options?.attack?.lethal ?? 0);
+    let lethal = Number( options?.attack?.lethal ?? options?.lethal ?? 0);
     if (barrierAbsorbed > 0) lethal = 0;
 
     return { armor, barrierAbsorbed, lethal };
