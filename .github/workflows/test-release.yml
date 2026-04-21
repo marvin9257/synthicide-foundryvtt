@@ -2,6 +2,11 @@ name: Release
 on:
   push:
     branches: [ main, beta ]
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  packages: write
 jobs:
   release:
     runs-on: ubuntu-latest
