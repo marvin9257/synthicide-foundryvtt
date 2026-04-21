@@ -1,3 +1,10 @@
+## [1.0.22](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.21...1.0.22) (2026-04-21)
+
+
+### Bug Fixes
+
+* fix style color issue for effect name ([7e35eaf](https://github.com/marvin9257/synthicide-foundryvtt/commit/7e35eafe27bb079a3e66af1b514c1d7afc696648))
+
 ## [1.0.21](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.20...1.0.21) (2026-04-16)
 
 
