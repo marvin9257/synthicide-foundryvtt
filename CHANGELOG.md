@@ -1,3 +1,10 @@
+## [1.0.23](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.22...1.0.23) (2026-04-21)
+
+
+### Bug Fixes
+
+* Merge pull request [#1](https://github.com/marvin9257/synthicide-foundryvtt/issues/1) from marvin9257/alert-autofix-1 ([f434137](https://github.com/marvin9257/synthicide-foundryvtt/commit/f4341377d9a119c44c6064e9f815fd1806d91623))
+
 ## [1.0.22](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.21...1.0.22) (2026-04-21)
 
 
