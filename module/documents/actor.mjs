@@ -336,10 +336,6 @@ export class SynthicideActor extends foundry.documents.Actor {
     // Any failed shocking strike outcome forces HP to -1.
     updates['system.hitPoints.value'] = -1;
 
-    if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL || outcome === SYNTHICIDE.SHOCK_OUTCOMES.DEATH) {
-      updates['flags.synthicide.dead'] = true;
-      return;
-    }
   }
 
   /**
