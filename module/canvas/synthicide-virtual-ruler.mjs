@@ -1,15 +1,15 @@
 // SynthicideVirtualRuler.js
 
 /**
- * Custom ruler for measuring in virtual 3x3 grid units (vgu).
- * Extends Foundry's canvas.interaction.Ruler to display vgu during movement.
+ * Custom ruler for measuring in virtual 3x3 grid units (zones).
+ * Extends Foundry's canvas.interaction.Ruler to display zones during movement.
  */
 import SYNTHICIDE from '../helpers/config.mjs';
 import { countVirtualGridUnitsCrossed } from './synthicide-virtual-ruler-utils.mjs';
 
 export default class SynthicideVirtualRuler extends foundry.canvas.interaction.Ruler {
   /**
-   * Get the label context for a waypoint, displaying vgu if enabled.
+   * Get the label context for a waypoint, displaying zones if enabled.
    * @param {object} waypoint - The current waypoint.
    * @param {object} state - The ruler state.
    * @returns {object} The label context for the waypoint.
@@ -22,7 +22,7 @@ export default class SynthicideVirtualRuler extends foundry.canvas.interaction.R
       const vSize = canvas.grid.size * 3;
       const crossed = countVirtualGridUnitsCrossed(waypoint, vSize);
       context.distance.total = crossed;
-      context.units = 'vgu';
+      context.units =  game.i18n.localize(context.distance.total !== 1 ? "SYNTHICIDE.Zones.zonePl": "SYNTHICIDE.Zones.zone");
     }
     return context;
   }

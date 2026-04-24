@@ -826,6 +826,10 @@
       "Width": "Width",
       "Units": "Units",
       "TypeArea": "Area Type"
+    },
+    "Zones": {
+      "zone": "zone",
+      "zonePl": "zones"
     }
   },
   "TYPES": {

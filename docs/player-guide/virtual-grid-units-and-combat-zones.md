@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Explain how virtual grid units (vgu) work in combat movement and how zone distance affects attack rules.
+Explain how virtual grid units (zones) work in combat movement and how zone distance affects attack rules.
 
 ## Before You Start
 
@@ -15,7 +15,7 @@ Explain how virtual grid units (vgu) work in combat movement and how zone distan
 
 1. Start combat and confirm the orange 3x3 virtual overlay appears on the map.
 2. Select your token and drag movement with the ruler.
-3. Read movement labels in vgu while plotting your path.
+3. Read movement labels in zones while plotting your path.
 4. Target an enemy token before making an attack roll.
 5. Open the attack dialog and verify the range modifier shown for that target distance.
 6. Submit the roll and confirm the chat result matches your expected zone penalty/bonus.
@@ -25,7 +25,7 @@ Example: if your target is 2 zones away and your weapon range increment is 1, th
 ## What Happens Automatically
 
 1. During active combat, the system draws a virtual zone overlay where each zone is 3x3 base grid squares.
-2. Movement ruler labels switch to vgu when virtual grids are enabled and combat is active.
+2. Movement ruler labels switch to zones when virtual grids are enabled and combat is active.
 3. Zone distance uses Chebyshev counting: moving 1 zone diagonally costs the same as moving 1 zone straight.
 4. Attack range context uses zone distance between attacker and target token centers.
 5. The virtual overlay is removed when combat ends.
@@ -46,7 +46,7 @@ Example: if your target is 2 zones away and your weapon range increment is 1, th
 
 ## Limitations and Not Implemented
 
-1. The vgu ruler and orange overlay only appear when both conditions are true: virtual grids enabled and combat started.
+1. The zones ruler and orange overlay only appear when both conditions are true: virtual grids enabled and combat started.
 2. If attacker or target token is missing from scene placement, range context falls back and may warn instead of calculating full zone distance.
 3. The overlay changes map guidance and labels, but it does not auto-enforce all tactical house rules tied to movement.
 4. Zone movement display does not replace GM adjudication for unusual terrain, verticality, or custom map constraints.
@@ -57,7 +57,7 @@ Example: if your target is 2 zones away and your weapon range increment is 1, th
 
 A: Confirm combat has started. The overlay is intentionally combat-only.
 
-### Q: My ruler still shows normal units instead of vgu. Why?
+### Q: My ruler still shows normal units instead of zones. Why?
 
 A: Check both conditions: virtual grid setting enabled and active combat running in the current scene.
 
