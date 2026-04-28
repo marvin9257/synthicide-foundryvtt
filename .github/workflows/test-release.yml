@@ -23,6 +23,7 @@ jobs:
         run: npm install
       - name: Lint code
         run: npm run lint
+      # Packs are rebuilt and project is built by the semantic-release prepareCmd
       - name: Semantic Release
         run: npx semantic-release
       - name: "Debug: Show version in dist/system.json (if exists)"

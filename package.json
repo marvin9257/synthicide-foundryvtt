@@ -5,6 +5,7 @@
   "scripts": {
     "createSymlinks": "node src/create-symlinks.mjs",
     "lint": "eslint .",
+    "prebuild": "npm run packs:build-yml",
     "build": "npx gulp build",
     "packs:build-yml": "node ./scripts/yml-to-db.mjs",
     "packs:export-yml": "node ./scripts/db-to-yml.mjs",
