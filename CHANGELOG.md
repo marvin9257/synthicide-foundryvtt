@@ -1,3 +1,10 @@
+## [1.0.24](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.23...1.0.24) (2026-04-28)
+
+
+### Bug Fixes
+
+* build release to include pack building ([ac39327](https://github.com/marvin9257/synthicide-foundryvtt/commit/ac39327e42c9055a6d70254a2a30ec0e3e68d1c4))
+
 ## [1.0.23](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.22...1.0.23) (2026-04-21)
 
 
