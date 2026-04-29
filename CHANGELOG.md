@@ -1,3 +1,10 @@
+## [1.0.25](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.24...1.0.25) (2026-04-29)
+
+
+### Bug Fixes
+
+* update npc weapon selection for compact sheet ([fa2b3e3](https://github.com/marvin9257/synthicide-foundryvtt/commit/fa2b3e3486635f35e5c4fc6e0d5fcc53a8bc7d4c))
+
 ## [1.0.24](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.23...1.0.24) (2026-04-28)
 
 
