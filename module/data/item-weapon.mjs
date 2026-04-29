@@ -112,6 +112,61 @@ export default class SynthicideWeapon extends SynthicideGear {
     this.bonuses.damage = tierBonuses.damage + masteredWeaponBonus;
     this.bonuses.lethal = tierBonuses.lethal;
   }
+
+  /**
+   * Foundry hook: Called when the item is deleted.
+   * If this weapon was the owning NPC's selectedWeaponId, persist a new
+   * selection (the only remaining weapon) or clear it.
+   * @this {SynthicideWeapon}
+   * @param {object} options
+   * @param {string} userId
+   * @returns {Promise<void>}
+   */
+  async _onDelete(options, userId) {
+    await super._onDelete(options, userId);
+    if (game.userId !== userId) return;
+    await this._checkZeroOrOneNpcWeapon();
+  }
+  /**
+   * Foundry hook: Called when the item is created.
+   * If this weapon is added to an NPC and the actor has no selectedWeaponId,
+   * persist this weapon as the selected one so the UI and data model stay
+   * consistent after drops.
+   * @this {SynthicideWeapon}
+   * @param {object} data
+   * @param {object} options
+   * @param {string} userId
+   * @returns {Promise<void>}
+   */
+  async _onCreate(data, options, userId) {
+    await super._onCreate(data, options, userId);
+    if (game.userId !== userId) return;
+    await this._checkZeroOrOneNpcWeapon();
+  }
+
+  /**
+   * If an NPC actor now has exactly zero or one weapon, ensure the persisted
+   * `selectedWeaponId` equals that weapon's id or blank. No-op otherwise.
+   */
+  async _checkZeroOrOneNpcWeapon() {
+    const itemDoc = this.parent;
+    const actor = itemDoc?.actor;
+    if (!actor || actor.type !== 'npc') return;
+    const weapons = actor.itemTypes.weapon ?? [];
+    if (weapons.length === 1) {
+      const onlyId = weapons[0]?.id ?? '';
+      const selected = actor.system?.selectedWeaponId ?? '';
+      if (onlyId && selected !== onlyId) {
+        await actor.update({ 'system.selectedWeaponId': onlyId });
+      }
+      return;
+    }
+
+    // If there are no weapons left, clear any persisted selection.
+    if (weapons.length === 0 && actor.system?.selectedWeaponId !== '') {
+      await actor.update({ 'system.selectedWeaponId': '' });
+    }
+  }
 }
 
 

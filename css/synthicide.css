@@ -1570,6 +1570,8 @@ img.actions-img {
 
 .header-info-value.bioclass-value {
   min-width: 4em;
+  max-width: 100%;
+  max-width: -webkit-fill-available;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -47,7 +47,7 @@ class SynthicideNPCCompactSheet extends api.HandlebarsApplicationMixin(sheets.Ac
             Object.entries(SYNTHICIDE.npc.roles).map(([k, v]) => [k, v.label])
           ),
           npcWeaponOptions: Object.fromEntries(
-            (this.actor.itemTypes.weapon ?? []).map(w => [w._id, w.name])
+            (this.actor.itemTypes.weapon ?? []).map(w => [w.id, w.name])
           ),
           npcWealthOptions: Object.fromEntries(
             Object.entries(SYNTHICIDE.npc.wealthTiers).map(([k, v]) => [k, v.label])
@@ -61,9 +61,11 @@ class SynthicideNPCCompactSheet extends api.HandlebarsApplicationMixin(sheets.Ac
       },
     });
 
-    // Expose the selected weapon item for the template
-    const selectedWeaponId = context.system.selectedWeaponId;
-    const selectedWeapon = this.actor.items.get(selectedWeaponId) ?? null;
+    // Determine a selected weapon id for display without mutating the
+    // read-only `context.system` object.
+    const selectedWeaponId = this.actor.system.selectedWeaponId ?? '';
+    context.selectedWeaponId = selectedWeaponId;
+    const selectedWeapon = selectedWeaponId ? (this.actor.items.get(selectedWeaponId) ?? null) : null;
     context.selectedWeapon = selectedWeapon;
 
     // Precompute tier attack/damage for template simplicity

@@ -205,7 +205,8 @@
           "BossPower": "Boss Power",
           "Loot": "Loot",
           "Notes": "Notes",
-          "Lethal": "Lethal"
+          "Lethal": "Lethal",
+          "NoWeaponSelected": "No weapon selected"
         },
         "FIELDS": {
           "cr": {"label": "CR"}

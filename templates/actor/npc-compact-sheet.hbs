@@ -138,7 +138,8 @@
     <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.Weapon'}}</label>
     <div class="npc-compact-select-attack">
       <select name='system.selectedWeaponId' class="selected-attack-weapon">
-        {{selectOptions @root.config.npcWeaponOptions selected=system.selectedWeaponId localize=false}}
+        <option value="">{{localize 'SYNTHICIDE.Actor.NPC.UI.NoWeaponSelected'}}</option>
+        {{selectOptions @root.config.npcWeaponOptions selected=selectedWeaponId localize=false}}
       </select>
       {{#if selectedWeapon}}
         <span>{{localize 'SYNTHICIDE.Actor.NPC.UI.BaseAttDmg'}}: {{selectedWeaponTier.attack}} / {{selectedWeaponTier.damage}} </span>
