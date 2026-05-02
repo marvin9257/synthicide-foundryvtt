@@ -24,33 +24,43 @@ export class SynthicideItem extends foundry.documents.Item {
     const allowed = await super._preUpdate(update, options, userId);
     if (allowed === false) return false;
 
-    // Only act if this is a weapon and weaponType is being changed
-    if (this.type === 'weapon' && update?.system?.weaponType) {
+    // If weapon class changes, choose first valid type as default
+    if (this.type === 'weapon' && update?.system?.weaponClass && update.system.weaponClass !== this.system.weaponClass) {
+      const newClass = update.system.weaponClass;
+      const validTypes = SYNTHICIDE.WEAPON_TYPES[newClass];
+      const validTypeKeys = validTypes ? Object.keys(validTypes) : [];
+      if (validTypeKeys.length > 0) {
+        // Only set if not already being set or if invalid
+        if (!update.system.weaponType || !validTypeKeys.includes(update.system.weaponType)) {
+          foundry.utils.setProperty(update, 'system.weaponType', validTypeKeys[0]);
+        }
+      }
+    }
+
+    // If weaponType is being changed, potentially change img unless user defined
+    if (this.type === 'weapon' && update?.system?.weaponType && update.system.weaponType !== this.system.weaponType) {
       // The current (pre-update) weaponType
       const currentWeaponType = this.system.weaponType;
       // The new weaponType being set
       const newWeaponType = update.system.weaponType;
 
-      // Only proceed if the weaponType is actually changing
-      if (currentWeaponType !== newWeaponType) {
-        // Get the default image for the current (pre-update) weaponType
-        const prevDefaultImg = SynthicideItem.getDefaultArtwork({
+      // Get the default image for the current (pre-update) weaponType
+      const prevDefaultImg = SynthicideItem.getDefaultArtwork({
+        type: 'weapon',
+        system: { ...this.system, weaponType: currentWeaponType }
+      }).img;
+
+      // Only update if the current image is the default
+      if (this.img === prevDefaultImg) {
+        // Get the default image for the new weaponType
+        const newDefaultImg = SynthicideItem.getDefaultArtwork({
           type: 'weapon',
-          system: { ...this.system, weaponType: currentWeaponType }
+          system: { ...this.system, weaponType: newWeaponType }
         }).img;
 
-        // Only update if the current image is the default
-        if (this.img === prevDefaultImg) {
-          // Get the default image for the new weaponType
-          const newDefaultImg = SynthicideItem.getDefaultArtwork({
-            type: 'weapon',
-            system: { ...this.system, weaponType: newWeaponType }
-          }).img;
-
-          if (newDefaultImg && newDefaultImg !== this.img) {
-            // Set the new image in the update payload
-            foundry.utils.mergeObject(update,  {img: newDefaultImg});
-          }
+        if (newDefaultImg && newDefaultImg !== this.img) {
+          // Set the new image in the update payload
+          foundry.utils.setProperty(update, 'img', newDefaultImg);
         }
       }
     }
