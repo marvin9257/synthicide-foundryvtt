@@ -1,5 +1,6 @@
 // module/rolls/shock-card-data.mjs
 import SYNTHICIDE from "../helpers/config.mjs";
+import { extractCardContext } from './roll-utils.mjs';
 
 /**
  * Resolve the final shocking-strike outcome from derived booleans.
@@ -37,9 +38,11 @@ export function buildShockCardData({ actor, options }) {
     rd,
     toughnessValue,
     outcome,
-    lethal
+    lethal,
   } = options;
+  const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input: options });
   const isLethal = outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL;
+  const isSuccess = outcome === SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS;
   const d10 = Number(roll?.dice?.[0]?.results?.[0]?.result ?? 0);
   const baseFlavor = game.i18n.format("SYNTHICIDE.Chat.Shock.Base", {
     actor: actor.name,
@@ -48,11 +51,26 @@ export function buildShockCardData({ actor, options }) {
   });
   const outcomeFlavor = buildShockOutcomeFlavor({ outcome, lethal, rollTotal, rd });
 
+  // Strict system data for DataModel validation
+  const system = {
+    damageRemaining,
+    shockThreshold,
+    rd,
+    toughnessValue,
+    outcome,
+    lethal,
+    rollTotal: isLethal ? damageRemaining : rollTotal,
+    d10,
+    actorUuid: actor?.uuid ?? null,
+    sourceItemUuid,
+    sourceMessageId,
+  };
+
   return {
-    title: game.i18n.localize("SYNTHICIDE.Roll.Card.TitleShock"),
-    subtype: 'shock',
+    type: 'shock',
+    system,
+    messageMode,
     equation: roll?.result ?? '',
-    total: isLethal ? damageRemaining : rollTotal,
     dieValue: d10,
     dieClass: '',
     equationTerms: [
@@ -63,15 +81,10 @@ export function buildShockCardData({ actor, options }) {
     metadataRows: [
       { label: game.i18n.localize("SYNTHICIDE.Chat.Shock.Threshold"), value: shockThreshold },
     ],
-    flavor: `${baseFlavor} ${outcomeFlavor}`,
-    flags: {
-      subtype: 'shock',
-      actorUuid: actor.uuid,
-      userId: game.user.id,
-      messageMode: game.settings.get('core', 'messageMode'),
-      shock: { damage: damageRemaining, rd, shockThreshold, roll: rollTotal, success: outcome === SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS, lethal: isLethal ? lethal : 0 }
-    },
     showEffectOutcomeRow: false,
+    showTotalRow: isSuccess,
+    title: game.i18n.localize("SYNTHICIDE.Roll.Card.TitleShock"),
+    flavor: `${baseFlavor} ${outcomeFlavor}`,
   };
 }
 

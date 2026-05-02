@@ -42,7 +42,9 @@
         {{effectText}}
       </span>
     </div>
-  {{else}}
+  {{/if}}
+
+  {{#if showTotalRow}}
     <div class="total-row">
       <strong>{{localize "SYNTHICIDE.Roll.Card.Total"}}:</strong>
       <span>{{total}}</span>

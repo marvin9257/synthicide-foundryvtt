@@ -10,7 +10,6 @@ import { prepareDamageCardData } from './damage-card-data.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { calculateVirtualDistanceBetweenTokens, getSpreadCollateralTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
 
-const FLAG_PATH = 'actionRoll';
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
 const CARD_TEMPLATE = 'systems/synthicide/templates/chat/action-roll-card.hbs';
 const ACTION_ROLL_DIALOG_ICON = 'systems/synthicide/assets/synthicidePause.svg';
@@ -854,11 +853,10 @@ function buildChatMessageData({ actor, content, cardData, whisper }) {
     speaker: ChatMessage.getSpeaker({ actor }),
     content,
     style: getChatMessageStyle(),
-    flags: {
-      synthicide: {
-        [FLAG_PATH]: cardData.flags,
-      },
-    },
+    // Use native fields if present
+    ...(cardData?.type ? { type: cardData.type } : {}),
+    ...(cardData?.system ? { system: cardData.system } : {}),
+    ...(cardData?.title ? { title: cardData.title } : {})
   };
 
   if (Array.isArray(whisper) && whisper.length) chatData.whisper = whisper;

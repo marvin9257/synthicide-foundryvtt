@@ -14,3 +14,6 @@ export { default as SynthicideArmor } from './item-armor.mjs';
 export { default as SynthicideShield } from './item-shield.mjs';
 export { default as SynthicideWeapon } from './item-weapon.mjs';
 export { default as SynthicideImplant } from './item-implant.mjs';
+
+// Export Card System DataModels
+export * from './card-system-models.mjs';

@@ -44,3 +44,5 @@ packs/
 
 # Ignore exported YAML packs
 packs-export/
+
+continue/

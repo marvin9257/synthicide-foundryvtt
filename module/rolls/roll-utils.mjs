@@ -2,21 +2,32 @@ import SYNTHICIDE from '../helpers/config.mjs';
 
 const ATTRIBUTE_COMBAT = 'combat';
 
-export function getStandardizedRollData(message) {
-  const flags = message.getFlag('synthicide', 'actionRoll') ?? {};
-  let data = {};
-  if (flags.subtype === 'attack' && flags.attack) data = flags.attack;
-  else if (flags.subtype === 'challenge' && flags.challenge) data = flags.challenge;
-  else if (flags.subtype === 'damage' && flags.damage) data = flags.damage;
-  else if (flags.subtype === 'demolition' && flags.demolition) data = flags.demolition;
+/**
+ * DRY utility to extract messageMode, sourceItemUuid, and sourceMessageId from input/sourceItem.
+ * @param {object} params
+ * @param {object} params.input - Card input data
+ * @param {object|null} params.sourceItem - Source item (optional)
+ * @returns {object} { messageMode, sourceItemUuid, sourceMessageId }
+ */
+export function extractCardContext({ input = {}, sourceItem = null }) {
   return {
-    subtype: flags.subtype,
-    ...data,
-    actorUuid: flags.actorUuid,
-    userId: flags.userId,
-    messageMode: flags.messageMode,
-    sourceItemUuid: flags.sourceItemUuid,
-    sourceMessageId: flags.sourceMessageId,
+    messageMode: input.messageMode ?? 'public',
+    sourceItemUuid: input.sourceItemUuid ?? sourceItem?.uuid ?? '',
+    sourceMessageId: input.sourceMessageId ?? '',
+  };
+}
+
+export function getStandardizedRollData(message) {
+  // Use native system/type fields for v14+ card data
+  const type = message.type || message.getFlag('synthicide', 'actionRoll')?.subtype;
+  const system = message.system || {};
+  return {
+    subtype: type,
+    ...system,
+    userId: system.userId ,
+    messageMode: system.messageMode ,
+    sourceItemUuid: system.sourceItemUuid ,
+    sourceMessageId: system.sourceMessageId
   };
 }
 
@@ -115,7 +126,6 @@ export function getRollResultSummary(rollResult) {
 }
 
 export function buildBaseActionCardData({
-  title,
   subtype,
   rollResult,
   total,
@@ -127,8 +137,6 @@ export function buildBaseActionCardData({
   showEffectOutcomeRow = false,
   showDamageButton = false,
   showOpposedButton = false,
-  flavor,
-  subtitle,
   effectText,
   effectClass,
   outcomeLabel,
@@ -136,7 +144,6 @@ export function buildBaseActionCardData({
   metadataRows = [],
 } = {}) {
   return {
-    title,
     subtype,
     equation: equation ?? String(rollResult?.result ?? ''),
     total: Number(total ?? rollResult?.total ?? 0),
@@ -147,8 +154,6 @@ export function buildBaseActionCardData({
     showEffectOutcomeRow,
     showDamageButton,
     showOpposedButton,
-    flavor,
-    subtitle,
     effectText,
     effectClass,
     outcomeLabel,

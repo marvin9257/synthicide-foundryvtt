@@ -84,8 +84,8 @@ Hooks.once('init', function () {
   CONFIG.Actor.documentClass = SynthicideActor;
 
   // Note that you don't need to declare a DataModel
-  // for the base actor/item classes - they are included
-  // with the Character/NPC as part of super.defineSchema()
+  // for the base actor/item/message classes - they are included
+  // as part of super.defineSchema()
   CONFIG.Actor.dataModels = {
     sharper: models.SynthicideSharperData,
     npc: models.SynthicideNPCData,
@@ -101,6 +101,14 @@ Hooks.once('init', function () {
     trait: models.SynthicideTrait,
     weapon: models.SynthicideWeapon
   };
+  
+  Object.assign(CONFIG.ChatMessage.dataModels, {
+    attack: models.AttackCardSystemData,
+    challenge: models.ChallengeCardSystemData,
+    damage: models.DamageCardSystemData,
+    demolition: models.DemolitionCardSystemData,
+    shock: models.ShockCardSystemData
+  });
 
   // Internal settings used by world migrations
   registerMigrationSettings();

@@ -728,7 +728,8 @@
         "DamageResultApplied": "Damage Result",
         "RollDamage": "Calculate Damage",
         "RollOpposed": "Opposed Roll",
-        "Source": "Source Item"
+        "Source": "Source Item",
+        "LethalValue": "Lethal Value"
       },
       "Degree": {
         "Failure": "Failure",
@@ -809,7 +810,7 @@
         "Success": "Toughness check succeeded ({roll} vs RD {rd}).",
         "FailureDeath": "Toughness check failed ({roll} vs RD {rd}) — would be reduced below zero and dies.",
         "FailureMinusOne": "Toughness check failed ({roll} vs RD {rd}) — HP reduced to -1.",
-        "LethalApplied": "Lethal shock applied as weapon's lethal value exceeds target's shock treshold."
+        "LethalApplied": "Instant death: Target's armor defense (AD) is equal to or lower than the weapon's lethal value."
       }
     },
     "Target": {

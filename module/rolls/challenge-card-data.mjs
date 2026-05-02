@@ -1,6 +1,6 @@
 // Challenge card data preparation for Synthicide
 // Extracted from action-rolls.mjs for modularity and clarity
-import { localize, getAttributeLabel, getDegreeLabel, getDifficultyLabel, formatSignedNumber, getChallengeOutcomeClass, buildEquationTerms, buildBaseActionCardData, buildBaseActionFlags, getRollResultSummary } from './roll-utils.mjs';
+import { localize, getAttributeLabel, getDegreeLabel, getDifficultyLabel, formatSignedNumber, getChallengeOutcomeClass, buildEquationTerms, buildBaseActionCardData, getRollResultSummary } from './roll-utils.mjs';
 
 /**
  * Prepare cardData and flags for a challenge roll.
@@ -19,41 +19,39 @@ export function prepareChallengeCardData({ input, actor, rollResult, attributeVa
   const difficultyLabel = getDifficultyLabel(difficulty);
   const effectValue = formatSignedNumber(effect);
 
-  // Persist only fields needed to seed and resolve opposed challenge follow-ups.
-  const payload = {
+  // Data for strict DataModel validation
+  const system = {
     attribute: attributeKey,
     difficulty,
     total,
+    actorUuid: actor?.uuid ?? null,
   };
 
+  const cardExtras = buildBaseActionCardData({
+    subtype: 'challenge',
+    equation,
+    total,
+    dieValue: d10,
+    dieClass,
+    rollResult,
+    attributeKey,
+    equationTerms: buildEquationTerms({ subtype: 'challenge', attributeKey, rollData: { ...input, attributeValue } }),
+    showEffectOutcomeRow: true,
+    showDamageButton: false,
+    showOpposedButton: true,
+    effectText: effectValue,
+    outcomeLabel: degree,
+    outcomeClass: getChallengeOutcomeClass(effect),
+    metadataRows: buildChallengeMetadataRows({ difficultyLabel, effectValue })
+  });
+
   return {
-    ...buildBaseActionCardData({
-      title: localize('SYNTHICIDE.Roll.Card.TitleChallenge'),
-      subtype: 'challenge',
-      equation,
-      total,
-      dieValue: d10,
-      dieClass,
-      rollResult,
-      attributeKey,
-      equationTerms: buildEquationTerms({ subtype: 'challenge', attributeKey, rollData: { ...input, attributeValue } }),
-      showEffectOutcomeRow: true,
-      showDamageButton: false,
-      showOpposedButton: true,
-      flavor: buildChallengeFlavor({ attributeKey, difficultyLabel }),
-      subtitle: difficultyLabel,
-      effectText: effectValue,
-      outcomeLabel: degree,
-      outcomeClass: getChallengeOutcomeClass(effect),
-      metadataRows: buildChallengeMetadataRows({ difficultyLabel, effectValue }),
-    }),
-    flags: buildBaseActionFlags({
-      subtype: 'challenge',
-      actorUuid: actor.uuid,
-      messageMode: input.messageMode,
-      payloadKey: 'challenge',
-      payload,
-    }),
+    type: 'challenge',
+    system,
+    ...cardExtras,
+    title: localize('SYNTHICIDE.Roll.Card.TitleChallenge'),
+    flavor: buildChallengeFlavor({ attributeKey, difficultyLabel }),
+    showTotalRow: false
   };
 }
 

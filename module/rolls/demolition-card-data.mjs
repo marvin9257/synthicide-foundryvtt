@@ -4,8 +4,8 @@ import {
   buildEquationTerms,
   formatSignedNumber,
   buildBaseActionCardData,
-  buildBaseActionFlags,
   getRollResultSummary,
+  extractCardContext
 } from './roll-utils.mjs';
 
 export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult, attributeValue }) {
@@ -31,41 +31,44 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     rangeIncrement,
     rangeBands,
   });
-  // Persist only fields needed by derived damage follow-up from demolition cards.
-  const payload = {
+  const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem });
+  // Strict system data for DataModel validation
+  const system = {
     d10,
     total,
-    damageBonus: Number(sourceItem?.system?.bonuses.damage ?? 0),
-    lethal: Number(sourceItem?.system?.bonuses.lethal ?? 0),
+    damageBonus: Number(sourceItem?.system?.bonuses?.damage ?? 0),
+    lethal: Number(sourceItem?.system?.bonuses?.lethal ?? 0),
+    actorUuid: actor?.uuid ?? null,
+    sourceItemUuid,
+    sourceMessageId,
   };
 
+  const cardExtras = buildBaseActionCardData({
+    subtype: 'demolition',
+    equation,
+    total,
+    dieValue: d10,
+    dieClass,
+    rollResult,
+    attributeKey,
+    equationTerms: buildEquationTerms({ subtype: 'demolition', attributeKey, rollData: { ...input, attributeValue } }),
+    showEffectOutcomeRow: false,
+    showDamageButton: true,
+    showOpposedButton: false,
+    flavor: buildDemolitionFlavor({ mode, sourceItem, attributeKey, difficulty, plantNumber }),
+    effectText,
+    effectClass: success ? 'outcome-success' : 'outcome-failure',
+    metadataRows
+  });
+
   return {
-    ...buildBaseActionCardData({
-      title: localize('SYNTHICIDE.Roll.Card.TitleDemolition'),
-      subtype: 'demolition',
-      equation,
-      total,
-      dieValue: d10,
-      dieClass,
-      rollResult,
-      attributeKey,
-      equationTerms: buildEquationTerms({ subtype: 'demolition', attributeKey, rollData: { ...input, attributeValue } }),
-      showEffectOutcomeRow: false,
-      showDamageButton: true,
-      showOpposedButton: false,
-      flavor: buildDemolitionFlavor({ mode, sourceItem, attributeKey, difficulty, plantNumber }),
-      effectText,
-      effectClass: success ? 'outcome-success' : 'outcome-failure',
-      metadataRows,
-    }),
-    flags: buildBaseActionFlags({
-      subtype: 'demolition',
-      actorUuid: actor.uuid,
-      sourceItemUuid: sourceItem?.uuid ?? null,
-      messageMode: input.messageMode,
-      payloadKey: 'demolition',
-      payload,
-    }),
+    type: 'demolition',
+    system,
+    messageMode,
+    ...cardExtras,
+    title: localize('SYNTHICIDE.Roll.Card.TitleDemolition'),
+    flavor: buildDemolitionFlavor({ mode, sourceItem, attributeKey, difficulty, plantNumber }),
+    showTotalRow: true
   };
 }
 

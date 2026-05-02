@@ -1,7 +1,7 @@
 // module/rolls/damage-card-data.js
 // Modular function to prepare card data for derived damage rolls
 
-import { localize, buildEquationTerms, buildBaseActionCardData, buildBaseActionFlags } from './roll-utils.mjs';
+import { localize, buildEquationTerms, buildBaseActionCardData, extractCardContext } from './roll-utils.mjs';
 /**
  * Prepare cardData and flags for a derived damage roll.
  * @param {object} params
@@ -20,52 +20,50 @@ export function prepareDamageCardData({
 }) {
   // Extract values from input and item
   const d10 = input.d10 ?? 0;
-  const damageBonus = input.damageBonus ?? item?.system?.bonuses.damage ?? 0;
+  const damageBonus = input.damageBonus ?? item?.system?.bonuses?.damage ?? 0;
   const source = input.source ?? item?.name ?? '';
   const total = input.total ?? d10 + attributeValue + damageBonus;
-  const messageMode = input.messageMode ?? 'public';
-  const lethal = input.lethal ?? item?.system?.bonuses.lethal ?? 0;
-  const sourceMessageId = input.sourceMessageId ?? null;
-  const sourceItemUuid = input.sourceItemUuid ?? null;
-  const userId = input.userId ?? (typeof game !== 'undefined' ? game.user.id : null);
+  const lethal = input.lethal ?? item?.system?.bonuses?.lethal ?? 0;
   const actorUuid = actor?.uuid ?? null;
+  const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem: item });
 
-  // Persist only fields needed by chat-log apply damage/healing actions.
-  const payload = {
+  // Strict system data for DataModel validation
+  const system = {
     total,
     lethal,
+    actorUuid,
+    sourceItemUuid,
+    sourceMessageId,
   };
 
+  const cardExtras = buildBaseActionCardData({
+    subtype: 'damage',
+    equation: `${d10} + ${attributeValue} + ${damageBonus}`,
+    total,
+    dieValue: d10,
+    attributeKey: 'combat',
+    equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...input, attributeValue, damageBonus } }),
+    metadataRows: overrides.metadataRows ?? buildDamageMetadataRows({ source, lethal }),
+    showEffectOutcomeRow: false,
+    showDamageButton: false,
+    showOpposedButton: false
+  });
+
   return {
-    ...buildBaseActionCardData({
-      title: overrides.title ?? localize('SYNTHICIDE.Roll.Card.TitleDamage'),
-      subtype: 'damage',
-      equation: `${d10} + ${attributeValue} + ${damageBonus}`,
-      total,
-      dieValue: d10,
-      attributeKey: 'combat',
-      equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...input, attributeValue, damageBonus } }),
-      metadataRows: overrides.metadataRows ?? buildDamageMetadataRows({ source }),
-      showEffectOutcomeRow: false,
-      showDamageButton: false,
-      showOpposedButton: false,
-      flavor: overrides.flavor ?? localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),
-    }),
-    flags: buildBaseActionFlags({
-      subtype: 'damage',
-      actorUuid,
-      sourceItemUuid,
-      sourceMessageId,
-      messageMode,
-      userId,
-      payloadKey: 'damage',
-      payload,
-    }),
+    type: 'damage',
+    system,
+    messageMode,
+    ...cardExtras,
+    title: overrides.title ?? localize('SYNTHICIDE.Roll.Card.TitleDamage'),
+    flavor: overrides.flavor ?? localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),
+    total,
+    showTotalRow: true // Explicitly add showTotalRow for template context
   };
 }
 
-function buildDamageMetadataRows({ source }) {
+function buildDamageMetadataRows({ source, lethal }) {
   return [
     { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: source },
+    { label: localize('SYNTHICIDE.Roll.Card.LethalValue'), value: lethal },
   ];
 }

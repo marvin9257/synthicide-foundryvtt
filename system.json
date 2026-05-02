@@ -62,6 +62,13 @@
           "description"
         ]
       }
+    },
+    "ChatMessage": {
+      "attack": {},
+      "challenge": {},
+      "damage": {},
+      "demolition": {},
+      "shock": {}
     }
   },
   "flags": {
