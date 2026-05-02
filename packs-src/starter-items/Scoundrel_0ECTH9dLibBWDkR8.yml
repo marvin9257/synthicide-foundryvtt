@@ -2,38 +2,121 @@ folder: OL8WfY5Fhoh6AVQP
 name: Scoundrel
 type: aspect
 _id: 0ECTH9dLibBWDkR8
-img: icons/svg/item-bag.svg
+img: systems/synthicide/assets/icons/items/aspect.svg
 system:
   description: You are a tricky individual who favors the element of surprise.
   featureType: aspect
   traits:
-    - sort: 10
-      name: Attribute Increase
-      description: +1 Influence, +1 Speed
-      key: ''
-    - sort: 20
-      name: Attribute Penalty (Mandatory)
-      description: '-1 to any one attribute except Influence, Operation, or Speed'
-      key: ''
+    - name: Attribute Increase
+      sort: 10
+      description: +1 Influence, +1 Speed or +2 Influence. (+1 to each is the default)
+    - name: Attribute Penalty (Mandatory)
+      sort: 20
+      description: >-
+        -1 to any one attribute except Influence, Operation, or Speed (Awareness
+        selected as default)
   aspectType: scoundrel
   abilities:
     - description: Gain access to any 1 knowledge focus you meet requirements for
     - description: >-
-        Battle Opportunist ability:  You also gain the Battle Opportunist
-        ability, which grants the following: 1) Add +2 DMG to attacks against
-        overpowered and unaware targets, 2) After or just before you gain
-        advantage, you may move 4 squares at no AP cost, 3) If you choose the
-        attack bonus effect from gain advantage add +3 ATT to your attack roll
-        instead of +2., and 4) Battle Opportunist can be improved via general
-        traits purchased at 4th and 7th level.
-effects: []
+        Battle Opportunist ability:  Once per turn, when you use gain advantage
+        or setup, you get a free move action to use before or after it.
+
+        When making an aim or crit attack, increase the die result by 1 before
+        calculating ATT and DMG. 
+
+
+        This stacks with other effects that raise die results. Battle
+        opportunist can be improved through general traits at 4th and 7th level.
+effects:
+  - name: Attribute Increase
+    origin: Compendium.synthicide.starter-items.Item.0ECTH9dLibBWDkR8
+    img: icons/svg/aura.svg
+    _id: 43j6jV1uePIeXEKg
+    type: base
+    system:
+      changes:
+        - key: system.attributes.influence.modifier
+          type: add
+          value: 1
+          phase: initial
+          priority: null
+        - key: system.attributes.speed.modifier
+          type: add
+          value: 1
+          phase: initial
+          priority: null
+    disabled: false
+    start: null
+    duration:
+      value: null
+      units: seconds
+      expiry: null
+      expired: false
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    showIcon: 1
+    folder: null
+    sort: 0
+    flags: {}
+    _stats:
+      coreVersion: '14.360'
+      systemId: synthicide
+      systemVersion: 1.0.26
+      createdTime: 1777742422310
+      modifiedTime: 1777742489335
+      lastModifiedBy: CyKka7cUoDSGKuCg
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+    _key: '!items.effects!0ECTH9dLibBWDkR8.43j6jV1uePIeXEKg'
+  - name: Attribute Decrease
+    origin: Compendium.synthicide.starter-items.Item.0ECTH9dLibBWDkR8
+    img: icons/svg/aura.svg
+    _id: ifx691r7yNFk501U
+    type: base
+    system:
+      changes:
+        - key: system.attributes.awareness.modifier
+          type: add
+          value: -1
+          phase: initial
+          priority: null
+    disabled: false
+    start: null
+    duration:
+      value: null
+      units: seconds
+      expiry: null
+      expired: false
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    showIcon: 1
+    folder: null
+    sort: 0
+    flags: {}
+    _stats:
+      coreVersion: '14.360'
+      systemId: synthicide
+      systemVersion: 1.0.26
+      createdTime: 1777742423263
+      modifiedTime: 1777742704074
+      lastModifiedBy: CyKka7cUoDSGKuCg
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+    _key: '!items.effects!0ECTH9dLibBWDkR8.ifx691r7yNFk501U'
 flags: {}
 _stats:
-  coreVersion: '14.355'
+  coreVersion: '14.360'
   systemId: synthicide
-  systemVersion: 1.0.0
+  systemVersion: 1.0.26
   createdTime: 1772636180124
-  modifiedTime: 1772636203527
+  modifiedTime: 1777742728586
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

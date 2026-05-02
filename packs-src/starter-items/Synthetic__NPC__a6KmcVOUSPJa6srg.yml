@@ -1,0 +1,48 @@
+folder: KWtvRi1661z8YKhY
+name: Synthetic (NPC)
+type: bioclass
+img: systems/synthicide/assets/icons/items/bioclass.svg
+system:
+  description: >-
+    Fully robotic; powerful and socially protected.
+  featureType: bioclass
+  traits:
+    - name: Mod Focused
+      sort: 10
+      description: You cannot gain psychic powers
+    - name: Danger Points
+      sort: 20
+      description: '+1'
+  startingAttributes:
+    awareness: 1
+    combat: 1
+    toughness: 1
+    influence: -2
+    operation: 3
+    nerve: 2
+    speed: 1
+    hp: 49
+    hpPerLevel: 7
+  bodySlots: 4
+  brainSlots: 2
+  bodyType: Rigged
+  brainType: Rigged
+  ignoreRoleWeakPenalty: false
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.360'
+  systemId: synthicide
+  systemVersion: 1.0.26
+  createdTime: 1777744851930
+  modifiedTime: 1777745226649
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: a6KmcVOUSPJa6srg
+sort: 400000
+_key: '!items!a6KmcVOUSPJa6srg'

@@ -1,0 +1,46 @@
+folder: KWtvRi1661z8YKhY
+name: Priest (NPC)
+type: bioclass
+img: systems/synthicide/assets/icons/items/bioclass.svg
+system:
+  description: >-
+    Techno-religious fanatic; extremely cybernetic and 
+    stronger than typical humans.
+  featureType: bioclass
+  traits:
+    - sort: 10
+      name: Mod Focused
+      description: You cannot gain psychic powers
+  startingAttributes:
+    awareness: 1
+    combat: 0
+    toughness: 1
+    influence: 0
+    operation: 3
+    nerve: 2
+    speed: 1
+    hp: 42
+    hpPerLevel: 6
+  bodySlots: 4
+  brainSlots: 2
+  bodyType: Rigged
+  brainType: Rigged
+  ignoreRoleWeakPenalty: false
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.360'
+  systemId: synthicide
+  systemVersion: 1.0.26
+  createdTime: 1777745226629
+  modifiedTime: 1777745226649
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: HirhfJ5BsFKmHgOi
+sort: 300000
+_key: '!items!HirhfJ5BsFKmHgOi'

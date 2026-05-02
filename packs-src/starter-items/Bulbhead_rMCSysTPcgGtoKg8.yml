@@ -2,43 +2,125 @@ folder: OL8WfY5Fhoh6AVQP
 name: Bulbhead
 type: aspect
 _id: rMCSysTPcgGtoKg8
-img: icons/svg/item-bag.svg
+img: systems/synthicide/assets/icons/items/aspect.svg
 system:
   description: >-
     You are a psychic that struggles to function without Illuminix, an addictive
     and illegal substance traded underground.
   featureType: aspect
   traits:
-    - sort: 10
-      name: Attribute Increase
-      description: +2 Influence
-      key: ''
-    - sort: 20
-      name: Attribute Penalty (Mandatory)
-      description: '-1 to any one attribute except Influence'
-      key: ''
+    - name: Attribute Increase
+      sort: 10
+      description: >-
+        +1 × 2, divided between awareness, influence, and nerve as you choose.
+        (Awareness and Influence chosen by default)
+    - name: Attribute Penalty (Mandatory)
+      sort: 20
+      description: >-
+        -1 to any one attribute except awareness, influence, and nerve. (combat
+        selected by default)
   aspectType: bulbhead
   abilities:
     - description: Gain any 2 psychic powers, so long as you meet the requirements.
     - description: >-
-        You are a psychic that struggles to function without Illuminix, an
-        addictive and illegal substance traded underground. Every day you must
-        consume doses of Illuminix equal to the highest level psychic power you
-        want to use (1 dose to access 1st level powers, 4 doses for 4th level
-        powers, etc). A Bulbhead who fails to score a dose of Illuminix is
-        wracked with withdrawal, unable to access psychic powers and suffering
-        -2 to every attribute. A single dose lifts the penalty.
+        You are a psychic who depends on Illuminix, an illegal and addictive
+        drug. Choose any 2 psychic powers you qualify for. Each day, you must
+        take a number of Illuminix doses equal to the highest level of power you
+        wish to use (1 dose for 1st level powers, 4 doses for 4th level, and so
+        on). If  you don’t take enough to access higher-level powers, you lose
+        the bonuses those powers provide to lower levels.
     - description: >-
-        After character creation, you may purchase new psychic powers with 1
-        less trait point.
-effects: []
+        After character creation, you may purchase new psychic powers for 1 less
+        trait point.
+effects:
+  - name: Attribute Increase
+    origin: Compendium.synthicide.starter-items.Item.rMCSysTPcgGtoKg8
+    img: icons/svg/aura.svg
+    _id: ZWd10590VFMFstgB
+    type: base
+    system:
+      changes:
+        - key: system.attributes.awareness.modifier
+          type: add
+          value: 1
+          phase: initial
+          priority: null
+        - key: system.attributes.influence.modifier
+          type: add
+          value: 1
+          phase: initial
+          priority: null
+    disabled: false
+    start: null
+    duration:
+      value: null
+      units: seconds
+      expiry: null
+      expired: false
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    showIcon: 1
+    folder: null
+    sort: 0
+    flags: {}
+    _stats:
+      coreVersion: '14.360'
+      systemId: synthicide
+      systemVersion: 1.0.26
+      createdTime: 1777741655944
+      modifiedTime: 1777741735991
+      lastModifiedBy: CyKka7cUoDSGKuCg
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+    _key: '!items.effects!rMCSysTPcgGtoKg8.ZWd10590VFMFstgB'
+  - name: Attribute Penalty
+    origin: Compendium.synthicide.starter-items.Item.rMCSysTPcgGtoKg8
+    img: icons/svg/aura.svg
+    _id: noKoZNOthBbvWn04
+    type: base
+    system:
+      changes:
+        - key: system.attributes.combat.modifier
+          type: add
+          value: 1
+          phase: initial
+          priority: null
+    disabled: false
+    start: null
+    duration:
+      value: null
+      units: seconds
+      expiry: null
+      expired: false
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    showIcon: 1
+    folder: null
+    sort: 0
+    flags: {}
+    _stats:
+      coreVersion: '14.360'
+      systemId: synthicide
+      systemVersion: 1.0.26
+      createdTime: 1777741751198
+      modifiedTime: 1777741808695
+      lastModifiedBy: CyKka7cUoDSGKuCg
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+    _key: '!items.effects!rMCSysTPcgGtoKg8.noKoZNOthBbvWn04'
 flags: {}
 _stats:
-  coreVersion: '14.355'
+  coreVersion: '14.360'
   systemId: synthicide
-  systemVersion: 1.0.0
+  systemVersion: 1.0.26
   createdTime: 1772636180123
-  modifiedTime: 1772636201088
+  modifiedTime: 1777742003872
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

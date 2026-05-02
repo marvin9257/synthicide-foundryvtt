@@ -1,32 +1,115 @@
 name: Leader
 type: aspect
 _id: WzOAfQLART5MXq9q
-img: icons/svg/item-bag.svg
+img: systems/synthicide/assets/icons/items/aspect.svg
 system:
   description: You empower everyone around you; the universe just can't keep you down.
   featureType: aspect
   traits:
-    - sort: 10
-      name: Attribute Increase
-      description: +2 Awareness
-      key: ''
-    - sort: 20
-      name: Attribute Penalty (Mandatory)
+    - name: Attribute Increase
+      sort: 10
+      description: >-
+        +1 × 2, divided between awareness and nerve as you choose. (Default +1
+        to each)
+    - name: Attribute Penalty (Mandatory)
+      sort: 20
       description: '-1 to any one attribute except Awareness or Nerve'
-      key: ''
   aspectType: leader
   abilities:
-    - description: Gain any 2 tactical powers for which you meet the requirements.
+    - description: >-
+        You uplift those around you and refuse to be crushed by circumstance.
+        Gain any 2 tactical powers for which you meet the requirements.
     - description: New tactical powers cost 1 less TP
-effects: []
+effects:
+  - name: Attribute Increase
+    origin: Compendium.synthicide.starter-items.Item.WzOAfQLART5MXq9q
+    img: icons/svg/aura.svg
+    _id: bsfEG9tmdWRcL2pr
+    type: base
+    system:
+      changes:
+        - key: system.attributes.awareness.modifier
+          type: add
+          value: 1
+          phase: initial
+          priority: null
+        - key: system.attributes.nerve.modifier
+          type: add
+          value: 1
+          phase: initial
+          priority: null
+    disabled: false
+    start: null
+    duration:
+      value: null
+      units: seconds
+      expiry: null
+      expired: false
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    showIcon: 1
+    folder: null
+    sort: 0
+    flags: {}
+    _stats:
+      coreVersion: '14.360'
+      systemId: synthicide
+      systemVersion: 1.0.26
+      createdTime: 1777742104909
+      modifiedTime: 1777742172366
+      lastModifiedBy: CyKka7cUoDSGKuCg
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+    _key: '!items.effects!WzOAfQLART5MXq9q.bsfEG9tmdWRcL2pr'
+  - name: Attribute Decrease
+    origin: Compendium.synthicide.starter-items.Item.WzOAfQLART5MXq9q
+    img: icons/svg/aura.svg
+    _id: poOXVn7foDQvQd1X
+    type: base
+    system:
+      changes:
+        - key: system.attributes.speed.modifier
+          type: add
+          value: -1
+          phase: initial
+          priority: null
+    disabled: false
+    start: null
+    duration:
+      value: null
+      units: seconds
+      expiry: null
+      expired: false
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    showIcon: 1
+    folder: null
+    sort: 0
+    flags: {}
+    _stats:
+      coreVersion: '14.360'
+      systemId: synthicide
+      systemVersion: 1.0.26
+      createdTime: 1777742180003
+      modifiedTime: 1777742254278
+      lastModifiedBy: CyKka7cUoDSGKuCg
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+    _key: '!items.effects!WzOAfQLART5MXq9q.poOXVn7foDQvQd1X'
 folder: OL8WfY5Fhoh6AVQP
 flags: {}
 _stats:
-  coreVersion: '14.355'
+  coreVersion: '14.360'
   systemId: synthicide
-  systemVersion: 1.0.0
+  systemVersion: 1.0.26
   createdTime: 1772636180124
-  modifiedTime: 1772636202336
+  modifiedTime: 1777742330320
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

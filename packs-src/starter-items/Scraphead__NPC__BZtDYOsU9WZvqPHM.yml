@@ -1,7 +1,6 @@
-folder: yx3Le5deK5c72izk
-name: Scraphead
+folder: KWtvRi1661z8YKhY
+name: Scraphead (NPC)
 type: bioclass
-_id: gvipnnKFnkagnfO3
 img: systems/synthicide/assets/icons/items/bioclass.svg
 system:
   description: >-
@@ -13,28 +12,26 @@ system:
   traits:
     - name: Hard Brain
       sort: 10
-      description: You may not purchase psychic powers with trait points.
-    - name: Starter Software
+      description: Cannot have psychic powers or body cybernetics.
+    - name: Brainy
       sort: 20
-      description: |-
-        You start with your choice of brain cybernetics of value up to §150. Any
-        unspent lurans exceeding §30 are lost.
+      description: 'Brainy: Starts with all powers for any 1 knowledge focus.'
   startingAttributes:
     awareness: 0
     combat: 0
     toughness: -1
-    influence: -1
+    influence: -2
     operation: 2
-    nerve: 2
+    nerve: 1
     speed: 1
-    hp: 35
-    hpPerLevel: 5
+    hp: 28
+    hpPerLevel: 4
   bodySlots: 0
   brainSlots: 2
   bodyType: Organic
   brainType: Rigged
+  ignoreRoleWeakPenalty: false
 effects: []
-sort: 0
 ownership:
   default: 0
   CyKka7cUoDSGKuCg: 3
@@ -43,10 +40,12 @@ _stats:
   coreVersion: '14.360'
   systemId: synthicide
   systemVersion: 1.0.26
-  createdTime: 1772635388564
-  modifiedTime: 1777740856474
+  createdTime: 1777744383115
+  modifiedTime: 1777745226649
   lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
   compendiumSource: null
   duplicateSource: null
-  exportSource: null
-_key: '!items!gvipnnKFnkagnfO3'
+_id: BZtDYOsU9WZvqPHM
+sort: 200000
+_key: '!items!BZtDYOsU9WZvqPHM'

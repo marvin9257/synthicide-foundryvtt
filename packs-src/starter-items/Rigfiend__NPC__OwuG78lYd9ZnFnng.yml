@@ -1,7 +1,6 @@
-folder: yx3Le5deK5c72izk
-name: Rigfiend
+folder: KWtvRi1661z8YKhY
+name: Rigfiend (NPC)
 type: bioclass
-_id: qYkDLea7D2k75jWm
 img: systems/synthicide/assets/icons/items/bioclass.svg
 system:
   description: >-
@@ -10,32 +9,25 @@ system:
     Rigfiend may not access mutations or psychic powers.
   featureType: bioclass
   traits:
-    - name: Mod Focused
-      sort: 10
-      description: >-
-        You cannot gain psychic powers and cannot permanently mutate through
-        traits. General traits cost 3 TP instead of 2.
-    - name: Starter Hardware
-      sort: 20
-      description: |-
-        You begin with cybernetic implants of any type worth up to §350. Any
-        unspent lurans exceeding §60 are lost.
+    - sort: 10
+      name: Mod Focused
+      description: You cannot gain psychic powers
   startingAttributes:
-    awareness: 1
+    awareness: 0
     combat: 0
     toughness: 0
     influence: -1
     operation: 1
     nerve: 1
     speed: 1
-    hp: 40
-    hpPerLevel: 7
+    hp: 35
+    hpPerLevel: 5
   bodySlots: 4
   brainSlots: 2
   bodyType: Rigged
   brainType: Rigged
+  ignoreRoleWeakPenalty: false
 effects: []
-sort: 0
 ownership:
   default: 0
   CyKka7cUoDSGKuCg: 3
@@ -44,10 +36,12 @@ _stats:
   coreVersion: '14.360'
   systemId: synthicide
   systemVersion: 1.0.26
-  createdTime: 1772635388564
-  modifiedTime: 1777745016793
+  createdTime: 1777744705738
+  modifiedTime: 1777745226649
   lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
   compendiumSource: null
   duplicateSource: null
-  exportSource: null
-_key: '!items!qYkDLea7D2k75jWm'
+_id: OwuG78lYd9ZnFnng
+sort: 500000
+_key: '!items!OwuG78lYd9ZnFnng'

@@ -2,7 +2,7 @@ folder: yx3Le5deK5c72izk
 name: Skinbag
 type: bioclass
 _id: P7lNEPiUcVkZ2oY3
-img: icons/svg/item-bag.svg
+img: systems/synthicide/assets/icons/items/bioclass.svg
 system:
   description: >-
     To be totally organic means you can never benefit from cybernetic upgrades,
@@ -45,11 +45,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.355'
+  coreVersion: '14.360'
   systemId: synthicide
   systemVersion: 1.0.0
   createdTime: 1772635388564
-  modifiedTime: 1772635388564
+  modifiedTime: 1777740609488
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null

@@ -1,6 +1,6 @@
 type: Item
 folder: null
-name: Bioclasses
+name: Sharper Bioclasses
 color: null
 sorting: a
 _id: yx3Le5deK5c72izk
@@ -8,11 +8,11 @@ description: ''
 sort: 100000
 flags: {}
 _stats:
-  coreVersion: '14.355'
+  coreVersion: '14.360'
   systemId: synthicide
   systemVersion: 1.0.0
   createdTime: 1772635388554
-  modifiedTime: 1772635388575
+  modifiedTime: 1777743657027
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null

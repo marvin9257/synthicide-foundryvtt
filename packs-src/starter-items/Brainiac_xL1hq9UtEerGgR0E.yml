@@ -2,21 +2,19 @@ folder: OL8WfY5Fhoh6AVQP
 name: Brainiac
 type: aspect
 _id: xL1hq9UtEerGgR0E
-img: icons/svg/item-bag.svg
+img: systems/synthicide/assets/icons/items/aspect.svg
 system:
   description: >-
     Gifted with prodigal intellect, you take great pride in your research and
     talent.
   featureType: aspect
   traits:
-    - sort: 10
-      name: Attribute Increase
+    - name: Attribute Increase
+      sort: 10
       description: +2 Operation
-      key: ''
-    - sort: 20
-      name: Attribute Penalty (Mandatory)
-      description: '-1 to any one attribute except Operation'
-      key: ''
+    - name: Attribute Penalty (Mandatory)
+      sort: 20
+      description: '-1 to any one attribute except Operation (awareness chosen as default)'
   aspectType: brainiac
   abilities:
     - description: >-
@@ -25,14 +23,90 @@ system:
     - description: >-
         After character creation, you may purchase new knowledge focuses with 1
         less trait point.
-effects: []
+effects:
+  - name: Attribute Increase
+    origin: Compendium.synthicide.starter-items.Item.xL1hq9UtEerGgR0E
+    img: icons/svg/aura.svg
+    _id: IPPFVykdldQnCj4S
+    type: base
+    system:
+      changes:
+        - key: system.attributes.operation.modifier
+          type: add
+          value: 2
+          phase: initial
+          priority: null
+    disabled: false
+    start: null
+    duration:
+      value: null
+      units: seconds
+      expiry: null
+      expired: false
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    showIcon: 1
+    folder: null
+    sort: 0
+    flags: {}
+    _stats:
+      coreVersion: '14.360'
+      systemId: synthicide
+      systemVersion: 1.0.26
+      createdTime: 1777741044622
+      modifiedTime: 1777741498041
+      lastModifiedBy: CyKka7cUoDSGKuCg
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+    _key: '!items.effects!xL1hq9UtEerGgR0E.IPPFVykdldQnCj4S'
+  - name: Attribute Penalty
+    origin: Compendium.synthicide.starter-items.Item.xL1hq9UtEerGgR0E
+    img: icons/svg/aura.svg
+    _id: 4j6DSgdL3T7IjOqd
+    type: base
+    system:
+      changes:
+        - key: system.attributes.awareness.modifier
+          type: add
+          value: -1
+          phase: initial
+          priority: null
+    disabled: false
+    start: null
+    duration:
+      value: null
+      units: seconds
+      expiry: null
+      expired: false
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    showIcon: 1
+    folder: null
+    sort: 0
+    flags: {}
+    _stats:
+      coreVersion: '14.360'
+      systemId: synthicide
+      systemVersion: 1.0.26
+      createdTime: 1777741147691
+      modifiedTime: 1777741399603
+      lastModifiedBy: CyKka7cUoDSGKuCg
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+    _key: '!items.effects!xL1hq9UtEerGgR0E.4j6DSgdL3T7IjOqd'
 flags: {}
 _stats:
-  coreVersion: '14.355'
+  coreVersion: '14.360'
   systemId: synthicide
-  systemVersion: 1.0.0
+  systemVersion: 1.0.26
   createdTime: 1772636180123
-  modifiedTime: 1772636199962
+  modifiedTime: 1777741419354
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

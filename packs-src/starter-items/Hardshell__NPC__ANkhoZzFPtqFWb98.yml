@@ -1,7 +1,6 @@
-folder: yx3Le5deK5c72izk
-name: Hardshell
+folder: KWtvRi1661z8YKhY
+name: Hardshell (NPC)
 type: bioclass
-_id: aBNDSojzTtaSN64d
 img: systems/synthicide/assets/icons/items/bioclass.svg
 system:
   description: >-
@@ -10,27 +9,25 @@ system:
     mutations and can learn psychic powers.
   featureType: bioclass
   traits:
-    - name: Starter Hardware
+    - name: Wet Brain
       sort: 10
-      description: |-
-        You begin with body cybernetic implants worth up to §200. Any unspent
-        lurans exceeding §30 are lost.
+      description: Cannot have brain cybernetics
   startingAttributes:
-    awareness: 2
+    awareness: 1
     combat: 0
     toughness: 0
-    influence: 1
+    influence: 0
     operation: 0
-    nerve: 1
+    nerve: 0
     speed: 1
-    hp: 40
-    hpPerLevel: 7
+    hp: 35
+    hpPerLevel: 5
   bodySlots: 3
   brainSlots: 0
   bodyType: Rigged
   brainType: Organic
+  ignoreRoleWeakPenalty: false
 effects: []
-sort: 0
 ownership:
   default: 0
   CyKka7cUoDSGKuCg: 3
@@ -39,10 +36,12 @@ _stats:
   coreVersion: '14.360'
   systemId: synthicide
   systemVersion: 1.0.26
-  createdTime: 1772635388563
-  modifiedTime: 1777740811819
+  createdTime: 1777744699627
+  modifiedTime: 1777745226649
   lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
   compendiumSource: null
   duplicateSource: null
-  exportSource: null
-_key: '!items!aBNDSojzTtaSN64d'
+_id: ANkhoZzFPtqFWb98
+sort: 600000
+_key: '!items!ANkhoZzFPtqFWb98'
