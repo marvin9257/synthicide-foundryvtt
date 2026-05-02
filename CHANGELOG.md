@@ -1,3 +1,10 @@
+## [1.0.27](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.26...1.0.27) (2026-05-02)
+
+
+### Bug Fixes
+
+* update starter item compendium to 2e and and npc bioclasses ([156b2b0](https://github.com/marvin9257/synthicide-foundryvtt/commit/156b2b09b3175a99519ca14122b6c284e37b48be))
+
 ## [1.0.26](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.25...1.0.26) (2026-05-02)
 
 
