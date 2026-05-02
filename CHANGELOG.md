@@ -1,3 +1,10 @@
+## [1.0.26](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.25...1.0.26) (2026-05-02)
+
+
+### Bug Fixes
+
+* pre big refactor ([aae96b3](https://github.com/marvin9257/synthicide-foundryvtt/commit/aae96b3016db7f398f021efc41bd8622de4dd143))
+
 ## [1.0.25](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.24...1.0.25) (2026-04-29)
 
 
