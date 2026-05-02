@@ -9,30 +9,51 @@ import SYNTHICIDE from '../helpers/config.mjs';
  * @extends {Item}
  */
 export class SynthicideItem extends foundry.documents.Item {
+  
   /**
-   * Intercept equipped checkbox changes and trigger equip logic.
-   * Now handled in _onUpdate for consistency.
+   * Foundry hook: Called before the item is updated.
+   * Auto-updates weapon image if weaponType changes and image is default.
+   *
+   * @param {object} update - The update data being applied to the item
+   * @param {object} options - Additional update options
+   * @param {string} userId - The ID of the user making the update
+   * @returns {Promise<boolean|void>} - Return false to prevent the update
+   * @override
    */
-  async _preUpdate(changed, options, user) {
-    const allowed = await super._preUpdate(changed, options, user);
-    // Defensive logging for non-string change keys which can crash core.
-    //try {
-    //  const flat = foundry.utils.flattenObject(changed ?? {});
-    //  for (const [path, value] of Object.entries(flat)) {
-    //    try {
-    //      if (typeof path === 'string' && /effects\.\d+\.system\.changes\.\d+\.key$/.test(path)) {
-    //        if (typeof value !== 'string') {
-    //          console.warn('[Synthicide] Rejecting update: non-string ActiveEffect change.key detected in Item._preUpdate', { itemId: this?.id, path, value, changed });
-    //          return false;
-    //        }
-    //      }
-    //    } catch {
-    //      // Swallow per-entry errors to avoid masking the true update flow
-    //    }
-    //  }
-    //} catch (err) {
-    //  console.warn('[Synthicide] Error inspecting change keys in Item._preUpdate', err);
-    //}
+  async _preUpdate(update, options, userId) {
+    const allowed = await super._preUpdate(update, options, userId);
+    if (allowed === false) return false;
+
+    // Only act if this is a weapon and weaponType is being changed
+    if (this.type === 'weapon' && update?.system?.weaponType) {
+      // The current (pre-update) weaponType
+      const currentWeaponType = this.system.weaponType;
+      // The new weaponType being set
+      const newWeaponType = update.system.weaponType;
+
+      // Only proceed if the weaponType is actually changing
+      if (currentWeaponType !== newWeaponType) {
+        // Get the default image for the current (pre-update) weaponType
+        const prevDefaultImg = SynthicideItem.getDefaultArtwork({
+          type: 'weapon',
+          system: { ...this.system, weaponType: currentWeaponType }
+        }).img;
+
+        // Only update if the current image is the default
+        if (this.img === prevDefaultImg) {
+          // Get the default image for the new weaponType
+          const newDefaultImg = SynthicideItem.getDefaultArtwork({
+            type: 'weapon',
+            system: { ...this.system, weaponType: newWeaponType }
+          }).img;
+
+          if (newDefaultImg && newDefaultImg !== this.img) {
+            // Set the new image in the update payload
+            foundry.utils.mergeObject(update,  {img: newDefaultImg});
+          }
+        }
+      }
+    }
     return allowed;
   }
 
@@ -49,6 +70,15 @@ export class SynthicideItem extends foundry.documents.Item {
   async _onUpdate(changed, options, userId) {
     await super._onUpdate(changed, options, userId);
     if (game.userId !== userId) return;
+
+    // Auto-update image if weaponType changes and image is default
+    if (this.type === 'weapon' && changed?.system?.weaponType) {
+      // Check if the image is the default for the previous type
+      const newImage = SynthicideItem.getDefaultArtwork(this).img;
+      if (this.img !== newImage && newImage) {
+        await this.update({ img: newImage });
+      }
+    }
 
     if (!this.actor) return;
     // Enforce one-equipped-at-a-time for exclusive types unless this change was
@@ -74,15 +104,6 @@ export class SynthicideItem extends foundry.documents.Item {
       // Only update if not already equipped
       await this.update({ "system.equipped": true });
     }
-  }
-
-  /**
-   * Augment the basic Item data model with additional dynamic data.
-   */
-  prepareData() {
-    // As with the actor class, items are documents that can have their data
-    // preparation methods overridden (such as prepareBaseData()).
-    super.prepareData();
   }
 
   /**
@@ -167,6 +188,32 @@ export class SynthicideItem extends foundry.documents.Item {
       messageMode: game.settings.get('core', 'messageMode'),
       cardData,
     });
+  }
+
+  static getDefaultArtwork(itemData) {
+    const imagePath = 'systems/synthicide/assets/icons/items/';
+    const iconMap = SYNTHICIDE.ICON_TYPE_MAP || {};
+
+    // Special handling for weapon subclasses
+    if (itemData.type === 'weapon') {
+      const weaponIcons = iconMap.weapon || {};
+      if (itemData.system?.weaponType) {
+        const weaponType = itemData.system.weaponType;
+        const iconFile = weaponIcons[weaponType] || weaponIcons.default;
+        if (iconFile) {
+          return { img: imagePath + iconFile };
+        }
+      } else {
+        return { img: imagePath + weaponIcons.default }
+      }
+    }
+
+    // Fallback to type-based icon
+    const icon = iconMap[itemData.type];
+    if (icon) {
+      return { img: imagePath + icon };
+    }
+    return super.getDefaultArtwork(itemData);
   }
 }
 

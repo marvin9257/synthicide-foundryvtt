@@ -1,4 +1,30 @@
 const SYNTHICIDE = {};
+
+// Centralized item type to icon mapping for default artwork
+SYNTHICIDE.ICON_TYPE_MAP = {
+  armor: 'armor.svg',
+  aspect: 'aspect.svg',
+  bioclass: 'bioclass.svg',
+  gear: 'gear.svg',
+  implant: 'implant.svg',
+  shield: 'shield.svg',
+  trait: 'trait.svg',
+  weapon: {
+    axe: 'axe.svg',
+    charge:'charge.svg',
+    grenade: 'grenade.svg',
+    hammer: 'hammer.svg',
+    knife: 'knife.svg',
+    martial: 'martial.svg',
+    mine: 'mine.svg',
+    pistol: 'pistol.svg',
+    rifle: 'rifle.svg',
+    shotgun: 'shotgun.svg',
+    sword: 'sword.svg',
+    default: 'weapon.svg',
+  }
+};
+
 // Centralized shocking strike outcome constants and flavor keys
 SYNTHICIDE.SHOCK_OUTCOMES = {
   LETHAL: 'lethal',
