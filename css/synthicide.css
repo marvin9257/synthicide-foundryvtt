@@ -1484,6 +1484,7 @@ img.actions-img {
   grid-row: 1;
 }
 
+
 .header-info-bioclass-block {
   grid-column: 1;
   grid-row: 2;
@@ -1543,6 +1544,10 @@ img.actions-img {
   color: inherit;
   outline: none;
   min-width: 2.5em;
+}
+
+.header-info-lurans {
+  align-self: center;
 }
 
 .header-info-motivation-block .header-info-value select {
