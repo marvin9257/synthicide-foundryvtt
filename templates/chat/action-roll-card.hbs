@@ -48,6 +48,9 @@
     <div class="total-row">
       <strong>{{localize "SYNTHICIDE.Roll.Card.Total"}}:</strong>
       <span>{{total}}</span>
+      {{#if clamped}}
+        <div class="total-note">{{localize "SYNTHICIDE.Roll.Card.ClampedNote" raw=rawTotal}}</div>
+      {{/if}}
     </div>
   {{/if}}
 

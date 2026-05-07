@@ -74,7 +74,7 @@ function newContextOptions(coreContext)  {
 function applyChatCardDamage(li, multiplier) {
   const message = game.messages.get(li.dataset?.messageId);
   if (!message) {
-    ui.notifications.warn("SYNTHICIDE.Warnings.NoDamageToApply", {localize: true});
+    ui.notifications.warn("SYNTHICIDE.Roll.Warnings.NoDamageToApply", {localize: true});
     return;
   }
   const rollData = getStandardizedRollData(message);
@@ -107,6 +107,6 @@ function applyChatCardDamage(li, multiplier) {
       }
     }));
   } else {
-    ui.notifications.warn("SYNTHICIDE.Warnings.NoDamageToApply", {localize: true});
+    ui.notifications.warn("SYNTHICIDE.Roll.Warnings.NoDamageToApply", {localize: true});
   }
 }

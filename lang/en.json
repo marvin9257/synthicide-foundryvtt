@@ -728,6 +728,7 @@
         "DamageResultApplied": "Damage Result",
         "RollDamage": "Calculate Damage",
         "RollOpposed": "Opposed Roll",
+        "ClampedNote": "Clamped to 0 (calculated {raw})",
         "Source": "Source Item",
         "LethalValue": "Lethal Value"
       },
@@ -771,7 +772,9 @@
         "DemolitionDamageRequiresDetonation": "Damage can only be rolled for demolition after detonation.",
         "DemolitionBlastMissing": "This demolition weapon needs a blast radius before it can be used.",
         "DemolitionRangeIncrementMissing": "This demolition weapon needs a range increment greater than zero.",
-        "DemolitionPlacementMissing": "Could not determine the placed demolition point."
+        "DemolitionPlacementMissing": "Could not determine the placed demolition point.",
+        "NoDamageToApply": "Could not apply damage - either missing or negative.",
+        "CantAutoDamage": "Cannot automatically apply damage to this target."
       },
       "Opposed": {
         "SummaryTitle": "Opposed Challenge Result",

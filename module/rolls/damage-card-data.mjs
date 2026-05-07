@@ -22,7 +22,8 @@ export function prepareDamageCardData({
   const d10 = input.d10 ?? 0;
   const damageBonus = input.damageBonus ?? item?.system?.bonuses?.damage ?? 0;
   const source = input.source ?? item?.name ?? '';
-  const total = input.total ?? d10 + attributeValue + damageBonus;
+  const rawTotal = input.total ?? d10 + attributeValue + damageBonus;
+  const total = Math.max(0, rawTotal);
   const lethal = input.lethal ?? item?.system?.bonuses?.lethal ?? 0;
   const actorUuid = actor?.uuid ?? null;
   const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem: item });
@@ -57,6 +58,8 @@ export function prepareDamageCardData({
     title: overrides.title ?? localize('SYNTHICIDE.Roll.Card.TitleDamage'),
     flavor: overrides.flavor ?? localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),
     total,
+    rawTotal,
+    clamped: rawTotal !== total,
     showTotalRow: true // Explicitly add showTotalRow for template context
   };
 }
