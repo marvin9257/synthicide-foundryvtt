@@ -1,3 +1,10 @@
+## [1.0.28](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.27...1.0.28) (2026-05-07)
+
+
+### Bug Fixes
+
+* damage calc card must have a zero damage floor ([1408293](https://github.com/marvin9257/synthicide-foundryvtt/commit/140829356d9817cf19c7f83cde7c3f386f164e5c))
+
 ## [1.0.27](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.26...1.0.27) (2026-05-02)
 
 
