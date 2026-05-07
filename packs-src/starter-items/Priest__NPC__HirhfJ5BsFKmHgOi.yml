@@ -4,8 +4,8 @@ type: bioclass
 img: systems/synthicide/assets/icons/items/bioclass.svg
 system:
   description: >-
-    Techno-religious fanatic; extremely cybernetic and 
-    stronger than typical humans.
+    Techno-religious fanatic; extremely cybernetic and  stronger than typical
+    humans.
   featureType: bioclass
   traits:
     - sort: 10

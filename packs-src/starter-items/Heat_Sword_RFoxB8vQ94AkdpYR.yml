@@ -1,0 +1,64 @@
+folder: GhbiqwI1yWaVkdrg
+name: Heat Sword
+type: weapon
+img: systems/synthicide/assets/icons/items/sword.svg
+system:
+  description: ''
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 400
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  weaponClass: melee
+  weaponType: sword
+  rangeIncrement: 0
+  features:
+    - twoHanded
+    - guard
+  modifications: []
+  specialAmmo: none
+  bonuses:
+    attack: 0
+    damage: 0
+    lethal: 0
+  attackBonus: 3
+  damageBonus: 5
+  lethal: 8
+  tierBonuses:
+    '1':
+      attack: 0
+      damage: 0
+      lethal: 0
+    '2':
+      attack: 0
+      damage: 0
+      lethal: 0
+    '3':
+      attack: 0
+      damage: 0
+      lethal: 0
+  weaponTier: 1
+  masteredWeapon: false
+  specialType: ''
+effects: []
+ownership:
+  default: 0
+  pdpraZTuP1qfHs08: 3
+flags: {}
+_stats:
+  coreVersion: '14.360'
+  systemId: synthicide
+  systemVersion: 1.0.27
+  createdTime: 1778172834059
+  modifiedTime: 1778172844569
+  lastModifiedBy: pdpraZTuP1qfHs08
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: RFoxB8vQ94AkdpYR
+sort: 400000
+_key: '!items!RFoxB8vQ94AkdpYR'
