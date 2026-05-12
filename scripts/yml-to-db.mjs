@@ -33,7 +33,7 @@ async function main() {
     const outDir = path.join(PACKS_OUTPUT_DIR, packDir);
     await fs.mkdir(outDir, { recursive: true });
     console.log('Packing', packDir);
-    await compilePack(srcDir, outDir, { yaml: true, recursive: true });
+    await compilePack(srcDir, outDir, { yaml: true, recursive: true, log: true });
     console.log(`✅ Pack built: ${packDir}`);
   }
 }
