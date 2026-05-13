@@ -4,5 +4,12 @@
   "files.exclude": {
     "foundry/": true
   },
-  "typescript.validate.enabled": false
+  "typescript.validate.enabled": false,
+  "chat.agent.allowedNetworkDomains": [
+    "foundryvtt.com",
+    "www.foundryvtt.com",
+    "foundryvtt.wiki",
+    "www.foundryvtt.wiki"
+  ],
+  "chat.agent.deniedNetworkDomains": []
 }

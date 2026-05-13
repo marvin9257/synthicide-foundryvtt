@@ -21,6 +21,8 @@ jobs:
           node-version: 'lts/*'
       - name: Install dependencies
         run: npm install
+      - name: Validate pack manifest
+        run: npm run packs:validate
       - name: Lint code
         run: npm run lint
       # Packs are rebuilt and project is built by the semantic-release prepareCmd

@@ -1,7 +1,7 @@
 {
   "id": "synthicide",
-  "title": "Synthicide",
-  "description": "The Synthicide system for FoundryVTT!",
+  "title": "Synthicide 2e",
+  "description": "The Synthicide 2e system for FoundryVTT!",
   "authors": [
     {
       "name": "Marvin",
@@ -86,10 +86,10 @@
       ]
     }
   },
-  "url": "Replace this with a link to your public repository",
+  "url": "https://github.com/marvin9257/synthicide-foundryvtt",
   "license": "LICENSE.txt",
   "readme": "README.md",
-  "bugs": "Replace this with a link to file issues or tickets",
+  "bugs": "https://github.com/marvin9257/synthicide-foundryvtt/issues",
   "changelog": "CHANGELOG.md",
   "media": [
     {
@@ -98,7 +98,7 @@
       "thumbnail": "systems/synthicide/assets/synthicideTheme2.svg"
     }
   ],
-  "version": "1.0.28",
+  "version": "1.0.29",
   "compatibility": {
     "minimum": "14",
     "verified": "14.361"
@@ -138,7 +138,7 @@
   ],
   "socket": false,
   "manifest": "https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/system.json",
-  "download": "https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/synthicide.zip",
+  "download": "https://github.com/marvin9257/synthicide-foundryvtt/releases/download/1.0.29/synthicide.zip",
   "background": "systems/synthicide/assets/synthicideTheme2.svg",
   "grid": {
     "type": 1,
