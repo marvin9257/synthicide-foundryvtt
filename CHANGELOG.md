@@ -1,3 +1,10 @@
+## [1.0.29](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.28...1.0.29) (2026-05-13)
+
+
+### Bug Fixes
+
+* release automation changes and pack validation ([76ca266](https://github.com/marvin9257/synthicide-foundryvtt/commit/76ca26645810d89eaf166916d82ac37af5b9b224))
+
 ## [1.0.28](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.27...1.0.28) (2026-05-07)
 
 
