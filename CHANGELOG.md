@@ -1,3 +1,10 @@
+## [1.0.30](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.29...1.0.30) (2026-05-14)
+
+
+### Bug Fixes
+
+* add arc weapon feature and bonus against synthetics ([c940903](https://github.com/marvin9257/synthicide-foundryvtt/commit/c940903bac9868b6764fb15d76c505dff7850d8a))
+
 ## [1.0.29](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.28...1.0.29) (2026-05-13)
 
 
