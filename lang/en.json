@@ -551,7 +551,8 @@
             "TwoHanded": "Two Handed",
             "Primative": "Primative",
             "Counter": "Counter",
-            "Guard": "Guard"
+            "Guard": "Guard",
+            "Arc": "Arc"
           },
           "Modification" : {
             "None": "None",

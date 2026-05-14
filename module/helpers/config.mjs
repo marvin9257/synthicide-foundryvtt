@@ -383,7 +383,8 @@ SYNTHICIDE.WEAPON_FEATURES = {
     twoHanded: "SYNTHICIDE.Item.Weapon.Melee.Feature.TwoHanded",
     primative: "SYNTHICIDE.Item.Weapon.Melee.Feature.Primative",
     counter: "SYNTHICIDE.Item.Weapon.Melee.Feature.Counter",
-    guard: "SYNTHICIDE.Item.Weapon.Melee.Feature.Guard"
+    guard: "SYNTHICIDE.Item.Weapon.Melee.Feature.Guard",
+    arc: "SYNTHICIDE.Item.Weapon.Melee.Feature.Arc"
   },
   ranged: {
     twoHanded: "SYNTHICIDE.Item.Weapon.Melee.Feature.TwoHanded",
@@ -392,7 +393,8 @@ SYNTHICIDE.WEAPON_FEATURES = {
     guard: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Guard",
     slow1: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Slow1",
     slow2: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Slow2",
-    spread: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Spread"
+    spread: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Spread",
+    arc: "SYNTHICIDE.Item.Weapon.Melee.Feature.Arc"
   },
   demolition: {
     blast3: "SYNTHICIDE.Item.Weapon.Demolition.Feature.Blast3",
@@ -435,6 +437,8 @@ SYNTHICIDE.WEAPON_MODIFICATIONS = {
     none: "SYNTHICIDE.Item.Weapon.Ranged.Modification.None"
   }
 };
+
+SYNTHICIDE.ARC_BONUS = 2; // Flat bonus applied to attacks with the Arc feature
 
 SYNTHICIDE.WEAPON_AMMO = {
   none: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.None",

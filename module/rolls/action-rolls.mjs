@@ -736,8 +736,10 @@ function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
   }
 
   const rangeContext = buildAttackRangeContext({ actor, sourceItem, notify: false });
+  const targetToken = getSingleTargetToken({ notify: false });
+  const arcAttackBonus = getArcAttackBonus({ sourceItem, targetToken });
   return {
-    attackBonus: Number(sourceItem.system.bonuses.attack ?? 0),
+    attackBonus: Number(sourceItem.system.bonuses.attack ?? 0) + arcAttackBonus,
     damageBonus: Number(sourceItem.system.bonuses.damage ?? 0),
     rangeModifier: Number(rangeContext?.rangeModifier ?? 0),
   };
@@ -1046,6 +1048,21 @@ function hasWeaponFeature(sourceItem, featureKey) {
   return false;
 }
 
+function getArcAttackBonus({ sourceItem, targetToken }) {
+  if (!hasWeaponFeature(sourceItem, 'arc')) return 0;
+  const targetActor = targetToken?.actor;
+  if (!targetActor) return 0;
+  return isSyntheticTarget(targetActor) || targetHasAnyImplants(targetActor) ? SYNTHICIDE.ARC_BONUS : 0;
+}
+
+function isSyntheticTarget(actor) {
+  return (actor.system.npcWealthTier ?? '').toLowerCase() === 'synthetic';
+}
+
+function targetHasAnyImplants(actor) {
+  return actor.itemTypes?.implant?.length > 0;
+}
+
 /**
  * Compute range-related attack context from the current attacker and target.
  *
@@ -1169,12 +1186,13 @@ function buildDemolitionTargetData(sourceItem) {
 function buildResolvedAttackInput({ input, rollData, attackRangeContext }) {
   return {
     ...input,
-    modifiers: rollData.modifiers,
+    //attackBonus: rollData.attackBonus,
+    //modifiers: rollData.modifiers,
     actorModifierTotal: rollData.actorModifierTotal,
     rangeModifier: rollData.rangeModifier,
     rangeDistance: attackRangeContext?.distance ?? null,
     rangeIncrement: attackRangeContext?.rangeIncrement ?? null,
-    weaponClass: attackRangeContext?.weaponClass ?? null,
-    hasCloseFeature: attackRangeContext?.hasCloseFeature ?? false,
+    //weaponClass: attackRangeContext?.weaponClass ?? null,
+    //hasCloseFeature: attackRangeContext?.hasCloseFeature ?? false,
   };
 }
