@@ -51,8 +51,9 @@ export class VirtualGridLayer extends foundry.canvas.layers.CanvasLayer {
     const cols = Math.ceil(width / vSize);
     const rows = Math.ceil(height / vSize);
     const g = new globalThis.PIXI.Graphics();
-    // Use a subtle orange, semi-transparent, thicker line
-    g.lineStyle(5, 0xff8800, 0.5);
+    const color = game.settings.get('synthicide', SYNTHICIDE.VIRTUAL_GRID_COLOR_KEY) || 0xff8800;
+
+    g.lineStyle(5, color, 0.5);
     console.log(`[VirtualGrid] Drawing overlay: grid size=${gSize}, virtual size=${vSize}, cols=${cols}, rows=${rows}, width=${width}, height=${height}`);
     for (let c = 0; c <= cols; c++) {
       const x = c * vSize;

@@ -342,4 +342,18 @@ function registerSettings() {
     default: true,
   });
 
+  game.settings.register('synthicide', SYNTHICIDE.VIRTUAL_GRID_COLOR_KEY, {
+    name: 'SYNTHICIDE.Settings.VirtualGridColor.Name',
+    hint: 'SYNTHICIDE.Settings.VirtualGridColor.Hint',
+    scope: 'client',
+    config: true,
+    type: new foundry.data.fields.ColorField({
+      required: true,
+      nullable: false,
+      initial: '#ff8800'
+    }),
+    default: '#ff8800',
+    onChange: () => { if (canvas.ready) canvas.draw(); }
+  });
+
 }

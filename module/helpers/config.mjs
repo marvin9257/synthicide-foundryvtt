@@ -200,6 +200,7 @@ SYNTHICIDE.USE_SHOCKING_STRIKE_KEY = 'useShockingStrike';
 // Virtual Grid Movement Setting Key
 SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY = 'virtualGridMovement';
 SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY = 'demolitionAutoScatter';
+SYNTHICIDE.VIRTUAL_GRID_COLOR_KEY = 'virtualGridColor';
 
 /**
  * The set of Attribute Scores used within the system.

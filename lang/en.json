@@ -39,6 +39,10 @@
       "DemolitionAutoScatter": {
         "Name": "Demolition Auto-Scatter",
         "Hint": "If enabled, failed demolition throws automatically scatter to a random corner of the target zone. If disabled, failed throws stay at the aimed point."
+      },
+      "VirtualGridColor": {
+        "Name": "Virtual Grid Color",
+        "Hint": "The color of the virtual grid overlay shown when using virtual grid measurement during combat."
       }
     },
     "Actor": {
