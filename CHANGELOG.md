@@ -1,3 +1,10 @@
+## [1.0.31](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.30...1.0.31) (2026-05-16)
+
+
+### Bug Fixes
+
+* add additional items to starter pack ([06455bb](https://github.com/marvin9257/synthicide-foundryvtt/commit/06455bb7d25f5f3fa451767ffa0a68a1ce5ca900))
+
 ## [1.0.30](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.29...1.0.30) (2026-05-14)
 
 
