@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: Fn6WI5sSciOUXSkU
 name: Hatchet
 type: weapon
 _id: qFr8p2C6i9AnwJFy
@@ -50,14 +50,14 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778169251386
-  modifiedTime: 1778172844571
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947211391
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
-sort: 2000000
+sort: 200000
 _key: '!items!qFr8p2C6i9AnwJFy'

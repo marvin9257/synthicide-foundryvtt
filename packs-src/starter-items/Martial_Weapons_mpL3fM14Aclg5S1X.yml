@@ -1,20 +1,20 @@
 type: Item
-folder: null
-name: Weapons
+folder: GhbiqwI1yWaVkdrg
+name: Martial Weapons
 color: null
 sorting: a
-_id: zUm9hp7KxczXfSI2
+_id: mpL3fM14Aclg5S1X
 description: ''
-sort: 200000
+sort: 0
 flags: {}
 _stats:
   coreVersion: '14.361'
   systemId: synthicide
-  systemVersion: 1.0.27
-  createdTime: 1778169087503
-  modifiedTime: 1778947366200
+  systemVersion: 1.0.30
+  createdTime: 1778947269052
+  modifiedTime: 1778947269052
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null
   exportSource: null
-_key: '!folders!zUm9hp7KxczXfSI2'
+_key: '!folders!mpL3fM14Aclg5S1X'

@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: eQUhnd7ueMkkAGiK
 name: Heat Batton
 type: weapon
 img: systems/synthicide/assets/icons/items/hammer.svg
@@ -48,15 +48,15 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778171459700
-  modifiedTime: 1778172844571
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947229812
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
 _id: Mim9AcXVLEAxhQWf
-sort: 1800000
+sort: 400000
 _key: '!items!Mim9AcXVLEAxhQWf'

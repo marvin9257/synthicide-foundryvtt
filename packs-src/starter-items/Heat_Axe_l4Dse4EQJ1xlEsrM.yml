@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: Fn6WI5sSciOUXSkU
 name: Heat Axe
 type: weapon
 img: systems/synthicide/assets/icons/items/axe.svg
@@ -49,15 +49,15 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778169531989
-  modifiedTime: 1778172844571
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947232102
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
 _id: l4Dse4EQJ1xlEsrM
-sort: 2200000
+sort: 300000
 _key: '!items!l4Dse4EQJ1xlEsrM'

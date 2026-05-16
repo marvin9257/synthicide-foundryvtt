@@ -1,31 +1,34 @@
-folder: mpL3fM14Aclg5S1X
-name: Power Knuckles
+folder: 0vaMUXDfVCHo8BkM
+name: Fossil Pistol
 type: weapon
-img: systems/synthicide/assets/icons/items/martial.svg
+img: systems/synthicide/assets/icons/items/pistol.svg
 system:
-  description: ''
+  description: >-
+    <p>Primitive pistols could represent advanced slingshots or miniature
+    crossbows, and require two hands to use unless trained.</p>
   quantity: 1
   weight: 0
   equipped: false
-  price: 900
+  price: 40
   roll:
     diceNum: 1
     diceSize: d10
     diceBonus: + @attributes.combat.value
   formula: ''
-  weaponClass: melee
-  weaponType: martial
-  rangeIncrement: 0
-  features: []
+  weaponClass: ranged
+  weaponType: pistol
+  rangeIncrement: 1
+  features:
+    - guard
   modifications: []
   specialAmmo: none
   bonuses:
     attack: 0
     damage: 0
     lethal: 0
-  attackBonus: 3
-  damageBonus: 5
-  lethal: 9
+  attackBonus: 0
+  damageBonus: 0
+  lethal: 0
   tierBonuses:
     '1':
       attack: 0
@@ -45,18 +48,18 @@ system:
 effects: []
 ownership:
   default: 0
-  pdpraZTuP1qfHs08: 3
+  CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
   coreVersion: '14.361'
   systemId: synthicide
-  systemVersion: 1.0.27
-  createdTime: 1778172493309
-  modifiedTime: 1778947295963
+  systemVersion: 1.0.30
+  createdTime: 1778947049826
+  modifiedTime: 1778947327636
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
-_id: CLLOjlipntt9bpRl
+_id: sRdjvCx0OHiYltIz
 sort: 300000
-_key: '!items!CLLOjlipntt9bpRl'
+_key: '!items!sRdjvCx0OHiYltIz'

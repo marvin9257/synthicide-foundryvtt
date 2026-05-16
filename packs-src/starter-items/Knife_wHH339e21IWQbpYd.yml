@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: K5oCZe3QTHVDHLC9
 name: Knife
 type: weapon
 _id: wHH339e21IWQbpYd
@@ -51,14 +51,14 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778172176427
-  modifiedTime: 1778172844569
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947283969
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
-sort: 700000
+sort: 200000
 _key: '!items!wHH339e21IWQbpYd'

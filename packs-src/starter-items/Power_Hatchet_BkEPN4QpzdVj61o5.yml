@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: Fn6WI5sSciOUXSkU
 name: Power Hatchet
 type: weapon
 img: systems/synthicide/assets/icons/items/axe.svg
@@ -48,15 +48,15 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778169676999
-  modifiedTime: 1778172844570
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947291552
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
 _id: BkEPN4QpzdVj61o5
-sort: 1400000
+sort: 600000
 _key: '!items!BkEPN4QpzdVj61o5'

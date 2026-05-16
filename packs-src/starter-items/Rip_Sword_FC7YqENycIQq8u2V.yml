@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: 0C3ksDIOw3gNlChm
 name: Rip Sword
 type: weapon
 img: systems/synthicide/assets/icons/items/sword.svg
@@ -50,15 +50,15 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778172841625
-  modifiedTime: 1778172844569
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947300968
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
 _id: FC7YqENycIQq8u2V
-sort: 600000
+sort: 300000
 _key: '!items!FC7YqENycIQq8u2V'

@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: eQUhnd7ueMkkAGiK
 name: Power Hammer
 type: weapon
 img: systems/synthicide/assets/icons/items/hammer.svg
@@ -49,15 +49,15 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778171478583
-  modifiedTime: 1778172844570
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947289683
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
 _id: Be8sgFBOKDVjYpyg
-sort: 1000000
+sort: 700000
 _key: '!items!Be8sgFBOKDVjYpyg'

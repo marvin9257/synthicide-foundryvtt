@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: Fn6WI5sSciOUXSkU
 name: Heat Hatchet
 type: weapon
 _id: UotaJqZkWpHTBJUV
@@ -44,18 +44,18 @@ system:
   masteredWeapon: false
   specialType: ''
 effects: []
-sort: 2400000
+sort: 400000
 ownership:
   default: 0
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778169374676
-  modifiedTime: 1778172844571
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947236967
+  lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null
   exportSource: null

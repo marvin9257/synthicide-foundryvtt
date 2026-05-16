@@ -1,20 +1,20 @@
 type: Item
-folder: null
-name: Weapons
+folder: zUm9hp7KxczXfSI2
+name: Ranged
 color: null
 sorting: a
-_id: zUm9hp7KxczXfSI2
+_id: hBhWqZ1rEd8a1FR7
 description: ''
-sort: 200000
+sort: 0
 flags: {}
 _stats:
   coreVersion: '14.361'
   systemId: synthicide
-  systemVersion: 1.0.27
-  createdTime: 1778169087503
-  modifiedTime: 1778947366200
+  systemVersion: 1.0.30
+  createdTime: 1778947037094
+  modifiedTime: 1778947037094
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null
   exportSource: null
-_key: '!folders!zUm9hp7KxczXfSI2'
+_key: '!folders!hBhWqZ1rEd8a1FR7'

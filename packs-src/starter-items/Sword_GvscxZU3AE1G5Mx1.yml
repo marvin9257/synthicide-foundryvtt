@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: 0C3ksDIOw3gNlChm
 name: Sword
 type: weapon
 _id: GvscxZU3AE1G5Mx1
@@ -52,14 +52,14 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778172844539
-  modifiedTime: 1778172844569
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947302573
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
-sort: 200000
+sort: 400000
 _key: '!items!GvscxZU3AE1G5Mx1'

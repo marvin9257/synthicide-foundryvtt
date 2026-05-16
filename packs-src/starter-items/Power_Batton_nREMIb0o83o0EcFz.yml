@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: eQUhnd7ueMkkAGiK
 name: Power Batton
 type: weapon
 img: systems/synthicide/assets/icons/items/hammer.svg
@@ -48,15 +48,15 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778171476063
-  modifiedTime: 1778172844570
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947287934
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
 _id: nREMIb0o83o0EcFz
-sort: 1300000
+sort: 600000
 _key: '!items!nREMIb0o83o0EcFz'

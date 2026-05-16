@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: eQUhnd7ueMkkAGiK
 name: Drill Hammer
 type: weapon
 img: systems/synthicide/assets/icons/items/hammer.svg
@@ -49,15 +49,15 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778171455614
-  modifiedTime: 1778172844571
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947225130
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
 _id: ZVrC6ypxVachUgcd
-sort: 1900000
+sort: 300000
 _key: '!items!ZVrC6ypxVachUgcd'

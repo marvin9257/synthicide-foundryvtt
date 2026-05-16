@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: eQUhnd7ueMkkAGiK
 name: Club
 type: weapon
 _id: KEcC1E6kh0vMP9Y1
@@ -50,14 +50,14 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778171452817
-  modifiedTime: 1778172844570
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947223544
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
-sort: 1700000
+sort: 200000
 _key: '!items!KEcC1E6kh0vMP9Y1'

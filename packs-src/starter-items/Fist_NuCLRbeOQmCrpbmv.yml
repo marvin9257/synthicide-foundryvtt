@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: mpL3fM14Aclg5S1X
 name: Fist
 type: weapon
 _id: NuCLRbeOQmCrpbmv
@@ -50,14 +50,14 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778172490073
-  modifiedTime: 1778172844569
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947273349
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
-sort: 100000
+sort: 200000
 _key: '!items!NuCLRbeOQmCrpbmv'

@@ -1,18 +1,18 @@
 type: Item
-folder: null
+folder: IRLy348qPs5RGoBN
 name: NPC Bioclasses
 color: null
 sorting: a
 _id: KWtvRi1661z8YKhY
 description: ''
-sort: 0
+sort: 100000
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.26
   createdTime: 1777743675948
-  modifiedTime: 1777743675948
+  modifiedTime: 1778947375691
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null

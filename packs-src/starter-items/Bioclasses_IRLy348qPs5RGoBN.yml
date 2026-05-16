@@ -1,20 +1,20 @@
 type: Item
 folder: null
-name: Weapons
+name: Bioclasses
 color: null
 sorting: a
-_id: zUm9hp7KxczXfSI2
+_id: IRLy348qPs5RGoBN
 description: ''
-sort: 200000
+sort: 400000
 flags: {}
 _stats:
   coreVersion: '14.361'
   systemId: synthicide
-  systemVersion: 1.0.27
-  createdTime: 1778169087503
+  systemVersion: 1.0.30
+  createdTime: 1778947363295
   modifiedTime: 1778947366200
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null
   exportSource: null
-_key: '!folders!zUm9hp7KxczXfSI2'
+_key: '!folders!IRLy348qPs5RGoBN'

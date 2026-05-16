@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: 0C3ksDIOw3gNlChm
 name: Power Sword
 type: weapon
 img: systems/synthicide/assets/icons/items/sword.svg
@@ -50,15 +50,15 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778172838725
-  modifiedTime: 1778172844569
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947297723
+  lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
 _id: Z7V6JosKnoqvT5ze
-sort: 500000
+sort: 200000
 _key: '!items!Z7V6JosKnoqvT5ze'

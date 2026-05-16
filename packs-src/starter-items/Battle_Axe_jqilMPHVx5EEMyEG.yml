@@ -1,4 +1,4 @@
-folder: GhbiqwI1yWaVkdrg
+folder: Fn6WI5sSciOUXSkU
 name: Battle Axe
 type: weapon
 _id: jqilMPHVx5EEMyEG
@@ -46,18 +46,18 @@ system:
   masteredWeapon: false
   specialType: ''
 effects: []
-sort: 2100000
+sort: 100000
 ownership:
   default: 0
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778169267156
-  modifiedTime: 1778172844571
-  lastModifiedBy: pdpraZTuP1qfHs08
+  modifiedTime: 1778947208201
+  lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null
   exportSource: null
