@@ -209,7 +209,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       context.weaponFeaturesOptions = SYNTHICIDE.WEAPON_FEATURES[this.item.system.weaponClass];
       context.weaponModificationsOptions = SYNTHICIDE.WEAPON_MODIFICATIONS[this.item.system.weaponClass];
       if (this.item.system.weaponClass === "ranged") {
-        context.weaponAmmoOptions = SYNTHICIDE.WEAPON_AMMO;
+        context.weaponAmmoOptions = this._getValidAmmo();
       }
     } else if (this.item.type === 'shield') {
       context.shieldModificationsOptions = SYNTHICIDE.SHIELD_MODIFICATIONS;
@@ -284,6 +284,25 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     } else {
       return 'general';
     }
+  }
+
+  _getValidAmmo() {
+    if (this.item.type !== 'weapon' || this.item.system.weaponClass !== 'ranged') return {};
+    let validKeys;
+    switch (this.item.system.weaponType) {
+      case 'pistol':
+      case 'rifle':
+        validKeys = ['none', 'cryo', 'cinder', 'homing', 'poison', 'powerWounding', 'anchor', 'bouncing', 'piercing'];
+        break;
+      case 'shotgun':
+        validKeys = ['none', 'cryo', 'cinder', 'knockBack', 'flash', 'anchor'];
+        break;
+      default:
+        validKeys = ['none', 'cryo', 'cinder', 'anchor'];
+    }
+    return Object.fromEntries(
+      Object.entries(SYNTHICIDE.WEAPON_AMMO).filter(([k]) => validKeys.includes(k))
+    );
   }
 
   /**************

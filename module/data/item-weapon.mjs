@@ -75,8 +75,8 @@ export default class SynthicideWeapon extends SynthicideGear {
     // direct passthrough if not NPC
     if (actor.type !== 'npc') {
       this.bonuses.attack = this.attackBonus;
-      this.bonuses.damage = this.damageBonus;
-      this.bonuses.lethal = this.lethal;
+      this.bonuses.damage = this.damageBonus; ///NEED TO ADD BONUS IF WEAPON AMMO MODIFIES DAMAGE
+      this.bonuses.lethal = this.lethal; ///NEED TO ADD BONUS IF WEAPON AMMO MODIFIES LETHAL
       return;
     }
 
@@ -184,6 +184,3 @@ function makeWeaponBonusSchema(persisted = true) {
   });
 }
 
-//function makeWeaponBonusInitial() {
-//  return { attack: 0, damage: 0, lethal: 0 };
-//}

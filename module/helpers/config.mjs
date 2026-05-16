@@ -451,7 +451,9 @@ SYNTHICIDE.WEAPON_AMMO = {
   powerWounding: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.PowerWounding",
   flash: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Flash",
   anchor: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Anchor",
-  bouncing: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Bouncing"
+  bouncing: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Bouncing",
+  piercing: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Piercing",
+  stun: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Stun"
 };
 
 SYNTHICIDE.ARMOR_MODIFICATIONS = {

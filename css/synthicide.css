@@ -928,7 +928,7 @@ body.theme-dark .npc-compact .window-content {
 .resource-equipped {
   display: flex;
   flex-direction: column;
-  padding: 4px 8px;
+  padding: 0 8px;
 }
 
 .synthicide .sheet-tabs {

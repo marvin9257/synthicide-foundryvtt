@@ -2,7 +2,6 @@ import SYNTHICIDE from '../helpers/config.mjs';
 import ItemTemplate from '../documents/ItemTemplate.mjs';
 import { calculateVirtualZoneDistanceBetweenPoints, getRandomScatterCorner } from '../canvas/demolition-scatter-utils.mjs';
 import { formatSignedNumber, getStandardizedRollData, localize, normalizeAttributeKey } from './roll-utils.mjs';
-//import { resolveEffectKey } from '../helpers/effects.mjs';
 import { prepareAttackCardData } from './attack-card-data.mjs';
 import { prepareChallengeCardData } from './challenge-card-data.mjs';
 import { prepareDemolitionCardData } from './demolition-card-data.mjs';
@@ -44,9 +43,6 @@ export async function openSynthicideActionRollDialog({
   attribute = ATTRIBUTE_COMBAT,
   sourceItem = null,
   allowSubtypeChange = false,
-  attackBonusOverride = null,
-  damageBonusOverride = null,
-  miscOverride = null,
   rollModifiers = undefined,
 } = {}) {
   if (!actor) return null;
@@ -63,9 +59,6 @@ export async function openSynthicideActionRollDialog({
       attributeKey,
       sourceItem,
       allowSubtypeChange,
-      attackBonusOverride,
-      damageBonusOverride,
-      miscOverride,
       rollModifiers
     }),
   });
@@ -430,7 +423,6 @@ async function createDemolitionPlacementContext({ input, sourceItem, requirePoin
  * @param {Actor} params.actor
  * @param {object} params.input
  * @param {Item|null} params.sourceItem
- * @param {string} params.attributeKey
  * @param {object} params.rollData
  * @returns {Promise<ChatMessage|null>}
  */
@@ -701,7 +693,7 @@ async function renderActionRollDialog({ title, defaults }) {
  * @param {boolean} params.allowSubtypeChange
  * @returns {object}
  */
-function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSubtypeChange, attackBonusOverride = null, damageBonusOverride = null, miscOverride = null, rollModifiers = undefined }) {
+function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSubtypeChange, rollModifiers = undefined }) {
   const attackDefaults = getAttackDialogDefaults({ actor, subtype, sourceItem });
   const isMeleeAttack = String(sourceItem?.system?.weaponClass ?? '') === 'melee';
   const targetDefense = isAttackSubtype(subtype)
@@ -713,10 +705,10 @@ function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSu
     subtype,
     attribute: attributeKey,
     difficulty: 6,
-    misc: miscOverride !== null ? Number(miscOverride) : 0,
+    misc: 0,
     armor: targetDefense.armor,
-    attackBonus: attackBonusOverride !== null ? attackBonusOverride : attackDefaults.attackBonus,
-    damageBonus: damageBonusOverride !== null ? damageBonusOverride : attackDefaults.damageBonus,
+    attackBonus: attackDefaults.attackBonus,
+    damageBonus: attackDefaults.damageBonus,
     rangeModifier: attackDefaults.rangeModifier,
     shieldBonus: isMeleeAttack ? targetDefense.shieldBonus : 0,
     weaponClass: String(sourceItem?.system?.weaponClass ?? ''),
@@ -755,7 +747,7 @@ function buildDialogContext(defaults) {
   const actor = defaults.actor;
   const attributeKey = getActionAttributeKey(subtype, defaults.attribute ?? ATTRIBUTE_COMBAT);
   // Merge persistent and situational (passed) rollModifiers
-  let persistent = getActorRollModifiers(actor);
+  const persistent = getActorRollModifiers(actor);
   let situational = [];
   if (defaults.rollModifiers && typeof defaults.rollModifiers === 'object') {
     situational = Object.entries(defaults.rollModifiers).map(([key, value]) => ({ key, value: Number(value) }));
@@ -871,7 +863,6 @@ function parseNumeric(value, fallback = 0) {
 }
 
 function formatModifierKey(key) {
-  //const resolved = resolveEffectKey(key);
   return String(key ?? '')
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
     .replace(/[_-]+/g, ' ')
@@ -995,7 +986,6 @@ function getTargetDefense({ notify = true } = {}) {
       ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NoTarget'));
     }
   }
-  //return default values
   return { armor: defaultValue, shieldBonus: 0 };
 }
 
@@ -1137,9 +1127,13 @@ function getActorRollModifiers(actor) {
   const rollModifiers = actor?.system?.rollModifiers;
   if (!rollModifiers || typeof rollModifiers !== 'object') return [];
 
-  return Object.entries(rollModifiers)
-    .map(([key, value]) => ({ key, value: Number(value) }))
-    .filter((entry) => Number.isFinite(entry.value) && entry.value !== 0);
+  return Object.entries(rollModifiers).reduce((modifiers, [key, value]) => {
+    const numericValue = Number(value);
+    if (Number.isFinite(numericValue) && numericValue !== 0) {
+      modifiers.push({ key, value: numericValue });
+    }
+    return modifiers;
+  }, []);
 }
 
 function getDemolitionBlastDiameter(sourceItem) {
@@ -1186,13 +1180,9 @@ function buildDemolitionTargetData(sourceItem) {
 function buildResolvedAttackInput({ input, rollData, attackRangeContext }) {
   return {
     ...input,
-    //attackBonus: rollData.attackBonus,
-    //modifiers: rollData.modifiers,
     actorModifierTotal: rollData.actorModifierTotal,
     rangeModifier: rollData.rangeModifier,
     rangeDistance: attackRangeContext?.distance ?? null,
-    rangeIncrement: attackRangeContext?.rangeIncrement ?? null,
-    //weaponClass: attackRangeContext?.weaponClass ?? null,
-    //hasCloseFeature: attackRangeContext?.hasCloseFeature ?? false,
+    rangeIncrement: attackRangeContext?.rangeIncrement ?? null
   };
 }

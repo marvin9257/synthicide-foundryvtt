@@ -611,7 +611,9 @@
             "PowerWounding": "Power Wounding",
             "Flash": "Flash",
             "Anchor": "Anchor",
-            "Bouncing": "Bouncing"
+            "Bouncing": "Bouncing",
+            "Piercing": "Piercing",
+            "Stun": "Stun"
           }
         },
         "Demolition": {

@@ -35,10 +35,15 @@ export class SynthicideItem extends foundry.documents.Item {
           foundry.utils.setProperty(update, 'system.weaponType', validTypeKeys[0]);
         }
       }
+
+      // Any weaponClass change invalidates selected ammo.
+      foundry.utils.setProperty(update, 'system.specialAmmo', 'none');
     }
 
     // If weaponType is being changed, potentially change img unless user defined
     if (this.type === 'weapon' && update?.system?.weaponType && update.system.weaponType !== this.system.weaponType) {
+      foundry.utils.setProperty(update, 'system.specialAmmo', 'none');
+
       // The current (pre-update) weaponType
       const currentWeaponType = this.system.weaponType;
       // The new weaponType being set
@@ -82,13 +87,13 @@ export class SynthicideItem extends foundry.documents.Item {
     if (game.userId !== userId) return;
 
     // Auto-update image if weaponType changes and image is default
-    if (this.type === 'weapon' && changed?.system?.weaponType) {
+    //if (this.type === 'weapon' && changed?.system?.weaponType) {
       // Check if the image is the default for the previous type
-      const newImage = SynthicideItem.getDefaultArtwork(this).img;
-      if (this.img !== newImage && newImage) {
-        await this.update({ img: newImage });
-      }
-    }
+    //  const newImage = SynthicideItem.getDefaultArtwork(this).img;
+    //  if (this.img !== newImage && newImage) {
+    //    await this.update({ img: newImage });
+    //  }
+    //}
 
     if (!this.actor) return;
     // Enforce one-equipped-at-a-time for exclusive types unless this change was
