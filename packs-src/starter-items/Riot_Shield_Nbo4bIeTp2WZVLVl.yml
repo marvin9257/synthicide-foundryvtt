@@ -1,0 +1,38 @@
+folder: P81RRCGNgoD4Do2S
+name: Riot Shield
+type: shield
+_id: Nbo4bIeTp2WZVLVl
+img: systems/synthicide/assets/icons/items/shield.svg
+system:
+  description: >-
+    <p>Shields offer valuable defensive options in close and ranged
+    combat.</p><p>A standard arm-slung shield designed for mobility and basic
+    protection against close combat and small arms fire.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 20
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  adBonus: 1
+  modifications: []
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.30
+  createdTime: 1778954384402
+  modifiedTime: 1778954384402
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+sort: 0
+_key: '!items!Nbo4bIeTp2WZVLVl'

@@ -4,8 +4,8 @@ type: weapon
 img: systems/synthicide/assets/icons/items/pistol.svg
 system:
   description: >-
-    <p>Primitive pistols could represent advanced slingshots or miniature
-    crossbows, and require two hands to use unless trained.</p>
+    <p>Pistols are small projectile weapons usually wielded in one hand. All
+    small ranged weapons are simplified to belong to the “pistol” type.</p>
   quantity: 1
   weight: 0
   equipped: false
@@ -55,7 +55,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.0.30
   createdTime: 1778947047225
-  modifiedTime: 1778947326239
+  modifiedTime: 1778951111240
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

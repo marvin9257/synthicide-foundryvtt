@@ -11,6 +11,7 @@ SYNTHICIDE.ICON_TYPE_MAP = {
   trait: 'trait.svg',
   weapon: {
     axe: 'axe.svg',
+    blaster: 'blaster.svg',
     charge:'charge.svg',
     grenade: 'grenade.svg',
     hammer: 'hammer.svg',
@@ -370,7 +371,8 @@ SYNTHICIDE.WEAPON_TYPES = {
   ranged: {
     pistol: "SYNTHICIDE.Item.Weapon.Ranged.Pistol",
     rifle: "SYNTHICIDE.Item.Weapon.Ranged.Rifle",
-    shotgun: "SYNTHICIDE.Item.Weapon.Ranged.Shotgun"
+    shotgun: "SYNTHICIDE.Item.Weapon.Ranged.Shotgun",
+    "blaster": "SYNTHICIDE.Item.Weapon.Ranged.Blaster"
   },
   demolition: {
     grenade: "SYNTHICIDE.Item.Weapon.Demolition.Grenade",

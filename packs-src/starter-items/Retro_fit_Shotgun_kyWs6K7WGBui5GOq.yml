@@ -1,26 +1,29 @@
-folder: 0vaMUXDfVCHo8BkM
-name: Arc Pistol
+folder: 3gyI02ttoRP49W6I
+name: Retro-fit Shotgun
 type: weapon
-img: systems/synthicide/assets/icons/items/pistol.svg
+img: systems/synthicide/assets/icons/items/shotgun.svg
 system:
   description: >-
-    <p>Pistols are small projectile weapons usually wielded in one hand. All
-    small ranged weapons are simplified to belong to the “pistol” type.</p>
+    <p>Shotguns, often called blasters, are large weapons that fire multiple
+    projectiles at once, making them effective at hitting one or more nearby
+    targets. Primitive versions do not exist; scattershot weapons emerged with
+    the invention of gunpowder.</p>
   quantity: 1
   weight: 0
   equipped: false
-  price: 450
+  price: 130
   roll:
     diceNum: 1
     diceSize: d10
     diceBonus: + @attributes.combat.value
   formula: ''
   weaponClass: ranged
-  weaponType: pistol
+  weaponType: shotgun
   rangeIncrement: 1
   features:
-    - guard
-    - arc
+    - twoHanded
+    - close
+    - spread
   modifications: []
   specialAmmo: none
   bonuses:
@@ -28,7 +31,7 @@ system:
     damage: 0
     lethal: 0
   attackBonus: 2
-  damageBonus: 1
+  damageBonus: 0
   lethal: 0
   tierBonuses:
     '1':
@@ -55,12 +58,12 @@ _stats:
   coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.30
-  createdTime: 1778947044790
-  modifiedTime: 1778951098154
+  createdTime: 1778951206486
+  modifiedTime: 1778951414366
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
-_id: iOk0tQO1WQ7BKcOR
-sort: 100000
-_key: '!items!iOk0tQO1WQ7BKcOR'
+_id: kyWs6K7WGBui5GOq
+sort: 500000
+_key: '!items!kyWs6K7WGBui5GOq'

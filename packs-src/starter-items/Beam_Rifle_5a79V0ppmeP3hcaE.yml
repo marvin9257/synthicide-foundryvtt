@@ -1,26 +1,23 @@
-folder: 0vaMUXDfVCHo8BkM
-name: Arc Pistol
+folder: 5vjrGfZFe1r9ZbgD
+name: Beam Rifle
 type: weapon
-img: systems/synthicide/assets/icons/items/pistol.svg
+img: systems/synthicide/assets/icons/items/rifle.svg
 system:
-  description: >-
-    <p>Pistols are small projectile weapons usually wielded in one hand. All
-    small ranged weapons are simplified to belong to the “pistol” type.</p>
+  description: "<p>Rifles are large projectile weapons designed to fire a single payload over long distances. All larger ranged weapons are simplified to belong to the rifle type.<span class=\"Apple-converted-space\">\_</span></p>"
   quantity: 1
   weight: 0
   equipped: false
-  price: 450
+  price: 600
   roll:
     diceNum: 1
     diceSize: d10
     diceBonus: + @attributes.combat.value
   formula: ''
   weaponClass: ranged
-  weaponType: pistol
-  rangeIncrement: 1
+  weaponType: rifle
+  rangeIncrement: 3
   features:
-    - guard
-    - arc
+    - twoHanded
   modifications: []
   specialAmmo: none
   bonuses:
@@ -28,8 +25,8 @@ system:
     damage: 0
     lethal: 0
   attackBonus: 2
-  damageBonus: 1
-  lethal: 0
+  damageBonus: 3
+  lethal: 7
   tierBonuses:
     '1':
       attack: 0
@@ -55,12 +52,12 @@ _stats:
   coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.30
-  createdTime: 1778947044790
-  modifiedTime: 1778951098154
+  createdTime: 1778951163125
+  modifiedTime: 1778951196486
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
-_id: iOk0tQO1WQ7BKcOR
-sort: 100000
-_key: '!items!iOk0tQO1WQ7BKcOR'
+_id: 5a79V0ppmeP3hcaE
+sort: 600000
+_key: '!items!5a79V0ppmeP3hcaE'

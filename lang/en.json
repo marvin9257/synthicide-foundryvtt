@@ -572,6 +572,7 @@
         },
         "Ranged": {
           "label": "Ranged",
+          "Blaster": "Blaster",
           "Pistol": "Pistol",
           "Rifle": "Rifle",
           "Shotgun": "Shotgun",

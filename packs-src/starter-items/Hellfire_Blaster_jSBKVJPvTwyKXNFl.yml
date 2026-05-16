@@ -1,35 +1,38 @@
-folder: 0vaMUXDfVCHo8BkM
-name: Arc Pistol
+folder: 3gyI02ttoRP49W6I
+name: Hellfire Blaster
 type: weapon
-img: systems/synthicide/assets/icons/items/pistol.svg
+img: systems/synthicide/assets/icons/items/blaster.svg
 system:
   description: >-
-    <p>Pistols are small projectile weapons usually wielded in one hand. All
-    small ranged weapons are simplified to belong to the “pistol” type.</p>
+    <p>Shotguns, often called blasters, are large weapons that fire multiple
+    projectiles at once, making them effective at hitting one or more nearby
+    targets. Primitive versions do not exist; scattershot weapons emerged with
+    the invention of gunpowder.</p>
   quantity: 1
   weight: 0
   equipped: false
-  price: 450
+  price: 1500
   roll:
     diceNum: 1
     diceSize: d10
     diceBonus: + @attributes.combat.value
   formula: ''
   weaponClass: ranged
-  weaponType: pistol
+  weaponType: blaster
   rangeIncrement: 1
   features:
-    - guard
-    - arc
+    - twoHanded
+    - close
+    - spread
   modifications: []
   specialAmmo: none
   bonuses:
     attack: 0
     damage: 0
     lethal: 0
-  attackBonus: 2
-  damageBonus: 1
-  lethal: 0
+  attackBonus: 5
+  damageBonus: 2
+  lethal: 7
   tierBonuses:
     '1':
       attack: 0
@@ -55,12 +58,12 @@ _stats:
   coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.30
-  createdTime: 1778947044790
-  modifiedTime: 1778951098154
+  createdTime: 1778951412033
+  modifiedTime: 1778951414366
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
-_id: iOk0tQO1WQ7BKcOR
-sort: 100000
-_key: '!items!iOk0tQO1WQ7BKcOR'
+_id: jSBKVJPvTwyKXNFl
+sort: 200000
+_key: '!items!jSBKVJPvTwyKXNFl'

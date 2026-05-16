@@ -1,33 +1,35 @@
-folder: 0vaMUXDfVCHo8BkM
-name: Arc Pistol
+folder: 5vjrGfZFe1r9ZbgD
+name: Primitive Rifle
 type: weapon
-img: systems/synthicide/assets/icons/items/pistol.svg
+img: systems/synthicide/assets/icons/items/rifle.svg
 system:
   description: >-
-    <p>Pistols are small projectile weapons usually wielded in one hand. All
-    small ranged weapons are simplified to belong to the “pistol” type.</p>
+    <p>Primitive rifles could take the form of compound bows or large
+    crossbows.</p>
   quantity: 1
   weight: 0
   equipped: false
-  price: 450
+  price: 40
   roll:
     diceNum: 1
     diceSize: d10
     diceBonus: + @attributes.combat.value
   formula: ''
   weaponClass: ranged
-  weaponType: pistol
-  rangeIncrement: 1
+  weaponType: rifle
+  rangeIncrement: 2
   features:
-    - guard
-    - arc
+    - twoHanded
+    - primative
+    - close
+    - slow2
   modifications: []
   specialAmmo: none
   bonuses:
     attack: 0
     damage: 0
     lethal: 0
-  attackBonus: 2
+  attackBonus: -1
   damageBonus: 1
   lethal: 0
   tierBonuses:
@@ -55,12 +57,12 @@ _stats:
   coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.30
-  createdTime: 1778947044790
-  modifiedTime: 1778951098154
+  createdTime: 1778951196465
+  modifiedTime: 1778951196485
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
-_id: iOk0tQO1WQ7BKcOR
-sort: 100000
-_key: '!items!iOk0tQO1WQ7BKcOR'
+_id: vPCo1VhPgZktDAb3
+sort: 200000
+_key: '!items!vPCo1VhPgZktDAb3'

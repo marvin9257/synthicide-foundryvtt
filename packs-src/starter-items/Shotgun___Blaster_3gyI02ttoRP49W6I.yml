@@ -1,0 +1,20 @@
+type: Item
+folder: hBhWqZ1rEd8a1FR7
+name: Shotgun / Blaster
+color: null
+sorting: a
+_id: 3gyI02ttoRP49W6I
+description: ''
+sort: 100000
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.30
+  createdTime: 1778950981985
+  modifiedTime: 1778951056226
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!folders!3gyI02ttoRP49W6I'

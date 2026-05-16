@@ -11,6 +11,30 @@ import SYNTHICIDE from '../helpers/config.mjs';
 export class SynthicideItem extends foundry.documents.Item {
   
   /**
+   * Foundry hook: Called before the item is created.
+   * Auto-updates weapon image to default.
+   *
+   * @param {object} data - The item data being applied to the item
+   * @param {object} options - Additional update options
+   * @param {string} userId - The ID of the user making the update
+   * @returns {Promise<boolean|void>} - Return false to prevent the update
+   * @override
+   */
+  async _preCreate(data, options, userId) {
+    const allowed = await super._preCreate(data, options, userId);
+    if (allowed === false) return false;
+
+    // Set weapon image from the initialized weaponType, since getDefaultArtwork
+    // is called by Foundry before schema defaults (like weaponType) are applied.
+    if (this.type === 'weapon') {
+      const correctImg = SynthicideItem.getDefaultArtwork(this).img;
+      if (correctImg && this.img !== correctImg) {
+        this.updateSource({ img: correctImg });
+      }
+    }
+    return allowed;
+  }
+  /**
    * Foundry hook: Called before the item is updated.
    * Auto-updates weapon image if weaponType changes and image is default.
    *

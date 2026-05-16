@@ -1,0 +1,46 @@
+folder: nVtAXR4IEfqe6Y9Y
+name: Battle Armor ?
+type: armor
+img: systems/synthicide/assets/icons/items/armor.svg
+system:
+  description: >-
+    <p>Armor increases a character’s armor defense to help resist incoming
+    attacks. A character can only benefit from one set of armor at a time. Armor
+    cannot be donned or removed during battle.</p><p>Full-body ballistic armor
+    with added protection such as kneepads and pauldrons.</p><p>STATS MISSING
+    FROM DOCUMENT</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 200
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  armorBonus: 5
+  stBonus: 2
+  speedMax: 2
+  forceBarrier:
+    max: 0
+    recoveryRate: 0
+    rechargeTime: 0
+  modifications: []
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.30
+  createdTime: 1778954153578
+  modifiedTime: 1778954158773
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: VHjH2qlEj2KcQnPu
+sort: 100000
+_key: '!items!VHjH2qlEj2KcQnPu'

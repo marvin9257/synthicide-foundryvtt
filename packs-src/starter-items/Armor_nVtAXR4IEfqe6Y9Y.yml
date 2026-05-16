@@ -1,0 +1,20 @@
+type: Item
+folder: null
+name: Armor
+color: null
+sorting: a
+_id: nVtAXR4IEfqe6Y9Y
+description: ''
+sort: 0
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.30
+  createdTime: 1778953474608
+  modifiedTime: 1778953474608
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!folders!nVtAXR4IEfqe6Y9Y'

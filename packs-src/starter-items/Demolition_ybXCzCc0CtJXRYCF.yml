@@ -1,0 +1,20 @@
+type: Item
+folder: zUm9hp7KxczXfSI2
+name: Demolition
+color: null
+sorting: a
+_id: ybXCzCc0CtJXRYCF
+description: ''
+sort: 0
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.30
+  createdTime: 1778952409318
+  modifiedTime: 1778952409318
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!folders!ybXCzCc0CtJXRYCF'

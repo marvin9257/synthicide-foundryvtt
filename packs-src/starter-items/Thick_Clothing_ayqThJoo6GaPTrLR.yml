@@ -1,0 +1,45 @@
+folder: nVtAXR4IEfqe6Y9Y
+name: Thick Clothing
+type: armor
+_id: ayqThJoo6GaPTrLR
+img: systems/synthicide/assets/icons/items/armor.svg
+system:
+  description: >-
+    <p>Armor increases a character’s armor defense to help resist incoming
+    attacks. A character can only benefit from one set of armor at a time. Armor
+    cannot be donned or removed during battle.</p><p>Heavy jackets or
+    vacuum-ready suits that offer basic protection from weapons.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 10
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  armorBonus: 2
+  stBonus: 0
+  speedMax: 5
+  forceBarrier:
+    max: 0
+    recoveryRate: 0
+    rechargeTime: 0
+  modifications: []
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.30
+  createdTime: 1778954163355
+  modifiedTime: 1778954163355
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+sort: 0
+_key: '!items!ayqThJoo6GaPTrLR'

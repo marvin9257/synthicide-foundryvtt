@@ -1,35 +1,32 @@
-folder: 0vaMUXDfVCHo8BkM
-name: Arc Pistol
+folder: 5vjrGfZFe1r9ZbgD
+name: Hellfire Rifle
 type: weapon
-img: systems/synthicide/assets/icons/items/pistol.svg
+img: systems/synthicide/assets/icons/items/rifle.svg
 system:
-  description: >-
-    <p>Pistols are small projectile weapons usually wielded in one hand. All
-    small ranged weapons are simplified to belong to the “pistol” type.</p>
+  description: "<p>Rifles are large projectile weapons designed to fire a single payload over long distances. All larger ranged weapons are simplified to belong to the rifle type.<span class=\"Apple-converted-space\">\_</span></p>"
   quantity: 1
   weight: 0
   equipped: false
-  price: 450
+  price: 1500
   roll:
     diceNum: 1
     diceSize: d10
     diceBonus: + @attributes.combat.value
   formula: ''
   weaponClass: ranged
-  weaponType: pistol
-  rangeIncrement: 1
+  weaponType: rifle
+  rangeIncrement: 2
   features:
-    - guard
-    - arc
+    - twoHanded
   modifications: []
   specialAmmo: none
   bonuses:
     attack: 0
     damage: 0
     lethal: 0
-  attackBonus: 2
-  damageBonus: 1
-  lethal: 0
+  attackBonus: 3
+  damageBonus: 4
+  lethal: 8
   tierBonuses:
     '1':
       attack: 0
@@ -55,12 +52,12 @@ _stats:
   coreVersion: '14.361'
   systemId: synthicide
   systemVersion: 1.0.30
-  createdTime: 1778947044790
-  modifiedTime: 1778951098154
+  createdTime: 1778951181862
+  modifiedTime: 1778951196485
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
   duplicateSource: null
-_id: iOk0tQO1WQ7BKcOR
+_id: va68l5nCTNMQl3ln
 sort: 100000
-_key: '!items!iOk0tQO1WQ7BKcOR'
+_key: '!items!va68l5nCTNMQl3ln'

@@ -1,0 +1,40 @@
+folder: P81RRCGNgoD4Do2S
+name: Ballistic Shield
+type: shield
+img: systems/synthicide/assets/icons/items/shield.svg
+system:
+  description: >-
+    <p>Shields offer valuable defensive options in close and ranged
+    combat.</p><p>An oversized shield built for military use, offering
+    substantial frontal protection. If you take the defend action with a
+    ballistic shield, one engaged ally may also count as having cover against
+    attacks coming from the same angle you’ve chosen to shield against.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 50
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  adBonus: 2
+  modifications: []
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.30
+  createdTime: 1778954381951
+  modifiedTime: 1778954381951
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: SIPUImL2ieZpSYu1
+sort: 0
+_key: '!items!SIPUImL2ieZpSYu1'

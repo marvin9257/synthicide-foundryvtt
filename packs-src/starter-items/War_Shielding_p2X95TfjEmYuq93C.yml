@@ -1,0 +1,45 @@
+folder: nVtAXR4IEfqe6Y9Y
+name: War Shielding
+type: armor
+img: systems/synthicide/assets/icons/items/armor.svg
+system:
+  description: >-
+    <p>Armor increases a character’s armor defense to help resist incoming
+    attacks. A character can only benefit from one set of armor at a time. Armor
+    cannot be donned or removed during battle.</p><p>Advanced body armor made
+    with ultra-hard materials and heat-dispersion technology.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 400
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  armorBonus: 6
+  stBonus: 3
+  speedMax: 1
+  forceBarrier:
+    max: 0
+    recoveryRate: 0
+    rechargeTime: 0
+  modifications: []
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.30
+  createdTime: 1778954169169
+  modifiedTime: 1778954169169
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: p2X95TfjEmYuq93C
+sort: 0
+_key: '!items!p2X95TfjEmYuq93C'
