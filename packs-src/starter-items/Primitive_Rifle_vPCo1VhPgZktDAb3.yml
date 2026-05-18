@@ -20,7 +20,7 @@ system:
   rangeIncrement: 2
   features:
     - twoHanded
-    - primative
+    - primitive
     - close
     - slow2
   modifications: []

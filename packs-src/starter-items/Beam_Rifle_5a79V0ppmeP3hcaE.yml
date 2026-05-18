@@ -18,6 +18,7 @@ system:
   rangeIncrement: 3
   features:
     - twoHanded
+    - beamWaveHellfire
   modifications: []
   specialAmmo: none
   bonuses:

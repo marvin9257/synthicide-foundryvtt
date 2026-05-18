@@ -48,8 +48,18 @@ export class SynthicideItem extends foundry.documents.Item {
     const allowed = await super._preUpdate(update, options, userId);
     if (allowed === false) return false;
 
+    const weaponClassChanged = this.type === 'weapon' && update?.system?.weaponClass && update.system.weaponClass !== this.system.weaponClass;
+    let weaponTypeChanged = this.type === 'weapon' && update?.system?.weaponType && update.system.weaponType !== this.system.weaponType;
+
+    // Any weapon class/type change invalidates selected features, ammo and modifications.
+    if (weaponClassChanged || weaponTypeChanged) {
+      foundry.utils.setProperty(update, 'system.features', []);
+      foundry.utils.setProperty(update, 'system.modifications', []);
+      foundry.utils.setProperty(update, 'system.specialAmmo', 'none');
+    }
+
     // If weapon class changes, choose first valid type as default
-    if (this.type === 'weapon' && update?.system?.weaponClass && update.system.weaponClass !== this.system.weaponClass) {
+    if (weaponClassChanged) {
       const newClass = update.system.weaponClass;
       const validTypes = SYNTHICIDE.WEAPON_TYPES[newClass];
       const validTypeKeys = validTypes ? Object.keys(validTypes) : [];
@@ -57,17 +67,13 @@ export class SynthicideItem extends foundry.documents.Item {
         // Only set if not already being set or if invalid
         if (!update.system.weaponType || !validTypeKeys.includes(update.system.weaponType)) {
           foundry.utils.setProperty(update, 'system.weaponType', validTypeKeys[0]);
+          weaponTypeChanged = true;
         }
       }
-
-      // Any weaponClass change invalidates selected ammo.
-      foundry.utils.setProperty(update, 'system.specialAmmo', 'none');
     }
 
     // If weaponType is being changed, potentially change img unless user defined
-    if (this.type === 'weapon' && update?.system?.weaponType && update.system.weaponType !== this.system.weaponType) {
-      foundry.utils.setProperty(update, 'system.specialAmmo', 'none');
-
+    if (weaponTypeChanged) {
       // The current (pre-update) weaponType
       const currentWeaponType = this.system.weaponType;
       // The new weaponType being set

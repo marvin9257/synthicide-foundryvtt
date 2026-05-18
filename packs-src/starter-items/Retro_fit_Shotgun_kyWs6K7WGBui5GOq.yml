@@ -24,6 +24,7 @@ system:
     - twoHanded
     - close
     - spread
+    - retroFit
   modifications: []
   specialAmmo: none
   bonuses:

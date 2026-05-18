@@ -21,6 +21,7 @@ system:
   features:
     - blast5
     - plant12
+    - twoHanded
   modifications: []
   specialAmmo: none
   bonuses:

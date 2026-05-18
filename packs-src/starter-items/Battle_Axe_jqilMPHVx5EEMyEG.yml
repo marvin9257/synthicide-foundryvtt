@@ -19,7 +19,7 @@ system:
   rangeIncrement: 0
   features:
     - twoHanded
-    - primative
+    - primitive
   modifications: []
   specialAmmo: none
   bonuses:

@@ -20,6 +20,7 @@ system:
   rangeIncrement: 2
   features:
     - guard
+    - beamWaveHellfire
   modifications: []
   specialAmmo: none
   bonuses:

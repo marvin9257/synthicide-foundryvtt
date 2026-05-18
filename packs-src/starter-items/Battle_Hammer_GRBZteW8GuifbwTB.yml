@@ -17,7 +17,7 @@ system:
   weaponType: hammer
   rangeIncrement: 0
   features:
-    - primative
+    - primitive
     - twoHanded
   modifications: []
   specialAmmo: none

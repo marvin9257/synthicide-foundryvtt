@@ -384,22 +384,26 @@ SYNTHICIDE.WEAPON_TYPES = {
 SYNTHICIDE.WEAPON_FEATURES = {
   melee: {
     twoHanded: "SYNTHICIDE.Item.Weapon.Melee.Feature.TwoHanded",
-    primative: "SYNTHICIDE.Item.Weapon.Melee.Feature.Primative",
+    primitive: "SYNTHICIDE.Item.Weapon.Melee.Feature.Primitive",
     counter: "SYNTHICIDE.Item.Weapon.Melee.Feature.Counter",
     guard: "SYNTHICIDE.Item.Weapon.Melee.Feature.Guard",
     arc: "SYNTHICIDE.Item.Weapon.Melee.Feature.Arc"
   },
   ranged: {
-    twoHanded: "SYNTHICIDE.Item.Weapon.Melee.Feature.TwoHanded",
-    primative: "SYNTHICIDE.Item.Weapon.Melee.Feature.Primative",
+    twoHanded: "SYNTHICIDE.Item.Weapon.Ranged.Feature.TwoHanded",
+    primitive: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Primitive",
+    fossil: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Fossil",
+    retroFit: "SYNTHICIDE.Item.Weapon.Ranged.Feature.RetroFit",
     close: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Close",
     guard: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Guard",
     slow1: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Slow1",
     slow2: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Slow2",
     spread: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Spread",
-    arc: "SYNTHICIDE.Item.Weapon.Melee.Feature.Arc"
+    arc: "SYNTHICIDE.Item.Weapon.Ranged.Feature.Arc",
+    beamWaveHellfire: "SYNTHICIDE.Item.Weapon.Ranged.Feature.BeamWaveHellfire"
   },
   demolition: {
+    twoHanded: "SYNTHICIDE.Item.Weapon.Demolition.Feature.TwoHanded",
     blast3: "SYNTHICIDE.Item.Weapon.Demolition.Feature.Blast3",
     blast5: "SYNTHICIDE.Item.Weapon.Demolition.Feature.Blast5",
     stun: "SYNTHICIDE.Item.Weapon.Demolition.Feature.Stun",
@@ -410,8 +414,13 @@ SYNTHICIDE.WEAPON_FEATURES = {
 SYNTHICIDE.WEAPON_MODIFICATIONS = {
   melee: {
     none: "SYNTHICIDE.Item.Weapon.Melee.Modification.None",
-    expertCrafting: "SYNTHICIDE.Item.Weapon.Melee.Modification.ExpertCrafting",
-    minaturized: "SYNTHICIDE.Item.Weapon.Melee.Modification.Minaturized",
+    expertCrafting1: "SYNTHICIDE.Item.Weapon.Melee.Modification.ExpertCrafting1",
+    expertCrafting2: "SYNTHICIDE.Item.Weapon.Melee.Modification.ExpertCrafting2",
+    expertCrafting3: "SYNTHICIDE.Item.Weapon.Melee.Modification.ExpertCrafting3",
+    battleAssist1: "SYNTHICIDE.Item.Weapon.Melee.Modification.BattleAssist1",
+    battleAssist2: "SYNTHICIDE.Item.Weapon.Melee.Modification.BattleAssist2",
+    battleAssist3: "SYNTHICIDE.Item.Weapon.Melee.Modification.BattleAssist3",
+    miniaturized: "SYNTHICIDE.Item.Weapon.Melee.Modification.Miniaturized",
     baneTuneOrganics: "SYNTHICIDE.Item.Weapon.Melee.Modification.BaneTuneOrganics",
     baneTuneSynthetics: "SYNTHICIDE.Item.Weapon.Melee.Modification.BaneTuneSynthetics",
     reach: "SYNTHICIDE.Item.Weapon.Melee.Modification.Reach",
@@ -422,12 +431,16 @@ SYNTHICIDE.WEAPON_MODIFICATIONS = {
   ranged: {
     none: "SYNTHICIDE.Item.Weapon.Ranged.Modification.None",
     longRange: "SYNTHICIDE.Item.Weapon.Ranged.Modification.LongRange",
-    expertCrafting: "SYNTHICIDE.Item.Weapon.Ranged.Modification.ExpertCrafting",
+    expertCrafting1: "SYNTHICIDE.Item.Weapon.Ranged.Modification.ExpertCrafting1",
+    expertCrafting2: "SYNTHICIDE.Item.Weapon.Ranged.Modification.ExpertCrafting2",
+    expertCrafting3: "SYNTHICIDE.Item.Weapon.Ranged.Modification.ExpertCrafting3",
     snubNose: "SYNTHICIDE.Item.Weapon.Ranged.Modification.SnubNose",
     fullAuto: "SYNTHICIDE.Item.Weapon.Ranged.Modification.FullAuto",
     silencing: "SYNTHICIDE.Item.Weapon.Ranged.Modification.Silencing",
-    battleAssist: "SYNTHICIDE.Item.Weapon.Ranged.Modification.BattleAssist",
-    minaturized: "SYNTHICIDE.Item.Weapon.Ranged.Modification.Minaturized",
+    battleAssist1: "SYNTHICIDE.Item.Weapon.Ranged.Modification.BattleAssist1",
+    battleAssist2: "SYNTHICIDE.Item.Weapon.Ranged.Modification.BattleAssist2",
+    battleAssist3: "SYNTHICIDE.Item.Weapon.Ranged.Modification.BattleAssist3",
+    miniaturized: "SYNTHICIDE.Item.Weapon.Ranged.Modification.Miniaturized",
     baneTuneOrganics: "SYNTHICIDE.Item.Weapon.Ranged.Modification.BaneTuneOrganics",
     baneTuneSynthetics: "SYNTHICIDE.Item.Weapon.Ranged.Modification.BaneTuneSynthetics",
     scanningScope: "SYNTHICIDE.Item.Weapon.Ranged.Modification.ScanningScope",
@@ -437,7 +450,7 @@ SYNTHICIDE.WEAPON_MODIFICATIONS = {
     rapidReload: "SYNTHICIDE.Item.Weapon.Ranged.Modification.RapidReload"
   },
   demolition: {
-    none: "SYNTHICIDE.Item.Weapon.Ranged.Modification.None"
+    none: "SYNTHICIDE.Item.Weapon.Demolition.Modification.None"
   }
 };
 

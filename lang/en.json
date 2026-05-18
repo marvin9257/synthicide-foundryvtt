@@ -553,21 +553,26 @@
           "Sword": "Sword",
           "Feature": {
             "TwoHanded": "Two Handed",
-            "Primative": "Primative",
+            "Primitive": "Primitive",
             "Counter": "Counter",
             "Guard": "Guard",
             "Arc": "Arc"
           },
           "Modification" : {
             "None": "None",
-            "ExpertCrafting": "Expert Crafting",
-            "Minaturized": "Minaturized",
+            "ExpertCrafting1": "Expert Crafting (1)",
+            "ExpertCrafting2": "Expert Crafting (2)",
+            "ExpertCrafting3": "Expert Crafting (3)",
+            "BattleAssist1": "Battle Assist (1)",
+            "BattleAssist2": "Battle Assist (2)",
+            "BattleAssist3": "Battle Assist (3)",
+            "Miniaturized": "Miniaturized",
             "BaneTuneOrganics": "Bane Tune (Organics)",
             "BaneTuneSynthetics": "Bane Tune (Synthetics)",
             "Reach": "Reach",
             "Telescoping": "Telescoping",
             "EnhancedAlloy": "Enhanced Alloy",
-            "PoisonReservoir": "Poison Reservior"
+            "PoisonReservoir": "Poison Reservoir"
           }
         },
         "Ranged": {
@@ -578,7 +583,11 @@
           "Shotgun": "Shotgun",
           "Feature": {
             "TwoHanded": "Two Handed",
-            "Primative": "Primative",
+            "Primitive": "Primitive",
+            "Fossil": "Fossil",
+            "RetroFit": "Retro-fit",
+            "Arc": "Arc",
+            "BeamWaveHellfire": "Beam/Wave/Hellfire",
             "Close": "Close",
             "Guard": "Guard",
             "Slow1": "Slow 1",
@@ -588,12 +597,17 @@
           "Modification": {
             "None": "None",
             "LongRange": "Long Range",
-            "ExpertCrafting": "Expert Crafting",
+            "ExpertCrafting1": "Expert Crafting (1)",
+            "ExpertCrafting2": "Expert Crafting (2)",
+            "ExpertCrafting3": "Expert Crafting (3)",
+            "BattleAssist1": "Battle Assist (1)",
+            "BattleAssist2": "Battle Assist (2)",
+            "BattleAssist3": "Battle Assist (3)",
             "SnubNose": "Snub Nose",
             "FullAuto": "Full Auto",
             "Silencing": "Silencing",
             "BattleAssist": "Battle Assist",
-            "Minaturized": "Minaturized",
+            "Miniaturized": "Miniaturized",
             "BaneTuneOrganics": "Bane Tune (Organics)",
             "BaneTuneSynthetics": "Bane Tune (Synthetics)",
             "ScanningScope": "Scanning Scope",
@@ -623,11 +637,15 @@
           "Mine": "Mine",
           "Charge": "Charge",
           "Feature": {
+            "TwoHanded": "Two Handed",
             "Blast3": "Blast 3",
             "Blast5": "Blast 5",
             "Stun": "Stun",
             "Plant8": "Plant 8",
             "Plant12": "Plant12"
+          }
+          ,"Modification": {
+            "None": "None"
           }
         },
         "FIELDS": {

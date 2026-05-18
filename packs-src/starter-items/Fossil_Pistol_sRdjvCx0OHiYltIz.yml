@@ -20,6 +20,7 @@ system:
   rangeIncrement: 1
   features:
     - guard
+    - fossil
   modifications: []
   specialAmmo: none
   bonuses:

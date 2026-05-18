@@ -24,6 +24,7 @@ system:
     - twoHanded
     - close
     - spread
+    - fossil
   modifications: []
   specialAmmo: none
   bonuses:

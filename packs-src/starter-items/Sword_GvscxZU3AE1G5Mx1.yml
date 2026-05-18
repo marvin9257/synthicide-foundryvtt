@@ -20,7 +20,7 @@ system:
   features:
     - twoHanded
     - guard
-    - primative
+    - primitive
   modifications: []
   specialAmmo: none
   bonuses:

@@ -207,7 +207,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       context.weaponClasses = SYNTHICIDE.WEAPON_CLASSES;
       context.weaponTypes = SYNTHICIDE.WEAPON_TYPES[this.item.system.weaponClass];
       context.weaponFeaturesOptions = SYNTHICIDE.WEAPON_FEATURES[this.item.system.weaponClass];
-      context.weaponModificationsOptions = SYNTHICIDE.WEAPON_MODIFICATIONS[this.item.system.weaponClass];
+      context.weaponModificationsOptions = this._getValidModifications();
       if (this.item.system.weaponClass === "ranged") {
         context.weaponAmmoOptions = this._getValidAmmo();
       }
@@ -288,21 +288,87 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
 
   _getValidAmmo() {
     if (this.item.type !== 'weapon' || this.item.system.weaponClass !== 'ranged') return {};
-    let validKeys;
-    switch (this.item.system.weaponType) {
-      case 'pistol':
-      case 'rifle':
-        validKeys = ['none', 'cryo', 'cinder', 'homing', 'poison', 'powerWounding', 'anchor', 'bouncing', 'piercing'];
-        break;
-      case 'shotgun':
-        validKeys = ['none', 'cryo', 'cinder', 'knockBack', 'flash', 'anchor'];
-        break;
-      default:
-        validKeys = ['none', 'cryo', 'cinder', 'anchor'];
+    
+    let validKeys = ['none'];
+    if (!this.item.system.features.has('fossil') && !this.item.system.features.has('retroFit')) {
+      validKeys.push('cryo', 'cinder', 'anchor')
+      switch (this.item.system.weaponType) {
+        case 'pistol':
+        case 'rifle':
+          validKeys.push('homing', 'poison', 'powerWounding', 'bouncing', 'piercing');
+          break;
+        case 'shotgun':
+          validKeys.push('knockBack', 'flash');
+          break;
+        default:
+          break;
+      }
     }
+    
     return Object.fromEntries(
       Object.entries(SYNTHICIDE.WEAPON_AMMO).filter(([k]) => validKeys.includes(k))
     );
+  }
+
+  _getValidModifications() {
+    if (this.item.type !== 'weapon') return {};
+    const itemSystem = this.item.system;
+    let validKeys = ['none'];
+    switch (itemSystem.weaponClass) {
+      case 'melee': {
+        validKeys.push('expertCrafting1', 'expertCrafting2', 'expertCrafting3', 'miniaturized', 'enhancedAlloy');
+        
+        if (!itemSystem.features.has('primitive')) {
+          validKeys.push('battleAssist1', 'battleAssist2', 'battleAssist3', 'baneTuneOrganics', 'baneTuneSynthetics' );
+        } else  {
+          if (['knife', 'sword'].includes(itemSystem.weaponType)) {
+            validKeys.push('poisonReservoir');
+          }
+        }
+
+        if (itemSystem.features.has('twoHanded')) {
+          validKeys.push('reach');
+          if ( itemSystem.modifications.has('miniaturized')) {
+            validKeys.push('telescoping');
+          }
+        }
+        break;
+      }
+      case 'ranged': {
+        validKeys.push('expertCrafting1', 'expertCrafting2', 'expertCrafting3', 'miniaturized', 'scanningScope');
+        if (['pistol', 'rifle'].includes(itemSystem.weaponType)) {
+          validKeys.push('longRange');
+        }
+        if (!itemSystem.features.has('primitive')) {
+          validKeys.push('highPowered');
+          if (itemSystem.weaponType === 'pistol') {
+            validKeys.push('snubNose');
+          }
+          if(itemSystem.weaponType !== 'shotgun') {
+            validKeys.push('fullAuto', 'silencing');
+          }
+          if (!itemSystem.features.has('fossil')) {
+            validKeys.push('battleAssist1', 'battleAssist2', 'battleAssist3');
+          }
+        } else {
+          validKeys.push('rapidReload', 'doubleShot');
+        }
+        if (itemSystem.features.has('beamWaveHellfire')) {
+          validKeys.push('baneTuneOrganics', 'baneTuneSynthetics');
+        }
+        if (itemSystem.weaponType === 'shotgun' && !validKeys.includes('doubleShot')) {
+          validKeys.push('slugShot', 'doubleShot');
+        }
+        break;
+      }
+      default:
+        break;
+    }
+    // Get rid of duplicates just in case, since some mods can be added by multiple features
+    validKeys = Array.from(new Set(validKeys || []));
+
+    const mods = SYNTHICIDE.WEAPON_MODIFICATIONS[itemSystem.weaponClass] || {};
+    return Object.fromEntries(Object.entries(mods).filter(([k]) => validKeys.includes(k)));
   }
 
   /**************

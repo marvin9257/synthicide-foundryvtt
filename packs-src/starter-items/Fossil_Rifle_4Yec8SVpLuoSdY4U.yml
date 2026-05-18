@@ -18,6 +18,7 @@ system:
   rangeIncrement: 2
   features:
     - twoHanded
+    - fossil
   modifications: []
   specialAmmo: none
   bonuses:

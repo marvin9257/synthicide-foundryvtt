@@ -19,7 +19,7 @@ system:
   rangeIncrement: 0
   features:
     - counter
-    - primative
+    - primitive
   modifications: []
   specialAmmo: none
   bonuses:
