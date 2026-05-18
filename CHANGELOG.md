@@ -1,3 +1,10 @@
+## [1.0.32](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.31...1.0.32) (2026-05-18)
+
+
+### Bug Fixes
+
+* Better restrict modifications and ammo to weapon type ([0b774e0](https://github.com/marvin9257/synthicide-foundryvtt/commit/0b774e082a70b1c9eec948485e52d94fb84c6339))
+
 ## [1.0.31](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.30...1.0.31) (2026-05-16)
 
 
