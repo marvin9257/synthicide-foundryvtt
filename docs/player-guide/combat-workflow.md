@@ -15,11 +15,12 @@ Show how to run a smooth turn in Foundry combat using Synthicide tools.
 1. Start your turn by checking current resources.
 2. Confirm Force Barrier, HP, Resolve, Cynicism, and current AP.
 3. Perform movement and action decisions per your table rules.
-4. Use challenge or attack rolls from your actor sheet.
-5. Resolve hit, damage, and follow-up effects from chat output.
-6. End your turn after applying all required manual outcomes.
+4. When preparing an attack, verify weapon modifications and special ammo selection on your weapon item (if applicable).
+5. Use challenge or attack rolls from your actor sheet.
+6. Resolve hit, damage, and follow-up effects from chat output (including any non-automated modification or ammo effects).
+7. End your turn after applying all required manual outcomes.
 
-Example turn: check AP/Force Barrier -> make an attack roll from a weapon -> apply chat result -> update any manual effects -> end turn.
+Example turn: check AP/Force Barrier -> select weapon modifications if needed -> make an attack roll from a weapon -> apply chat result and any manual effects -> end turn.
 
 ## What Happens Automatically
 
@@ -32,8 +33,11 @@ Example: if Force Barrier has a positive current value and recovery rate, it can
 ## What You Must Set Manually
 
 1. Tactical choices and target declarations.
-2. Any effects not directly auto-applied by the roll flow.
-3. Rule interpretations your table tracks manually.
+2. Weapon modification selections and special ammo type before rolling (check your weapon items for these fields).
+3. Any effects from non-automated modifications, special ammo, or traits.
+4. Rule interpretations your table tracks manually.
+
+Example: before using a weapon, open it to set or verify modifications and ammo if needed.
 
 ## Limitations and Not Implemented
 

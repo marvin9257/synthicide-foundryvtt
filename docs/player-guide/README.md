@@ -46,10 +46,11 @@ Use these expectations while reading every page in this guide:
 5. Trait levels for regular (non-feature) traits are milestone-based (1, 4, 7).
 6. Outcomes tied to situational text still require player/GM judgment at resolution time (example: conditional bonuses and narrative effects in trait text).
 7. Cybernetics currently shows slot context, but many package and implant effects from the rules update still require manual handling.
-8. Item modification selectors exist on weapon/armor/shield sheets, but most modification effects are not auto-applied by rules logic. Treat them as tracking fields unless your GM has added explicit modifiers/effects.
-9. Special ammo selection exists on ranged weapons, but most ammo-specific rule effects (for example cryo/cinder/homing/flash/anchor behaviors) require manual resolution.
-10. Advanced shield behaviors from the rules update (angle lock, ranged cover state, ballistic shared cover, and similar tactical handling) do not have full dedicated automation and usually need manual adjudication.
-11. Force barrier handles absorption and turn-start recovery, but overload and recharge timing from the rules kit must still be tracked manually.
+8. **Weapon modification mechanics**: Only these modifications have automatic attack/damage bonus application: Battle Assist (attack), Expert Crafting (damage), Enhanced Alloy (attack), Bane Tune (attack vs target type), Arc (attack bonus + collateral cards on ranged hits), Double Shot (collateral cards), and Slug Shot (damage calculation). All other modifications are tracking fields and require manual implementation. See [Weapons, Armor, Shields, and Gear](weapons-armor-shields-and-gear.md) for full details.
+9. **Special ammo**: Selection exists on ranged weapons, but almost all ammo-specific rule effects (for example cryo/cinder/homing/flash/anchor/poison behaviors) require manual resolution by your table.
+10. **Weapon features**: Most features are descriptive. Only Arc feature provides automatic attack bonuses and collateral cards on ranged hits.
+11. Advanced shield behaviors from the rules update (angle lock, ranged cover state, ballistic shared cover, and similar tactical handling) do not have full dedicated automation and usually need manual adjudication.
+12. Force barrier handles absorption and turn-start recovery, but overload and recharge timing from the rules kit must still be tracked manually.
 
 ## Key Terms (Plain Language)
 

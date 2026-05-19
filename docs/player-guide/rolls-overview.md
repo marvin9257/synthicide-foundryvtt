@@ -76,10 +76,18 @@ Shows the d10 result used in the roll.
 3. Effect or outcome row:
 Shows success/failure text and effect-oriented labels when present.
 4. Details panel:
-Expands to show full equation, term-by-term contributions, and metadata rows.
+Expands to show full equation, term-by-term contributions, including automatic modification bonuses (Battle Assist, Expert Crafting, etc.).
 5. Follow-up buttons:
 Roll Damage appears on qualifying attack/demolition cards.
 Roll Opposed appears on challenge cards where contested resolution is needed.
+6. Collateral cards (if applicable):
+For weapon attacks with modifications like Arc or Double Shot, additional per-target damage cards may appear. Apply these to each corresponding target.
+
+## Important: Damage Floor and Modification Mechanics
+
+1. **Zero Damage Floor**: Damage rolls cannot produce less than 0 damage, even if target defenses or penalties reduce the total below zero.
+2. **Modification Bonuses**: Only automatic modification bonuses (Battle Assist, Expert Crafting, Enhanced Alloy, Bane Tune when applicable, Arc bonus to attack) are included in chat card calculations. All other modification effects must be applied manually.
+3. **Special Ammo**: Ammo type selection does not automatically apply mechanical effects. Ammo effects must be resolved by your table.
 
 ## Applying Damage or Healing From Chat Cards
 
@@ -98,30 +106,44 @@ Example: attack card -> open details to verify ATT, attribute, and range terms -
 
 1. Dialog defaults are populated from your actor and the item you clicked.
 2. Attack and demolition defaults pull source item values for ATT, DMG, and range-related fields.
-3. Equation breakdown and card details are rendered in chat.
-4. Follow-up actions such as Roll Damage or Roll Opposed appear on qualifying cards.
-5. Chat message context menu includes Apply Damage and Apply Healing when a visible roll card exists and at least one token is controlled.
-6. Actor-level modifiers are aggregated during actor preparation and used as the read-only roll modifiers shown in the dialog.
+3. Automatic modification bonuses (Battle Assist, Expert Crafting, Enhanced Alloy, Bane Tune, Arc attack bonus) are calculated and included in the roll.
+4. Equation breakdown and card details are rendered in chat, including modification bonus terms.
+5. Follow-up actions such as Roll Damage or Roll Opposed appear on qualifying cards.
+6. Collateral cards may appear for weapons with Arc or Double Shot modifications.
+7. Chat message context menu includes Apply Damage and Apply Healing when a visible roll card exists and at least one token is controlled.
+8. Damage cards apply a zero damage floor (damage cannot go below 0).
+9. Actor-level modifiers are aggregated during actor preparation and used as the read-only roll modifiers shown in the dialog.
 
-Example: an attack roll card can show the computed terms and then expose a follow-up damage action when valid.
+Example: an attack roll card can show the computed terms including modification bonuses and then expose a follow-up damage action when valid.
+Example: a weapon with Battle Assist +2, Expert Crafting +1, and Arc feature shows all three bonuses in the card details.
 
 ## What You Must Set Manually
 
 1. Situation-specific modifiers and target assumptions.
 2. Accurate target Armor Defense (AD) and shield values.
-3. Any GM-required interpretation and outcomes after the roll.
-4. Follow-up execution timing (when to click damage/opposed and when to stop for table adjudication).
-5. Token selection before using chat-card Apply Damage or Apply Healing.
+3. Weapon modification selections and special ammo type (open the weapon item to set these before rolling).
+4. Any effects from non-automated modifications, special ammo, or conditional traits.
+5. Any GM-required interpretation and outcomes after the roll.
+6. Follow-up execution timing (when to click damage/opposed and when to stop for table adjudication).
+7. Token selection before using chat-card Apply Damage or Apply Healing.
+8. Collateral card damage application (for Arc/Double Shot attacks, manually apply each collateral card to targets).
 
 ## Limitations and Not Implemented
 
 1. Chat cards do not auto-apply every result to actor state (example: follow-up effects may still need manual application after chat output).
 2. Incorrect source item values carry directly into defaults (example: wrong weapon ATT means wrong prefilled attack bonus).
 3. Opposed rolls and certain post-roll actions still require manual follow-up in chat (they are separate clicks, not an auto-chain).
-4. Special ammo effects from the rules kit are not auto-resolved in roll math/cards (example: cryo AP reduction, cinder ongoing fire, and homing follow-up behavior are handled manually).
-5. Weapon modification labels do not apply all rules text by themselves (example: long range, slug shot mode, and full auto behavior only affect math when explicit item stats/modifiers are authored).
-6. Item modifiers are evaluated during actor preparation and must be deterministic: authors should use the `formula` field. Per-roll evaluation of item formulas or "roll-context" modifier behavior is not supported.
-7. Demolition and attack follow-up output can depend on correct target/token setup; missing context may block or degrade expected automation.
+4. **Not all modification, ammo, and feature effects are automated**. Only the following have automatic mechanical application:
+   - Battle Assist (attack bonus)
+   - Expert Crafting (damage bonus)
+   - Enhanced Alloy (attack bonus)
+   - Bane Tune (attack bonus vs target type)
+   - Arc feature (attack bonus vs synthetics; collateral cards on hit)
+   - Double Shot (generates collateral cards)
+   - Slug Shot (damage calculation)
+   All other modifications, features, and ammo effects require manual resolution at your table.
+5. Item modifiers are evaluated during actor preparation and must be deterministic: authors should use the `formula` field. Per-roll evaluation of item formulas or "roll-context" modifier behavior is not supported.
+6. Demolition and attack follow-up output can depend on correct target/token setup; missing context may block or degrade expected automation.
 7. Apply Damage and Apply Healing use currently controlled tokens, so applying to the wrong token is possible if selection is wrong.
 
 ## Troubleshooting
@@ -149,6 +171,18 @@ A: Expand details and verify attribute value, misc modifier, actor roll modifier
 ### Q: I do not see Apply Damage when I right-click a chat card. What should I check?
 
 A: Confirm the message is a visible roll/result card and confirm at least one token is currently selected on the canvas.
+
+### Q: Why is my attack bonus lower than expected?
+
+A: Check the weapon item for modifications. Only automatic modifications (Battle Assist, Enhanced Alloy, Bane Tune when applicable, Arc) apply bonuses. Others require manual tracking. Also verify you selected the correct weapon before rolling.
+
+### Q: I see extra damage cards in chat for my attack. What are these?
+
+A: These are collateral cards from Arc feature or Double Shot modification. Apply each one to the corresponding target using right-click Apply Damage, just like the main damage card.
+
+### Q: My weapon modification is not affecting the roll. Why?
+
+A: Check which modifications have automatic mechanics. See the [Weapons, Armor, Shields, and Gear guide](weapons-armor-shields-and-gear.md#modifications-with-automatic-mechanics) for the full list. For non-automatic modifications and all ammo effects, apply bonuses or effects manually at your table.
 
 ## Related Pages
 

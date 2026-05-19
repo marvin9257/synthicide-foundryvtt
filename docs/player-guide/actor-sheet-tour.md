@@ -2,109 +2,130 @@
 
 ## Purpose
 
-Learn where everything lives on the actor sheet so turns move faster.
+Know where to find things during play.
 
-## Before You Start
+## Interactive Elements by Section
 
-1. Open your actor sheet.
-2. Confirm your sheet is editable.
+### Header (Top of Sheet)
 
-## Steps
+| Element | Icon | Action |
+|---------|------|--------|
+| Actor portrait | Image | Click to choose a new portrait image |
+| Resolve +/- | Plus/Minus buttons | Adjust Resolve by one step (during play) |
+| Cynicism +/- | Plus/Minus buttons | Adjust Cynicism by one step (during play) |
+| HP field | Numeric input | Click and type to set exact HP value |
+| Force Barrier field | Numeric input | Click and type to set exact Force Barrier value |
+| Other numeric fields | Numeric inputs | Level, Lurans, etc. — click to edit |
 
-1. In the header, set character name, level, motivation, and currency.
-2. In the header, check HP, Force Barrier, Resolve, and Cynicism.
-3. Open the Attributes tab and review base attributes and increase controls.
-4. Open the Bioclass tab and confirm the active bioclass and generated bioclass traits.
-5. Open the Aspect tab and confirm the active aspect, ability list, and generated aspect traits.
-6. Open the Combat tab and review armor, shields, weapons, and equip state.
-7. Open the Gear tab and review general rollable gear items.
-8. Open the Traits tab and review milestone trait entries.
-9. Open the Biography tab and review character notes.
+### Attributes Tab
 
-## Click Actions Reference
+| Element | Icon | Action |
+|---------|------|--------|
+| Attribute icon (e.g., Awareness) | Circle with symbol | Click to open a challenge roll dialog for that attribute |
+| Attribute name | Text/field | Click to edit the base attribute value |
+| Attribute +/- buttons | Plus/Minus | Adjust increase pips (0-5); affects derived stats |
 
-Use this section as your quick map for what is clickable on the actor sheet.
+### Combat Tab (Armor, Shields, Weapons)
 
-1. Header portrait image:
-Clicking your actor portrait opens image selection/edit for the actor portrait.
-Use it when you want a clear token/sheet identity in chat and combat tracking.
-2. Header resource +/- buttons (Resolve, Cynicism, Food Days):
-Clicking + or - changes the resource by one step within its allowed bounds.
-Use it during play to track fast-changing resources without typing values every time.
-3. Header numeric fields (HP, Force Barrier, Level, Lurans, and similar inputs):
-Clicking into the field lets you type a direct value.
-Use it for exact updates from damage, healing, leveling, economy, or table rulings.
-4. Attribute icon (left side icon in each attribute row):
-Clicking the icon opens a challenge roll dialog for that attribute.
-Use it for non-attack checks so the roll starts with the correct attribute already selected.
-5. Attribute increase +/- buttons:
-Clicking + or - changes that attribute's increase pips between 0 and 5.
-Use it when applying progression increases so derived values recalculate from the updated attribute.
-6. Combat tab equip checkbox icon (square/square-check):
-Clicking the equip icon toggles equipped state for armor, shield, or weapon.
-Use it whenever your active loadout changes because equipped state affects derived defenses and roll defaults.
-7. Combat tab weapon attack controls (crosshair icon and weapon image roll click):
-Clicking opens the attack roll flow for that specific weapon.
-Use it when making attacks so ATT, DMG, and range increment defaults come from the selected weapon.
-8. Item create button (plus icon in tab headers):
-Clicking + creates a new embedded item of that tab's type (weapon, armor, shield, gear, trait, or effect).
-Use it when building an actor manually or adding new gear/features during advancement.
-9. Item edit button (pencil icon):
-Clicking opens that item sheet.
-Use it to update source values (for example ATT/DMG, range increment, trait choices, or effect text).
-10. Item delete button (trash icon):
-Clicking removes that embedded item/effect from the actor.
-Use it to clean up wrong drops, replace outdated entries, or remove temporary items.
-11. Bioclass/Aspect/Cybernetics info button (info-circle icon):
-Clicking opens a quick description view for the linked feature.
-Use it for at-table rules reminders without opening full item edit views.
-12. Bioclass/Aspect generated trait edit/delete buttons:
-Clicking edit opens the generated trait; clicking trash removes that trait from the actor.
-Use edit to finalize choice-based generated traits, and delete to remove incorrect generated entries before re-adding.
-13. Gear/Traits item image roll click:
-Clicking the item image rolls that item's configured behavior.
-Use it for item-driven rolls without manually building formulas in chat.
-14. Effects tab toggle icon (check/x):
-Clicking toggles an effect active/inactive state.
-Use it when conditions start/end so the actor's active effects match current combat state.
+| Element | Icon | Action |
+|---------|------|--------|
+| Equip checkbox | Square or checkmark | Click to toggle equipped state (affects defenses) |
+| Item name | Text/link | Click to open the item sheet for editing |
+| Item icon/image | Weapon/armor image | Click to roll an attack or use that item |
+| Edit button | Pencil icon | Click to open the item sheet for detailed editing |
+| Delete button | Trash icon | Click to remove the item from your actor |
+| Add new item | Plus button in tab header | Click to create a new item directly on this actor |
 
-Example flow: click weapon crosshair -> verify attack dialog modifiers -> roll -> click item edit if source ATT/DMG needs correction.
+### Bioclass Tab
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Bioclass name | Text | Reference only; click to open the bioclass item sheet |
+| Edit button | Pencil icon | Click to open the bioclass item for editing |
+| Remove button | Trash/X icon | Click to unassign the bioclass from your actor |
+| Generated trait | Trait entry | Click to open the trait and finalize choices |
+| Generated trait edit | Pencil icon | Click to open and edit the generated trait |
+| Generated trait delete | Trash icon | Click to remove the generated trait |
+
+### Aspect Tab (Same as Bioclass Tab)
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Aspect name | Text | Reference; click to open the aspect item sheet |
+| Edit button | Pencil icon | Click to open the aspect item for editing |
+| Remove button | Trash/X icon | Click to unassign the aspect |
+| Abilities list | Text | Reference only; shows aspect abilities |
+| Generated trait | Trait entry | Click to open and finalize trait choices |
+| Generated trait edit | Pencil icon | Click to edit the generated trait |
+
+### Gear Tab (Rollable Items)
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Item name | Text | Click to open the item sheet for editing |
+| Item image | Gear/item icon | Click to roll or trigger that item's effect |
+| Edit button | Pencil icon | Click to open the item sheet |
+| Delete button | Trash icon | Click to remove the item |
+| Add new item | Plus button | Click to create a new gear item |
+
+### Traits Tab (Milestone Traits)
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Trait name | Text | Click to open the trait sheet |
+| Edit button | Pencil icon | Click to edit the trait details |
+| Delete button | Trash icon | Click to remove the trait |
+| Add new trait | Plus button | Click to create a new milestone trait |
+
+### Effects Tab (Active Conditions)
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Effect toggle | Check or X icon | Click to enable/disable an effect |
+| Effect name | Text/entry | Click to open the effect sheet for editing |
+| Delete button | Trash icon | Click to remove the effect |
+| Add new effect | Plus button | Click to create a new effect |
+
+### Biography Tab
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Text field | Large text box | Click and type to add character notes, background, or roleplay notes |
 
 ## What Happens Automatically
 
-1. Derived stats (sheet-calculated values) update from actor and item data.
-2. Common derived stats you will see are AP, BR, TD, AD, ND, and ST (shown on sheet as Action Points, Battle Reflex, Toughness Defense, Armor Defense, Nerve Defense, and Shock Threshold).
-3. Tabs show item collections by type.
-4. Roll actions open the shared roll dialog with relevant defaults.
+1. Derived stats recalculate from attributes and equipped items.
+2. Common derived stats: AP (Action Points), BR (Battle Reflex), TD (Toughness Defense), AD (Armor Defense), ND (Nerve Defense), ST (Shock Threshold).
+3. Roll dialogs prefill with relevant actor data.
 
 ## What You Must Set Manually
 
-1. Narrative and campaign-specific fields.
-2. Choice-based details in generated traits.
-3. Any values not provided by your GM-authored items.
+1. Narrative fields.
+2. Choice-driven selections in generated traits (open and save to finalize).
+3. Any values your GM didn't prefill.
 
-Example: if your GM did not prefill a weapon's ATT/DMG values (shown as attack bonus and damage bonus), you need to set them manually.
+Example: if a weapon has blank ATT/DMG, you need to fill it in.
 
 ## Limitations and Not Implemented
 
-1. Values pulled from item fields are only as accurate as those fields (example: a weapon with blank ATT, shown as attack bonus, rolls lower than intended).
-2. The sheet lists many abilities and effects, but listing text does not apply game state by itself (example: an aspect ability can appear on the tab while its situational bonus is still a manual call).
-3. Trait choice effects are not always final on first drop; open the generated trait, make the choice, and save.
-4. The Cybernetics tab shows slot context (such as body/brain slot details), but package-level implant effects from the rules update are not auto-applied end-to-end.
+1. Values are only as accurate as source item data.
+2. Ability text doesn't auto-apply; situational bonuses still need player/GM judgment.
+3. Trait choices don't finalize until you edit and save the trait.
+4. Cybernetics tab shows slot context but package effects aren't auto-applied.
 
 ## Troubleshooting
 
-### Q: A tab looks incomplete. What should I check?
+### Q: A tab looks incomplete.
 
-A: Verify your actor type and confirm the needed items are assigned.
+A: Verify your actor type and that needed items are assigned.
 
-### Q: An expected action is missing. Why?
+### Q: An action is missing.
 
-A: Confirm your ownership permissions for that actor.
+A: Check your ownership permissions.
 
-### Q: Values seem incorrect on this tab. Where do I debug first?
+### Q: Values seem incorrect.
 
-A: Start with source items and their configured fields.
+A: Start with source item fields.
 
 ## Related Pages
 

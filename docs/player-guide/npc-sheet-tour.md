@@ -2,91 +2,116 @@
 
 ## Purpose
 
-Learn how to run NPCs quickly from the sheet during play, with clear GM and player expectations.
+Understand the NPC sheet layout for quick combat execution.
 
 ## Before You Start
 
-1. Open the NPC actor sheet.
-2. Confirm whether you have edit permission.
-3. Confirm the NPC has a bioclass assigned.
-4. If no bioclass is assigned, open the Items directory and prepare to drag a bioclass item onto the NPC header drop zone.
+Have the NPC actor sheet open. Drag a bioclass from Items onto the Bioclass slot if it's empty.
 
 ## GM and Player Perspective
 
-1. GM perspective:
-Use this sheet as the primary encounter control panel for NPC stats, attacks, and notes.
-2. Player perspective:
-You usually read this sheet for transparency or shared reference, but most edits are GM-driven unless ownership is granted.
+**GM:** This sheet is your encounter control panel (stats, attacks, notes).
+**Players:** You usually see this for reference; most edits are GM-driven.
+
+## Interactive Elements
+
+### Header
+
+| Element | Icon | Action |
+|---------|------|--------|
+| NPC portrait | Image | Click to choose a new portrait |
+| Name field | Text input | Click to edit the NPC name |
+| Level field | Numeric | Click to set NPC level |
+| Bioclass slot | Item icon + label | Drag a bioclass item here to assign; click edit (pencil) to open bioclass; click remove (trash) to unassign |
+| Role dropdown | Dropdown menu | Click to select NPC role (affects attribute bonuses) |
+| HP current/max | Numeric inputs | Click to set exact values |
+| Force Barrier current/max | Numeric inputs | Click to set exact values |
+| Force Barrier recovery | Numeric input | Click to set recovery rate |
+| Boss toggle | Checkbox | Click to mark as boss or elite |
+| HP Bonus field | Numeric | Click to set HP bonus modifier |
+
+### NPC Stats Tab (Attributes)
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Attribute icon (e.g., Awareness) | Circle with symbol | Click to open a challenge roll for that attribute |
+| Attribute value | Numeric display | Read-only; derived from bioclass + role bonuses |
+| Strong/Good/Weak guidance | Text badges | Reference only; shows role bonuses |
+
+### Combat Tab
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Mastered weapon dropdown | Dropdown | Click to select the NPC's primary weapon |
+| Roll Attack button | Crosshairs icon + text | Click to execute a mastered attack with the selected weapon |
+| Weapon ATT/DMG display | Numeric | Read-only; shows calculated bonuses including modifications |
+
+### Notes Tab
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Unique Power field | Text box | Click to add/edit unique NPC power description |
+| Boss Power field | Text box | Click to add/edit boss-specific power |
+| Loot field | Text box | Click to track loot rewards |
+| Notes field | Text box | Click to add GM notes or table reminders |
+
+### Gear Tab (Inventory)
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Item name | Text/link | Click to open the item sheet |
+| Item image | Icon | Reference; shows item type |
+| Edit button | Pencil icon | Click to open the item for editing |
+| Delete button | Trash icon | Click to remove the item |
+| Add new item | Plus button | Click to create a new gear item |
+
+### Effects Tab
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Effect toggle | Check or X icon | Click to enable/disable a condition |
+| Effect name | Text | Click to open the effect sheet |
+| Delete button | Trash icon | Click to remove the effect |
+| Add new effect | Plus button | Click to create a new effect |
+
+### Biography & Appearance Tab
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Biography field | Text box | Click to add NPC background/description |
+| Appearance field | Text box | Click to describe appearance |
 
 ## Steps
 
-1. In the header, set name, level, bioclass, role, and wealth tier.
-2. If bioclass is missing, drag and drop a bioclass item onto the Bioclass slot in the header.
-3. If a bioclass is already assigned and you drop another one, confirm replacement when prompted.
-4. In the header, set HP values, Boss toggle, and HP Bonus as needed.
-5. Open the Combat tab and set Force Barrier current, max, and recovery rate.
-6. In the NPC Stats tab, review the left attribute column and use attribute icons for challenge rolls.
-7. In the Role Calculations panel, confirm Strong, Good, and Weak guidance matches the selected role.
-8. In the Derived Values panel, confirm AP, BR, TD, AD, ST, and ND.
-9. In Combat, pick mastered weapon and review ATT/DMG totals, ability, range, and notes.
-10. Click Roll Attack when using mastered attack flow.
-11. In Notes, maintain Unique Power, Boss Power, Loot, and Notes.
-12. In Gear, use the merged list to manage gear, armor, shield, and weapon items from one tab.
-13. In Biography and Effects, keep narrative and active status effects current.
+1. **Header:** Set name, level, bioclass, role, and wealth tier.
+2. **HP/Force Barrier:** Set HP current/max, Force Barrier current/max/recovery, Boss toggle, and HP Bonus.
+3. **Attributes & Calculations:** NPC Stats tab shows derived attributes. Role Calculations panel shows Strong/Good/Weak guidance. Use attribute icons for challenge rolls.
+4. **Mastered Weapon:** Select in Combat tab. Verify ATT/DMG totals include any modification bonuses (Battle Assist, Expert Crafting, Enhanced Alloy, Bane Tune, Arc).
+5. **Click Roll Attack** to execute a mastered attack. Collateral cards may appear for Arc or Double Shot modifications.
+6. **Notes:** Track Unique Power, Boss Power, Loot, table notes.
+7. **Gear:** Reference inventory tracking only (doesn't auto-apply to NPC stats).
+8. **Effects:** Toggle active/inactive as conditions start/end.
 
-Important note:
-On NPCs, the Gear tab is an inventory list. Items shown there do not automatically change derived stats or mastered attack values.
-
-## Priest and Weak Penalty (Definitive Workflow)
-
-Use this when an NPC should ignore weak role penalties (for example Priest-style NPC setup).
-
-1. Open the NPC's assigned bioclass item from the header edit button.
-2. Go to the bioclass Traits tab.
-3. Enable Ignore Weak Penalty.
-4. Save/close the bioclass item and return to the NPC sheet.
-5. Verify the Role Calculations weak chip and weak attribute results update as expected.
-
-This checkbox is the definitive control for removing weak penalties.
-
-## Click Actions Reference
-
-1. Header portrait image:
-Click to change NPC portrait art.
-2. Bioclass edit and remove buttons:
-Click edit to open the bioclass item, or trash to remove it.
-3. Bioclass drop zone (when empty):
-Drag and drop a bioclass item from the directory to assign it.
-4. Attribute icon in each row:
-Click to open a challenge roll for that attribute.
-5. Combat tab Mastered Attack Roll button:
-Click to open an attack dialog pre-filled from mastered attack values.
-6. Gear row edit and delete buttons:
-Click edit to update item details, or trash to remove the item.
-7. Gear tab New item button:
-Click to create a new item directly from the NPC sheet.
-8. Effects toggle control:
-Click to enable or disable effects in the Effects tab.
+**Weak Penalty Exception:** Open the bioclass item, go to Traits tab, enable Ignore Weak Penalty if needed.
 
 ## What Happens Automatically
 
 1. NPC attributes are derived from bioclass base attributes plus role bonuses.
 2. Derived defenses and action values recalculate from current level and attributes.
-3. Mastered attack bonuses update from level, role rules, and selected mastered weapon.
-4. Damage application checks Force Barrier before HP.
-5. Turn-start force barrier recovery uses configured recovery rate when applicable.
-6. Gear tab merges gear, armor, shield, and weapon into one list.
-7. When Ignore Weak Penalty is enabled on the assigned bioclass, weak role penalties are removed from NPC attribute calculations.
+3. Mastered attack bonuses update from level, role rules, selected mastered weapon, and any weapon modifications (Battle Assist, Expert Crafting, Enhanced Alloy, Bane Tune, Arc).
+4. Collateral cards may appear for weapons with Arc or Double Shot modifications when mastered attacks hit.
+5. Damage application checks Force Barrier before HP.
+6. Turn-start force barrier recovery uses configured recovery rate when applicable.
+7. Gear tab merges gear, armor, shield, and weapon into one list.
+8. When Ignore Weak Penalty is enabled on the assigned bioclass, weak role penalties are removed from NPC attribute calculations.
 
 ## What You Must Set Manually
 
-1. HP current value during play.
-2. Force Barrier current, max, and recovery rate values in Combat tab.
-3. Boss toggle and HP Bonus.
-4. Role, wealth, mastered weapon, and narrative note fields.
-5. Item quantity and price values where your table tracks them.
-6. Priest-style weak-penalty exception setting on the bioclass item when needed.
-7. Any mechanical bonuses from carried inventory entries (armor/weapon/shield/gear) that your table wants to apply to NPCs.
+1. HP current during play.
+2. Force Barrier current, max, recovery values.
+3. Boss toggle, HP Bonus, role, wealth, mastered weapon.
+4. Weak Penalty exception if needed (on bioclass item).
+5. Any armor/weapon/shield bonuses you want applied to NPC defenses (Gear tab doesn't auto-apply).
 
 ## Limitations and Not Implemented
 
@@ -98,30 +123,28 @@ Click to enable or disable effects in the Effects tab.
 
 ## Troubleshooting
 
-### Q: A role modifier looks wrong. What should I check?
+### Q: Role modifier looks wrong.
 
-A: Verify NPC role, level, and the assigned bioclass values first.
+A: Check NPC role, level, and bioclass.
 
-### Q: Weak penalty should be ignored for this NPC. What should I check?
+### Q: Weak penalty should be ignored.
 
-A: Open the NPC's bioclass item, go to Traits tab, and verify Ignore Weak Penalty is enabled.
+A: Open the bioclass, go to Traits tab, enable Ignore Weak Penalty.
 
-### Q: I changed role but weak still looks wrong. What should I check?
+### Q: Armor/shield/weapon missing from Gear.
 
-A: Confirm the assigned bioclass is correct and that Ignore Weak Penalty is only enabled when intended.
+A: Verify the item is embedded on this NPC.
 
-### Q: Armor, shield, or weapon is missing from Gear. Why?
+### Q: Mastered attack looks off.
 
-A: Confirm the item is embedded on this NPC and not on another actor.
+A: Check mastered weapon selection, NPC level, and mastered attack totals. If the weapon uses a modification, verify it's automatic (see Weapons guide).
 
-### Q: Mastered attack roll looks off. Where do I debug first?
+### Q: I see extra damage cards from a mastered attack.
 
-A: Check mastered weapon selection, NPC level, and mastered attack panel totals.
+A: Those are collateral cards from Arc or Double Shot. Apply each to the corresponding target.
 
 ## Related Pages
 
-1. [Actor Sheet Tour](actor-sheet-tour.md)
-2. [Creating a New Actor](creating-a-new-actor.md)
-3. [Combat Workflow](combat-workflow.md)
-4. [Weapons, Armor, Shields, and Gear](weapons-armor-shields-and-gear.md)
-5. [Troubleshooting and Known Limitations](troubleshooting-and-known-limitations.md)
+1. [Creating a New Actor](creating-a-new-actor.md)
+2. [Combat Workflow](combat-workflow.md)
+3. [Weapons, Armor, Shields, and Gear](weapons-armor-shields-and-gear.md)

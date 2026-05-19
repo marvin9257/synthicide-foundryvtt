@@ -2,62 +2,52 @@
 
 ## Purpose
 
-Build a playable actor and fill in the must-have fields before session one.
-
-## Before You Start
-
-1. Confirm you can create actors in your world.
-2. Confirm your GM has shared which actor type you should use.
-3. Have your starting character details ready (name, level, motivation, and baseline stats if applicable).
+Set up the essential fields for a playable character.
 
 ## Steps
 
-1. Create a new actor in Foundry.
-2. Choose the actor type your table expects.
-3. Open the actor sheet.
-4. In the header, set character name, level, motivation, and lurans.
-5. In the header, confirm current HP, Force Barrier, Resolve, and Cynicism values.
-6. Open the Attributes tab and verify all attributes are populated for your character.
-7. Set attribute increase pips only when your table advances and allows increases.
-8. Open the Biography tab and add your player-facing notes.
-9. Save and close, then reopen once to ensure values persist.
+1. Create a new actor (your GM will specify which type: Sharper or NPC).
+2. In the header, set name, level, motivation, and starting lurans.
+3. Set current HP, Force Barrier, Resolve, and Cynicism values.
+4. Open Attributes tab and verify all attributes are populated.
+5. Set attribute increase pips only when your table allows advancement.
+6. Add character notes to the Biography tab.
+7. Save and close, then reopen to confirm values persist.
 
 ## What Happens Automatically
 
-1. Resource bars visually reflect current values.
-2. Combat-facing derived stats such as Armor Defense (AD), TD, ND, and ST are recalculated from actor stats and equipped items.
-3. Attribute increase controls enforce lower and upper bounds.
-
-Example: after equipping armor or changing attributes, one or more defense totals (like Armor Defense (AD) or ST) may update.
+1. Resource bars update from current values.
+2. Derived defenses (AD, TD, ND, ST) recalculate from attributes and equipped items.
+3. Attribute increase controls enforce valid bounds (0-5).
 
 ## What You Must Set Manually
 
-1. Character identity fields (name, biography, motivation choice).
-2. Starting state values that are not automatically assigned by your selected setup flow.
-3. Any table-specific narrative or tracking fields your GM expects.
+1. Character identity (name, biography, motivation).
+2. Starting state values not auto-assigned by your GM's setup.
+3. Any table-specific tracking fields.
 
 ## Limitations and Not Implemented
 
-1. The sheet does not enforce every character creation rule by itself (example: it will let you type numbers your table might not allow).
-2. Several displayed values depend on item setup (example: defenses can look wrong until armor/shield AD bonuses are configured).
-3. You can directly edit many numeric fields, which is flexible but easy to mis-key (example: setting HP or bonuses too high by accident).
-4. Advanced sections may show rules text without a direct automation button (example: a feature can describe an effect that you still apply manually at resolution time).
+1. The sheet doesn't enforce character creation rules (you can set invalid values).
+2. Defenses depend on item setup (they'll look wrong until armor/shield AD bonuses are configured).
+3. You can directly edit most numeric fields (easy to mis-key if not careful).
+4. Feature text doesn't auto-apply; effects still require manual resolution.
 
 ## Troubleshooting
 
-### Q: A value on my sheet looks wrong. What is the first thing to do?
+### Q: A value looks wrong.
 
-A: Re-open the sheet and confirm your currently equipped items are still set as expected.
+A: Reopen the sheet and verify equipped items.
 
-### Q: My defenses or force barrier look incorrect. What should I check?
+### Q: Defenses or Force Barrier seem incorrect.
 
-A: Check armor and shield item fields first, then confirm the right items are equipped.
+A: Check armor and shield item fields, then confirm they're equipped.
 
-### Q: My actor baseline stats do not match what I expected. Why?
+### Q: Baseline stats don't match my bioclass.
 
-A: Confirm your bioclass is assigned, then verify the bioclass starting attributes are configured correctly.
+A: Verify your bioclass is assigned and its starting attributes are configured correctly.
 
 ## Related Pages
 
-1. [Player Guide Home](README.md)
-2. [Bioclasses](bioclasses.md)
+1. [Bioclasses](bioclasses.md)
+2. [Actor Sheet Tour](actor-sheet-tour.md)

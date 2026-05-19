@@ -2,25 +2,19 @@
 
 ## Purpose
 
-Explain how virtual grid units (zones) work in combat movement and how zone distance affects attack rules.
-
-## Before You Start
-
-1. Open your world settings.
-2. Enable **Use Virtual Grids (Zones)** in Synthicide settings.
-3. Place your token on the active scene.
-4. Start combat in the scene.
+Understand how zones work and how they affect attack ranges.
 
 ## Steps
 
-1. Start combat and confirm the orange 3x3 virtual overlay appears on the map.
-2. Select your token and drag movement with the ruler.
-3. Read movement labels in zones while plotting your path.
-4. Target an enemy token before making an attack roll.
-5. Open the attack dialog and verify the range modifier shown for that target distance.
-6. Submit the roll and confirm the chat result matches your expected zone penalty/bonus.
+1. Confirm virtual grids are enabled in world settings.
+2. Start combat on the active scene.
+3. Verify the orange 3x3 overlay appears on the map.
+4. Drag your token with the ruler to see zone labels.
+5. Target an enemy before making an attack.
+6. Open the attack dialog and verify the range modifier for that distance.
+7. Submit the roll.
 
-Example: if your target is 2 zones away and your weapon range increment is 1, the range modifier is -1.
+Example: target 2 zones away, weapon range increment 1 → range modifier -1.
 
 ## What Happens Automatically
 
@@ -32,46 +26,44 @@ Example: if your target is 2 zones away and your weapon range increment is 1, th
 
 ## What You Must Set Manually
 
-1. Enable the world setting for virtual grids before combat starts.
-2. Keep attacker and target tokens placed correctly on the scene before rolling.
-3. Confirm target selection before opening attack rolls.
-4. Apply any table-specific movement restrictions not enforced by the ruler.
+1. Enable virtual grid setting before combat.
+2. Keep tokens placed on the scene before rolling.
+3. Select targets before opening attack rolls.
+4. Apply any table-specific movement restrictions.
 
-## Rules Tie-In (Player-Facing)
+## Rules Tie-In
 
-1. This system models combat movement using zones instead of counting each 5-foot square during combat.
-2. A zone is treated as a 15'x15' area when your base grid is 5-foot squares.
-3. Zone distance drives range penalties and bonuses in attack flow.
-4. The close weapon feature grants +1 ATT only when attacker and target are in the same zone.
+1. A zone = 15'x15' area (assuming 5-foot base squares).
+2. Zone distance drives range penalties/bonuses in attacks.
+3. Close weapon feature grants +1 ATT only in the same zone.
 
 ## Limitations and Not Implemented
 
-1. The zones ruler and orange overlay only appear when both conditions are true: virtual grids enabled and combat started.
-2. If attacker or target token is missing from scene placement, range context falls back and may warn instead of calculating full zone distance.
-3. The overlay changes map guidance and labels, but it does not auto-enforce all tactical house rules tied to movement.
-4. Zone movement display does not replace GM adjudication for unusual terrain, verticality, or custom map constraints.
+1. Zone overlay only appears during active combat.
+2. Missing attacker/target tokens may trigger warnings instead of full zone calculation.
+3. Overlay doesn't enforce all tactical house rules.
+4. Zone display doesn't replace GM adjudication for terrain, verticality, custom constraints.
 
 ## Troubleshooting
 
-### Q: I enabled the setting, but I still do not see the virtual overlay. What should I check?
+### Q: I don't see the virtual overlay.
 
-A: Confirm combat has started. The overlay is intentionally combat-only.
+A: Confirm combat has started. Overlay is combat-only.
 
-### Q: My ruler still shows normal units instead of zones. Why?
+### Q: Ruler still shows normal units.
 
-A: Check both conditions: virtual grid setting enabled and active combat running in the current scene.
+A: Check virtual grid setting is enabled and combat is running.
 
-### Q: My attack range modifier looks wrong. What should I verify first?
+### Q: Attack range modifier looks wrong.
 
-A: Verify attacker token placement, target token selection, and weapon range increment.
+A: Verify attacker/target token placement and weapon range increment.
 
-### Q: Diagonal movement looks cheaper than I expected. Is that a bug?
+### Q: Diagonal movement looks cheaper than expected.
 
-A: No. Zone counting uses Chebyshev distance, so one diagonal zone step costs the same as one straight zone step.
+A: That's correct. Zones use Chebyshev distance (diagonal = straight cost).
 
 ## Related Pages
 
 1. [Combat Workflow](combat-workflow.md)
 2. [Making an Attack Roll](making-an-attack-roll.md)
 3. [Demolition and Range-Based Actions](demolition-and-range-based-actions.md)
-4. [Troubleshooting and Known Limitations](troubleshooting-and-known-limitations.md)

@@ -43,11 +43,20 @@ Example: assigning a new bioclass replaces the old one and refreshes associated 
 
 ## Rules Update Coverage Gaps (Quick Reference)
 
-1. Item modifications: You can select mod names on item sheets, but many mod rules do nothing mechanically unless you also add explicit numeric modifiers/effects.
-2. Special ammo: You can select ammo type, but most ammo effects (for example cryo AP penalties, cinder ongoing damage, homing interactions) are resolved manually.
-3. Shield tactics: Advanced shield behavior from the rules (angle lock/defensive arc style handling) is manual in most cases.
-4. Force barrier lifecycle: Barrier damage absorption and turn-start recovery exist, but overload/recharge-time lifecycle tracking must still be tracked manually.
-5. Cybernetics package logic: Bioclass slot display exists, but many package/implant effects still need manual setup or manual adjudication.
+1. **Item modifications**: You can select mod names on weapon items. Automatic mechanics are limited to:
+   - Battle Assist (attack bonus)
+   - Expert Crafting (damage bonus)
+   - Enhanced Alloy (attack bonus)
+   - Bane Tune (attack bonus vs target type)
+   - Arc feature (attack bonus + collateral cards)
+   - Double Shot (collateral cards)
+   - Slug Shot (damage calculation)
+   All other modifications are tracking fields and require manual implementation of their effects.
+2. **Special ammo**: You can select ammo type, but almost all ammo effects (cryo AP penalties, cinder ongoing damage, flash blindness, anchor movement blocking, homing re-targeting, etc.) are resolved manually by your table.
+3. **Weapon features**: Most features are descriptive and require manual application. Only Arc provides automatic mechanics (attack bonus vs synthetics; collateral cards on ranged hits).
+4. **Shield tactics**: Advanced shield behavior from the rules (angle lock/defensive arc style handling) is manual in most cases.
+5. **Force barrier lifecycle**: Barrier damage absorption and turn-start recovery exist, but overload/recharge-time lifecycle tracking must still be tracked manually after collapse.
+6. **Cybernetics package logic**: Bioclass slot display exists, but many package/implant effects still need manual setup or manual adjudication.
 
 ## Troubleshooting
 
@@ -70,6 +79,22 @@ A: Verify ownership/permissions, confirm the item type is correct for that actio
 ### Q: Right-click Apply Damage is missing from a chat card. What should I verify?
 
 A: Confirm the chat message is visible and roll-based, then select at least one token on the canvas. Apply Damage and Apply Healing only appear when a controlled token exists.
+
+### Q: I selected a weapon modification, but it is not affecting my attack bonus or damage. Why?
+
+A: Most modifications do not have automatic mechanics. Check the [Rules Update Coverage Gaps section](#rules-update-coverage-gaps-quick-reference) above and the [Weapons, Armor, Shields, and Gear guide](weapons-armor-shields-and-gear.md) to see which modifications are automatic. For non-automatic modifications, apply bonuses or effects manually at your table.
+
+### Q: My weapon has Arc feature, but the attack bonus is not showing. What should I check?
+
+A: Arc provides +2 bonus against synthetic targets. Verify that the target is actually a synthetic in your rules. Also expand the chat card details to see the full bonus breakdown. If the target is organic, the Arc bonus does not apply.
+
+### Q: I see extra damage cards in chat after my attack. What are these and how do I apply them?
+
+A: These are collateral cards from Arc feature or Double Shot modification on your weapon. Each collateral card applies to a different target. Select the target and right-click each collateral card to Apply Damage individually.
+
+### Q: My special ammo is not working. Is the system supposed to auto-apply ammo effects?
+
+A: No. Special ammo type is a selection field only. Almost all ammo effects (Cryo AP reduction, Cinder ongoing fire, Flash blindness, etc.) must be resolved manually by your table after the roll. Check the [Weapons, Armor, Shields, and Gear guide](weapons-armor-shields-and-gear.md#special-ammo) for the full list of ammo types.
 
 ## Related Pages
 

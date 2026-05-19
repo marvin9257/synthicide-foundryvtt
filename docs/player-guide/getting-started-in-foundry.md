@@ -2,60 +2,55 @@
 
 ## Purpose
 
-Get set up fast so you can actually play, not fight the UI.
+Get up to speed with Synthicide-specific mechanics so you can play effectively.
 
 ## Before You Start
 
-1. Join the game world.
-2. Confirm you can open at least one actor sheet.
-3. Confirm your role has permission to edit your actor.
+1. Open your actor sheet.
+2. Confirm you have permission to edit it.
 
 ## Steps
 
-1. Open your actor from the Actors directory.
-2. Keep the actor sheet open while you build your character.
-3. Open the Items directory and find your starting bioclass, aspect, and gear.
-4. Drag items from the Items directory onto your actor sheet.
-5. Use edit icons to open item details.
-6. Use roll icons on weapons and rollable items.
-7. Use equip toggles for armor, shields, and weapons.
+1. In your Items directory, find your starting bioclass, aspect, and gear.
+2. Drag them onto your actor sheet to add them to your inventory.
+3. Open item details to verify fields match your character concept.
+4. Toggle equipped state for your starting armor, shields, and weapons.
+5. Click weapon icons to trigger attacks.
+6. Check derived defenses (AD, TD, ST) to confirm they match your setup.
 
 ## What Happens Automatically
 
-1. Drag-and-drop adds item copies to your actor (the items now live on that actor sheet).
-2. Derived combat values such as AD, TD, and ST update from current actor and item data.
-3. Roll dialogs prefill many fields from your actor and the item you clicked.
-
-Example: dragging a weapon to your actor adds it to the Combat tab and gives you a clickable attack action.
+1. Drag-and-drop adds item copies to your actor.
+2. Derived stats update from actor and item data.
+3. Roll dialogs prefill from your actor and source item.
 
 ## What You Must Set Manually
 
-1. Character identity and narrative details.
-2. Any item fields not preconfigured by your GM.
-3. Choice-based trait details that require a player decision.
+1. Character narrative details.
+2. Any item fields your GM didn't prefill.
+3. Choice-driven trait selections (open and save generated traits after assignment).
 
 ## Limitations and Not Implemented
 
-1. Effects described only in rules text are not auto-applied by the roll itself (example: after a roll result, you may still apply a conditional trait effect manually).
-2. Drag-and-drop is powerful but not foolproof (example: dropping a new bioclass or aspect replaces the old one).
-3. Incorrect item data leads to incorrect outcomes (example: missing weapon bonuses makes attack results look too low).
+1. Effects described only in rules text aren't auto-applied.
+2. Dropping a new bioclass or aspect replaces the old one.
+3. Roll results only match item data quality (missing weapon bonuses = wrong rolls).
 
 ## Troubleshooting
 
-### Q: Drag-and-drop does nothing. What should I verify?
+### Q: Drag-and-drop isn't working.
 
-A: Verify you have ownership of the actor you are dropping onto.
+A: Confirm you have ownership of the target actor.
 
-### Q: Values look stale after edits. How do I refresh?
+### Q: Values look stale after edits.
 
-A: Close and reopen the actor sheet.
+A: Close and reopen the sheet.
 
-### Q: Rolls show unexpected numbers. Where do I check first?
+### Q: Rolls show unexpected numbers.
 
-A: Review the source item fields and current roll modifiers.
+A: Check the source item fields and any roll modifiers you entered.
 
 ## Related Pages
 
-1. [Player Guide Home](README.md)
-2. [Creating a New Actor](creating-a-new-actor.md)
-3. [Actor Sheet Tour](actor-sheet-tour.md)
+1. [Creating a New Actor](creating-a-new-actor.md)
+2. [Actor Sheet Tour](actor-sheet-tour.md)

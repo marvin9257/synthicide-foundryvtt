@@ -2,73 +2,93 @@
 
 ## Purpose
 
-Assign, replace, and verify a bioclass so your character baseline is right.
-
-## Before You Start
-
-1. Open your actor sheet.
-2. Make sure you have at least one bioclass item available in your Items directory or compendium.
-3. If your GM curates starting data, confirm your selected bioclass is the approved version.
+Assign and manage your bioclass and its generated traits.
 
 ## Steps
 
 1. Drag a bioclass item onto your actor sheet.
-2. Open the Bioclass tab and confirm the bioclass name appears.
-3. Review any generated bioclass traits in the same tab.
-4. Open each generated trait and complete any required edits or selections.
-5. Save each edited trait so the chosen values are stored.
-6. Use the edit icon again later if you need to revise text/details.
-7. If you need a different bioclass, drag the replacement bioclass onto the same actor.
-8. Re-check your actor attributes and HP-related values after replacement.
+2. Open the Bioclass tab and verify the bioclass is assigned.
+3. Review generated bioclass traits.
+4. Open each generated trait and finalize any required choices.
+5. Save each edited trait.
+6. To replace a bioclass, drag a new one onto the actor (old one is removed).
+7. Recheck actor attributes and HP after replacement.
+
+## Interactive Elements on Bioclass Items
+
+When you open a bioclass item to verify values or finalize trait choices:
+
+### Main Tab (Settings)
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Bioclass name | Text input | Reference; shows the bioclass name |
+| Starting attributes fields | Numeric inputs (Awareness, Combat, etc.) | Click to verify starting attribute values |
+| HP | Numeric input | Click to verify base HP value |
+| HP per Level | Numeric input | Click to verify HP progression |
+| Description field | Text box | Click to add/edit bioclass description |
+
+### Traits Tab (Generated Traits & Options)
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Ignore Weak Penalty checkbox | Checkbox | Click to enable (NPC only; removes weak role penalties) |
+| Generated trait name | Text/link | Click to open the generated trait for editing |
+| Trait choice field | Dropdown or text input | Click to make required choices from the trait options |
+| Trait description | Text box | Click to add/edit the trait text |
+| Delete trait button | Trash icon | Click to remove a generated trait |
+
+### What to Check
+
+1. **Starting attributes:** Verify Awareness, Combat, Toughness, Influence, Operation, Nerve, Speed are all set correctly.
+2. **HP values:** Confirm base HP and HP per level match your character concept.
+3. **Generated traits:** Open each and make/finalize choices (they don't apply until saved). **Important:** Choice-based traits may have multiple Active Effects (one enabled, others disabled). After making your choice, you must enable the correct effect and disable the others. Text-only traits still require manual implementation at your table.
+4. **Weak penalty (NPC):** Enable Ignore Weak Penalty checkbox if the NPC should ignore weak role penalties.
 
 ## What Happens Automatically
 
-1. The actor can only hold one bioclass at a time.
+1. Your actor can only have one bioclass at a time.
 2. Assigning a new bioclass replaces the previous one.
-3. Bioclass-linked traits are auto-created and managed with the bioclass.
-4. Bioclass-related actor values are synchronized from the bioclass item data when applied.
-5. This same linked-trait behavior is also used for aspects.
-
-Example: if you drop a new bioclass, the old one is removed and the new bioclass traits are generated for review.
+3. Bioclass traits are generated automatically and linked to the bioclass.
 
 ## What You Must Set Manually
 
-1. Ensure the bioclass item itself has complete starting values for Awareness, Combat, Toughness, Influence, Operation, Nerve, Speed, HP, and HP per Level.
-2. Review bioclass trait content for table-specific wording or adjustments.
-3. Edit newly created bioclass traits when they require a choice or value entry; those choice-driven changes are not fully implemented until you save the trait.
-4. Confirm slot-related settings such as body/brain details are correct for your character concept.
-5. Apply the same rule to aspect traits: open and save the trait when choices are required.
+1. Verify the bioclass item has complete starting values (attributes, HP, HP per level).
+2. Open and save generated traits when they require choices.
+3. **For choice-based traits:** Enable the Active Effect(s) matching your choice and disable any others. If a trait says "choose one," there are likely multiple effects—one enabled, one or more disabled. After deciding, toggle the disabled flag accordingly.
+4. Traits without Active Effects—determine which ones need manual tracking at your table, and add custom Active Effects if desired.
+5. Any table-specific adjustments to trait text.
 
-Example: if a generated trait says to choose one benefit, that choice does not apply until you save the edited trait.
+Example: A trait with "Choose: Full Human (+1 Influence, +1 Nerve) or Mutant (–2 Nerve)" comes with both effects. By default, Full Human is enabled and Mutant is disabled. If you choose Mutant, open the Effects tab, disable "Full Human," enable "Mutant," and save.
 
 ## Limitations and Not Implemented
 
-1. Only one bioclass is supported per actor; multi-bioclass builds are not implemented.
-2. If a bioclass item is incomplete, actor results will be incomplete too (example: blank starting attributes means your actor will not get full baseline stats).
-3. Choice-based trait changes are not applied at creation time (example: a generated trait with options does nothing final until you edit and save it).
-4. Bioclass replacement is destructive to the old assignment path (example: replacing bioclass can remove old generated traits and related values).
-5. Downstream effects tied to narrative or situational trait text still need manual handling after assignment.
-6. Rules-kit package effects tied to cybernetic bioclass choices are not auto-translated into item modifiers/effects and must be added manually.
+1. Only one bioclass per actor.
+2. Incomplete bioclass items result in incomplete actors.
+3. Choice-based trait changes don't finalize at creation time.
+4. Bioclass replacement removes old generated traits.
+5. Narrative trait effects still need manual handling.
+6. Cybernetics package effects aren't auto-translated to item modifiers.
 
 ## Troubleshooting
 
-### Q: My attributes look wrong after assigning a bioclass. What should I check?
+### Q: My attributes look wrong after assigning a bioclass.
 
-A: Open the bioclass item and make sure all starting attributes and HP fields are filled in.
+A: Open the bioclass item and verify all starting attributes and HP fields are filled.
 
-### Q: A trait-based change is missing. How do I fix it?
+### Q: A trait-based change is missing.
 
-A: Open the generated trait, make the required choice, then save the trait.
+A: Open the generated trait, make the required choice, and save.
 
-### Q: Traits look stale after I replaced a bioclass. What now?
+### Q: Traits look stale after replacing bioclass.
 
-A: Close and reopen the actor sheet, then confirm the active bioclass is the one you intended.
+A: Close and reopen the actor sheet, then verify the active bioclass is correct.
 
-### Q: Values still do not update after that. What is the fallback?
+### Q: Still doesn't update.
 
-A: Remove and re-apply the intended bioclass once, then re-check the actor.
+A: Remove and re-apply the bioclass once.
 
 ## Related Pages
 
-1. [Player Guide Home](README.md)
-2. [Creating a New Actor](creating-a-new-actor.md)
+1. [Creating a New Actor](creating-a-new-actor.md)
+2. [Aspects](aspects.md)
