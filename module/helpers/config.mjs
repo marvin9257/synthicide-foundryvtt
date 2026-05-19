@@ -473,10 +473,13 @@ SYNTHICIDE.WEAPON_AMMO = {
 
 SYNTHICIDE.ARMOR_MODIFICATIONS = {
   none: "SYNTHICIDE.Item.Armor.Modification.None",
-  endoPlating: "SYNTHICIDE.Item.Armor.Modification.EndoPlating",
+  endoPlating1: "SYNTHICIDE.Item.Armor.Modification.EndoPlating1",
+  endoPlating2: "SYNTHICIDE.Item.Armor.Modification.EndoPlating2",
+  endoPlating3: "SYNTHICIDE.Item.Armor.Modification.EndoPlating3",
   lighterMaterials: "SYNTHICIDE.Item.Armor.Modification.LighterMaterials",
   psychicInsulator: "SYNTHICIDE.Item.Armor.Modification.PsychicInsulator",
-  superiorCrafting: "SYNTHICIDE.Item.Armor.Modification.SuperiorCrafting",
+  superiorCrafting1: "SYNTHICIDE.Item.Armor.Modification.SuperiorCrafting1",
+  superiorCrafting2: "SYNTHICIDE.Item.Armor.Modification.SuperiorCrafting2",
   reinforcedHelmet: "SYNTHICIDE.Item.Armor.Modification.ReinforcedHelmet",
   slick: "SYNTHICIDE.Item.Armor.Modification.Slick",
   radiative: "SYNTHICIDE.Item.Armor.Modification.Radiative",

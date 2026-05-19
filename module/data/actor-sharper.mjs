@@ -82,8 +82,14 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
         attr.value = (attr.base ?? 0) + (attr.modifier ?? 0) + (attr.increase ?? 0);
       }
     }
-    //Get worn armor values
-    foundry.utils.mergeObject(this.armorValues, getCurrentArmorValues(this.parent));
+    // Get worn armor values and apply armor-only modification effects.
+    const currentArmorValues = getCurrentArmorValues(this.parent);
+    foundry.utils.mergeObject(this.armorValues, {
+      armorBonus: currentArmorValues.armorBonus,
+      stBonus: currentArmorValues.stBonus,
+      speedMax: currentArmorValues.speedMax,
+      forceBarrier: currentArmorValues.forceBarrier,
+    });
 
     // Constrain speed.value to armor worn (guarding in case attributes are missing)
     if (this.attributes?.speed && Number.isFinite(this.armorValues.speedMax)) {
@@ -103,9 +109,12 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       + (this.hitPoints?.modifier ?? 0);
     this.actionPoints.value = Math.floor(this.attributes.speed.value / 2) + this.actionPoints.modifier + 3;
     this.battleReflex.value = this.attributes.awareness.value + this.attributes.speed.value + this.battleReflex.modifier;
-    this.toughnessDefense.value = 5 + this.attributes.toughness.value + this.toughnessDefense.modifier;
-    this.armorDefense.value = 5 + this.armorValues.armorBonus + this.attributes.toughness.value + this.armorDefense.modifier;
-    this.shockThreshold.value = 10 + this.armorValues.stBonus + this.armorDefense.value + this.shockThreshold.modifier;
+    const toughnessValue = this.attributes.toughness.value;
+    const toughnessForArmorDefense = Math.max(toughnessValue, currentArmorValues.endoPlatingGrade ?? 0);
+    const armorDefenseForShockThreshold = 5 + this.armorValues.armorBonus + toughnessValue + this.armorDefense.modifier;  //ENDO Plating mod does not change ST value
+    this.toughnessDefense.value = 5 + toughnessValue + this.toughnessDefense.modifier;
+    this.armorDefense.value = 5 + this.armorValues.armorBonus + toughnessForArmorDefense + this.armorDefense.modifier;
+    this.shockThreshold.value = 10 + this.armorValues.stBonus + armorDefenseForShockThreshold + this.shockThreshold.modifier;
     this.nerveDefense.value = 5 + this.attributes.nerve.value + this.nerveDefense.modifier;
   }
 
@@ -140,6 +149,7 @@ function getCurrentArmorValues(actor) {
     armorBonus: 0,
     stBonus: 0,
     speedMax: 10,
+    endoPlatingGrade: 0,
     forceBarrier: {
       max: 0,
       recoveryRate: 0
@@ -150,14 +160,41 @@ function getCurrentArmorValues(actor) {
   const wornArmor = actor.itemTypes?.armor?.find(arm => arm.system.equipped);
   if (!wornArmor) return returnValues;
 
+  const armorSystem = wornArmor.system ?? {};
+  const modifications = getModificationSet(armorSystem.modifications);
+  const superiorCraftingBonus = getSuperiorCraftingBonus(modifications);
+  const reinforcedHelmetBonus = modifications.has('reinforcedHelmet') ? 1 : 0;
+  const lighterMaterialsBonus = modifications.has('lighterMaterials') ? 2 : 0;
+  const endoPlatingGrade = getEndoPlatingGrade(modifications);
+
   returnValues = {
-    armorBonus: wornArmor.system.armorBonus,
-    stBonus: wornArmor.system.stBonus,
-    speedMax: wornArmor.system.speedMax,
+    armorBonus: Number(armorSystem.armorBonus ?? 0),
+    stBonus: Number(armorSystem.stBonus ?? 0) + superiorCraftingBonus + reinforcedHelmetBonus,
+    speedMax: Number(armorSystem.speedMax ?? 10) + lighterMaterialsBonus,
+    endoPlatingGrade,
     forceBarrier: {
-      max: wornArmor.system.forceBarrier.max,
-      recoveryRate: wornArmor.system.forceBarrier.recoveryRate
+      max: Number(armorSystem.forceBarrier?.max ?? 0),
+      recoveryRate: Number(armorSystem.forceBarrier?.recoveryRate ?? 0)
     }
   }
   return returnValues;
+}
+
+function getModificationSet(modifications) {
+  if (modifications instanceof Set) return modifications;
+  if (Array.isArray(modifications)) return new Set(modifications);
+  return new Set();
+}
+
+function getSuperiorCraftingBonus(modifications) {
+  if (modifications.has('superiorCrafting2')) return 2;
+  if (modifications.has('superiorCrafting1')) return 1;
+  return 0;
+}
+
+function getEndoPlatingGrade(modifications) {
+  if (modifications.has('endoPlating3')) return 3;
+  if (modifications.has('endoPlating2')) return 2;
+  if (modifications.has('endoPlating1')) return 1;
+  return 0;
 }
