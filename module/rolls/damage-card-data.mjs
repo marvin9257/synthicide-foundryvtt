@@ -25,6 +25,12 @@ export function prepareDamageCardData({
   const rawTotal = input.total ?? d10 + attributeValue + damageBonus;
   const total = Math.max(0, rawTotal);
   const lethal = input.lethal ?? item?.system?.bonuses?.lethal ?? 0;
+  const baneDamageBonus = Number(input.baneDamageBonus ?? 0);
+  const doubleShotBonus = Number(input.doubleShotBonus ?? 0);
+  const slugShotActive = Boolean(input.slugShotActive);
+  const baseDamageBonus = Number.isFinite(Number(input.baseDamageBonus))
+    ? Number(input.baseDamageBonus)
+    : damageBonus;
   const actorUuid = actor?.uuid ?? null;
   const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem: item });
 
@@ -39,12 +45,18 @@ export function prepareDamageCardData({
 
   const cardExtras = buildBaseActionCardData({
     subtype: 'damage',
-    equation: `${d10} + ${attributeValue} + ${damageBonus}`,
+    equation: `${d10} + ${attributeValue} + ${baseDamageBonus}`,
     total,
     dieValue: d10,
     attributeKey: 'combat',
-    equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...input, attributeValue, damageBonus } }),
-    metadataRows: overrides.metadataRows ?? buildDamageMetadataRows({ source, lethal }),
+    equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...input, attributeValue, damageBonus: baseDamageBonus } }),
+    metadataRows: overrides.metadataRows ?? buildDamageMetadataRows({
+      source,
+      lethal,
+      baneDamageBonus,
+      doubleShotBonus,
+      slugShotActive,
+    }),
     showEffectOutcomeRow: false,
     showDamageButton: false,
     showOpposedButton: false
@@ -53,7 +65,7 @@ export function prepareDamageCardData({
   return {
     type: 'damage',
     system,
-    messageMode,
+    messageMode, 
     ...cardExtras,
     title: overrides.title ?? localize('SYNTHICIDE.Roll.Card.TitleDamage'),
     flavor: overrides.flavor ?? localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),
@@ -64,9 +76,23 @@ export function prepareDamageCardData({
   };
 }
 
-function buildDamageMetadataRows({ source, lethal }) {
-  return [
+function buildDamageMetadataRows({ source, lethal, baneDamageBonus = 0, doubleShotBonus = 0, slugShotActive = false }) {
+  const rows = [
     { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: source },
     { label: localize('SYNTHICIDE.Roll.Card.LethalValue'), value: lethal },
   ];
+
+  if (doubleShotBonus !== 0) {
+    rows.push({ label: localize('SYNTHICIDE.Roll.Card.DoubleShotBonus'), value: `+${doubleShotBonus} DMG` });
+  }
+
+  if (slugShotActive) {
+    rows.push({ label: localize('SYNTHICIDE.Roll.Card.SlugShotMode'), value: '+2 DMG' });
+  }
+
+  if (baneDamageBonus !== 0) {
+    rows.push({ label: localize('SYNTHICIDE.Roll.Card.BaneTuneBonus'), value: `+${baneDamageBonus} DMG` });
+  }
+
+  return rows;
 }

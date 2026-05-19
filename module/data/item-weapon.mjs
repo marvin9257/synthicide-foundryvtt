@@ -3,6 +3,16 @@ import SynthicideGear from './item-gear.mjs';
 
 const fields = foundry.data.fields;
 const requiredInteger = { required: true, nullable: false, integer: true };
+const EXPERT_CRAFTING_DAMAGE_BONUSES = {
+  expertCrafting1: 1,
+  expertCrafting2: 2,
+  expertCrafting3: 3,
+};
+const BATTLE_ASSIST_VALUES = {
+  battleAssist1: 1,
+  battleAssist2: 2,
+  battleAssist3: 3,
+};
 /**
  * Weapon item system model.
  *
@@ -36,7 +46,7 @@ export default class SynthicideWeapon extends SynthicideGear {
     schema.features = new fields.SetField(new fields.StringField({ required: true, blank: false }));
     schema.modifications = new fields.SetField(new fields.StringField({ required: true, blank: false }));
     schema.specialAmmo = new fields.StringField({ required: true, blank: false, initial: "none" });
-    schema.bonuses = makeWeaponBonusSchema(fields, false); 
+    schema.bonuses = makeWeaponBonusSchema(false);
 
     // For Sharper weapons only - base weapon data
     schema.attackBonus = new fields.NumberField({ ...requiredInteger, initial: 0 });
@@ -70,12 +80,18 @@ export default class SynthicideWeapon extends SynthicideGear {
     // Get owning actor (parent is the Item document, actor is parent.actor)
     const itemDoc = this.parent;
     const actor = itemDoc?.actor;
+    const expertCraftingDamageBonus = getExpertCraftingDamageBonus(this.modifications);
+    const enhancedAlloyAttackBonus = hasEnhancedAlloyAttackBonus(this.modifications) ? 1 : 0;
+    const battleAssistValue = getBattleAssistValue(this.modifications);
+    const doubleShotBonus = getDoubleShotBonus(this.modifications);
+    this.bonuses.battleAssistValue = battleAssistValue;
+    this.bonuses.doubleShotBonus = doubleShotBonus;
     if (!actor) return;
 
     // direct passthrough if not NPC
     if (actor.type !== 'npc') {
-      this.bonuses.attack = this.attackBonus;
-      this.bonuses.damage = this.damageBonus; ///NEED TO ADD BONUS IF WEAPON AMMO MODIFIES DAMAGE
+      this.bonuses.attack = this.attackBonus + enhancedAlloyAttackBonus;
+      this.bonuses.damage = this.damageBonus + expertCraftingDamageBonus; ///NEED TO ADD BONUS IF WEAPON AMMO MODIFIES DAMAGE
       this.bonuses.lethal = this.lethal; ///NEED TO ADD BONUS IF WEAPON AMMO MODIFIES LETHAL
       return;
     }
@@ -86,6 +102,7 @@ export default class SynthicideWeapon extends SynthicideGear {
       const level = Number(actor.system?.level?.value ?? 1);
       this.bonuses.attack = level;
       this.bonuses.damage = level;
+      this.bonuses.lethal = 0;
       // You may want to set other special-case fields here
       return;
     }
@@ -108,8 +125,8 @@ export default class SynthicideWeapon extends SynthicideGear {
     const masteredWeaponBonus = this.masteredWeapon
       ? (actor.system?.npcRole === 'killer' ? halfLevel : thirdLevel)
       : 0;
-    this.bonuses.attack = tierBonuses.attack + masteredWeaponBonus;
-    this.bonuses.damage = tierBonuses.damage + masteredWeaponBonus;
+    this.bonuses.attack = tierBonuses.attack + masteredWeaponBonus + enhancedAlloyAttackBonus;
+    this.bonuses.damage = tierBonuses.damage + masteredWeaponBonus + expertCraftingDamageBonus;
     this.bonuses.lethal = tierBonuses.lethal;
   }
 
@@ -180,7 +197,47 @@ function makeWeaponBonusSchema(persisted = true) {
   return new fields.SchemaField({
     attack: new fields.NumberField({ initial: 0 }, {persisted}),
     damage: new fields.NumberField({ initial: 0 }, {persisted}),
-    lethal: new fields.NumberField({ initial: 0 }, {persisted})
+    lethal: new fields.NumberField({ initial: 0 }, {persisted}),
+    battleAssistValue: new fields.NumberField({ initial: 0 }, {persisted}),
+    doubleShotBonus: new fields.NumberField({ initial: 0 }, {persisted})
   });
+}
+
+function getExpertCraftingDamageBonus(modifications) {
+  const mods = modifications instanceof Set
+    ? modifications
+    : new Set(Array.isArray(modifications) ? modifications : []);
+
+  if (mods.has('expertCrafting3')) return EXPERT_CRAFTING_DAMAGE_BONUSES.expertCrafting3;
+  if (mods.has('expertCrafting2')) return EXPERT_CRAFTING_DAMAGE_BONUSES.expertCrafting2;
+  if (mods.has('expertCrafting1')) return EXPERT_CRAFTING_DAMAGE_BONUSES.expertCrafting1;
+  return 0;
+}
+
+function hasEnhancedAlloyAttackBonus(modifications) {
+  const mods = modifications instanceof Set
+    ? modifications
+    : new Set(Array.isArray(modifications) ? modifications : []);
+
+  return mods.has('enhancedAlloy');
+}
+
+function getBattleAssistValue(modifications) {
+  const mods = modifications instanceof Set
+    ? modifications
+    : new Set(Array.isArray(modifications) ? modifications : []);
+
+  if (mods.has('battleAssist3')) return BATTLE_ASSIST_VALUES.battleAssist3;
+  if (mods.has('battleAssist2')) return BATTLE_ASSIST_VALUES.battleAssist2;
+  if (mods.has('battleAssist1')) return BATTLE_ASSIST_VALUES.battleAssist1;
+  return 0;
+}
+
+function getDoubleShotBonus(modifications) {
+  const mods = modifications instanceof Set
+    ? modifications
+    : new Set(Array.isArray(modifications) ? modifications : []);
+
+  return mods.has('doubleShot') ? 2 : 0;
 }
 

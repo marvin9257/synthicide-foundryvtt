@@ -91,6 +91,13 @@
         <input type="number" name="damageBonus" value="{{defaultDamageBonus}}" step="1" />
       </div>
 
+      {{#if showSlugShotToggle}}
+        <div class="form-group">
+          <label>{{localize "SYNTHICIDE.Roll.Dialog.SlugShotMode"}}</label>
+          <input type="checkbox" name="slugShotActive" {{checked defaultSlugShotActive}} />
+        </div>
+      {{/if}}
+
       <div class="form-group">
         <label>{{localize "SYNTHICIDE.Roll.Dialog.RangeModifier"}}</label>
         <input type="number" name="rangeModifier" value="{{defaultRangeModifier}}" step="1" />

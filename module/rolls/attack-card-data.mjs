@@ -22,6 +22,8 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
   const hit = total >= effectiveArmor;
   const attributeKey = input.attribute;
   const lethal = Number(sourceItem?.system?.bonuses.lethal ?? 0);
+  const baneDamageBonus = Number(input.baneDamageBonus ?? 0);
+  const slugShotActive = isSlugShotActive({ input, sourceItem });
 
   // Data for strict DataModel validation
   const system = {
@@ -32,6 +34,8 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
     d10,
     hit,
     lethal,
+    baneDamageBonus,
+    slugShotActive,
     actorUuid: actor?.uuid ?? null,
   };
 
@@ -53,7 +57,17 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
     showOpposedButton: false,
     effectText: hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss'),
     effectClass: hit ? 'outcome-success' : 'outcome-failure',
-    metadataRows: buildAttackMetadataRows({ armor, shieldBonus, effectiveArmor, rangeDistance, rangeIncrement })
+    metadataRows: buildAttackMetadataRows({
+      armor,
+      shieldBonus,
+      effectiveArmor,
+      rangeDistance,
+      rangeIncrement,
+      input,
+      actor,
+      sourceItem,
+      attributeValue,
+    })
   });
 
   return {
@@ -74,7 +88,17 @@ function buildAttackFlavor({ attributeKey, armor, sourceItem }) {
   });
 }
 
-function buildAttackMetadataRows({ armor, shieldBonus, effectiveArmor, rangeDistance, rangeIncrement }) {
+function buildAttackMetadataRows({
+  armor,
+  shieldBonus,
+  effectiveArmor,
+  rangeDistance,
+  rangeIncrement,
+  input,
+  actor,
+  sourceItem,
+  attributeValue,
+}) {
   const rows = [
     { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
   ];
@@ -86,5 +110,33 @@ function buildAttackMetadataRows({ armor, shieldBonus, effectiveArmor, rangeDist
     { label: localize('SYNTHICIDE.Roll.Card.Distance'), value: rangeDistance ?? 'n/a' },
     { label: localize('SYNTHICIDE.Roll.Card.RangeIncrement'), value: rangeIncrement ?? 'n/a' }
   );
+
+  if (isSlugShotActive({ input, sourceItem })) {
+    rows.push({
+      label: localize('SYNTHICIDE.Roll.Card.SlugShotMode'),
+      value: '-2 ATT, +2 DMG',
+    });
+  }
+
+  const battleAssistValue = Number(sourceItem?.system?.bonuses?.battleAssistValue ?? 0);
+  const actorCombatValue = Number(actor?.system?.attributes?.combat?.value ?? 0);
+  const battleAssistApplied = String(input?.attribute ?? '') === 'combat'
+    && battleAssistValue > actorCombatValue
+    && Number(attributeValue ?? 0) === battleAssistValue;
+  if (battleAssistApplied) {
+    rows.push({
+      label: localize('SYNTHICIDE.Roll.Card.BattleAssist'),
+      value: `${actorCombatValue} -> ${battleAssistValue}`,
+    });
+  }
+
   return rows;
+}
+
+function isSlugShotActive({ input, sourceItem }) {
+  if (!input?.slugShotActive) return false;
+  const modifications = sourceItem?.system?.modifications;
+  if (modifications instanceof Set) return modifications.has('slugShot');
+  if (Array.isArray(modifications)) return modifications.includes('slugShot');
+  return false;
 }

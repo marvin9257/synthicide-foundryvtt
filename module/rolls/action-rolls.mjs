@@ -118,6 +118,8 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
     input: {
       d10: messageRollData.d10,
       damageBonus: messageRollData.damageBonus,
+      baneDamageBonus: Number(messageRollData.baneDamageBonus ?? 0),
+      slugShotActive: Boolean(messageRollData.slugShotActive),
       total: damageTotal,
       source: sourceMessage.speaker?.alias ?? sourceMessage.id,
       sourceMessageId: sourceMessage.id,
@@ -223,7 +225,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   const attributeKey = isDemolition
     ? getDemolitionRollAttributeKey(sourceItem)
     : getActionAttributeKey(resolvedSubtype, input.attribute);
-  const rollData = buildActionRollData({ actor, input, attributeKey });
+  const rollData = buildActionRollData({ actor, input, attributeKey, sourceItem });
 
   if (isDemolition) {
     return executeDemolitionActionRoll({
@@ -427,8 +429,11 @@ async function createDemolitionPlacementContext({ input, sourceItem, requirePoin
  * @returns {Promise<ChatMessage|null>}
  */
 async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
+  const adjustedInput = applyAttackModeAdjustments({ input, sourceItem });
   const messageMode = normalizeMessageMode(input.messageMode);
   const attackRangeContext = buildAttackRangeContext({ actor, sourceItem });
+  const primaryTargetToken = getSingleTargetToken({ notify: false });
+  const baneDamageBonus = getBaneDamageBonus({ sourceItem, targetActor: primaryTargetToken?.actor });
   // Hard-stop only for impossible melee attacks; all other range states continue.
   if (attackRangeContext?.isImpossible) {
     ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.MeleeOutOfRange'));
@@ -437,7 +442,8 @@ async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
 
   const computedRangeModifier = Number(attackRangeContext?.rangeModifier ?? 0);
   // Dialog value pre-populated from computed at open time; user may override.
-  const rangeModifier = parseNumeric(input.rangeModifier, computedRangeModifier);
+  const rangeModifier = parseNumeric(adjustedInput.rangeModifier, computedRangeModifier);
+  rollData.attackBonus = parseNumeric(adjustedInput.attackBonus, 0);
   rollData.rangeModifier = rangeModifier;
   rollData.modifiers += rangeModifier;
 
@@ -446,9 +452,10 @@ async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
 
   // Enrich attack-only payload fields for the chat card and stored roll flags.
   const resolvedInput = buildResolvedAttackInput({
-    input,
+    input: adjustedInput,
     rollData,
     attackRangeContext,
+    baneDamageBonus,
   });
   const cardData = prepareAttackCardData({
     input: resolvedInput,
@@ -484,7 +491,9 @@ async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
 
 /**
  * After a spread attack, find collateral tokens along the shooter→target line,
- * filter by those the attack total can hit, and emit one flat damage card.
+ * filter by those the attack total can hit, and emit flat damage cards per
+ * collateral target. This allows target-conditional bonuses to be resolved
+ * per target.
  */
 async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, messageMode }) {
   const attackerToken = getActorToken(actor);
@@ -501,35 +510,46 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
   });
   if (!hitTokens.length) return;
 
-  const damageBonus = Number(sourceItem?.system?.bonuses.damage ?? 0);
+  const baseDamageBonus = Number(sourceItem?.system?.bonuses.damage ?? 0);
+  const doubleShotBonus = Number(sourceItem?.system?.bonuses.doubleShotBonus ?? 0);
   const lethal = Number(sourceItem?.system?.bonuses.lethal ?? 0);
-  // Collateral targets take flat DMG: no die result, no crit benefit.
-  const flatDamage = attributeValue + damageBonus;
-  const collateralNames = hitTokens.map((t) => t.name).join(', ');
 
-  const spreadCardData = prepareDamageCardData({
-    input: {
-      d10: 0,
-      damageBonus,
-      total: flatDamage,
-      source: sourceItem?.name ?? '',
-      lethal,
-      messageMode,
-      userId: game.user.id,
-    },
-    actor,
-    item: sourceItem,
-    attributeValue,
-    overrides: {
-      title: localize('SYNTHICIDE.Roll.Card.TitleSpreadDamage'),
-      flavor: localize('SYNTHICIDE.Roll.Card.SpreadFlavor', {
-        item: sourceItem?.name ?? '',
-        targets: collateralNames,
-      }),
-    },
-  });
+  for (const collateralToken of hitTokens) {
+    const baneDamageBonus = getBaneDamageBonus({
+      sourceItem,
+      targetActor: collateralToken?.actor,
+    });
+    const damageBonus = baseDamageBonus + doubleShotBonus + baneDamageBonus;
+    // Collateral targets take flat DMG: no die result, no crit benefit.
+    const flatDamage = attributeValue + damageBonus;
 
-  await createActionMessage({ actor, roll: null, messageMode, cardData: spreadCardData });
+    const spreadCardData = prepareDamageCardData({
+      input: {
+        d10: 0,
+        damageBonus,
+        baseDamageBonus,
+        doubleShotBonus,
+        baneDamageBonus,
+        total: flatDamage,
+        source: sourceItem?.name ?? '',
+        lethal,
+        messageMode,
+        userId: game.user.id,
+      },
+      actor,
+      item: sourceItem,
+      attributeValue,
+      overrides: {
+        title: localize('SYNTHICIDE.Roll.Card.TitleSpreadDamage'),
+        flavor: localize('SYNTHICIDE.Roll.Card.SpreadFlavor', {
+          item: sourceItem?.name ?? '',
+          targets: collateralToken.name,
+        }),
+      },
+    });
+
+    await createActionMessage({ actor, roll: null, messageMode, cardData: spreadCardData });
+  }
 }
 
 async function executeChallengeActionRoll({ actor, input, rollData }) {
@@ -709,6 +729,8 @@ function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSu
     armor: targetDefense.armor,
     attackBonus: attackDefaults.attackBonus,
     damageBonus: attackDefaults.damageBonus,
+    slugShotModeAvailable: attackDefaults.slugShotModeAvailable,
+    slugShotActive: false,
     rangeModifier: attackDefaults.rangeModifier,
     shieldBonus: isMeleeAttack ? targetDefense.shieldBonus : 0,
     weaponClass: String(sourceItem?.system?.weaponClass ?? ''),
@@ -723,16 +745,18 @@ function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
     return {
       attackBonus: 0,
       damageBonus: 0,
+      slugShotModeAvailable: false,
       rangeModifier: 0,
     };
   }
 
   const rangeContext = buildAttackRangeContext({ actor, sourceItem, notify: false });
   const targetToken = getSingleTargetToken({ notify: false });
-  const arcAttackBonus = getArcAttackBonus({ sourceItem, targetToken });
+  const attackContext = resolveWeaponAttackContext({ sourceItem, targetToken });
   return {
-    attackBonus: Number(sourceItem.system.bonuses.attack ?? 0) + arcAttackBonus,
-    damageBonus: Number(sourceItem.system.bonuses.damage ?? 0),
+    attackBonus: attackContext.attackBonus,
+    damageBonus: attackContext.damageBonus,
+    slugShotModeAvailable: hasWeaponModification(sourceItem, 'slugShot'),
     rangeModifier: Number(rangeContext?.rangeModifier ?? 0),
   };
 }
@@ -772,6 +796,8 @@ function buildDialogContext(defaults) {
     lockAttribute: isAttack || isDemolition,
     defaultAttackBonus: defaults.attackBonus ?? 0,
     defaultDamageBonus: defaults.damageBonus ?? 0,
+    showSlugShotToggle: Boolean(defaults.slugShotModeAvailable),
+    defaultSlugShotActive: Boolean(defaults.slugShotActive),
     defaultRangeModifier: defaults.rangeModifier ?? 0,
     defaultShieldBonus: defaults.shieldBonus ?? 0,
     shieldBonusHintKey: isMeleeAttack
@@ -826,6 +852,7 @@ function extractDialogData(formElement) {
     armor: parseNumeric(formData.get('armor'), 0),
     attackBonus: parseNumeric(formData.get('attackBonus'), 0),
     damageBonus: parseNumeric(formData.get('damageBonus'), 0),
+    slugShotActive: formData.get('slugShotActive') === 'on',
     rangeModifier: parseNumeric(formData.get('rangeModifier'), 0),
     shieldBonus: parseNumeric(formData.get('shieldBonus'), 0),
   };
@@ -890,16 +917,37 @@ function getActionAttributeKey(subtype, requestedAttribute) {
     : normalizeAttributeKey(requestedAttribute);
 }
 
-function buildActionRollData({ actor, input, attributeKey }) {
+function buildActionRollData({ actor, input, attributeKey, sourceItem }) {
   const modifiers = getActorRollModifiers(actor);
   const actorModifierTotal = modifiers.reduce((sum, mod) => sum + (Number(mod.value) || 0), 0);
+  const actorAttributeValue = getActorAttributeValue(actor, attributeKey);
+  const battleAssistValue = attributeKey === ATTRIBUTE_COMBAT
+    ? Number(sourceItem.system.bonuses?.battleAssistValue ?? 0)
+    : 0;
   return {
-    attribute: getActorAttributeValue(actor, attributeKey),
+    attribute: Math.max(actorAttributeValue, battleAssistValue),
     attackBonus: parseNumeric(input.attackBonus, 0),
     misc: parseNumeric(input.misc, 0),
     modifiers: actorModifierTotal,
     actorModifierTotal,
     rangeModifier: 0,
+  };
+}
+
+function applyAttackModeAdjustments({ input, sourceItem }) {
+  const slugShotActive = Boolean(input?.slugShotActive) && hasWeaponModification(sourceItem, 'slugShot');
+  if (!slugShotActive) {
+    return {
+      ...input,
+      slugShotActive: false,
+    };
+  }
+
+  return {
+    ...input,
+    slugShotActive: true,
+    attackBonus: parseNumeric(input?.attackBonus, 0) - 2,
+    damageBonus: parseNumeric(input?.damageBonus, 0) + 2,
   };
 }
 
@@ -1038,11 +1086,47 @@ function hasWeaponFeature(sourceItem, featureKey) {
   return false;
 }
 
+function hasWeaponModification(sourceItem, modificationKey) {
+  const modifications = sourceItem?.system?.modifications;
+  if (modifications instanceof Set) return modifications.has(modificationKey);
+  if (Array.isArray(modifications)) return modifications.includes(modificationKey);
+  return false;
+}
+
+function resolveWeaponAttackContext({ sourceItem, targetToken }) {
+  const baseAttackBonus = Number(sourceItem?.system?.bonuses?.attack ?? 0);
+  const baseDamageBonus = Number(sourceItem?.system?.bonuses?.damage ?? 0);
+  const arcAttackBonus = getArcAttackBonus({ sourceItem, targetToken });
+  const baneDamageBonus = getBaneDamageBonus({ sourceItem, targetActor: targetToken?.actor });
+
+  return {
+    attackBonus: baseAttackBonus + arcAttackBonus,
+    damageBonus: baseDamageBonus + baneDamageBonus,
+  };
+}
+
 function getArcAttackBonus({ sourceItem, targetToken }) {
   if (!hasWeaponFeature(sourceItem, 'arc')) return 0;
   const targetActor = targetToken?.actor;
   if (!targetActor) return 0;
   return isSyntheticTarget(targetActor) || targetHasAnyImplants(targetActor) ? SYNTHICIDE.ARC_BONUS : 0;
+}
+
+function getBaneDamageBonus({ sourceItem, targetActor }) {
+  if (!targetActor) return 0;
+  const hasOrganicBane = hasWeaponModification(sourceItem, 'baneTuneOrganics');
+  const hasSyntheticBane = hasWeaponModification(sourceItem, 'baneTuneSynthetics');
+  if (!hasOrganicBane && !hasSyntheticBane) return 0;
+
+  const targetIsSyntheticNpc = isSyntheticTarget(targetActor);
+  const targetHasImplants = targetHasAnyImplants(targetActor);
+  // Plugged targets (implants) count as both organics and synthetics.
+  const isSyntheticForBane = targetIsSyntheticNpc || targetHasImplants;
+  const isOrganicForBane = !targetIsSyntheticNpc || targetHasImplants;
+
+  if (hasOrganicBane && isOrganicForBane) return 3;
+  if (hasSyntheticBane && isSyntheticForBane) return 3;
+  return 0;
 }
 
 function isSyntheticTarget(actor) {
@@ -1177,9 +1261,10 @@ function buildDemolitionTargetData(sourceItem) {
   };
 }
 
-function buildResolvedAttackInput({ input, rollData, attackRangeContext }) {
+function buildResolvedAttackInput({ input, rollData, attackRangeContext, baneDamageBonus = 0 }) {
   return {
     ...input,
+    baneDamageBonus,
     actorModifierTotal: rollData.actorModifierTotal,
     rangeModifier: rollData.rangeModifier,
     rangeDistance: attackRangeContext?.distance ?? null,

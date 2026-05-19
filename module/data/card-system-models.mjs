@@ -13,6 +13,8 @@ export class AttackCardSystemData extends foundry.abstract.TypeDataModel {
     schema.d10 = new fields.NumberField({...requiredInteger, initial: 0});
     schema.hit = new fields.BooleanField({ required: true, initial: false });
     schema.lethal = new fields.NumberField({...requiredInteger, initial: 0});
+    schema.baneDamageBonus = new fields.NumberField({ required: false, nullable: false, integer: true, initial: 0 });
+    schema.slugShotActive = new fields.BooleanField({ required: false, initial: false });
     schema.actorUuid = new fields.StringField({ required: true, blank: false, initial: '' });
     return schema;
   }
