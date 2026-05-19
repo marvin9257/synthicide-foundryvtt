@@ -1,3 +1,10 @@
+## [1.0.33](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.32...1.0.33) (2026-05-19)
+
+
+### Bug Fixes
+
+* implement weapon modification bonuses (Battle Assist, Slug Shot, Bane Tune, Double Shot, Arc) with per-target spread collateral cards and attack/damage chat card metadata ([ab553d1](https://github.com/marvin9257/synthicide-foundryvtt/commit/ab553d10f8093445982017c45f384cc4b9d37620))
+
 ## [1.0.32](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.31...1.0.32) (2026-05-18)
 
 
