@@ -1,5 +1,5 @@
 folder: nVtAXR4IEfqe6Y9Y
-name: Battle Armor ?
+name: Battle Armor
 type: armor
 img: systems/synthicide/assets/icons/items/armor.svg
 system:
@@ -7,8 +7,7 @@ system:
     <p>Armor increases a character’s armor defense to help resist incoming
     attacks. A character can only benefit from one set of armor at a time. Armor
     cannot be donned or removed during battle.</p><p>Full-body ballistic armor
-    with added protection such as kneepads and pauldrons.</p><p>STATS MISSING
-    FROM DOCUMENT</p>
+    with added protection such as kneepads and pauldrons.</p>
   quantity: 1
   weight: 0
   equipped: false

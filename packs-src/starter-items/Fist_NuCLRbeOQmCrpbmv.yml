@@ -34,12 +34,12 @@ system:
       damage: 0
       lethal: 0
     '2':
-      attack: 0
-      damage: 0
+      attack: 2
+      damage: 3
       lethal: 0
     '3':
-      attack: 0
-      damage: 0
+      attack: 4
+      damage: 5
       lethal: 0
   weaponTier: 1
   masteredWeapon: false
