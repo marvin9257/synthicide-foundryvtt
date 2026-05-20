@@ -38,7 +38,7 @@ When you open an aspect item:
 ### What to Check
 
 1. **Abilities:** Review what abilities your aspect provides.
-2. **Generated traits:** Open each trait and finalize any required choices (choices don't apply until saved). **Important:** Choice-based traits may have multiple Active Effects (one enabled, others disabled). After making your choice, you must enable the correct effect and disable the others. Text-only traits still require manual implementation at your table.
+2. **Generated traits:** Open each trait and finalize any required choices (choices don't apply until saved). **Important:** Choice-based traits may have multiple Active Effects. Sometimes this is one-enabled/others-disabled; other times multiple effects should remain enabled together. After making your choice, enable every matching effect and disable non-matching effects. Text-only traits still require manual implementation at your table.
 3. **Trait descriptions:** Verify the trait text matches your character concept.
 
 ## What Happens Automatically
@@ -50,11 +50,13 @@ When you open an aspect item:
 ## What You Must Set Manually
 
 1. Finalize choices in generated aspect traits by opening and saving them.
-2. **For choice-based traits:** Enable the Active Effect(s) matching your choice and disable any others. If a trait says "pick one," there are likely multiple effects—one enabled, one or more disabled. After deciding, toggle the disabled flag accordingly.
-3. Traits without Active Effects—determine which ones need manual tracking at your table, and add custom Active Effects if desired.
+2. **For choice-based traits:** Enable the Active Effect(s) matching your choice and disable any others. If a trait says "pick one," there are likely multiple effects—one enabled, one or more disabled. If a trait allows stacked selections, multiple effects may need to remain enabled.
+3. Traits without Active Effects—determine which ones need one-time setup on the sheet and which require manual intervention during play; add custom Active Effects if desired.
 4. Any table-specific tracking or narrative details.
 
 Example: If a trait offers two options and you can see both effects in the Effects tab (one enabled, one disabled), disable the one you didn't choose and enable the one you did, then save.
+
+Stacked example: If an aspect trait allows selecting multiple benefits, keep all Active Effects for the selected benefits enabled together and disable only the unselected benefit effects.
 
 ## Limitations and Not Implemented
 

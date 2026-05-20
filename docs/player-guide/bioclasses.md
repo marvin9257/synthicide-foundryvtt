@@ -42,7 +42,7 @@ When you open a bioclass item to verify values or finalize trait choices:
 
 1. **Starting attributes:** Verify Awareness, Combat, Toughness, Influence, Operation, Nerve, Speed are all set correctly.
 2. **HP values:** Confirm base HP and HP per level match your character concept.
-3. **Generated traits:** Open each and make/finalize choices (they don't apply until saved). **Important:** Choice-based traits may have multiple Active Effects (one enabled, others disabled). After making your choice, you must enable the correct effect and disable the others. Text-only traits still require manual implementation at your table.
+3. **Generated traits:** Open each and make/finalize choices (they don't apply until saved). **Important:** Choice-based traits may have multiple Active Effects. Sometimes this is one-enabled/others-disabled; other times multiple effects should remain enabled together. After making your choice, enable every matching effect and disable non-matching effects. Text-only traits still require manual implementation at your table.
 4. **Weak penalty (NPC):** Enable Ignore Weak Penalty checkbox if the NPC should ignore weak role penalties.
 
 ## What Happens Automatically
@@ -55,11 +55,13 @@ When you open a bioclass item to verify values or finalize trait choices:
 
 1. Verify the bioclass item has complete starting values (attributes, HP, HP per level).
 2. Open and save generated traits when they require choices.
-3. **For choice-based traits:** Enable the Active Effect(s) matching your choice and disable any others. If a trait says "choose one," there are likely multiple effects—one enabled, one or more disabled. After deciding, toggle the disabled flag accordingly.
-4. Traits without Active Effects—determine which ones need manual tracking at your table, and add custom Active Effects if desired.
+3. **For choice-based traits:** Enable the Active Effect(s) matching your choice and disable any others. If a trait says "choose one," there are likely multiple effects—one enabled, one or more disabled. If a trait allows stacked selections, multiple effects may need to remain enabled.
+4. Traits without Active Effects—determine which ones need one-time setup on the sheet and which require manual intervention during play; add custom Active Effects if desired.
 5. Any table-specific adjustments to trait text.
 
 Example: A trait with "Choose: Full Human (+1 Influence, +1 Nerve) or Mutant (–2 Nerve)" comes with both effects. By default, Full Human is enabled and Mutant is disabled. If you choose Mutant, open the Effects tab, disable "Full Human," enable "Mutant," and save.
+
+Stacked example: If a bioclass trait lets you choose two upgrades and each upgrade has its own Active Effect, enable both selected upgrade effects and leave non-selected upgrades disabled.
 
 ## Limitations and Not Implemented
 

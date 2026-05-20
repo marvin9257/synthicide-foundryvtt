@@ -43,20 +43,26 @@ When you open a generated trait (from bioclass or aspect):
 - Example: A trait that grants +2 to a specific attribute includes an AE that modifies that attribute.
 - No manual setup needed—the effect is automatic.
 
-**Choice-based traits with multiple disabled AE (requires configuration):**
+**Choice-based traits with multiple AE (requires configuration):**
 - Some traits include multiple Active Effects, with all but one disabled by default.
-- Example: A trait with "Choose: Option A or Option B" comes with both Option A (enabled) and Option B (disabled) Active Effects.
-- **You must manually enable/disable the effects matching your choice:**
+- Other traits use a mix-and-match choice where multiple effects may need to stay enabled together.
+- Example: A trait with "Choose: Option A or Option B" may ship with one effect enabled and one disabled.
+- Example: A trait with "Choose two benefits" may require two (or more) effects enabled at the same time.
+- Stacked example: if you choose "+1 Combat" and "+1 Speed" from a multi-pick trait, both matching effects should stay enabled.
+- **You must manually enable/disable effects to match your final choice:**
   1. Open the trait item.
   2. Scroll to the **Effects** tab.
   3. Find the effect(s) that match your choice and toggle **disabled** OFF (enable them).
-  4. Disable any effects that don't match your choice by toggling **disabled** ON.
-  5. Save the trait.
+  4. Leave all matching effects enabled when the trait choice allows stacking.
+  5. Disable any effects that don't match your choice by toggling **disabled** ON.
+  6. Save the trait.
 - This is critical—if you don't configure the effects, your choice won't take mechanical effect.
 
 **Traits without AE (manual setup required):**
 - These traits are text-only descriptions of abilities or mechanics that your table must apply manually.
 - You need to decide if/how to represent the effect as an Active Effect.
+- Some no-AE traits need one-time setup on the sheet before play.
+- Others require manual intervention during play (player/GM applies the effect when triggered).
 - You may need to add a custom AE to track the trait's benefit during play.
 
 **How to add a custom Active Effect to a trait:**
@@ -68,7 +74,7 @@ When you open a generated trait (from bioclass or aspect):
 
 **If you're unsure whether a trait needs AE setup:**
 - Check during character creation if the trait's benefits are already reflected in your attributes/stats.
-- For choice-based traits, verify that the correct option's effect is enabled.
+- For choice-based traits, verify all chosen option effects are enabled (not just one).
 - If not, ask your GM whether the trait should grant bonuses automatically or require manual tracking.
 
 ## What Happens Automatically
