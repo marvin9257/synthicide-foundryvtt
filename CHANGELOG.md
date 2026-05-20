@@ -1,3 +1,10 @@
+## [1.0.34](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.33...1.0.34) (2026-05-20)
+
+
+### Bug Fixes
+
+* add cybernetics to pack ([aeb22d3](https://github.com/marvin9257/synthicide-foundryvtt/commit/aeb22d3c92db4ce6f8b313e95d5537e562600904))
+
 ## [1.0.33](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.32...1.0.33) (2026-05-19)
 
 
