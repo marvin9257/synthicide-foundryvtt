@@ -142,8 +142,7 @@ Special ammo types are selectable on ranged weapons but most effects require man
 8. **Flash**: Blinding effects are manual.
 9. **Anchor**: Movement-blocking effects are manual.
 10. **Bouncing**: Ricochet behavior is manual.
-11. **Piercing**: Armor penetration is manual.
-12. **Stun**: Electrical/stun effects are manual.
+11. **Stun**: Electrical/stun effects are manual.
 
 **Important**: Selecting ammo type does not automatically apply mechanical effects. All ammo effects must be resolved by your table after the roll.
 

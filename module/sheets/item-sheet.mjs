@@ -295,7 +295,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       switch (this.item.system.weaponType) {
         case 'pistol':
         case 'rifle':
-          validKeys.push('homing', 'poison', 'powerWounding', 'bouncing', 'piercing');
+          validKeys.push('homing', 'poison', 'powerWounding', 'bouncing');
           break;
         case 'shotgun':
           validKeys.push('knockBack', 'flash');

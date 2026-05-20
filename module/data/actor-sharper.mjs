@@ -111,10 +111,9 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     this.battleReflex.value = this.attributes.awareness.value + this.attributes.speed.value + this.battleReflex.modifier;
     const toughnessValue = this.attributes.toughness.value;
     const toughnessForArmorDefense = Math.max(toughnessValue, currentArmorValues.endoPlatingGrade ?? 0);
-    const armorDefenseForShockThreshold = 5 + this.armorValues.armorBonus + toughnessValue + this.armorDefense.modifier;  //ENDO Plating mod does not change ST value
     this.toughnessDefense.value = 5 + toughnessValue + this.toughnessDefense.modifier;
     this.armorDefense.value = 5 + this.armorValues.armorBonus + toughnessForArmorDefense + this.armorDefense.modifier;
-    this.shockThreshold.value = 10 + this.armorValues.stBonus + armorDefenseForShockThreshold + this.shockThreshold.modifier;
+    this.shockThreshold.value = 10 + this.armorValues.stBonus + this.armorDefense.value + this.shockThreshold.modifier;
     this.nerveDefense.value = 5 + this.attributes.nerve.value + this.nerveDefense.modifier;
   }
 
