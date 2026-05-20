@@ -1,0 +1,44 @@
+folder: eTzCytiVsHAzfPOq
+name: Tech Hands
+type: implant
+_id: XqOkZGE4L8pM44Vw
+img: systems/synthicide/assets/icons/items/implant.svg
+system:
+  description: >-
+    <p>Your fists gain +1 ATT and +1 DMG (instead of +0/−3), including attacks
+    made with extra arms. You can install melee weapon mods on your hands,
+    paying once to apply the mod to all hands. You may treat your fists as both
+    primitive and non-primitive for weapon mods, proficiencies, and battle
+    powers. If you wield another martial weapon, you must choose between using
+    the weapon or your fists.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 90
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  location: body
+  implantType: techHands
+  modifications: []
+  customMods: ''
+  slotSize: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.33
+  createdTime: 1779295764260
+  modifiedTime: 1779297876862
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+sort: 300000
+_key: '!items!XqOkZGE4L8pM44Vw'

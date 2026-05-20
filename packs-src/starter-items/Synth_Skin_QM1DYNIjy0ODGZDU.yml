@@ -1,0 +1,84 @@
+folder: eTzCytiVsHAzfPOq
+name: Synth Skin
+type: implant
+_id: QM1DYNIjy0ODGZDU
+img: systems/synthicide/assets/icons/items/implant.svg
+system:
+  description: >-
+    <p>Your cybernetic skin grants +3 AD and ST +2, but it doesn’t stack with
+    worn armor or unarmored defense powers. You must choose which applies before
+    a battle.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 200
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  location: body
+  implantType: synthSkin
+  modifications: []
+  customMods: ''
+  slotSize: 1
+effects:
+  - name: Active Effect
+    origin: Item.QM1DYNIjy0ODGZDU
+    img: icons/svg/aura.svg
+    _id: RrzG0HPqZGxQCSpM
+    type: base
+    system:
+      changes:
+        - key: system.armorDefense.modifier
+          type: add
+          value: 3
+          phase: initial
+          priority: null
+        - key: system.shockThreshold.modifier
+          type: add
+          value: 2
+          phase: initial
+          priority: null
+    disabled: true
+    start: null
+    duration:
+      value: null
+      units: seconds
+      expiry: null
+      expired: false
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    showIcon: 1
+    folder: null
+    sort: 0
+    flags: {}
+    _stats:
+      coreVersion: '14.361'
+      systemId: synthicide
+      systemVersion: 1.0.33
+      createdTime: 1779296379275
+      modifiedTime: 1779296379275
+      lastModifiedBy: CyKka7cUoDSGKuCg
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+    _key: '!items.effects!QM1DYNIjy0ODGZDU.RrzG0HPqZGxQCSpM'
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.33
+  createdTime: 1779296379275
+  modifiedTime: 1779297963904
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+sort: 0
+_key: '!items!QM1DYNIjy0ODGZDU'

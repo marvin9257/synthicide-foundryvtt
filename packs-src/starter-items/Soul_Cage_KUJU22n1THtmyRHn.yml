@@ -1,0 +1,43 @@
+folder: 99ybM8hLEWcVRbVI
+name: Soul Cage
+type: implant
+img: systems/synthicide/assets/icons/items/implant.svg
+system:
+  description: >-
+    <p>Originally designed to suppress trauma responses in battle, this system
+    is now favored by criminals to dull emotional fallout. During any play
+    session, you can activate the soul cage. While active, you gain no mental
+    traumas (if using those rules) and no cynicism from abhorrent acts, but you
+    also gain no resolve at the end of the session.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 70
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  location: head
+  implantType: soulCage
+  modifications: []
+  customMods: ''
+  slotSize: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.33
+  createdTime: 1779297833624
+  modifiedTime: 1779297833624
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: KUJU22n1THtmyRHn
+sort: 0
+_key: '!items!KUJU22n1THtmyRHn'

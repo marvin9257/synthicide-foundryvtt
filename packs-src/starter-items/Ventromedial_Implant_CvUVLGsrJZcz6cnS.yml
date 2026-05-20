@@ -1,0 +1,76 @@
+folder: 99ybM8hLEWcVRbVI
+name: Ventromedial Implant
+type: implant
+img: systems/synthicide/assets/icons/items/implant.svg
+system:
+  description: ''
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 60
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  location: head
+  implantType: ventromedialImplant
+  modifications: []
+  customMods: ''
+  slotSize: 1
+effects:
+  - name: Nerve Increase
+    origin: Item.5yr9lbfr6n6yT0Eu
+    img: icons/svg/aura.svg
+    _id: O8Cb9tcSkoHbMRYn
+    type: base
+    system:
+      changes:
+        - key: system.attributes.nerve.modifier
+          type: add
+          value: 1
+          phase: initial
+          priority: null
+    disabled: false
+    start: null
+    duration:
+      value: null
+      units: seconds
+      expiry: null
+      expired: false
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    showIcon: 1
+    folder: null
+    sort: 0
+    flags: {}
+    _stats:
+      coreVersion: '14.361'
+      systemId: synthicide
+      systemVersion: 1.0.33
+      createdTime: 1779297318158
+      modifiedTime: 1779297318158
+      lastModifiedBy: CyKka7cUoDSGKuCg
+      compendiumSource: null
+      duplicateSource: null
+      exportSource: null
+    _key: '!items.effects!CvUVLGsrJZcz6cnS.O8Cb9tcSkoHbMRYn'
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.33
+  createdTime: 1779297318158
+  modifiedTime: 1779297372578
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: CvUVLGsrJZcz6cnS
+sort: 400000
+_key: '!items!CvUVLGsrJZcz6cnS'

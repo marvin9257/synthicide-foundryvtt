@@ -30,7 +30,7 @@
       },
       "UseShockingStrike": {
         "Name": "Use Shocking Strike Rules",
-        "Hint": "Automatically apply riles for a shocking strike where a single, high damage blow (If damage from a single attack exceeds a character’s shock threshold (ST = 10 + AD + modifiers)) might result in incapacitation.  Toughtness save is automated too."
+        "Hint": "Automatically apply riles for a shocking strike where a single, high damage blow (If damage from a single attack exceeds a character’s shock threshold (ST = 10 + AD + modifiers)) might result in incapacitation.  Toughness save is automated too."
       },
       "VirtualGridMovement": {
         "Name": "Use Virtual Grids (Zones)",
@@ -278,7 +278,7 @@
           "battleReflex": {"value": {"label": "Battle Reflex"}},
           "toughnessDefense": {"value": {"label": "Toughness Defense"}},
           "armorDefense": {"value": {"label": "Armor Defense"}},
-          "shockThreshold": {"value": {"label": "Shock Treshold"}},
+          "shockThreshold": {"value": {"label": "Shock Threshold"}},
           "nerveDefense": {"value": {"label": "Nerve Defense"}},
           "DerivedValues": "Derived Values"
         }

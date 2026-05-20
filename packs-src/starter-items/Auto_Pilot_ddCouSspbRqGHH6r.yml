@@ -1,0 +1,41 @@
+folder: 99ybM8hLEWcVRbVI
+name: Auto Pilot
+type: implant
+img: systems/synthicide/assets/icons/items/implant.svg
+system:
+  description: >-
+    <p>A computer system allows your body to perform simple tasks while you
+    sleep, such as standing guard or piloting a ship in calm conditions. You can
+    program it to wake you when needed.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 120
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  location: head
+  implantType: autoPilot
+  modifications: []
+  customMods: ''
+  slotSize: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.33
+  createdTime: 1779297643948
+  modifiedTime: 1779297643948
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: ddCouSspbRqGHH6r
+sort: 0
+_key: '!items!ddCouSspbRqGHH6r'

@@ -1,0 +1,43 @@
+folder: 99ybM8hLEWcVRbVI
+name: Limb Module
+type: implant
+img: systems/synthicide/assets/icons/items/implant.svg
+system:
+  description: >-
+    <p>A somatic control upgrade that lets you make better use of extra
+    cybernetic arms. You gain 1 AP each turn to spend on actions involving extra
+    arms. If you have more arms than your opponent in a takedown, this AP is
+    available to use against opponents with fewer arms locked with you in a
+    melee takedown, even though such actions are usually not allowed.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 150
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  location: head
+  implantType: limbModule
+  modifications: []
+  customMods: ''
+  slotSize: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.33
+  createdTime: 1779297762217
+  modifiedTime: 1779297762217
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: EAPzXStHPWL7CPTG
+sort: 0
+_key: '!items!EAPzXStHPWL7CPTG'

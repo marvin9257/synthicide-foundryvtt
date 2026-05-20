@@ -1,0 +1,41 @@
+folder: eTzCytiVsHAzfPOq
+name: Jump Jets
+type: implant
+img: systems/synthicide/assets/icons/items/implant.svg
+system:
+  description: >-
+    <p>Small boosters in your calves and shoulders let you fly. Spend a full
+    turn to move 4 zones in battle and gain velocity 8 in vehicle combat. The
+    jets are obvious to casual observers.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 200
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  location: body
+  implantType: jumpJets
+  modifications: []
+  customMods: ''
+  slotSize: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.33
+  createdTime: 1779295814026
+  modifiedTime: 1779297907801
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: QiED06s9tNnFQ5FN
+sort: 0
+_key: '!items!QiED06s9tNnFQ5FN'

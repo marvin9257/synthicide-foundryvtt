@@ -1,0 +1,20 @@
+type: Item
+folder: Xpz7y3MvlSreGg4G
+name: Brain
+color: null
+sorting: a
+_id: 99ybM8hLEWcVRbVI
+description: ''
+sort: 0
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.33
+  createdTime: 1779290800368
+  modifiedTime: 1779290800368
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!folders!99ybM8hLEWcVRbVI'
