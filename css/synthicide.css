@@ -3073,6 +3073,7 @@ body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attributes,
 body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-row,
 body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attack,
 body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-powers,
+body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-wealth,
 body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-loot,
 body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-notes {
   border-bottom: 1.5px solid var(--color-border-light-tertiary);
@@ -3085,6 +3086,7 @@ body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attr
 body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-row,
 body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attack,
 body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-powers,
+body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-wealth,
 body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-loot,
 body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-notes {
   border-bottom: 1.5px solid var(--color-border-dark-tertiary);
@@ -3198,20 +3200,38 @@ body:not(.synthicide-style-bold) .npc-compact-sheet .synthicide-window-icon img[
 .npc-compact-select-attack label {
   font-weight: bold;
 }
-.npc-compact-powers {
+.npc-compact-powers,
+.npc-compact-wealth,
+.npc-compact-loot {
   display: flex;
   gap: 2em;
   margin-bottom: 8px;
   align-items: center;
 }
-.npc-compact-powers label,
+.npc-compact-wealth .npc-compact-wealth-value {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+.npc-compact-powers input,
+.npc-compact-loot input,
+.npc-compact-wealth select {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  padding: 0.45em 0.6em;
+  border-radius: 6px;
+  background: var(--form-field-bg);
+  color: var(--form-field-color);
+  border: 1px solid var(--synthicide-c-border-subtle);
+  box-sizing: border-box;
+}
+.npc-compact-powers label, .npc-compact-wealth label,
 .npc-compact-loot label,
 .npc-compact-notes label {
+  flex: 0 0 7rem;
   font-weight: bold;
   margin-right: 0.3em;
-}
-.npc-compact-loot {
-  margin-bottom: 8px;
 }
 .npc-compact-notes {
   margin-bottom: 0;
@@ -3293,6 +3313,7 @@ body.synthicide-style-bold .npc-compact-sheet .npc-compact-row {
 }
 
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-powers,
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-wealth,
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-loot,
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes {
   background: var(--synthicide-c-panel-bg);
@@ -3300,6 +3321,7 @@ body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes {
   padding: 0.5em 1em;
 }
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-powers label,
+body.synthicide-style-bold .npc-compact-sheet .npc-compact-wealth label,
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-loot label,
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes label {
   color: var(--synthicide-c-style-accent);

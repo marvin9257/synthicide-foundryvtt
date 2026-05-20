@@ -45,6 +45,7 @@
           </label>
         </div>
       </span>
+      
       <div class="header-resource npc-hp-align">
         <span class="resource-label one-word-per-line">{{localize 'SYNTHICIDE.Actor.base.FIELDS.hitPoints.value.label'}}</span>
         <div class = "resource resource-pair">
@@ -123,9 +124,8 @@
         <span class="one-word-per-line"> {{localize 'SYNTHICIDE.Actor.base.FIELDS.shockThreshold.value.label'}}</span>
         <input type="number" name="system.shockThreshold.value" value="{{system.shockThreshold.value}}" disabled/>
       </div>
-      
       <div class="header-resource npc-der">
-        <span class="one-word-per-line"> {{localize 'SYNTHICIDE.Actor.base.FIELDS.actionPoints.value.label'}}</span> 
+        <span class="one-word-per-line"> {{localize 'SYNTHICIDE.Actor.base.FIELDS.actionPoints.value.label'}}</span>
         <input type="number" name="system.actionPoints.value" value="{{system.actionPoints.value}}" disabled/>
       </div>
       <div class="header-resource npc-der">
@@ -164,16 +164,24 @@
     </div>
   </section>
   <section class="npc-compact-powers">
-    <label><b>{{localize 'SYNTHICIDE.Actor.NPC.UI.UniquePower'}}</b></label>
-    <span>{{system.uniquePower}}</span>
+    <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.UniquePower'}}</label>
+    <input type='text' name='system.uniquePower' value='{{system.uniquePower}}' />
     {{#if system.boss}}
-      <label><b>{{localize 'SYNTHICIDE.Actor.NPC.UI.BossPower'}}</b></label>
-      <span>{{system.bossPower}}</span>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Actor.NPC.UI.BossPower'}}</label>
+      <input type='text' name='system.bossPower' value='{{system.bossPower}}' />
     {{/if}}
   </section>
+  <section class="npc-compact-wealth">
+    <label><b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Actor.NPC.UI.Wealth'}}</b></label>
+    <div class='npc-compact-wealth-value'>
+      <select name='system.npcWealthTier'>
+        {{selectOptions @root.config.npcWealthOptions selected=system.npcWealthTier localize=true}}
+      </select>
+    </div>
+  </section>
   <section class="npc-compact-loot">
-    <label><b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Actor.NPC.UI.Loot'}}</b></label>
-    <span>{{system.loot}}</span>
+    <label class="header-info-label resource-label">{{localize 'SYNTHICIDE.Actor.NPC.UI.Loot'}}</label>
+    <input type='text' name='system.loot' value='{{system.loot}}' />
   </section>
   <section class="npc-compact-notes">
     <label><b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Actor.NPC.UI.Notes'}}</b></label>
