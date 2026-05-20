@@ -1,0 +1,72 @@
+name: Claws
+type: weapon
+_id: ezT778FzYAmbmf8y
+img: systems/synthicide/assets/icons/items/martial.svg
+system:
+  description: ''
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  weaponClass: melee
+  weaponType: martial
+  rangeIncrement: 0
+  features:
+    - primitive
+  modifications:
+    - none
+  specialAmmo: none
+  bonuses:
+    attack: 0
+    damage: 0
+    lethal: 0
+    battleAssistValue: 0
+    doubleShotBonus: 0
+  attackBonus: 1
+  damageBonus: 2
+  lethal: 0
+  tierBonuses:
+    '1':
+      attack: 1
+      damage: 2
+      lethal: 0
+      battleAssistValue: 0
+      doubleShotBonus: 0
+    '2':
+      attack: 3
+      damage: 4
+      lethal: 5
+      battleAssistValue: 0
+      doubleShotBonus: 0
+    '3':
+      attack: 3
+      damage: 6
+      lethal: 7
+      battleAssistValue: 0
+      doubleShotBonus: 0
+  weaponTier: 1
+  masteredWeapon: false
+  specialType: ''
+effects: []
+folder: mpL3fM14Aclg5S1X
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.361'
+  systemId: synthicide
+  systemVersion: 1.0.33
+  createdTime: 1779283469979
+  modifiedTime: 1779283469979
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+sort: 0
+_key: '!items!ezT778FzYAmbmf8y'

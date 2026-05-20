@@ -3338,7 +3338,7 @@ body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes textarea {
   letter-spacing: 0.04em;
 }
 .npc-tiers-table input[type="number"] {
-  width: 4ch;
+  width: 5ch;
   text-align: center;
 }
 .npc-mastered-weapon {
