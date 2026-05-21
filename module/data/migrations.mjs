@@ -1,5 +1,5 @@
 const MIGRATION_SETTING_KEY = 'migrationVersion';
-const CURRENT_MIGRATION_VERSION = '3.0.0';
+const CURRENT_MIGRATION_VERSION = '3.1.0';
 
 /**
  * NOTE:
@@ -131,6 +131,10 @@ export async function migrateWorld() {
     await migration_3_0_0_spellItemsToTraits();
   }
 
+  if (foundry.utils.isNewerVersion('3.1.0', lastVersion)) {
+    await migration_3_1_0_resetLegacyDerivedModifiers();
+  }
+
   await game.settings.set('synthicide', MIGRATION_SETTING_KEY, CURRENT_MIGRATION_VERSION);
 }
 
@@ -174,5 +178,61 @@ async function migration_3_0_0_spellItemsToTraits() {
 
   if (worldItemUpdates.length) {
     ui.notifications.info('SYNTHICIDE migration complete: legacy spell items converted to traits.');
+  }
+}
+
+/**
+ * Reset legacy stored modifier values on actor data and unlinked token actor data.
+ * These values are now derived/non-persistent and should not survive in saved documents.
+ */
+async function migration_3_1_0_resetLegacyDerivedModifiers() {
+  const modifierPaths = [
+    'system.attributes.awareness.modifier',
+    'system.attributes.combat.modifier',
+    'system.attributes.toughness.modifier',
+    'system.attributes.influence.modifier',
+    'system.attributes.operation.modifier',
+    'system.attributes.nerve.modifier',
+    'system.attributes.speed.modifier',
+    'system.hitPoints.modifier',
+    'system.actionPoints.modifier',
+    'system.toughnessDefense.modifier',
+    'system.armorDefense.modifier',
+    'system.nerveDefense.modifier',
+    'system.shockThreshold.modifier',
+    'system.battleReflex.modifier',
+  ];
+
+  let changed = false;
+
+  const actorUpdates = game.actors
+    .filter((actor) => modifierPaths.some((path) => Number(foundry.utils.getProperty(actor, path) ?? 0) !== 0))
+    .map((actor) => ({
+      _id: actor.id,
+      ...Object.fromEntries(modifierPaths.map((path) => [path, 0])),
+    }));
+
+  if (actorUpdates.length) {
+    await Actor.updateDocuments(actorUpdates);
+    changed = true;
+  }
+
+  for (const scene of game.scenes) {
+    const tokenUpdates = scene.tokens
+      .filter((token) => !token.actorLink)
+      .filter((token) => modifierPaths.some((path) => Number(foundry.utils.getProperty(token, `actorData.${path}`) ?? 0) !== 0))
+      .map((token) => ({
+        _id: token.id,
+        ...Object.fromEntries(modifierPaths.map((path) => [`actorData.${path}`, 0])),
+      }));
+
+    if (tokenUpdates.length) {
+      await scene.updateEmbeddedDocuments('Token', tokenUpdates);
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    ui.notifications.info('SYNTHICIDE migration complete: legacy derived modifiers reset to 0.');
   }
 }

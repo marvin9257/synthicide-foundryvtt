@@ -35,7 +35,7 @@ export function makeValueField(initialValue = 0, schemaOptions={}) {
  * @param {object} schemaOptions  Options passed to the outer schema.
  * @returns {ResourceData}
  */
-export function makeDerivedField(initialValue = 0, schemaOptions={}) {
+export function makeDerivedField(initialValue = 0, schemaOptions={persisted: false}) {
   return new fields.SchemaField({
     modifier: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false }),
     value: new fields.NumberField({ ...requiredInteger, initial: initialValue }, {persisted: false})
