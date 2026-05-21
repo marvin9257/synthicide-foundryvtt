@@ -1,0 +1,41 @@
+name: Standard Clothing
+type: armor
+_id: 9QEYqNhiEflrdEai
+img: systems/synthicide/assets/icons/items/armor.svg
+system:
+  description: ''
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  armorBonus: 0
+  stBonus: 0
+  speedMax: 10
+  forceBarrier:
+    max: 0
+    recoveryRate: 0
+    rechargeTime: 0
+  modifications: []
+effects: []
+folder: nVtAXR4IEfqe6Y9Y
+ownership:
+  default: 0
+  pdpraZTuP1qfHs08: 3
+flags: {}
+_stats:
+  coreVersion: '14.362'
+  systemId: synthicide
+  systemVersion: 1.0.35
+  createdTime: 1779385358461
+  modifiedTime: 1779385358461
+  lastModifiedBy: pdpraZTuP1qfHs08
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+sort: 0
+_key: '!items!9QEYqNhiEflrdEai'
