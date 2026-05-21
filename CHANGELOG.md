@@ -1,3 +1,10 @@
+## [1.0.35](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.34...1.0.35) (2026-05-21)
+
+
+### Bug Fixes
+
+* update migrations for modifiers not being persisted and verified version ([00daee7](https://github.com/marvin9257/synthicide-foundryvtt/commit/00daee79d0d670c147d12bf7a1061be61594747c))
+
 ## [1.0.34](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.33...1.0.34) (2026-05-20)
 
 
