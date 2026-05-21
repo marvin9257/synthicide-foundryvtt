@@ -1,3 +1,10 @@
+## [1.0.36](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.35...1.0.36) (2026-05-21)
+
+
+### Bug Fixes
+
+* add standard clothing for force barrier only configuration ([a7a9f03](https://github.com/marvin9257/synthicide-foundryvtt/commit/a7a9f0381c1c5eed8351d61293b56ca5aab63e9c))
+
 ## [1.0.35](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.34...1.0.35) (2026-05-21)
 
 
