@@ -22,7 +22,7 @@ export default class SynthicideActorBaseData extends foundry.abstract
       previous: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
       base: new fields.NumberField({ ...requiredInteger, initial: 20 }),
       perLevel: new fields.NumberField({ ...requiredInteger, initial: 5 }),
-      modifier: new fields.NumberField({ ...requiredInteger, initial: 0 })
+      modifier: new fields.NumberField({ ...requiredInteger, initial: 0 }, { persisted: false })
     });
 
     schema.actionPoints = makeDerivedField();
