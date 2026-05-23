@@ -43,6 +43,7 @@ To build the system for FoundryVTT:
 	This will:
 	- Run `prebuild`
 	- Run `npm run packs:build-yml`
+	- Run `npm run packs:validate`
 	- Regenerate `packs-src/player-guide-journal` from `docs/player-guide/*.md`
 	- Validate `system.json` pack declarations against `packs-src/*`
 	- Compile `packs-src/*` into `packs/*`
@@ -107,7 +108,8 @@ Notes:
 
 - Do not hand-edit `packs-src/player-guide-journal/*.yml`; those files are regenerated.
 - Do not commit `packs-src/player-guide-journal/*.yml`; that directory is generated and ignored.
-- `npm run packs:build-yml` now regenerates the player guide journal, validates pack declarations, and then compiles packs.
+- `npm run packs:validate` now regenerates the player guide journal and then validates pack declarations.
+- `npm run packs:build-yml` uses that validation step and then compiles packs.
 - `npm run build` and `npm run build:develop` use that same pack-build pipeline through `prebuild`.
 
 ## Notes
