@@ -125,6 +125,15 @@
       "path": "./packs/starter-items",
       "entity": "Item",
       "type": "Item"
+    },
+    {
+      "name": "player-guide-journal",
+      "label": "Player Guide",
+      "system": "synthicide",
+      "module": "synthicide",
+      "path": "./packs/player-guide-journal",
+      "entity": "JournalEntry",
+      "type": "JournalEntry"
     }
   ],
   "packFolders": [
@@ -132,7 +141,8 @@
       "name": "Synthicide Core",
       "sorting": "m",
       "packs": [
-        "starter-items"
+        "starter-items",
+        "player-guide-journal"
       ]
     }
   ],

@@ -41,8 +41,20 @@ To build the system for FoundryVTT:
 	npm run build
 	```
 	This will:
+	- Run `prebuild`
+	- Run `npm run packs:build-yml`
+	- Regenerate `packs-src/player-guide-journal` from `docs/player-guide/*.md`
+	- Validate `system.json` pack declarations against `packs-src/*`
+	- Compile `packs-src/*` into `packs/*`
 	- Bundle JavaScript using Rollup
 	- Copy all required files (assets, css, lang, module, templates, system.json, README, LICENSE) into a fresh `dist/` folder
+
+### Build pipeline summary
+
+- `docs/player-guide/*.md` is the source of truth for the player guide journal.
+- `packs-src/player-guide-journal` is generated output, is overwritten on each regeneration, and is gitignored.
+- `packs/player-guide-journal` is compiled output used by Foundry.
+- `starter-items` still uses hand-maintained files under `packs-src/starter-items`.
 
 ## Live Development with FoundryVTT
 
@@ -55,6 +67,48 @@ To have FoundryVTT use your latest build automatically:
 	ln -sfn "$(pwd)/dist" "/Users/USERNAME/Library/Application Support/FoundryVTT/Data/systems/synthicide"
 	```
 3. Now, every time you run `npm run build`, FoundryVTT will use the latest code and assets.
+
+For this repo, `npm run build:develop` automates the same workflow:
+
+```sh
+npm run build:develop
+```
+
+This command:
+
+- Runs the full `npm run build` pipeline above
+- Regenerates the player-guide journal YAML from the markdown docs
+- Validates pack declarations
+- Recompiles all packs
+- Recreates the symlink from `dist/` into your Foundry systems directory
+
+Use `npm run build:develop` when you want a single command to rebuild and immediately test in Foundry.
+
+## Player Guide Journal Workflow
+
+What you edit manually:
+
+- `docs/player-guide/*.md`
+
+What is generated automatically:
+
+- `packs-src/player-guide-journal/*.yml`
+- `packs/player-guide-journal`
+- `dist/` during `npm run build` or `npm run build:develop`
+
+Typical loop for player-guide changes:
+
+1. Edit a markdown file in `docs/player-guide/`.
+2. Run `npm run packs:build-yml` if you only want to rebuild compendiums, or `npm run build:develop` if you want to test in Foundry immediately.
+3. Reload Foundry.
+4. Re-import the journal entries into a world if you previously imported copies from the compendium.
+
+Notes:
+
+- Do not hand-edit `packs-src/player-guide-journal/*.yml`; those files are regenerated.
+- Do not commit `packs-src/player-guide-journal/*.yml`; that directory is generated and ignored.
+- `npm run packs:build-yml` now regenerates the player guide journal, validates pack declarations, and then compiles packs.
+- `npm run build` and `npm run build:develop` use that same pack-build pipeline through `prebuild`.
 
 ## Notes
 

@@ -5,10 +5,11 @@
   "scripts": {
     "createSymlinks": "node src/create-symlinks.mjs",
     "lint": "eslint .",
-    "prebuild": "npm run packs:validate && npm run packs:build-yml",
+    "packs:build-player-guide": "node ./scripts/build-player-guide-journal.mjs",
+    "prebuild": "npm run packs:build-yml",
     "build": "npx gulp build",
     "packs:validate": "node ./scripts/validate-pack-manifest.mjs",
-    "packs:build-yml": "node ./scripts/yml-to-db.mjs",
+    "packs:build-yml": "npm run packs:build-player-guide && npm run packs:validate && node ./scripts/yml-to-db.mjs",
     "packs:export-yml": "node ./scripts/db-to-yml.mjs",
     "packs:rebuild-yml": "npm run packs:build-yml && npm run packs:export-yml",
     "build:develop": "npm run build && rm -rf ~/Library/Application\\ Support/FoundryVTT/Data/systems/synthicide && ln -sfn \"$(pwd)/dist\" ~/Library/Application\\ Support/FoundryVTT/Data/systems/synthicide"

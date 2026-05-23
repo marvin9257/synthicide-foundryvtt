@@ -45,4 +45,7 @@ packs/
 # Ignore exported YAML packs
 packs-export/
 
+# Ignore generated player guide journal source
+packs-src/player-guide-journal/
+
 continue/
