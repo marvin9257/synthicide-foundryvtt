@@ -1,3 +1,10 @@
+## [1.0.39](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.38...1.0.39) (2026-05-23)
+
+
+### Bug Fixes
+
+* update getting started document ([73f2af4](https://github.com/marvin9257/synthicide-foundryvtt/commit/73f2af4a7260848eb8141714145df9d21b7695b7))
+
 ## [1.0.38](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.37...1.0.38) (2026-05-23)
 
 
