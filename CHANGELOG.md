@@ -1,3 +1,11 @@
+## [1.0.38](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.37...1.0.38) (2026-05-23)
+
+
+### Bug Fixes
+
+* add auto player guide generation ([d1a24c4](https://github.com/marvin9257/synthicide-foundryvtt/commit/d1a24c4d2ce0a27361b52186ebba876e4b5da7a8))
+* update build so player guide is generated before validating packs ([113b6ac](https://github.com/marvin9257/synthicide-foundryvtt/commit/113b6ac90e163c21df92a49a53b7868f597df072))
+
 ## [1.0.37](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.36...1.0.37) (2026-05-23)
 
 
