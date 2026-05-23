@@ -146,6 +146,24 @@ Special ammo types are selectable on ranged weapons. Some ammo behavior is autom
 
 **Important**: Ammo selection is not all-or-nothing automation. The system automates selected status application and a few direct numeric effects, but complex RAW handling for ammo still needs table resolution.
 
+## Weapon Specialization (Weapon Proficiency Traits)
+
+Weapon Specialization is configured on trait items, not weapon items.
+
+### What It Automatically Does
+
+1. Applies implemented numeric specialization bonuses by milestone tier (1, 4, 7) when you roll with a matching weapon family.
+2. Supports specialization-driven attack/damage/lethal integration in attack and damage workflows where implemented.
+3. Supports demolition throw/placement specialization bonuses in demolition workflows.
+4. Applies the implemented Axe shocking-strike RD bonus in shock resolution.
+5. Treats Blaster weapons as Shotgun for specialization matching.
+
+### What It Does Not Automatically Do
+
+1. It does not auto-create or auto-level Weapon Proficiency traits for you.
+2. It does not apply non-numeric specialization narrative rules that are not implemented in automation.
+3. It does not replace manual handling for non-automated weapon modifications, features, or ammo behavior.
+
 ## What Happens Automatically
 
 1. Equipped items contribute to derived values.
@@ -170,6 +188,7 @@ Example: equipping armor with Force Barrier fields updates the actor's shown For
 5. **Many modifications, features, and ammo effects still require manual implementation** (see Weapon Modifications, Weapon Features, and Special Ammo sections above). Selecting these options does not guarantee full RAW automation. Your table must resolve effects that are not in the automatic mechanics list.
 6. Shield tactic handling from the rules update (such as defensive arc and lock-angle behavior) requires manual table resolution.
 7. Modification selections that do not appear in the automatic mechanics list will not affect attack or damage calculations; you must apply these effects manually at your table.
+8. Weapon specialization support is focused on implemented numeric bonuses by specialization and tier. Full RAW specialization text still needs manual adjudication where not automated.
 
 ## Troubleshooting
 
@@ -193,8 +212,13 @@ A: Check the [Weapon Modifications section](#weapon-modifications) above. Many m
 
 A: Partly. Some ammo effects are automated, but not all of them. Check the [Special Ammo section](#special-ammo) to see which ammo adds automatic statuses or direct numeric changes and which still need manual table resolution.
 
+### Q: I set Weapon Proficiency on a trait, but I do not see a bonus. Why?
+
+A: Confirm the specialization matches the weapon family you rolled with and that the trait level is set to 1, 4, or 7. For Blaster weapons, use Shotgun specialization. See [Weapon Specializations](weapon-specializations.md).
+
 ## Related Pages
 
 1. [Rolls Overview](rolls-overview.md)
 2. [Making an Attack Roll](making-an-attack-roll.md)
-3. [Resources and Derived Values](resources-and-derived-values.md)
+3. [Weapon Specializations](weapon-specializations.md)
+4. [Resources and Derived Values](resources-and-derived-values.md)

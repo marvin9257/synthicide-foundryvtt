@@ -58,6 +58,7 @@ Example: assigning a new bioclass replaces the old one and refreshes associated 
 4. **Shield tactics**: Advanced shield behavior from the rules (angle lock/defensive arc style handling) is manual in most cases.
 5. **Force barrier lifecycle**: Barrier damage absorption and turn-start recovery exist, but overload/recharge-time lifecycle tracking must still be tracked manually after collapse.
 6. **Cybernetics package logic**: Bioclass slot display exists, but many package/implant effects still need manual setup or manual adjudication.
+7. **Weapon specialization**: Weapon Proficiency traits now apply implemented numeric specialization bonuses by milestone tier, but they do not automate every specialization text rider.
 
 ## Troubleshooting
 
@@ -97,8 +98,13 @@ A: These are collateral cards from the Spread feature on your weapon. Each colla
 
 A: Partly. Some ammo is automated and some is not. The system currently applies direct numeric changes for Homing and Power Wounding, plus several on-hit status effects such as Cryo, Cinder, Flash, Anchor, and Poison. More complex RAW handling still needs manual resolution. Check the [Weapons, Armor, Shields, and Gear guide](weapons-armor-shields-and-gear.md#special-ammo) for the current split.
 
+### Q: My Weapon Proficiency trait is set, but I still do not see a specialization bonus. What should I verify?
+
+A: Check three things first: trait type is Weapon Proficiency, specialization matches the weapon family, and level is 1, 4, or 7. For blaster weapons, use Shotgun specialization. See [Weapon Specializations](weapon-specializations.md).
+
 ## Related Pages
 
 1. [Bioclasses](bioclasses.md)
 2. [Aspects](aspects.md)
-3. [Demolition and Range-Based Actions](demolition-and-range-based-actions.md)
+3. [Weapon Specializations](weapon-specializations.md)
+4. [Demolition and Range-Based Actions](demolition-and-range-based-actions.md)

@@ -9,6 +9,7 @@ Run a full attack flow from weapon click to damage follow-up.
 1. Open your actor sheet.
 2. Confirm at least one weapon is on your actor.
 3. Confirm weapon bonuses and range increment are configured.
+4. If using Weapon Proficiency, confirm specialization and level on the trait.
 
 ## Steps
 
@@ -34,6 +35,7 @@ Example: a weapon with Spread can generate collateral cards; Double Shot can inc
 4. Weapons with the Spread feature can generate per-target collateral cards based on the attack line through the primary target.
 5. The damage card shows a zero damage floor (damage cannot go below 0 even if modifiers reduce it).
 6. Some ammo effects are automated as part of the attack/damage flow, including Power Wounding lethal plus extra damage dice, Homing lethal plus target marking, Cryo frozen status, Cinder burning plus immediate extra damage, and Flash blind plus its turn-start recovery check.
+7. Weapon specialization bonuses are applied automatically when your Weapon Proficiency trait matches the weapon family.
 
 Example: a weapon with Battle Assist 2 and Expert Crafting +1 can show the Combat floor and damage bonus in the chat card breakdown.
 
@@ -57,6 +59,7 @@ Example: select poison ammo, roll the attack, let the system place the `Poison` 
 5. Damage follow-up depends on a valid qualifying attack result (example: a miss does not unlock the same damage flow).
 6. Collateral cards from the Spread feature appear in chat but their target application must still be resolved at your table.
 7. The sheet does not resolve custom edge rulings from your table (example: unusual cover, improvised targets, or house rules still need a GM call).
+8. Weapon specialization coverage is limited to implemented numeric effects by specialization/tier and does not cover every RAW specialization rider.
 
 ## Troubleshooting
 
@@ -84,9 +87,14 @@ A: Apply damage from each collateral card to the corresponding target token, jus
 
 A: Check the [Weapons, Armor, Shields, and Gear guide](weapons-armor-shields-and-gear.md#modifications-with-automatic-mechanics). Only modifications listed as having automatic mechanics are applied automatically. For others, you must track and apply bonuses manually.
 
+### Q: My Weapon Proficiency trait is set, but my attack card still looks unchanged.
+
+A: Verify your trait specialization matches the weapon family and confirm the trait level is 1, 4, or 7. Blaster uses Shotgun specialization rules. See [Weapon Specializations](weapon-specializations.md).
+
 ## Related Pages
 
 1. [Rolls Overview](rolls-overview.md)
 2. [Virtual Grid Units and Combat Zones](virtual-grid-units-and-combat-zones.md)
 3. [Weapons, Armor, Shields, and Gear](weapons-armor-shields-and-gear.md)
-4. [Combat Workflow](combat-workflow.md)
+4. [Weapon Specializations](weapon-specializations.md)
+5. [Combat Workflow](combat-workflow.md)

@@ -13,14 +13,15 @@ It focuses on practical sheet actions, rolls, and known limits. It does not cove
 5. [Actor Sheet Tour](actor-sheet-tour.md)
 6. [NPC Sheet Tour](npc-sheet-tour.md)
 7. [Traits](traits.md)
-8. [Weapons, Armor, Shields, and Gear](weapons-armor-shields-and-gear.md)
-9. [Rolls Overview](rolls-overview.md)
-10. [Making an Attack Roll](making-an-attack-roll.md)
-11. [Combat Workflow](combat-workflow.md)
-12. [Virtual Grid Units and Combat Zones](virtual-grid-units-and-combat-zones.md)
-13. [Resources and Derived Values](resources-and-derived-values.md)
-14. [Demolition and Range-Based Actions](demolition-and-range-based-actions.md)
-15. [Troubleshooting and Known Limitations](troubleshooting-and-known-limitations.md)
+8. [Weapon Specializations](weapon-specializations.md)
+9. [Weapons, Armor, Shields, and Gear](weapons-armor-shields-and-gear.md)
+10. [Rolls Overview](rolls-overview.md)
+11. [Making an Attack Roll](making-an-attack-roll.md)
+12. [Combat Workflow](combat-workflow.md)
+13. [Virtual Grid Units and Combat Zones](virtual-grid-units-and-combat-zones.md)
+14. [Resources and Derived Values](resources-and-derived-values.md)
+15. [Demolition and Range-Based Actions](demolition-and-range-based-actions.md)
+16. [Troubleshooting and Known Limitations](troubleshooting-and-known-limitations.md)
 
 ## What This Guide Covers
 
@@ -49,8 +50,9 @@ Use these expectations while reading every page in this guide:
 8. **Weapon modification mechanics**: Only these modifications have implemented automatic mechanics: Battle Assist (Combat floor), Expert Crafting (damage), Enhanced Alloy (attack), Bane Tune (damage vs qualifying target type), Arc (attack bonus vs synthetics/targets with implants), Double Shot (spread collateral damage bonus), and Slug Shot (damage calculation). Spread collateral-card generation comes from the Spread feature. All other modifications are tracking fields and require manual implementation. See [Weapons, Armor, Shields, and Gear](weapons-armor-shields-and-gear.md) for full details.
 9. **Special ammo**: Selection exists on ranged weapons and now includes some automation for direct numeric changes and status application, but complex ammo-specific RAW behavior still requires manual resolution by your table.
 10. **Weapon features**: Most features are descriptive. Arc provides an automatic attack bonus against qualifying targets, and Spread provides collateral-card generation.
-11. Advanced shield behaviors from the rules update (angle lock, ranged cover state, ballistic shared cover, and similar tactical handling) do not have full dedicated automation and usually need manual adjudication.
-12. Force barrier handles absorption and turn-start recovery, but overload and recharge timing from the rules kit must still be tracked manually.
+11. **Weapon specialization**: Weapon Proficiency traits add implemented numeric bonuses by specialization and milestone tier, but they do not automate every specialization rule text. See [Weapon Specializations](weapon-specializations.md).
+12. Advanced shield behaviors from the rules update (angle lock, ranged cover state, ballistic shared cover, and similar tactical handling) do not have full dedicated automation and usually need manual adjudication.
+13. Force barrier handles absorption and turn-start recovery, but overload and recharge timing from the rules kit must still be tracked manually.
 
 ## Key Terms (Plain Language)
 
@@ -84,12 +86,13 @@ Each page in this guide follows the same sections:
 5. [Bioclasses](bioclasses.md)
 6. [Aspects](aspects.md)
 7. [Traits](traits.md)
-8. [Weapons, Armor, Shields, and Gear](weapons-armor-shields-and-gear.md)
-9. [Rolls Overview](rolls-overview.md)
-10. [Making an Attack Roll](making-an-attack-roll.md)
-11. [Combat Workflow](combat-workflow.md)
-12. [Virtual Grid Units and Combat Zones](virtual-grid-units-and-combat-zones.md)
-13. [Resources and Derived Values](resources-and-derived-values.md)
-14. [Demolition and Range-Based Actions](demolition-and-range-based-actions.md)
-15. [Troubleshooting and Known Limitations](troubleshooting-and-known-limitations.md)
+8. [Weapon Specializations](weapon-specializations.md)
+9. [Weapons, Armor, Shields, and Gear](weapons-armor-shields-and-gear.md)
+10. [Rolls Overview](rolls-overview.md)
+11. [Making an Attack Roll](making-an-attack-roll.md)
+12. [Combat Workflow](combat-workflow.md)
+13. [Virtual Grid Units and Combat Zones](virtual-grid-units-and-combat-zones.md)
+14. [Resources and Derived Values](resources-and-derived-values.md)
+15. [Demolition and Range-Based Actions](demolition-and-range-based-actions.md)
+16. [Troubleshooting and Known Limitations](troubleshooting-and-known-limitations.md)
 

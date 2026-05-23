@@ -88,6 +88,7 @@ For weapon attacks with the Spread feature, additional per-target damage cards m
 1. **Zero Damage Floor**: Damage rolls cannot produce less than 0 damage, even if target defenses or penalties reduce the total below zero.
 2. **Modification Bonuses**: Only implemented automatic modification mechanics are included in chat card calculations. These include Battle Assist's Combat floor, Expert Crafting damage, Enhanced Alloy attack, Bane Tune bonus damage, and Arc attack bonus. All other modification effects must be applied manually.
 3. **Special Ammo**: Ammo is partially automated. Some ammo applies automatic statuses or direct numeric changes, but complex rule handling still requires table resolution.
+4. **Weapon Specialization**: Weapon Proficiency traits apply implemented numeric specialization bonuses by tier when specialization matches the weapon family. Not all specialization rider text is automated.
 
 ## Applying Damage or Healing From Chat Cards
 
@@ -150,9 +151,10 @@ Example: a weapon with Battle Assist 2, Expert Crafting +1, and Arc feature show
    - Anchor ammo (`Restrain` marker)
    - Poison ammo (`Poison` marker)
    Other modification, feature, and ammo behavior still requires manual resolution at your table.
-5. Item modifiers are evaluated during actor preparation and must be deterministic: authors should use the `formula` field. Per-roll evaluation of item formulas or "roll-context" modifier behavior is not supported.
-6. Demolition and attack follow-up output can depend on correct target/token setup; missing context may block or degrade expected automation.
-7. Apply Damage and Apply Healing use currently controlled tokens, so applying to the wrong token is possible if selection is wrong.
+5. **Weapon specialization coverage is intentionally scoped**. Implemented specialization math is applied automatically, but broader specialization narrative/rider handling still needs table adjudication.
+6. Item modifiers are evaluated during actor preparation and must be deterministic: authors should use the `formula` field. Per-roll evaluation of item formulas or "roll-context" modifier behavior is not supported.
+7. Demolition and attack follow-up output can depend on correct target/token setup; missing context may block or degrade expected automation.
+8. Apply Damage and Apply Healing use currently controlled tokens, so applying to the wrong token is possible if selection is wrong.
 
 ## Troubleshooting
 
@@ -197,4 +199,5 @@ A: Check which mechanics are automated. See the [Weapons, Armor, Shields, and Ge
 1. [Making an Attack Roll](making-an-attack-roll.md)
 2. [Virtual Grid Units and Combat Zones](virtual-grid-units-and-combat-zones.md)
 3. [Combat Workflow](combat-workflow.md)
-4. [Troubleshooting and Known Limitations](troubleshooting-and-known-limitations.md)
+4. [Weapon Specializations](weapon-specializations.md)
+5. [Troubleshooting and Known Limitations](troubleshooting-and-known-limitations.md)

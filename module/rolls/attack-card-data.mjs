@@ -2,6 +2,7 @@
 // Extracted from action-rolls.mjs for modularity and clarity
 
 import { localize, getAttributeLabel, buildEquationTerms, buildBaseActionCardData, getRollResultSummary } from './roll-utils.mjs';
+import { buildWeaponSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
 /**
  * Prepare cardData for an attack roll.
  * @param {object} params
@@ -22,9 +23,11 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
   const hit = total >= effectiveArmor;
   const attributeKey = input.attribute;
   const lethalOverride = input.lethalOverride;
+  const specializationLethalBonus = Number(input.specializationLethalBonus ?? 0);
+  const shockRdBonus = Number(input.shockRdBonus ?? 0);
   const lethal = Number.isFinite(lethalOverride)
     ? lethalOverride
-    : Number(sourceItem?.system?.bonuses.lethal ?? 0);
+    : Number(sourceItem?.system?.bonuses.lethal ?? 0) + specializationLethalBonus;
   const extraDamageDice = Number(input.extraDamageDice ?? 0);
   const baneDamageBonus = Number(input.baneDamageBonus ?? 0);
   const slugShotActive = isSlugShotActive({ input, sourceItem });
@@ -39,6 +42,7 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
     d10,
     hit,
     lethal,
+    shockRdBonus,
     extraDamageDice,
     baneDamageBonus,
     slugShotActive,
@@ -136,6 +140,16 @@ function buildAttackMetadataRows({
       value: `${actorCombatValue} -> ${battleAssistValue}`,
     });
   }
+
+  rows.push(
+    ...buildWeaponSpecializationMetadataRows({
+      input,
+      includeAttackBonus: true,
+      includeDamageBonus: true,
+      includeLethalBonus: true,
+      includeShockRdBonus: true,
+    })
+  );
 
   return rows;
 }

@@ -82,9 +82,9 @@
           <li>
             <strong>{{row.label}}:</strong>
             {{#if row.valueHtml}}
-              {{{row.valueHtml}}}
+              <span class="metadata-value">{{{row.valueHtml}}}</span>
             {{else}}
-              {{row.value}}
+              <span class="metadata-value">{{row.value}}</span>
             {{/if}}
           </li>
         {{/each}}

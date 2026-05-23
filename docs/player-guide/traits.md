@@ -8,7 +8,8 @@ Manage milestone traits and generated traits without surprises.
 
 1. **Milestone traits:** Add them in the Traits tab at levels 1, 4, or 7.
 2. **Bioclass/Aspect traits:** Generated automatically when those items are assigned. Open each and finalize required choices, then save.
-3. **Edit later:** Use the edit icon if you need to revise.
+3. **Weapon proficiency traits:** Set trait type to Weapon Proficiency, pick a Weapon Specialization, and set level to 1, 4, or 7.
+4. **Edit later:** Use the edit icon if you need to revise.
 
 ## Interactive Elements on Trait Items
 
@@ -19,6 +20,7 @@ When you open a trait to view or edit it:
 | Trait name | Text input | Click to edit the trait name |
 | Trait level | Numeric input | Click to set the trait level |
 | Trait type dropdown | Dropdown | Reference; shows if trait is a milestone or generated trait |
+| Weapon Specialization dropdown | Dropdown | Click to pick specialization when trait type is Weapon Proficiency |
 | Choice field (if applicable) | Dropdown or checkboxes | Click to make a required "choose one" selection |
 | Description/effect field | Text box | Click to add or edit the trait's mechanical/narrative effect |
 | Notes field | Text box | Click to add table-specific notes or conditions |
@@ -81,19 +83,22 @@ When you open a generated trait (from bioclass or aspect):
 
 1. Standard traits are grouped by milestone level.
 2. Bioclass and aspect traits are created automatically when assigned.
-3. Trait lists update when features are replaced.
+3. Weapon proficiency traits feed weapon-specialization bonuses into supported roll flows.
+4. Trait lists update when features are replaced.
 
 ## What You Must Set Manually
 
 1. Trait text and table-specific details.
 2. Required choices in generated traits (open and save to finalize).
-3. Manual follow-up trait effects require.
+3. Weapon specialization selection and proficiency level on Weapon Proficiency traits.
+4. Manual follow-up trait effects require.
 
 ## Limitations and Not Implemented
 
 1. Standard trait levels limited to milestones (1, 4, 7) only.
 2. Choice-driven effects don't finalize until you edit and save.
-3. Situational trait bonuses still need player/GM judgment.
+3. Weapon specialization automation is limited to currently implemented numeric effects.
+4. Situational trait bonuses still need player/GM judgment.
 
 ## Troubleshooting
 
@@ -109,9 +114,13 @@ A: Reopen the actor sheet.
 
 A: Standard traits only support milestone levels 1, 4, and 7.
 
+### Q: I made a Weapon Proficiency trait, but my roll bonus did not change.
+
+A: Verify trait type is Weapon Proficiency, confirm specialization matches the weapon family, and ensure the trait level is 1, 4, or 7.
+
 ## Related Pages
 
 1. [Bioclasses](bioclasses.md)
 2. [Aspects](aspects.md)
-2. [Aspects](aspects.md)
-3. [Troubleshooting and Known Limitations](troubleshooting-and-known-limitations.md)
+3. [Weapon Specializations](weapon-specializations.md)
+4. [Troubleshooting and Known Limitations](troubleshooting-and-known-limitations.md)

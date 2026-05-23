@@ -7,6 +7,7 @@ import {
   getRollResultSummary,
   extractCardContext
 } from './roll-utils.mjs';
+import { buildDemolitionSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
 
 export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult, attributeValue }) {
   const { d10, total, equation, dieClass } = getRollResultSummary(rollResult);
@@ -30,6 +31,7 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     rangeDistance,
     rangeIncrement,
     rangeBands,
+    input,
   });
   const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem });
   // Strict system data for DataModel validation
@@ -89,7 +91,7 @@ function buildDemolitionEffectText({ mode, success, scatterApplied }) {
     : localize('SYNTHICIDE.Roll.Outcome.OffTargetNoScatter');
 }
 
-function buildDemolitionMetadataRows({ mode, difficulty, effect, blastDiameter, rangeDistance, rangeIncrement, rangeBands }) {
+function buildDemolitionMetadataRows({ mode, difficulty, effect, blastDiameter, rangeDistance, rangeIncrement, rangeBands, input = {} }) {
   const metadataRows = [
     {
       label: mode === 'planted'
@@ -112,6 +114,8 @@ function buildDemolitionMetadataRows({ mode, difficulty, effect, blastDiameter, 
       metadataRows.push({ label: localize('SYNTHICIDE.Roll.Card.RangeBands'), value: rangeBands });
     }
   }
+
+  metadataRows.push(...buildDemolitionSpecializationMetadataRows({ input }));
 
   return metadataRows;
 }

@@ -488,6 +488,7 @@
         "FIELDS": {
           "level": {"label": "Trait Level"},
           "traitType": {"label": "Trait Type"},
+          "specializationKey": {"label": "Weapon Specialization"},
           "requirements": {"label": "Requirements"}
         },
         "TypeLabel": "Trait/Power",
@@ -504,8 +505,21 @@
           "mutation": "Mutation",
           "generalTalent": "General Talent",
           "naturalTalent": "Natural Talent",
+          "weaponProficiency": "Weapon Proficiency",
           "spell": "Spell"
         }
+      },
+      "WeaponProficiency": {
+        "Axe": "Axe Proficiency",
+        "Demolitions": "Demolitions Proficiency",
+        "Hammer": "Hammer Proficiency",
+        "Knife": "Knife Proficiency",
+        "Martial": "Martial Proficiency",
+        "Pistol": "Pistol Proficiency",
+        "Primitive": "Primitive Proficiency",
+        "Rifle": "Rifle Proficiency",
+        "Shotgun": "Shotgun Proficiency",
+        "Sword": "Sword Proficiency"
       },
       "Bioclass": {
         "Label": "Bioclass",
@@ -743,6 +757,12 @@
         "DoubleShotBonus": "Double Shot Bonus",
         "BattleAssist": "Battle Assist",
         "BaneTuneBonus": "Bane Tune Bonus",
+        "WeaponSpecialization": "Weapon Spec",
+        "WeaponSpecializationBonuses": "Spec Bonuses",
+        "WeaponSpecializationEffects": "Spec Effects",
+        "SpecShort": "Spec",
+        "DemolitionThrowBonus": "Throw",
+        "DemolitionPlacementBonus": "Placement",
         "RangeBands": "Range Bands",
         "DamageBonus": "DMG Bonus",
         "PlantNumber": "Plant Number",

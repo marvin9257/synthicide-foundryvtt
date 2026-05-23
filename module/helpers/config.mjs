@@ -303,7 +303,83 @@ SYNTHICIDE.traitTypes = {
   mutation: 'SYNTHICIDE.Item.Trait.Types.mutation',
   generalTalent: 'SYNTHICIDE.Item.Trait.Types.generalTalent',
   naturalTalent: 'SYNTHICIDE.Item.Trait.Types.naturalTalent',
+  weaponProficiency: 'SYNTHICIDE.Item.Trait.Types.weaponProficiency',
   spell: 'SYNTHICIDE.Item.Trait.Types.spell'
+};
+
+/**
+ * Weapon specialization/proficiency keys for trait items.
+ * Values are localization keys used in select fields.
+ * @type {Object}
+ */
+SYNTHICIDE.WEAPON_SPECIALIZATIONS = {
+  axe: 'SYNTHICIDE.Item.WeaponProficiency.Axe',
+  demolitions: 'SYNTHICIDE.Item.WeaponProficiency.Demolitions',
+  hammer: 'SYNTHICIDE.Item.WeaponProficiency.Hammer',
+  knife: 'SYNTHICIDE.Item.WeaponProficiency.Knife',
+  martial: 'SYNTHICIDE.Item.WeaponProficiency.Martial',
+  pistol: 'SYNTHICIDE.Item.WeaponProficiency.Pistol',
+  primitive: 'SYNTHICIDE.Item.WeaponProficiency.Primitive',
+  rifle: 'SYNTHICIDE.Item.WeaponProficiency.Rifle',
+  shotgun: 'SYNTHICIDE.Item.WeaponProficiency.Shotgun',
+  sword: 'SYNTHICIDE.Item.WeaponProficiency.Sword'
+};
+
+/**
+ * MVP-only numeric proficiency effects by tier.
+ * Tier keys mirror milestone trait levels (1, 4, 7).
+ */
+SYNTHICIDE.WEAPON_PROFICIENCY_MVP_BONUSES = {
+  axe: {
+    1: { damage: 1, lethal: 0, shockRdBonus: 2 },
+    4: { damage: 2, lethal: 1, shockRdBonus: 2 },
+    7: { damage: 3, lethal: 2, shockRdBonus: 4 },
+  },
+  demolitions: {
+    1: { demolitionThrow: 2, demolitionPlacement: 5 },
+    4: { demolitionThrow: 2, demolitionPlacement: 8 },
+    7: { demolitionThrow: 2, demolitionPlacement: 8 },
+  },
+  hammer: {
+    1: { attack: 0, damage: 2, lethal: 0 },
+    4: { attack: 0, damage: 4, lethal: 0 },
+    7: { attack: 1, damage: 7, lethal: 0 },
+  },
+  knife: {
+    1: { attack: 0, damage: 2, lethal: 0 },
+    4: { attack: 0, damage: 4, lethal: 0 },
+    7: { attack: 1, damage: 6, lethal: 0 },
+  },
+  martial: {
+    1: { attack: 0, damage: 2, lethal: 0 },
+    4: { attack: 0, damage: 3, lethal: 0 },
+    7: { attack: 1, damage: 5, lethal: 0 },
+  },
+  pistol: {
+    1: { attack: 1, damage: 0, lethal: 0 },
+    4: { attack: 2, damage: 0, lethal: 0 },
+    7: { attack: 3, damage: 0, lethal: 0 },
+  },
+  primitive: {
+    1: { primitiveRangedAttack: 1, primitiveMeleeAttack: 0, primitiveMeleeDamage: 2 },
+    4: { primitiveRangedAttack: 2, primitiveMeleeAttack: 0, primitiveMeleeDamage: 3 },
+    7: { primitiveRangedAttack: 3, primitiveMeleeAttack: 1, primitiveMeleeDamage: 5 },
+  },
+  rifle: {
+    1: { attack: 0, damage: 0, lethal: 0 },
+    4: { attack: 0, damage: 0, lethal: 0 },
+    7: { attack: 0, damage: 0, lethal: 0 },
+  },
+  shotgun: {
+    1: { attack: 1, damage: 0, lethal: 0 },
+    4: { attack: 2, damage: 0, lethal: 0 },
+    7: { attack: 3, damage: 0, lethal: 0 },
+  },
+  sword: {
+    1: { attack: 1, damage: 0, lethal: 0 },
+    4: { attack: 2, damage: 0, lethal: 0 },
+    7: { attack: 3, damage: 0, lethal: 0 },
+  },
 };
 
 /**
@@ -379,6 +455,44 @@ SYNTHICIDE.WEAPON_TYPES = {
     mine: "SYNTHICIDE.Item.Weapon.Demolition.Mine",
     charge: "SYNTHICIDE.Item.Weapon.Demolition.Charge"
   }
+};
+
+/**
+ * Rules-family mapping for weapon types where multiple display types
+ * intentionally share the same rules behavior.
+ */
+SYNTHICIDE.WEAPON_TYPE_RULE_FAMILY = {
+  axe: 'axe',
+  hammer: 'hammer',
+  knife: 'knife',
+  martial: 'martial',
+  sword: 'sword',
+  pistol: 'pistol',
+  rifle: 'rifle',
+  shotgun: 'shotgun',
+  blaster: 'shotgun',
+  grenade: 'grenade',
+  mine: 'mine',
+  charge: 'charge'
+};
+
+/**
+ * Weapon proficiency mapping keyed by weapon type.
+ * This allows distinct types (e.g. blaster) to inherit a shared proficiency.
+ */
+SYNTHICIDE.WEAPON_TYPE_PROFICIENCY_KEY = {
+  axe: 'axe',
+  hammer: 'hammer',
+  knife: 'knife',
+  martial: 'martial',
+  sword: 'sword',
+  pistol: 'pistol',
+  rifle: 'rifle',
+  shotgun: 'shotgun',
+  blaster: 'shotgun',
+  grenade: 'demolitions',
+  mine: 'demolitions',
+  charge: 'demolitions'
 };
 
 SYNTHICIDE.WEAPON_FEATURES = {

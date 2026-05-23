@@ -182,6 +182,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     context.config = context.config || {};
     // traitTypes is already a key->loc-key map; the template can localize it
     context.config.traitTypeOptions = SYNTHICIDE.traitTypes;
+    context.config.weaponSpecializationOptions = SYNTHICIDE.WEAPON_SPECIALIZATIONS;
     // Localized labels for allowed trait levels using a single format string
     
     context.config.traitLevelOptions = Object.fromEntries(
@@ -288,11 +289,14 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
 
   _getValidAmmo() {
     if (this.item.type !== 'weapon' || this.item.system.weaponClass !== 'ranged') return {};
-    
+
+    const weaponType = String(this.item.system.weaponType ?? '');
+    const weaponFamily = SYNTHICIDE.WEAPON_TYPE_RULE_FAMILY?.[weaponType] ?? weaponType;
+
     let validKeys = ['none'];
     if (!this.item.system.features.has('fossil') && !this.item.system.features.has('retroFit')) {
       validKeys.push('cryo', 'cinder', 'anchor')
-      switch (this.item.system.weaponType) {
+      switch (weaponFamily) {
         case 'pistol':
         case 'rifle':
           validKeys.push('homing', 'poison', 'powerWounding', 'bouncing');
@@ -313,6 +317,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
   _getValidModifications() {
     if (this.item.type !== 'weapon') return {};
     const itemSystem = this.item.system;
+    const weaponType = String(itemSystem.weaponType ?? '');
+    const weaponFamily = SYNTHICIDE.WEAPON_TYPE_RULE_FAMILY?.[weaponType] ?? weaponType;
     let validKeys = ['none'];
     switch (itemSystem.weaponClass) {
       case 'melee': {
@@ -321,7 +327,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         if (!itemSystem.features.has('primitive')) {
           validKeys.push('battleAssist1', 'battleAssist2', 'battleAssist3', 'baneTuneOrganics', 'baneTuneSynthetics' );
         } else  {
-          if (['knife', 'sword'].includes(itemSystem.weaponType)) {
+          if (['knife', 'sword'].includes(weaponFamily)) {
             validKeys.push('poisonReservoir');
           }
         }
@@ -336,15 +342,15 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       }
       case 'ranged': {
         validKeys.push('expertCrafting1', 'expertCrafting2', 'expertCrafting3', 'miniaturized', 'scanningScope');
-        if (['pistol', 'rifle'].includes(itemSystem.weaponType)) {
+        if (['pistol', 'rifle'].includes(weaponFamily)) {
           validKeys.push('longRange');
         }
         if (!itemSystem.features.has('primitive')) {
           validKeys.push('highPowered');
-          if (itemSystem.weaponType === 'pistol') {
+          if (weaponFamily === 'pistol') {
             validKeys.push('snubNose');
           }
-          if(itemSystem.weaponType !== 'shotgun') {
+          if(weaponFamily !== 'shotgun') {
             validKeys.push('fullAuto', 'silencing');
           }
           if (!itemSystem.features.has('fossil')) {
@@ -356,7 +362,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         if (itemSystem.features.has('beamWaveHellfire')) {
           validKeys.push('baneTuneOrganics', 'baneTuneSynthetics');
         }
-        if (itemSystem.weaponType === 'shotgun' && !validKeys.includes('doubleShot')) {
+        if (weaponFamily === 'shotgun' && !validKeys.includes('doubleShot')) {
           validKeys.push('slugShot', 'doubleShot');
         }
         break;

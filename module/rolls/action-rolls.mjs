@@ -9,6 +9,7 @@ import { prepareDamageCardData } from './damage-card-data.mjs';
 import { resolveAmmoAttackEffects } from './ammo-effects.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { calculateVirtualDistanceBetweenTokens, getSpreadCollateralTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
+import { applySpecializationToRollData, hasWeaponFeature, resolveWeaponSpecializationContext } from './weapon-proficiency-rules.mjs';
 
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
 const CARD_TEMPLATE = 'systems/synthicide/templates/chat/action-roll-card.hbs';
@@ -128,6 +129,13 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
       d10: messageRollData.d10,
       damageBonus: messageRollData.damageBonus,
       baneDamageBonus: Number(messageRollData.baneDamageBonus ?? 0),
+      shockRdBonus: Number(messageRollData.shockRdBonus ?? 0),
+      specializationKey: String(messageRollData.specializationKey ?? ''),
+      specializationLevel: Number(messageRollData.specializationLevel ?? 0),
+      specializationAttackBonus: Number(messageRollData.specializationAttackBonus ?? 0),
+      specializationDamageBonus: Number(messageRollData.specializationDamageBonus ?? 0),
+      specializationLethalBonus: Number(messageRollData.specializationLethalBonus ?? 0),
+      specializationShockRdBonus: Number(messageRollData.specializationShockRdBonus ?? 0),
       slugShotActive: Boolean(messageRollData.slugShotActive),
       total: damageTotal,
       source: sourceMessage.speaker?.alias ?? sourceMessage.id,
@@ -300,6 +308,8 @@ async function executeThrownDemolitionActionRoll({ actor, input, sourceItem, rol
     return null;
   }
 
+  // Per RAW: Do NOT include weapon attack bonus in demolition throw roll
+
   const placement = await createDemolitionPlacementContext({ input, sourceItem, requirePoint: true });
   if (!placement) return null;
   const { messageMode, placedRegion, placedPoint, blastDiameter } = placement;
@@ -307,6 +317,17 @@ async function executeThrownDemolitionActionRoll({ actor, input, sourceItem, rol
   const rangeDistance = calculateVirtualZoneDistanceBetweenPoints(actorToken.center, placedPoint);
   const rangeBands = rangeDistance > 0 ? Math.ceil(rangeDistance / rangeIncrement) : 0;
   const difficulty = rangeBands * 3;
+  const specializationContext = resolveWeaponSpecializationContext({
+    actor,
+    sourceItem,
+    subtype: SUBTYPES.DEMOLITION,
+  });
+  applySpecializationToRollData({
+    rollData,
+    specializationContext,
+    subtype: SUBTYPES.DEMOLITION,
+    attributeKey: ATTRIBUTE_COMBAT,
+  });
   const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, rollData).evaluate();
   const success = Number(evaluatedRoll.total ?? 0) >= difficulty;
   const autoScatterEnabled = Boolean(game.settings.get('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY));
@@ -327,6 +348,7 @@ async function executeThrownDemolitionActionRoll({ actor, input, sourceItem, rol
   const cardData = prepareDemolitionCardData({
     input: {
       ...input,
+      actorModifierTotal: Number(rollData.actorModifierTotal ?? 0),
       difficulty,
       rangeDistance,
       rangeIncrement,
@@ -335,6 +357,10 @@ async function executeThrownDemolitionActionRoll({ actor, input, sourceItem, rol
       blastDiameter,
       success,
       scatterApplied,
+      specializationKey: String(specializationContext.key ?? ''),
+      specializationLevel: Number(specializationContext.level ?? 0),
+      specializationDemolitionThrowBonus: Number(specializationContext.demolitionThrow ?? 0),
+      specializationDemolitionPlacementBonus: Number(specializationContext.demolitionPlacement ?? 0),
     },
     actor,
     sourceItem,
@@ -355,6 +381,19 @@ async function executePlantedDemolitionActionRoll({ actor, input, sourceItem, ro
   if (!placement) return null;
   const { messageMode, placedRegion, blastDiameter } = placement;
 
+  const specializationContext = resolveWeaponSpecializationContext({
+    actor,
+    sourceItem,
+    subtype: SUBTYPES.DEMOLITION,
+    attributeKey: 'operation',
+  });
+  applySpecializationToRollData({
+    rollData,
+    specializationContext,
+    subtype: SUBTYPES.DEMOLITION,
+    attributeKey: 'operation',
+  });
+
   const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, rollData).evaluate();
   const success = Number(evaluatedRoll.total ?? 0) > plantNumber;
   const detonated = !success;
@@ -367,6 +406,7 @@ async function executePlantedDemolitionActionRoll({ actor, input, sourceItem, ro
     input: {
       ...input,
       attribute: 'operation',
+      actorModifierTotal: Number(rollData.actorModifierTotal ?? 0),
       difficulty: plantNumber,
       mode: 'planted',
       plantNumber,
@@ -374,6 +414,10 @@ async function executePlantedDemolitionActionRoll({ actor, input, sourceItem, ro
       success,
       detonated,
       scatterApplied: false,
+      specializationKey: String(specializationContext.key ?? ''),
+      specializationLevel: Number(specializationContext.level ?? 0),
+      specializationDemolitionThrowBonus: Number(specializationContext.demolitionThrow ?? 0),
+      specializationDemolitionPlacementBonus: Number(specializationContext.demolitionPlacement ?? 0),
     },
     actor,
     sourceItem,
@@ -442,6 +486,12 @@ async function createDemolitionPlacementContext({ input, sourceItem, requirePoin
 async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
   const attackInput = applyAttackInputAdjustments({ input, sourceItem });
   const messageMode = normalizeMessageMode(input.messageMode);
+  const specializationContext = resolveWeaponSpecializationContext({
+    actor,
+    sourceItem,
+    subtype: SUBTYPES.ATTACK,
+    attributeKey: ATTRIBUTE_COMBAT,
+  });
   const attackRangeContext = buildAttackRangeContext({ actor, sourceItem });
   const primaryTargetToken = getSingleTargetToken({ notify: false });
   const baneDamageBonus = getBaneDamageBonus({ sourceItem, targetActor: primaryTargetToken?.actor });
@@ -467,6 +517,12 @@ async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
     rollData,
     attackRangeContext,
     baneDamageBonus,
+    specializationKey: String(specializationContext.key ?? ''),
+    specializationLevel: Number(specializationContext.level ?? 0),
+    specializationAttackBonus: Number(specializationContext.attack ?? 0),
+    specializationDamageBonus: Number(specializationContext.damage ?? 0),
+    specializationLethalBonus: Number(specializationContext.lethal ?? 0),
+    specializationShockRdBonus: Number(specializationContext.shockRdBonus ?? 0),
   });
   const cardData = prepareAttackCardData({
     input: resolvedInput,
@@ -493,6 +549,7 @@ async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
       sourceItem,
       attackTotal,
       attributeValue: rollData.attribute,
+      specializationDamageBonus: Number(specializationContext.damage ?? 0),
       messageMode,
     });
   }
@@ -506,7 +563,7 @@ async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
  * collateral target. This allows target-conditional bonuses to be resolved
  * per target.
  */
-async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, messageMode }) {
+async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, specializationDamageBonus = 0, messageMode }) {
   const attackerToken = getActorToken(actor);
   const targetToken = getSingleTargetToken({ notify: false });
   if (!attackerToken || !targetToken) return;
@@ -521,7 +578,7 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
   });
   if (!hitTokens.length) return;
 
-  const baseDamageBonus = Number(sourceItem?.system?.bonuses.damage ?? 0);
+  const baseDamageBonus = Number(sourceItem?.system?.bonuses.damage ?? 0) + Number(specializationDamageBonus ?? 0);
   const doubleShotBonus = Number(sourceItem?.system?.bonuses.doubleShotBonus ?? 0);
   const lethal = Number(sourceItem?.system?.bonuses.lethal ?? 0);
 
@@ -763,7 +820,7 @@ function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
 
   const rangeContext = buildAttackRangeContext({ actor, sourceItem, notify: false });
   const targetToken = getSingleTargetToken({ notify: false });
-  const attackContext = resolveWeaponAttackContext({ sourceItem, targetToken });
+  const attackContext = resolveWeaponAttackContext({ actor, sourceItem, targetToken });
   return {
     attackBonus: attackContext.attackBonus,
     damageBonus: attackContext.damageBonus,
@@ -1115,13 +1172,6 @@ function getActorToken(actor) {
   return null;
 }
 
-function hasWeaponFeature(sourceItem, featureKey) {
-  const features = sourceItem?.system?.features;
-  if (features instanceof Set) return features.has(featureKey);
-  if (Array.isArray(features)) return features.includes(featureKey);
-  return false;
-}
-
 function hasWeaponModification(sourceItem, modificationKey) {
   const modifications = sourceItem?.system?.modifications;
   if (modifications instanceof Set) return modifications.has(modificationKey);
@@ -1129,15 +1179,21 @@ function hasWeaponModification(sourceItem, modificationKey) {
   return false;
 }
 
-function resolveWeaponAttackContext({ sourceItem, targetToken }) {
+function resolveWeaponAttackContext({ actor, sourceItem, targetToken }) {
   const baseAttackBonus = Number(sourceItem?.system?.bonuses?.attack ?? 0);
   const baseDamageBonus = Number(sourceItem?.system?.bonuses?.damage ?? 0);
+  const specialization = resolveWeaponSpecializationContext({
+    actor,
+    sourceItem,
+    subtype: SUBTYPES.ATTACK,
+    attributeKey: ATTRIBUTE_COMBAT,
+  });
   const arcAttackBonus = getArcAttackBonus({ sourceItem, targetToken });
   const baneDamageBonus = getBaneDamageBonus({ sourceItem, targetActor: targetToken?.actor });
 
   return {
-    attackBonus: baseAttackBonus + arcAttackBonus,
-    damageBonus: baseDamageBonus + baneDamageBonus,
+    attackBonus: baseAttackBonus + arcAttackBonus + Number(specialization.attack ?? 0),
+    damageBonus: baseDamageBonus + baneDamageBonus + Number(specialization.damage ?? 0),
   };
 }
 
@@ -1297,10 +1353,17 @@ function buildDemolitionTargetData(sourceItem) {
   };
 }
 
-function buildResolvedAttackInput({ input, rollData, attackRangeContext, baneDamageBonus = 0 }) {
+function buildResolvedAttackInput({ input, rollData, attackRangeContext, baneDamageBonus = 0, specializationKey = '', specializationLevel = 0, specializationAttackBonus = 0, specializationDamageBonus = 0, specializationLethalBonus = 0, specializationShockRdBonus = 0 }) {
   return {
     ...input,
     baneDamageBonus,
+    specializationKey,
+    specializationLevel,
+    specializationAttackBonus,
+    specializationDamageBonus,
+    specializationLethalBonus,
+    shockRdBonus: specializationShockRdBonus,
+    specializationShockRdBonus,
     actorModifierTotal: rollData.actorModifierTotal,
     rangeModifier: rollData.rangeModifier,
     rangeDistance: attackRangeContext?.distance ?? null,

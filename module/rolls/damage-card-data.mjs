@@ -2,6 +2,7 @@
 // Modular function to prepare card data for derived damage rolls
 
 import { localize, buildEquationTerms, buildBaseActionCardData, extractCardContext } from './roll-utils.mjs';
+import { buildWeaponSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
 /**
  * Prepare cardData and flags for a derived damage roll.
  * @param {object} params
@@ -25,6 +26,7 @@ export function prepareDamageCardData({
   const rawTotal = input.total ?? d10 + attributeValue + damageBonus;
   const total = Math.max(0, rawTotal);
   const lethal = input.lethal ?? item?.system?.bonuses?.lethal ?? 0;
+  const shockRdBonus = Number(input.shockRdBonus ?? 0);
   const baneDamageBonus = Number(input.baneDamageBonus ?? 0);
   const doubleShotBonus = Number(input.doubleShotBonus ?? 0);
   const slugShotActive = Boolean(input.slugShotActive);
@@ -40,6 +42,7 @@ export function prepareDamageCardData({
   const system = {
     total,
     lethal,
+    shockRdBonus,
     extraDamageDice,
     actorUuid,
     sourceItemUuid,
@@ -61,6 +64,7 @@ export function prepareDamageCardData({
       lethal,
       baneDamageBonus,
       doubleShotBonus,
+      input,
       slugShotActive,
     }),
     showEffectOutcomeRow: false,
@@ -82,7 +86,7 @@ export function prepareDamageCardData({
   };
 }
 
-function buildDamageMetadataRows({ source, lethal, baneDamageBonus = 0, doubleShotBonus = 0, slugShotActive = false }) {
+function buildDamageMetadataRows({ source, lethal, baneDamageBonus = 0, doubleShotBonus = 0, slugShotActive = false, input = {} }) {
   const rows = [
     { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: source },
     { label: localize('SYNTHICIDE.Roll.Card.LethalValue'), value: lethal },
@@ -99,6 +103,16 @@ function buildDamageMetadataRows({ source, lethal, baneDamageBonus = 0, doubleSh
   if (baneDamageBonus !== 0) {
     rows.push({ label: localize('SYNTHICIDE.Roll.Card.BaneTuneBonus'), value: `+${baneDamageBonus} DMG` });
   }
+
+  rows.push(
+    ...buildWeaponSpecializationMetadataRows({
+      input,
+      includeAttackBonus: false,
+      includeDamageBonus: true,
+      includeLethalBonus: true,
+      includeShockRdBonus: true,
+    })
+  );
 
   return rows;
 }

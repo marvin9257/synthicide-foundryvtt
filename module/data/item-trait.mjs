@@ -26,20 +26,15 @@ export default class SynthicideTrait extends SynthicideItemBase {
     // Trait categories/types (bioclass, attack skill, knowledge focus, etc.)
     schema.traitType = new fields.StringField({
       required: true,
-      choices: [
-        'bioclass',
-        'aspect',
-        'attackSkill',
-        'knowledgeFocus',
-        'psychicPower',
-        'tacticalPower',
-        'mutation',
-        'generalTalent',
-        'naturalTalent',
-        // legacy placeholder for converted spells
-        'spell'
-      ],
+      choices: Object.keys(SYNTHICIDE.traitTypes),
       initial: 'generalTalent',
+    });
+
+    schema.specializationKey = new fields.StringField({
+      required: false,
+      blank: true,
+      choices: Object.keys(SYNTHICIDE.WEAPON_SPECIALIZATIONS),
+      initial: '',
     });
 
     // Optional level for traits. Bioclass traits will usually leave this
@@ -74,13 +69,35 @@ export default class SynthicideTrait extends SynthicideItemBase {
    */
   async _preUpdate(changed, options, user) {
     // Strict validation: reject updates attempting to set an invalid trait level.
-    if (changed?.system && Object.prototype.hasOwnProperty.call(changed.system, 'level')) {
+    if (changed?.system && foundry.utils.hasProperty(changed.system, 'level')) {
       const lvl = Number(changed.system.level);
       if (!SYNTHICIDE.ALLOWED_TRAIT_LEVELS.includes(lvl)) {
         console.warn(`[Synthicide] Rejected invalid trait level update: ${lvl}`);
         return false; // cancel the update
       }
     }
+
+    if (changed?.system) {
+      const nextTraitType = changed.system.traitType ?? this.traitType;
+      const nextSpecializationKey = String(changed.system.specializationKey ?? this.specializationKey ?? '').trim();
+      const defaultSpecialization = Object.keys(SYNTHICIDE.WEAPON_SPECIALIZATIONS)[0] ?? '';
+
+      if (foundry.utils.hasProperty(changed.system, 'specializationKey')
+        && nextSpecializationKey
+        && !foundry.utils.hasProperty(SYNTHICIDE.WEAPON_SPECIALIZATIONS, nextSpecializationKey)) {
+        console.warn(`[Synthicide] Rejected invalid weapon specialization update: ${nextSpecializationKey}`);
+        return false;
+      }
+
+      if (nextTraitType === 'weaponProficiency' && !nextSpecializationKey) {
+        changed.system.specializationKey = defaultSpecialization;
+      }
+
+      if (nextTraitType !== 'weaponProficiency' && nextSpecializationKey) {
+        changed.system.specializationKey = '';
+      }
+    }
+
     return super._preUpdate(changed, options, user);
   }
 }

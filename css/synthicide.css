@@ -452,9 +452,12 @@ body.theme-dark .npc-compact .window-content {
 }
 
 .synthicide-action-roll-card .metadata-list li {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 0.5rem;
+  row-gap: 0.1rem;
+  align-items: baseline;
+  padding: 0.1rem 0;
 }
 
 /* Prevent metadata labels from wrapping one character per line */
@@ -462,9 +465,9 @@ body.theme-dark .npc-compact .window-content {
   white-space: nowrap;
 }
 
-/* Allow metadata values (code) to take remaining space and wrap cleanly */
+/* Allow metadata values to take remaining space and wrap cleanly */
+.synthicide-action-roll-card .metadata-list li .metadata-value,
 .synthicide-action-roll-card .metadata-list li code {
-  flex: 1 1 0%;
   min-width: 0;
   display: inline-block;
   white-space: pre-wrap;

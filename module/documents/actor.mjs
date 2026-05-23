@@ -284,7 +284,7 @@ export class SynthicideActor extends foundry.documents.Actor {
     //armor - target's armor value (AD - attack difficulty)
     //barrier abosorbed - amount damange barrier absorbed
     //lethal - the lethality rating of weapon making the attack
-    const { armor, barrierAbsorbed, lethal } = this._resolveShockContext(options);
+    const { armor, barrierAbsorbed, lethal, shockRdBonus } = this._resolveShockContext(options);
 
     // Barrier-absorbed attacks only trigger shocking strike at 2x AD.
     if (barrierAbsorbed > 0 && !(damageRemaining >= 2 * armor)) return;
@@ -292,7 +292,7 @@ export class SynthicideActor extends foundry.documents.Actor {
     //If damage remaining does not exceed shock threshold for actor, no shocking strike
     if (!(shockThreshold > 0 && damageRemaining > shockThreshold)) return;
 
-    const shockRollDifficulty = Math.floor(damageRemaining / 5);
+    const shockRollDifficulty = Math.floor(damageRemaining / 5) + shockRdBonus;
     const wouldDropBelowZero = damageRemaining > preHitPoints;
     const isLethal = Number.isFinite(lethal) && lethal > 0 && armor <= lethal;
 
@@ -352,7 +352,9 @@ export class SynthicideActor extends foundry.documents.Actor {
     let lethal = Number( options?.attack?.lethal ?? options?.lethal ?? 0);
     if (barrierAbsorbed > 0) lethal = 0;
 
-    return { armor, barrierAbsorbed, lethal };
+    const shockRdBonus = Number(options?.attack?.shockRdBonus ?? options?.shockRdBonus ?? 0);
+
+    return { armor, barrierAbsorbed, lethal, shockRdBonus };
   }
 
 
