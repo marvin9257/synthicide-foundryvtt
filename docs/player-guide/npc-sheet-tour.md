@@ -86,8 +86,8 @@ Have the NPC actor sheet open. Drag a bioclass from Items onto the Bioclass slot
 1. **Header:** Set name, level, bioclass, role, and wealth tier.
 2. **HP/Force Barrier:** Set HP current/max, Force Barrier current/max/recovery, Boss toggle, and HP Bonus.
 3. **Attributes & Calculations:** NPC Stats tab shows derived attributes. Role Calculations panel shows Strong/Good/Weak guidance. Use attribute icons for challenge rolls.
-4. **Mastered Weapon:** Select in Combat tab. Verify ATT/DMG totals include any modification bonuses (Battle Assist, Expert Crafting, Enhanced Alloy, Bane Tune, Arc).
-5. **Click Roll Attack** to execute a mastered attack. Collateral cards may appear for Arc or Double Shot modifications.
+4. **Mastered Weapon:** Select in Combat tab. Verify ATT/DMG totals include any implemented weapon mechanics (Battle Assist Combat floor, Expert Crafting, Enhanced Alloy, Bane Tune, Arc).
+5. **Click Roll Attack** to execute a mastered attack. Collateral cards may appear for weapons with the Spread feature.
 6. **Notes:** Track Unique Power, Boss Power, Loot, table notes.
 7. **Gear:** Reference inventory tracking only (doesn't auto-apply to NPC stats).
 8. **Effects:** Toggle active/inactive as conditions start/end.
@@ -98,8 +98,8 @@ Have the NPC actor sheet open. Drag a bioclass from Items onto the Bioclass slot
 
 1. NPC attributes are derived from bioclass base attributes plus role bonuses.
 2. Derived defenses and action values recalculate from current level and attributes.
-3. Mastered attack bonuses update from level, role rules, selected mastered weapon, and any weapon modifications (Battle Assist, Expert Crafting, Enhanced Alloy, Bane Tune, Arc).
-4. Collateral cards may appear for weapons with Arc or Double Shot modifications when mastered attacks hit.
+3. Mastered attack and damage calculations update from level, role rules, selected mastered weapon, and implemented weapon mechanics (Battle Assist, Expert Crafting, Enhanced Alloy, Bane Tune, Arc).
+4. Collateral cards may appear for weapons with the Spread feature when mastered attacks are rolled.
 5. Damage application checks Force Barrier before HP.
 6. Turn-start force barrier recovery uses configured recovery rate when applicable.
 7. Gear tab merges gear, armor, shield, and weapon into one list.
@@ -141,7 +141,7 @@ A: Check mastered weapon selection, NPC level, and mastered attack totals. If th
 
 ### Q: I see extra damage cards from a mastered attack.
 
-A: Those are collateral cards from Arc or Double Shot. Apply each to the corresponding target.
+A: Those are collateral cards from Spread. Apply each to the corresponding target.
 
 ## Related Pages
 

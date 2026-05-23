@@ -467,7 +467,7 @@ SYNTHICIDE.WEAPON_AMMO = {
   flash: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Flash",
   anchor: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Anchor",
   bouncing: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Bouncing",
-  stun: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Stun"
+  //stun: "SYNTHICIDE.Item.Weapon.Ranged.Ammo.Stun"
 };
 
 SYNTHICIDE.ARMOR_MODIFICATIONS = {

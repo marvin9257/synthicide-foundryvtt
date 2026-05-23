@@ -81,13 +81,13 @@ Expands to show full equation, term-by-term contributions, including automatic m
 Roll Damage appears on qualifying attack/demolition cards.
 Roll Opposed appears on challenge cards where contested resolution is needed.
 6. Collateral cards (if applicable):
-For weapon attacks with modifications like Arc or Double Shot, additional per-target damage cards may appear. Apply these to each corresponding target.
+For weapon attacks with the Spread feature, additional per-target damage cards may appear. Apply these to each corresponding target.
 
 ## Important: Damage Floor and Modification Mechanics
 
 1. **Zero Damage Floor**: Damage rolls cannot produce less than 0 damage, even if target defenses or penalties reduce the total below zero.
-2. **Modification Bonuses**: Only automatic modification bonuses (Battle Assist, Expert Crafting, Enhanced Alloy, Bane Tune when applicable, Arc bonus to attack) are included in chat card calculations. All other modification effects must be applied manually.
-3. **Special Ammo**: Ammo type selection does not automatically apply mechanical effects. Ammo effects must be resolved by your table.
+2. **Modification Bonuses**: Only implemented automatic modification mechanics are included in chat card calculations. These include Battle Assist's Combat floor, Expert Crafting damage, Enhanced Alloy attack, Bane Tune bonus damage, and Arc attack bonus. All other modification effects must be applied manually.
+3. **Special Ammo**: Ammo is partially automated. Some ammo applies automatic statuses or direct numeric changes, but complex rule handling still requires table resolution.
 
 ## Applying Damage or Healing From Chat Cards
 
@@ -106,42 +106,50 @@ Example: attack card -> open details to verify ATT, attribute, and range terms -
 
 1. Dialog defaults are populated from your actor and the item you clicked.
 2. Attack and demolition defaults pull source item values for ATT, DMG, and range-related fields.
-3. Automatic modification bonuses (Battle Assist, Expert Crafting, Enhanced Alloy, Bane Tune, Arc attack bonus) are calculated and included in the roll.
+3. Automatic modification mechanics (Battle Assist Combat floor, Expert Crafting damage, Enhanced Alloy attack, Bane Tune bonus damage, Arc attack bonus) are calculated and included in the roll or derived damage output.
 4. Equation breakdown and card details are rendered in chat, including modification bonus terms.
 5. Follow-up actions such as Roll Damage or Roll Opposed appear on qualifying cards.
-6. Collateral cards may appear for weapons with Arc or Double Shot modifications.
+6. Collateral cards may appear for weapons with the Spread feature.
 7. Chat message context menu includes Apply Damage and Apply Healing when a visible roll card exists and at least one token is controlled.
 8. Damage cards apply a zero damage floor (damage cannot go below 0).
 9. Actor-level modifiers are aggregated during actor preparation and used as the read-only roll modifiers shown in the dialog.
 
 Example: an attack roll card can show the computed terms including modification bonuses and then expose a follow-up damage action when valid.
-Example: a weapon with Battle Assist +2, Expert Crafting +1, and Arc feature shows all three bonuses in the card details.
+Example: a weapon with Battle Assist 2, Expert Crafting +1, and Arc feature shows the Combat floor, damage bonus, and Arc attack bonus in the card details when applicable.
 
 ## What You Must Set Manually
 
 1. Situation-specific modifiers and target assumptions.
 2. Accurate target Armor Defense (AD) and shield values.
 3. Weapon modification selections and special ammo type (open the weapon item to set these before rolling).
-4. Any effects from non-automated modifications, special ammo, or conditional traits.
+4. Any effects from non-automated modifications, partially automated ammo, or conditional traits.
 5. Any GM-required interpretation and outcomes after the roll.
 6. Follow-up execution timing (when to click damage/opposed and when to stop for table adjudication).
 7. Token selection before using chat-card Apply Damage or Apply Healing.
-8. Collateral card damage application (for Arc/Double Shot attacks, manually apply each collateral card to targets).
+8. Collateral card damage application (for Spread attacks, manually apply each collateral card to targets).
 
 ## Limitations and Not Implemented
 
 1. Chat cards do not auto-apply every result to actor state (example: follow-up effects may still need manual application after chat output).
 2. Incorrect source item values carry directly into defaults (example: wrong weapon ATT means wrong prefilled attack bonus).
 3. Opposed rolls and certain post-roll actions still require manual follow-up in chat (they are separate clicks, not an auto-chain).
-4. **Not all modification, ammo, and feature effects are automated**. Only the following have automatic mechanical application:
-   - Battle Assist (attack bonus)
+4. **Not all modification, ammo, and feature effects are automated**. The following have automatic mechanical application:
+   - Battle Assist (Combat attribute floor)
    - Expert Crafting (damage bonus)
    - Enhanced Alloy (attack bonus)
-   - Bane Tune (attack bonus vs target type)
-   - Arc feature (attack bonus vs synthetics; collateral cards on hit)
-   - Double Shot (generates collateral cards)
+   - Bane Tune (+3 damage vs qualifying target type)
+   - Arc feature (attack bonus vs synthetics/targets with implants)
+   - Spread feature (generates collateral cards)
+   - Double Shot (+2 damage bonus on spread collateral cards)
    - Slug Shot (damage calculation)
-   All other modifications, features, and ammo effects require manual resolution at your table.
+   - Cryo ammo (`Frozen` status)
+   - Cinder ammo (`Burning` status, immediate `1d10`, automated turn-start burning)
+   - Flash ammo (`Blind` status and automated turn-start recovery check)
+   - Homing ammo (lethal `6` and `Target` marker)
+   - Power Wounding ammo (lethal `8` and extra `2d10` on the derived damage roll)
+   - Anchor ammo (`Restrain` marker)
+   - Poison ammo (`Poison` marker)
+   Other modification, feature, and ammo behavior still requires manual resolution at your table.
 5. Item modifiers are evaluated during actor preparation and must be deterministic: authors should use the `formula` field. Per-roll evaluation of item formulas or "roll-context" modifier behavior is not supported.
 6. Demolition and attack follow-up output can depend on correct target/token setup; missing context may block or degrade expected automation.
 7. Apply Damage and Apply Healing use currently controlled tokens, so applying to the wrong token is possible if selection is wrong.
@@ -174,15 +182,15 @@ A: Confirm the message is a visible roll/result card and confirm at least one to
 
 ### Q: Why is my attack bonus lower than expected?
 
-A: Check the weapon item for modifications. Only automatic modifications (Battle Assist, Enhanced Alloy, Bane Tune when applicable, Arc) apply bonuses. Others require manual tracking. Also verify you selected the correct weapon before rolling.
+A: Check the weapon item for modifications. Only implemented attack-side mechanics such as Enhanced Alloy and Arc apply direct attack bonuses. Battle Assist changes the Combat floor rather than adding a flat attack bonus, and Bane Tune affects damage rather than attack. Also verify you selected the correct weapon before rolling.
 
 ### Q: I see extra damage cards in chat for my attack. What are these?
 
-A: These are collateral cards from Arc feature or Double Shot modification. Apply each one to the corresponding target using right-click Apply Damage, just like the main damage card.
+A: These are collateral cards from the Spread feature. Apply each one to the corresponding target using right-click Apply Damage, just like the main damage card.
 
-### Q: My weapon modification is not affecting the roll. Why?
+### Q: My weapon modification or ammo effect is not affecting the roll. Why?
 
-A: Check which modifications have automatic mechanics. See the [Weapons, Armor, Shields, and Gear guide](weapons-armor-shields-and-gear.md#modifications-with-automatic-mechanics) for the full list. For non-automatic modifications and all ammo effects, apply bonuses or effects manually at your table.
+A: Check which mechanics are automated. See the [Weapons, Armor, Shields, and Gear guide](weapons-armor-shields-and-gear.md#modifications-with-automatic-mechanics) and its [Special Ammo section](weapons-armor-shields-and-gear.md#special-ammo). Some ammo now adds automatic markers or direct numeric changes, but more complex effects still need manual table resolution.
 
 ## Related Pages
 

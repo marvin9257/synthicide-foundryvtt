@@ -94,6 +94,7 @@ function applyChatCardDamage(li, multiplier) {
             sourceItemUuid: rollData.sourceItemUuid ?? null,
             attack: rollData.subtype === 'attack' ? rollData : null,
             lethal,
+            specialAmmoUsed: rollData.specialAmmoUsed ?? 'none',
             userId: game.user.id,
           };
           return targetActor.damageActor(damage, options);

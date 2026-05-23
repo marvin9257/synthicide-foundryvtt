@@ -44,16 +44,17 @@ Example: assigning a new bioclass replaces the old one and refreshes associated 
 ## Rules Update Coverage Gaps (Quick Reference)
 
 1. **Item modifications**: You can select mod names on weapon items. Automatic mechanics are limited to:
-   - Battle Assist (attack bonus)
+   - Battle Assist (Combat attribute floor)
    - Expert Crafting (damage bonus)
    - Enhanced Alloy (attack bonus)
-   - Bane Tune (attack bonus vs target type)
-   - Arc feature (attack bonus + collateral cards)
-   - Double Shot (collateral cards)
+   - Bane Tune (+3 damage vs qualifying target type)
+   - Arc feature (attack bonus vs synthetics/targets with implants)
+   - Spread feature (collateral cards)
+   - Double Shot (+2 damage bonus on spread collateral cards)
    - Slug Shot (damage calculation)
    All other modifications are tracking fields and require manual implementation of their effects.
-2. **Special ammo**: You can select ammo type, but almost all ammo effects (cryo AP penalties, cinder ongoing damage, flash blindness, anchor movement blocking, homing re-targeting, etc.) are resolved manually by your table.
-3. **Weapon features**: Most features are descriptive and require manual application. Only Arc provides automatic mechanics (attack bonus vs synthetics; collateral cards on ranged hits).
+2. **Special ammo**: Ammo selection is partially automated. The system currently handles several direct effects and status markers, but broader RAW behavior for ammo still requires manual table resolution.
+3. **Weapon features**: Most features are descriptive and require manual application. Arc provides an attack bonus vs qualifying targets, and Spread provides collateral-card generation.
 4. **Shield tactics**: Advanced shield behavior from the rules (angle lock/defensive arc style handling) is manual in most cases.
 5. **Force barrier lifecycle**: Barrier damage absorption and turn-start recovery exist, but overload/recharge-time lifecycle tracking must still be tracked manually after collapse.
 6. **Cybernetics package logic**: Bioclass slot display exists, but many package/implant effects still need manual setup or manual adjudication.
@@ -90,11 +91,11 @@ A: Arc provides +2 bonus against synthetic targets. Verify that the target is ac
 
 ### Q: I see extra damage cards in chat after my attack. What are these and how do I apply them?
 
-A: These are collateral cards from Arc feature or Double Shot modification on your weapon. Each collateral card applies to a different target. Select the target and right-click each collateral card to Apply Damage individually.
+A: These are collateral cards from the Spread feature on your weapon. Each collateral card applies to a different target. Select the target and right-click each collateral card to Apply Damage individually.
 
 ### Q: My special ammo is not working. Is the system supposed to auto-apply ammo effects?
 
-A: No. Special ammo type is a selection field only. Almost all ammo effects (Cryo AP reduction, Cinder ongoing fire, Flash blindness, etc.) must be resolved manually by your table after the roll. Check the [Weapons, Armor, Shields, and Gear guide](weapons-armor-shields-and-gear.md#special-ammo) for the full list of ammo types.
+A: Partly. Some ammo is automated and some is not. The system currently applies direct numeric changes for Homing and Power Wounding, plus several on-hit status effects such as Cryo, Cinder, Flash, Anchor, and Poison. More complex RAW handling still needs manual resolution. Check the [Weapons, Armor, Shields, and Gear guide](weapons-armor-shields-and-gear.md#special-ammo) for the current split.
 
 ## Related Pages
 

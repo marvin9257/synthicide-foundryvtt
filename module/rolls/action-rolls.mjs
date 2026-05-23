@@ -6,6 +6,7 @@ import { prepareAttackCardData } from './attack-card-data.mjs';
 import { prepareChallengeCardData } from './challenge-card-data.mjs';
 import { prepareDemolitionCardData } from './demolition-card-data.mjs';
 import { prepareDamageCardData } from './damage-card-data.mjs';
+import { resolveAmmoAttackEffects } from './ammo-effects.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { calculateVirtualDistanceBetweenTokens, getSpreadCollateralTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
 
@@ -107,11 +108,19 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
     ? Number(messageRollData.attributeValue ?? actorCombatValue)
     : actorCombatValue;
   const messageMode = normalizeMessageMode(userMessageMode ?? messageRollData.messageMode ?? 'public');
+  const extraDamageDice = Number(messageRollData.extraDamageDice ?? 0);
+  let extraDamageRoll = null;
+  let extraDamageTotal = 0;
+  if (extraDamageDice > 0) {
+    extraDamageRoll = await rollAmmoExtraDamage(extraDamageDice)
+    extraDamageTotal = extraDamageRoll.total;
+  }
 
   // Build a simple arithmetic summary rather than re-rolling any dice.
   const damageTotal = Number(messageRollData.d10 ?? 0)
     + combatValue
-    + Number(messageRollData.damageBonus ?? 0);
+    + Number(messageRollData.damageBonus ?? 0)
+    + extraDamageTotal;
 
   // Prepare modular card data for damage (unified signature)
   const cardData = prepareDamageCardData({
@@ -125,6 +134,8 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
       sourceMessageId: sourceMessage.id,
       sourceItemUuid: messageRollData.sourceItemUuid ?? null,
       lethal: messageRollData.lethal ?? 0,
+      extraDamageDice,
+      specialAmmoUsed: messageRollData.specialAmmoUsed ?? 'none',
       messageMode,
       userId: game.user.id,
     },
@@ -135,7 +146,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
 
   return createActionMessage({
     actor,
-    roll: null, // No new dice were rolled for derived damage
+    roll: extraDamageDice > 0 ? extraDamageRoll :  null, // No new dice were rolled for derived damage
     messageMode,
     cardData,
   });
@@ -429,7 +440,7 @@ async function createDemolitionPlacementContext({ input, sourceItem, requirePoin
  * @returns {Promise<ChatMessage|null>}
  */
 async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
-  const adjustedInput = applyAttackModeAdjustments({ input, sourceItem });
+  const attackInput = applyAttackInputAdjustments({ input, sourceItem });
   const messageMode = normalizeMessageMode(input.messageMode);
   const attackRangeContext = buildAttackRangeContext({ actor, sourceItem });
   const primaryTargetToken = getSingleTargetToken({ notify: false });
@@ -442,8 +453,8 @@ async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
 
   const computedRangeModifier = Number(attackRangeContext?.rangeModifier ?? 0);
   // Dialog value pre-populated from computed at open time; user may override.
-  const rangeModifier = parseNumeric(adjustedInput.rangeModifier, computedRangeModifier);
-  rollData.attackBonus = parseNumeric(adjustedInput.attackBonus, 0);
+  const rangeModifier = parseNumeric(attackInput.rangeModifier, computedRangeModifier);
+  rollData.attackBonus = parseNumeric(attackInput.attackBonus, 0);
   rollData.rangeModifier = rangeModifier;
   rollData.modifiers += rangeModifier;
 
@@ -452,7 +463,7 @@ async function executeAttackActionRoll({ actor, input, sourceItem, rollData }) {
 
   // Enrich attack-only payload fields for the chat card and stored roll flags.
   const resolvedInput = buildResolvedAttackInput({
-    input: adjustedInput,
+    input: attackInput,
     rollData,
     attackRangeContext,
     baneDamageBonus,
@@ -949,6 +960,31 @@ function applyAttackModeAdjustments({ input, sourceItem }) {
     attackBonus: parseNumeric(input?.attackBonus, 0) - 2,
     damageBonus: parseNumeric(input?.damageBonus, 0) + 2,
   };
+}
+
+function applyAttackInputAdjustments({ input, sourceItem }) {
+  const modeAdjustedInput = applyAttackModeAdjustments({ input, sourceItem });
+  const ammoAttack = resolveAmmoAttackEffects({
+    ammoKey: sourceItem?.system?.specialAmmo,
+  });
+  return applyAmmoAttackAdjustments({ input: modeAdjustedInput, ammoAttack });
+}
+
+function applyAmmoAttackAdjustments({ input, ammoAttack }) {
+  const ammoLethalOverride = ammoAttack?.lethalOverride;
+  return {
+    ...input,
+    attackBonus: parseNumeric(input?.attackBonus, 0) + Number(ammoAttack?.attackBonusDelta ?? 0),
+    damageBonus: parseNumeric(input?.damageBonus, 0) + Number(ammoAttack?.damageBonusDelta ?? 0),
+    rangeModifier: parseNumeric(input?.rangeModifier, 0) + Number(ammoAttack?.rangeModifierDelta ?? 0),
+    extraDamageDice: Number(ammoAttack?.extraDamageDice ?? 0),
+    lethalOverride: Number.isFinite(ammoLethalOverride) ? ammoLethalOverride : null,
+  };
+}
+
+async function rollAmmoExtraDamage(extraDamageDice) {
+  if (!(extraDamageDice > 0)) return 0;
+  return await new Roll(`${extraDamageDice}d10`).evaluate();
 }
 
 function getActorAttributeValue(actor, attributeKey) {

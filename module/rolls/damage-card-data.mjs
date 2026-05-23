@@ -28,6 +28,8 @@ export function prepareDamageCardData({
   const baneDamageBonus = Number(input.baneDamageBonus ?? 0);
   const doubleShotBonus = Number(input.doubleShotBonus ?? 0);
   const slugShotActive = Boolean(input.slugShotActive);
+  const specialAmmoUsed = String(input.specialAmmoUsed ?? item?.system?.specialAmmo ?? 'none');
+  const extraDamageDice = Number(input.extraDamageDice ?? 0);
   const baseDamageBonus = Number.isFinite(Number(input.baseDamageBonus))
     ? Number(input.baseDamageBonus)
     : damageBonus;
@@ -38,14 +40,18 @@ export function prepareDamageCardData({
   const system = {
     total,
     lethal,
+    extraDamageDice,
     actorUuid,
     sourceItemUuid,
     sourceMessageId,
+    specialAmmoUsed,
   };
 
   const cardExtras = buildBaseActionCardData({
     subtype: 'damage',
-    equation: `${d10} + ${attributeValue} + ${baseDamageBonus}`,
+    equation: extraDamageDice > 0
+      ? `${d10} + ${attributeValue} + ${baseDamageBonus} + ${extraDamageDice}d10`
+      : `${d10} + ${attributeValue} + ${baseDamageBonus}`,
     total,
     dieValue: d10,
     attributeKey: 'combat',

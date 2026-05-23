@@ -1,6 +1,7 @@
 import SYNTHICIDE from "../helpers/config.mjs";
 import { createActionMessage } from "../rolls/action-rolls.mjs";
 import { buildShockCardData, resolveShockOutcome } from "../rolls/shock-card-data.mjs";
+import { resolveAmmoOnHitEffects } from "../rolls/ammo-effects.mjs";
 
 const DAMAGEABLE_ACTOR_TYPES = new Set(['sharper', 'npc']);
 
@@ -197,11 +198,16 @@ export class SynthicideActor extends foundry.documents.Actor {
 
   async damageActor(damage, options = {}) {
     if (!damage || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return;
+    const normalizedOptions = {
+      ...options,
+      specialAmmoUsed: String(options?.specialAmmoUsed ?? 'none'),
+    };
+    const isFlashAmmo = normalizedOptions.specialAmmoUsed === 'flash';
     const updates = {};
     let damageRemaining = damage;
     // Apply force barrier first.
     let barrierAbsorbed = 0;
-    if (this.system.armorValues?.forceBarrier.value > 0) {
+    if (!isFlashAmmo && this.system.armorValues?.forceBarrier.value > 0) {
       barrierAbsorbed = Math.min(this.system.armorValues.forceBarrier.value, damageRemaining);
       if (barrierAbsorbed > 0) {
         damageRemaining -= barrierAbsorbed;
@@ -212,11 +218,11 @@ export class SynthicideActor extends foundry.documents.Actor {
     // Compute outcomes if not dead.
     const preHP = Number(this.system.hitPoints.value ?? 0);
 
-    if (damageRemaining > 0 && !this.statuses?.has("dead")) {
+    if (!isFlashAmmo && damageRemaining > 0 && !this.statuses?.has("dead")) {
       updates['system.hitPoints.value'] = preHP - damageRemaining;
 
       if (game.settings.get('synthicide', SYNTHICIDE.USE_SHOCKING_STRIKE_KEY)) {
-        const outcome = await this._handleShockingStrike(damageRemaining, preHP, updates, { ...options, barrierAbsorbed });
+        const outcome = await this._handleShockingStrike(damageRemaining, preHP, updates, { ...normalizedOptions, barrierAbsorbed });
         if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL || outcome === SYNTHICIDE.SHOCK_OUTCOMES.DEATH) {
           if (!this.statuses?.has("dead")) {
             await this.toggleStatusEffect("dead", { active: true });
@@ -226,6 +232,10 @@ export class SynthicideActor extends foundry.documents.Actor {
     }
 
     await this.update(updates);
+
+    if (damageRemaining > 0 || isFlashAmmo) {
+      await this._applySpecialAmmoOnHitEffects(normalizedOptions);
+    }
   }
 
   async healActor(healing) {
@@ -233,6 +243,29 @@ export class SynthicideActor extends foundry.documents.Actor {
     const updates = {};
     updates['system.hitPoints.value'] = Math.min(this.system.hitPoints.value + healing, this.system.hitPoints.max);
     await this.update(updates);
+  }
+
+  async _applySpecialAmmoOnHitEffects(options = {}) {
+    const onHit = resolveAmmoOnHitEffects({ ammoKey: options?.specialAmmoUsed });
+    if (!(onHit.immediateDamageDice > 0) && !onHit.statusToggles.length) return;
+
+    if (onHit.immediateDamageDice > 0) {
+      const roll = await new Roll(`${onHit.immediateDamageDice}d10`).evaluate();
+      const immediateDamage = Number(roll.total ?? 0);
+      if (immediateDamage > 0) {
+        await this.damageActor(immediateDamage, {
+          ...options,
+          specialAmmoUsed: 'none',
+        });
+      }
+    }
+
+    for (const effect of onHit.statusToggles) {
+      const active = effect.active !== false;
+      const alreadyActive = this.statuses?.has(effect.id) === true;
+      if ((active && alreadyActive) || (!active && !alreadyActive)) continue;
+      await this.toggleStatusEffect(effect.id, { active });
+    }
   }
 
   /**

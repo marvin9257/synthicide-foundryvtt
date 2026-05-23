@@ -21,9 +21,14 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
   const rangeIncrement = Number.isFinite(Number(input.rangeIncrement)) ? Number(input.rangeIncrement) : null;
   const hit = total >= effectiveArmor;
   const attributeKey = input.attribute;
-  const lethal = Number(sourceItem?.system?.bonuses.lethal ?? 0);
+  const lethalOverride = input.lethalOverride;
+  const lethal = Number.isFinite(lethalOverride)
+    ? lethalOverride
+    : Number(sourceItem?.system?.bonuses.lethal ?? 0);
+  const extraDamageDice = Number(input.extraDamageDice ?? 0);
   const baneDamageBonus = Number(input.baneDamageBonus ?? 0);
   const slugShotActive = isSlugShotActive({ input, sourceItem });
+  const specialAmmoUsed = sourceItem?.system?.specialAmmo ?? 'none';
 
   // Data for strict DataModel validation
   const system = {
@@ -34,9 +39,11 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
     d10,
     hit,
     lethal,
+    extraDamageDice,
     baneDamageBonus,
     slugShotActive,
     actorUuid: actor?.uuid ?? null,
+    specialAmmoUsed,
   };
 
   // Native ChatMessage fields

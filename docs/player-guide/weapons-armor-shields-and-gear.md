@@ -78,11 +78,11 @@ Modifications change how a weapon behaves in combat. Some have automatic mechani
 ### Modifications with Automatic Mechanics
 
 1. **Expert Crafting (1-3)**: Adds +1, +2, or +3 bonus to damage rolls.
-2. **Battle Assist (1-3)**: Adds +1, +2, or +3 bonus to attack rolls.
+2. **Battle Assist (1-3)**: Sets a minimum Combat attribute value of 1, 2, or 3 for attack/damage calculations when that is higher than the actor's Combat.
 3. **Enhanced Alloy**: Adds +1 bonus to attack rolls.
-4. **Bane Tune (Organics/Synthetics)**: Adds +2 bonus when attacking the specified target type (organics or synthetics).
-5. **Arc** (Ranged/Melee): Adds +2 bonus when attacking synthetics; generates per-target spread collateral cards on hit.
-6. **Double Shot** (Ranged): Creates additional per-target collateral cards on successful hits.
+4. **Bane Tune (Organics/Synthetics)**: Adds +3 damage against qualifying targets.
+5. **Arc** (Ranged/Melee): Adds +2 attack bonus when attacking synthetic targets or targets with implants.
+6. **Double Shot** (Ranged): Adds its configured damage bonus to spread collateral damage cards when those cards are generated.
 7. **Slug Shot** (Ranged): Affects damage calculation with modified projectile mechanics.
 
 ### Modifications Without Automatic Mechanics
@@ -106,7 +106,8 @@ Weapon features describe inherent capabilities. Some have automatic effects in r
 
 ### Features with Automatic Mechanics
 
-1. **Arc** (Melee/Ranged): Adds +2 bonus against synthetic targets. On successful ranged attacks, generates per-target spread collateral cards.
+1. **Arc** (Melee/Ranged): Adds +2 attack bonus against synthetic targets and targets with implants.
+2. **Spread** (Ranged): On attack rolls, can generate collateral damage cards for tokens intersected by the spread line.
 
 ### Features Without Automatic Mechanics
 
@@ -120,7 +121,7 @@ These are available for selection but require manual application:
 6. **Retrofit** (Ranged): Equipment modifications are manual.
 7. **Close** (Ranged): Close-range behavior is manual.
 8. **Slow (1-2)** (Ranged): Reload penalties are manual.
-9. **Spread** (Ranged): Area effects are manual unless Arc or Double Shot creates collateral cards.
+9. **Spread** (Ranged): RAW interpretation beyond the implemented collateral-card flow is manual.
 10. **Beam/Wave/Hellfire** (Ranged): Special damage behaviors are manual.
 11. **Blast (3/5)** (Demolition): Blast radius targeting is manual.
 12. **Stun** (Demolition): Stun effects are manual.
@@ -128,29 +129,29 @@ These are available for selection but require manual application:
 
 ## Special Ammo
 
-Special ammo types are selectable on ranged weapons but most effects require manual implementation.
+Special ammo types are selectable on ranged weapons. Some ammo behavior is automated, while more complex RAW handling still requires manual table resolution.
 
 ### Ammo Types Available
 
 1. **None**: Standard ammunition.
-2. **Cryo**: Cold-based rounds; armor penetration and target slowdown effects are manual.
-3. **Cinder**: Incendiary rounds; ongoing fire damage is manual.
+2. **Cryo**: Applies the `Frozen` status on hit. The system removes `Frozen` automatically at end of turn. Any broader RAW interpretation beyond that status is manual.
+3. **Cinder**: Applies `Burning` on hit and rolls immediate extra `1d10` damage. Burning damage is then rolled automatically at the start of the target's turn until the effect ends.
 4. **Knock Back**: Knockback effects are manual.
-5. **Homing**: Homing behavior and re-targeting are manual.
-6. **Poison**: Poison damage is manual.
-7. **Power Wounding**: Enhanced damage against armor; bonus calculation is manual.
-8. **Flash**: Blinding effects are manual.
-9. **Anchor**: Movement-blocking effects are manual.
+5. **Homing**: Sets lethal to `6` and applies the `Target` status on hit. Any RAW homing/retargeting advantage beyond that marker is manual.
+6. **Poison**: Applies a `Poison` status marker on hit. Ongoing poison rules remain manual.
+7. **Power Wounding**: Sets lethal to `8` and adds `2d10` extra damage to the derived damage roll/chat card.
+8. **Flash**: Applies `Blind` on hit. At the start of the target's turn the system rolls the automated recovery check and removes `Blind` on success.
+9. **Anchor**: Applies a `Restrain` status marker on hit. Movement-locking rules beyond that marker are manual.
 10. **Bouncing**: Ricochet behavior is manual.
-11. **Stun**: Electrical/stun effects are manual.
 
-**Important**: Selecting ammo type does not automatically apply mechanical effects. All ammo effects must be resolved by your table after the roll.
+**Important**: Ammo selection is not all-or-nothing automation. The system automates selected status application and a few direct numeric effects, but complex RAW handling for ammo still needs table resolution.
 
 ## What Happens Automatically
 
 1. Equipped items contribute to derived values.
 2. Weapon roll actions prefill attack roll fields.
 3. Defense and Force Barrier displays refresh from current equipped item data during normal sheet and combat updates.
+4. Some special ammo effects are applied automatically, including Power Wounding lethal/extra damage, Homing lethal plus target marking, Cryo frozen status, Cinder burning plus immediate damage, and Flash blind plus its turn-start recovery check.
 
 Example: equipping armor with Force Barrier fields updates the actor's shown Force Barrier values.
 
@@ -166,7 +167,7 @@ Example: equipping armor with Force Barrier fields updates the actor's shown For
 2. The system does not block every invalid formula or data combo (example: odd formula text can roll in unexpected ways).
 3. Equip behavior is type-limited for specific item classes (example: armor and shields are exclusive equip types, so equipping one can unequip another of the same type).
 4. Inventory logistics such as carrying limits and deep encumbrance checks are not enforced by sheet logic and must be tracked manually.
-5. **Many modifications, features, and ammo effects require manual implementation** (see Weapon Modifications, Weapon Features, and Special Ammo sections above). Selecting these options does not guarantee automatic mechanical application. Your table must resolve effects that are not in the automatic mechanics list.
+5. **Many modifications, features, and ammo effects still require manual implementation** (see Weapon Modifications, Weapon Features, and Special Ammo sections above). Selecting these options does not guarantee full RAW automation. Your table must resolve effects that are not in the automatic mechanics list.
 6. Shield tactic handling from the rules update (such as defensive arc and lock-angle behavior) requires manual table resolution.
 7. Modification selections that do not appear in the automatic mechanics list will not affect attack or damage calculations; you must apply these effects manually at your table.
 
@@ -190,7 +191,7 @@ A: Check the [Weapon Modifications section](#weapon-modifications) above. Many m
 
 ### Q: Ammo effects are not being applied. Is that expected?
 
-A: Yes. Special ammo type is a selection field; almost all ammo effects must be resolved manually by your table. See the [Special Ammo section](#special-ammo) for details.
+A: Partly. Some ammo effects are automated, but not all of them. Check the [Special Ammo section](#special-ammo) to see which ammo adds automatic statuses or direct numeric changes and which still need manual table resolution.
 
 ## Related Pages
 
