@@ -1,6 +1,6 @@
 {
   "name": "synthicide",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "description": "Compiler for the Synthicide system",
   "scripts": {
     "createSymlinks": "node src/create-symlinks.mjs",

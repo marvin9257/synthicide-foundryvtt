@@ -1,3 +1,10 @@
+## [1.0.37](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.36...1.0.37) (2026-05-23)
+
+
+### Bug Fixes
+
+* add some ammo effects and update documentation ([ace30e2](https://github.com/marvin9257/synthicide-foundryvtt/commit/ace30e2f1a2b6bfcda595e53dbf1e1a8f33a03a7))
+
 ## [1.0.36](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.35...1.0.36) (2026-05-21)
 
 
