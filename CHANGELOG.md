@@ -1,3 +1,10 @@
+## [1.0.40](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.39...1.0.40) (2026-05-24)
+
+
+### Bug Fixes
+
+* improve demolition actions ([2eae9a2](https://github.com/marvin9257/synthicide-foundryvtt/commit/2eae9a23dae74dc7e55c2e056b875d2ca5c00564))
+
 ## [1.0.39](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.38...1.0.39) (2026-05-23)
 
 
