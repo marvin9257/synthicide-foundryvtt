@@ -9,7 +9,7 @@ import { prepareDamageCardData } from './damage-card-data.mjs';
 import { resolveAmmoAttackEffects } from './ammo-effects.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { calculateVirtualDistanceBetweenTokens, getSpreadCollateralTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
-import { applySpecializationToRollData, hasWeaponFeature, resolveWeaponSpecializationContext } from './weapon-proficiency-rules.mjs';
+import { getDemolitionSpecializationBonus, hasWeaponFeature, resolveWeaponSpecializationContext } from './weapon-proficiency-rules.mjs';
 
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
 const CARD_TEMPLATE = 'systems/synthicide/templates/chat/action-roll-card.hbs';
@@ -241,9 +241,11 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   const isDemolition = isDemolitionSubtype(resolvedSubtype);
   const isAttack = isAttackSubtype(resolvedSubtype);
   const isChallenge = resolvedSubtype === SUBTYPES.CHALLENGE;
-  const attributeKey = isDemolition
-    ? getDemolitionRollAttributeKey(sourceItem)
-    : getActionAttributeKey(resolvedSubtype, input.attribute);
+  // Determine the attribute the user requested (dialog) or fall back to
+  // demolition-specific default when appropriate. Then normalize via
+  // `getActionAttributeKey` for the resolved subtype.
+  const attributeRequested = input?.attribute ?? (isDemolition ? getDemolitionRollAttributeKey(sourceItem) : ATTRIBUTE_COMBAT);
+  const attributeKey = getActionAttributeKey(resolvedSubtype, attributeRequested);
   const rollData = buildActionRollData({ actor, input, attributeKey, sourceItem });
 
   if (isDemolition) {
@@ -317,16 +319,12 @@ async function executeThrownDemolitionActionRoll({ actor, input, sourceItem, rol
   const rangeDistance = calculateVirtualZoneDistanceBetweenPoints(actorToken.center, placedPoint);
   const rangeBands = rangeDistance > 0 ? Math.ceil(rangeDistance / rangeIncrement) : 0;
   const difficulty = rangeBands * 3;
-  const specializationContext = resolveWeaponSpecializationContext({
+  const specializationContext = resolveAndApplySpecialization({
     actor,
     sourceItem,
     subtype: SUBTYPES.DEMOLITION,
-  });
-  applySpecializationToRollData({
-    rollData,
-    specializationContext,
-    subtype: SUBTYPES.DEMOLITION,
     attributeKey: ATTRIBUTE_COMBAT,
+    rollData,
   });
   const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, rollData).evaluate();
   const success = Number(evaluatedRoll.total ?? 0) >= difficulty;
@@ -343,8 +341,10 @@ async function executeThrownDemolitionActionRoll({ actor, input, sourceItem, rol
     }
   }
 
-  ItemTemplate.targetTokensForPlacedRegion(placedRegion);
+  // Step 2: Resolve attack for each blast target using derived AD, and generate a summary message
+  const blastTargets = ItemTemplate.targetTokensForPlacedRegion(placedRegion) || [];
 
+  // Prepare demolition card (placement/throw roll)
   const cardData = prepareDemolitionCardData({
     input: {
       ...input,
@@ -368,12 +368,34 @@ async function executeThrownDemolitionActionRoll({ actor, input, sourceItem, rol
     attributeValue: rollData.attribute,
   });
 
-  return createActionMessage({
+  // Persist placed template identifier on the card model (do not use ChatMessage flags)
+  foundry.utils.setProperty(cardData, "system.placedTemplateUuid", placedRegion?.uuid);
+
+  // Send the demolition placement/throw card
+  await createActionMessage({
     actor,
     roll: evaluatedRoll,
     messageMode,
     cardData,
   });
+  
+  // Always resolve attacks for all targets in the blast region, regardless of scatter/placement roll success
+  if (blastTargets.length > 0) {
+    const summaryRows = await resolveBlastTargetAttacks({
+      actor,
+      input,
+      sourceItem,
+      rollData,
+      specializationContext,
+      blastTargets,
+      messageMode,
+    });
+    if (summaryRows.length > 0) {
+      await createBlastSummaryMessage({ actor, summaryRows, messageMode });
+    }
+  }
+
+  return null;
 }
 
 async function executePlantedDemolitionActionRoll({ actor, input, sourceItem, rollData, plantNumber }) {
@@ -381,27 +403,30 @@ async function executePlantedDemolitionActionRoll({ actor, input, sourceItem, ro
   if (!placement) return null;
   const { messageMode, placedRegion, blastDiameter } = placement;
 
-  const specializationContext = resolveWeaponSpecializationContext({
+  const specializationContext = resolveAndApplySpecialization({
     actor,
     sourceItem,
     subtype: SUBTYPES.DEMOLITION,
     attributeKey: 'operation',
-  });
-  applySpecializationToRollData({
     rollData,
-    specializationContext,
-    subtype: SUBTYPES.DEMOLITION,
-    attributeKey: 'operation',
   });
 
   const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, rollData).evaluate();
-  const success = Number(evaluatedRoll.total ?? 0) > plantNumber;
+  // Per RAW: a plant roll that meets or exceeds the plant number succeeds
+  // (successful plant = delayed detonation). Only when the plant fails do
+  // we treat the device as detonated and resolve immediate attacks.
+  const success = Number(evaluatedRoll.total ?? 0) >= plantNumber;
   const detonated = !success;
 
-  if (detonated) {
-    ItemTemplate.targetTokensForPlacedRegion(placedRegion);
-  }
+  // Resolve attack for each blast target only when the device actually
+  // detonated (immediate failure); do not resolve attacks on successful
+  // plant attempts since activation may occur later.
+  //let blastTargets = [];
+  //if (detonated) {
+  //  blastTargets = ItemTemplate.targetTokensForPlacedRegion(placedRegion) || [];
+  //}
 
+  // Prepare demolition card (placement/plant roll)
   const cardData = prepareDemolitionCardData({
     input: {
       ...input,
@@ -425,12 +450,139 @@ async function executePlantedDemolitionActionRoll({ actor, input, sourceItem, ro
     attributeValue: rollData.attribute,
   });
 
-  return createActionMessage({
+  // Persist placed template identifier on the card model (do not use ChatMessage flags)
+  foundry.utils.setProperty(cardData, "system.placedTemplateUuid", placedRegion?.uuid);
+
+  // Send the demolition placement/plant card
+  await createActionMessage({
     actor,
     roll: evaluatedRoll,
     messageMode,
     cardData,
   });
+
+  // Always resolve attacks for all targets in the blast region if placement fails
+  //if (blastTargets.length > 0) {
+  //  const summaryRows = await resolveBlastTargetAttacks({
+  //    actor,
+  //    input,
+  //    sourceItem,
+  //    rollData,
+  //    specializationContext,
+  //    blastTargets,
+  //    messageMode,
+  //  });
+  //  if (summaryRows.length > 0) {
+  //    await createBlastSummaryMessage({ actor, summaryRows, messageMode });
+  //  }
+  //}
+  return null;
+}
+
+// Helper: Resolve attacks for all blast targets and return summary rows
+async function resolveBlastTargetAttacks({ actor, input, sourceItem, rollData, specializationContext, blastTargets, messageMode }) {
+  const summaryRows = [];
+
+  if (!blastTargets?.length) return summaryRows;
+
+  // Build a single attack roll for the blast per RAW. Thrown demolitions use
+  // the thrower's combat/actor modifiers plus the weapon's bonuses. Planted
+  // demolitions use only the weapon's own bonuses (no actor attribute or
+  // modifiers).
+  const baseAttackBonus = Number(sourceItem?.system?.bonuses?.attack ?? 0);
+  const baseDamageBonus = Number(sourceItem?.system?.bonuses?.damage ?? 0);
+  const inputAttackBonus = Number(input?.attackBonus ?? 0);
+  const misc = parseNumeric(input?.misc, 0);
+
+  let attackRollData;
+  if (isPlantedDemolition(sourceItem)) {
+    // Planted: weapon only
+    attackRollData = {
+      attribute: 0,
+      misc,
+      attackBonus: baseAttackBonus,
+      modifiers: 0,
+    };
+  } else {
+    // Thrown: include actor attribute and modifiers
+    // Recompute actor roll modifiers fresh so any specialization bonus
+    // applied to the earlier throw/setup roll does NOT cascade into the
+    // blast attack roll.
+    const freshActorModifiers = getActorRollModifiers(actor);
+    const freshActorModifierTotal = freshActorModifiers.reduce((sum, mod) => sum + (Number(mod.value) || 0), 0);
+    const modifiers = Number(freshActorModifierTotal) + Number(rollData?.rangeModifier ?? 0);
+    attackRollData = {
+      attribute: rollData.attribute,
+      misc,
+      attackBonus: baseAttackBonus + inputAttackBonus,
+      modifiers,
+    };
+  }
+
+  const attackRoll = await new Roll(FORMULA_ATTACK, attackRollData).evaluate();
+  const attackTotal = Number(attackRoll.total ?? 0);
+  const rollHtml = await attackRoll.render();
+
+  for (const token of blastTargets) {
+    const targetActor = token.actor;
+    if (!targetActor) continue;
+    const targetAD = Number(targetActor.system.armorDefense?.value ?? 0);
+    const hit = attackTotal >= targetAD;
+
+    // Prepare per-target card showing the same attack roll result and provenance
+    const attackCardData = prepareAttackCardData({
+      input: {
+        ...input,
+        armor: targetAD,
+        specializationKey: String(specializationContext.key ?? ''),
+        specializationLevel: Number(specializationContext.level ?? 0),
+        specializationAttackBonus: 0,
+        specializationDamageBonus: Number(specializationContext.damage ?? 0),
+        specializationLethalBonus: Number(specializationContext.lethal ?? 0),
+        specializationShockRdBonus: Number(specializationContext.shockRdBonus ?? 0),
+        // Damage context for derived damage calculation
+        damageBonus: Number(baseDamageBonus ?? 0),
+        baseDamageBonus: Number(baseDamageBonus ?? 0),
+        attackBonus: Number(attackRollData.attackBonus ?? 0),
+        baseAttackBonus: Number(baseAttackBonus ?? 0),
+        // Show the modifiers actually used by the blast attack roll (freshly computed)
+        actorModifierTotal: Number(attackRollData.modifiers ?? 0),
+        rangeModifier: Number(rollData.rangeModifier ?? 0),
+        rangeDistance: null,
+        rangeIncrement: null,
+      },
+      actor,
+      sourceItem,
+      rollResult: attackRoll,
+      attributeValue: attackRollData.attribute,
+    });
+
+    // Render card HTML with the pre-rendered rollHtml so the same die is shown
+    const cardHtml = await renderActionCardHtml({ cardData: attackCardData, rollHtml });
+    const chatData = buildChatMessageData({ actor, content: cardHtml, cardData: attackCardData });
+    await ChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
+
+    summaryRows.push(`<tr><td>${token.name}</td><td>${targetAD}</td><td>${attackTotal}</td><td>${hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss')}</td></tr>`);
+  }
+
+  return summaryRows;
+}
+
+// Helper: Create the blast summary message
+async function createBlastSummaryMessage({ actor, summaryRows, messageMode }) {
+  const summaryTable = `
+    <div class="synthicide-blast-summary">
+      <strong>${localize('SYNTHICIDE.Roll.BlastSummary.Title')}</strong>
+      <table>
+        <thead><tr><th>${localize('SYNTHICIDE.Roll.BlastSummary.Target')}</th><th>${localize('SYNTHICIDE.Roll.BlastSummary.AD')}</th><th>${localize('SYNTHICIDE.Roll.BlastSummary.Roll')}</th><th>${localize('SYNTHICIDE.Roll.BlastSummary.Result')}</th></tr></thead>
+        <tbody>${summaryRows.join('')}</tbody>
+      </table>
+    </div>
+  `;
+  await ChatMessage.create({
+    content: summaryTable,
+    speaker: ChatMessage.getSpeaker({ actor }),
+  }, { messageMode });
 }
 
 async function createDemolitionPlacementContext({ input, sourceItem, requirePoint = true }) {
@@ -802,6 +954,7 @@ function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSu
     rangeModifier: attackDefaults.rangeModifier,
     shieldBonus: isMeleeAttack ? targetDefense.shieldBonus : 0,
     weaponClass: String(sourceItem?.system?.weaponClass ?? ''),
+    sourceItem,
     messageMode: getDefaultMessageMode(),
     allowSubtypeChange,
     rollModifiers
@@ -837,7 +990,12 @@ function buildDialogContext(defaults) {
   const difficultyList = SYNTHICIDE.rolls?.challengeDifficulties ?? [];
 
   const actor = defaults.actor;
-  const attributeKey = getActionAttributeKey(subtype, defaults.attribute ?? ATTRIBUTE_COMBAT);
+  // For demolition dialogs prefer deriving the attribute from the actual
+  // sourceItem (planted vs thrown). This ensures planted devices default to
+  // `operation` even when callers didn't pass the right `attribute` value.
+  const attributeKey = isDemolition
+    ? getDemolitionRollAttributeKey(defaults.sourceItem)
+    : getActionAttributeKey(subtype, defaults.attribute ?? ATTRIBUTE_COMBAT);
   // Merge persistent and situational (passed) rollModifiers
   const persistent = getActorRollModifiers(actor);
   let situational = [];
@@ -1197,6 +1355,36 @@ function resolveWeaponAttackContext({ actor, sourceItem, targetToken }) {
   };
 }
 
+/**
+ * Resolve weapon specialization context and optionally apply it to a
+ * provided rollData object. This centralizes the dual-step used by
+ * demolition flows so callers don't repeat the resolution+apply pattern.
+ *
+ * @param {object} params
+ * @param {Actor} params.actor
+ * @param {Item|null} params.sourceItem
+ * @param {string} params.subtype
+ * @param {string} [params.attributeKey]
+ * @param {object|null} [params.rollData] - If provided, apply specialization to this object.
+ * @returns {object} specializationContext
+ */
+function resolveAndApplySpecialization({ actor, sourceItem, subtype, attributeKey = ATTRIBUTE_COMBAT, rollData = null }) {
+  const specializationContext = resolveWeaponSpecializationContext({
+    actor,
+    sourceItem,
+    subtype,
+    attributeKey,
+  });
+  if (rollData) {
+    const bonus = getDemolitionSpecializationBonus({ specializationContext, subtype, attributeKey });
+    if (bonus && Number(bonus) !== 0) {
+      rollData.modifiers = Number(rollData.modifiers ?? 0) + Number(bonus);
+      rollData.actorModifierTotal = Number(rollData.actorModifierTotal ?? 0) + Number(bonus);
+    }
+  }
+  return specializationContext;
+}
+
 function getArcAttackBonus({ sourceItem, targetToken }) {
   if (!hasWeaponFeature(sourceItem, 'arc')) return 0;
   const targetActor = targetToken?.actor;
@@ -1329,6 +1517,12 @@ function isPlantedDemolition(sourceItem) {
 }
 
 function getDemolitionRollAttributeKey(sourceItem) {
+  // When a concrete sourceItem is provided, planted demolitions use
+  // `operation` while thrown demolitions use `combat`.
+  // If no sourceItem is available (caller omitted it), prefer `operation`
+  // as the safer default for placement/planting flows so dialog defaults
+  // for planting rolls are correct.
+  if (!sourceItem) return 'operation';
   return isPlantedDemolition(sourceItem) ? 'operation' : ATTRIBUTE_COMBAT;
 }
 

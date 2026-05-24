@@ -58,6 +58,7 @@ export class DemolitionCardSystemData extends foundry.abstract.TypeDataModel {
     schema.actorUuid = new fields.StringField({ required: true, blank: false, initial: '' });
     schema.sourceItemUuid = new fields.StringField({ required: false, blank: true, initial: '' });
     schema.sourceMessageId = new fields.StringField({ required: false, blank: true, initial: '' });
+    schema.placedTemplateUuid = new fields.StringField({ required: false, blank: true, initial: '' });
     return schema;
   }
 }

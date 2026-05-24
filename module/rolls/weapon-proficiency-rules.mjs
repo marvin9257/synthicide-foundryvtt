@@ -93,24 +93,20 @@ export function resolveWeaponSpecializationContext({ actor, sourceItem, subtype,
 }
 
 /**
- * Apply specialization bonuses to roll data where relevant.
- * Returns the bonus that was applied to modifiers for traceability.
+ * Get demolition-specific specialization bonus for modifiers.
+ * Returns the numeric demolition bonus that callers may apply.
  */
-export function applySpecializationToRollData({ rollData, specializationContext, subtype, attributeKey } = {}) {
-  if (!rollData || !specializationContext) return 0;
-
+export function getDemolitionSpecializationBonus({ specializationContext, subtype, attributeKey } = {}) {
+  // This function returns the numeric specialization bonus for demolition
+  // flows. It does not mutate any provided roll data.
+  if (!specializationContext) return 0;
   if (subtype !== 'demolition') return 0;
 
   const bonus = attributeKey === 'operation'
     ? Number(specializationContext.demolitionPlacement ?? 0)
     : Number(specializationContext.demolitionThrow ?? 0);
 
-  if (bonus !== 0) {
-    rollData.modifiers += bonus;
-    rollData.actorModifierTotal += bonus;
-  }
-
-  return bonus;
+  return Number(bonus || 0);
 }
 
 export function hasWeaponFeature(sourceItem, featureKey) {

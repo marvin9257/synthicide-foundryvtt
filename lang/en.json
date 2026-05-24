@@ -810,6 +810,13 @@
         "OffTargetNoScatter": "Off Target (Scatter Disabled)",
         "DamageApplied": "Damage Applied"
       },
+      "BlastSummary": {
+        "Title": "Blast Summary",
+        "Target": "Target",
+        "AD": "AD",
+        "Roll": "Roll",
+        "Result": "Result"
+      },
       "Warnings": {
         "ChallengeDifficultyRequired": "Challenge rolls require a difficulty value.",
         "AttackDataMissing": "This message does not contain attack roll data.",

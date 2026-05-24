@@ -3404,3 +3404,9 @@ body.synthicide-style-bold .npc-mastered-weapon input[type="checkbox"] {
   width: 1.1em;
   height: 1.1em;
 }
+
+
+.synthicide-blast-summary th, .synthicide-blast-summary td {
+    padding: 2px;
+    text-align: center;
+}

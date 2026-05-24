@@ -59,20 +59,23 @@ export default class ItemTemplate extends foundry.canvas.placeables.Region {
     const regionDocument = regionDoc?.document ?? regionDoc;
     if (!regionDocument) {
       console.warn("[Synthicide] targetTokensForPlacedRegion: No region provided");
-      return;
+      return [];
     }
     const tokens = canvas.tokens?.placeables;
+    const targetedTokens = [];
     const arrayOfTokenIds = [];
     if (tokens?.length > 0) {
       for (const tok of tokens) {
         if (tok.document?.testInsideRegion(regionDocument)) {
           arrayOfTokenIds.push(tok.id);
+          targetedTokens.push(tok);
         }
       }
       canvas.tokens?.setTargets(arrayOfTokenIds, {mode: "replace"});
     } else {
       console.warn("[Synthicide] No tokens found on canvas for targeting");
     }
+    return targetedTokens;
   }
 
   static getPlacedPoint(regionDoc) {
