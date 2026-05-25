@@ -12,85 +12,75 @@ export class VirtualGridLayer extends foundry.canvas.layers.CanvasLayer {
     });
   }
 
-  /**
-   * Update the virtual grid overlay visibility for all clients.
-   */
-  updateVirtualGridOverlay() {
-    try {
-      const show = game.combats?.active?.started && game.settings.get('synthicide', SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY);
-      this.visible = !!show;
-      if (show) this.drawVirtualGrid();
-      else this.clear();
-    } catch (e) {
-      console.warn('[VirtualGridLayer] Could not update virtual grid overlay:', e);
+  async _draw(options) {
+    await super._draw(options);
+    if (this.gridGraphics) {
+      this.gridGraphics.clear();
+    } else {
+      this.gridGraphics = new globalThis.PIXI.Graphics();
+      this.addChild(this.gridGraphics);
     }
+    if (!this._shouldDrawGrid()) return this;
+    this._drawGrid();
+    return this;
   }
 
-  drawVirtualGrid() {
-    this.clear();
-    if (!game.settings.get('synthicide', SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY)) {
-      console.log('[VirtualGrid] Setting disabled, not drawing overlay.');
-      return false;
-    }
-    const grid = canvas.grid;
-    if (!grid) {
-      console.warn('[VirtualGrid] No canvas.grid found.');
-      return false;
-    }
-    // Use canvas.scene or canvas.dimensions for width/height
-    const dims = (canvas.scene && canvas.scene.dimensions) || {};
-    const width = dims.width || 0;
-    const height = dims.height || 0;
-    this.position.set(0, 0);
-    this.width = width;
-    this.height = height;
-    this.zIndex = 9999;
+  _shouldDrawGrid() {
+    return game.combats?.active?.started && game.settings.get('synthicide', SYNTHICIDE.VIRTUAL_GRID_MOVEMENT_KEY);
+  }
 
+  _drawGrid() {
+    const grid = canvas.grid;
+    if (!grid) return;
+
+    const dims = canvas.dimensions ?? {};
+    const width = dims.width ?? 0;
+    const height = dims.height ?? 0;
     const gSize = grid.size;
     const vSize = gSize * 3;
     const cols = Math.ceil(width / vSize);
     const rows = Math.ceil(height / vSize);
-    const g = new globalThis.PIXI.Graphics();
     const color = game.settings.get('synthicide', SYNTHICIDE.VIRTUAL_GRID_COLOR_KEY) || 0xff8800;
 
-    g.lineStyle(5, color, 0.5);
-    console.log(`[VirtualGrid] Drawing overlay: grid size=${gSize}, virtual size=${vSize}, cols=${cols}, rows=${rows}, width=${width}, height=${height}`);
+    this.gridGraphics.lineStyle(5, color, 0.5);
     for (let c = 0; c <= cols; c++) {
       const x = c * vSize;
-      g.moveTo(x, 0);
-      g.lineTo(x, height);
+      this.gridGraphics.moveTo(x, 0);
+      this.gridGraphics.lineTo(x, height);
     }
     for (let r = 0; r <= rows; r++) {
       const y = r * vSize;
-      g.moveTo(0, y);
-      g.lineTo(width, y);
+      this.gridGraphics.moveTo(0, y);
+      this.gridGraphics.lineTo(width, y);
     }
-    this.addChild(g);
-    return true;
   }
 
-  clear() {
-    this.removeChildren();
+  async tearDown() {
+    if (this.gridGraphics) {
+      try {
+        if (!this.gridGraphics.destroyed) this.gridGraphics.destroy({ children: true });
+      } catch(er) {
+        // ignore destroy errors
+        console.log("Had teardown errors", er);
+      }
+      this.gridGraphics = null;
+    }
+    await super.tearDown();
   }
+}
+
+export function safeRenderVirtualGrid() {
+  return canvas?.ready && canvas.virtualGrid ? canvas.virtualGrid.draw() : undefined;
 }
 
 // Register and manage the overlay as a custom canvas layer
 export function registerVirtualGridOverlay() {
-  // Register the custom layer in Foundry's layer system
   CONFIG.Canvas.layers.virtualGrid = {
     layerClass: VirtualGridLayer,
     group: 'primary',
   };
 
-  // On canvas ready, update visibility
-  Hooks.on('canvasReady', () => {
-    if (canvas.virtualGrid?.updateVirtualGridOverlay) {
-      canvas.virtualGrid.updateVirtualGridOverlay();
-    }
-  });
-
-  // Only redraw if visible on resize
   Hooks.on('resize', () => {
-    if (canvas.virtualGrid?.visible) canvas.virtualGrid.drawVirtualGrid();
+    safeRenderVirtualGrid();
   });
 }

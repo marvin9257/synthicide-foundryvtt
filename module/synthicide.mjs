@@ -19,7 +19,7 @@ import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
 import { registerSynthicideChatContextHook, SynthicideChatPopout } from './documents/chatlog.mjs';
-import { registerVirtualGridOverlay } from './canvas/virtual-grid-overlay.mjs';
+import { registerVirtualGridOverlay, safeRenderVirtualGrid } from './canvas/virtual-grid-overlay.mjs';
 import SynthicideVirtualRuler from './canvas/synthicide-virtual-ruler.mjs';
 import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler.mjs';
 
@@ -330,7 +330,7 @@ function registerSettings() {
     config: true,
     type: Boolean,
     default: false,
-    onChange: () => { if (canvas.ready) canvas.draw(); }
+    onChange: () => { if (canvas.ready) safeRenderVirtualGrid(); }
   });
 
   game.settings.register('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY, {
@@ -353,7 +353,7 @@ function registerSettings() {
       initial: '#ff8800'
     }),
     default: '#ff8800',
-    onChange: () => { if (canvas.ready) canvas.draw(); }
+    onChange: () => { if (canvas.ready) safeRenderVirtualGrid(); }
   });
 
 }

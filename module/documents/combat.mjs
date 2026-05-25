@@ -1,5 +1,6 @@
 import { createActionMessage } from "../rolls/action-rolls.mjs";
 import { prepareChallengeCardData } from "../rolls/challenge-card-data.mjs";
+import { safeRenderVirtualGrid } from "../canvas/virtual-grid-overlay.mjs";
 
 export default class SynthicideCombat extends foundry.documents.Combat {
   /** @override */
@@ -14,23 +15,20 @@ export default class SynthicideCombat extends foundry.documents.Combat {
     return result;
   }
 
+
   /** @override */
   async _onUpdate(data, options, userId) {
     await super._onUpdate(data, options, userId);
     // Only update overlay if combat is starting (first turn of first round)
     if (data.turn === 0 && data.round === 1) {
-      if (canvas.virtualGrid?.updateVirtualGridOverlay) {
-        canvas.virtualGrid.updateVirtualGridOverlay();
-      }
+      safeRenderVirtualGrid();
     }
   }
 
   /** @override */
   async _onDelete(options, userId) {
     await super._onDelete(options, userId);
-    if (canvas.virtualGrid?.updateVirtualGridOverlay) {
-      canvas.virtualGrid.updateVirtualGridOverlay();
-    }
+    safeRenderVirtualGrid();
   }
 
   /** @override */  
