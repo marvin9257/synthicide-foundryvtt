@@ -1,3 +1,10 @@
+## [1.0.41](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.40...1.0.41) (2026-05-25)
+
+
+### Bug Fixes
+
+* improvements to virtual grid layer ([e74a4a8](https://github.com/marvin9257/synthicide-foundryvtt/commit/e74a4a86a29b062aadcc2c022c1e48f4de2ac443))
+
 ## [1.0.40](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.39...1.0.40) (2026-05-24)
 
 
