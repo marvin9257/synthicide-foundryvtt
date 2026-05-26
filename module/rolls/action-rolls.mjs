@@ -835,28 +835,36 @@ function activateActionRollChatListeners(message, htmlElement) {
   if (!messageRollData || (messageRollData.subtype !== SUBTYPES.ATTACK
     && messageRollData.subtype !== SUBTYPES.CHALLENGE
     && messageRollData.subtype !== SUBTYPES.DEMOLITION)) return;
-  const root = htmlElement;
+
   const followupAllowed = canExecuteFollowup(message);
+  if (htmlElement.dataset.synthicideActionBound === 'true') return;
+  htmlElement.dataset.synthicideActionBound = 'true';
 
-  for (const button of root.querySelectorAll('[data-action="rollDamage"]')) {
-    if (!followupAllowed) button.disabled = true;
-  }
+  htmlElement.addEventListener('click', (event) => {
+    const button = event.target?.closest?.('[data-action]');
+    if (!button) return;
 
-  if (root.dataset.synthicideActionBound === 'true') return;
-  root.dataset.synthicideActionBound = 'true';
-  root.addEventListener('click', (event) => onActionRollCardClick(event, message));
+    const action = button.dataset.action;
+    if (action !== 'rollDamage' && action !== 'rollOpposed') return;
+
+    if (action === 'rollDamage' && !followupAllowed) {
+      event.preventDefault();
+      ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NotPermitted'));
+      return;
+    }
+
+    onActionRollCardClick(event, message);
+  });
 }
 
 async function onActionRollCardClick(event, message) {
   const button = event.target?.closest?.('[data-action]');
-  if (!button) return;
+  if (!button || button.disabled) return;
 
   const action = button.dataset.action;
   if (action !== 'rollDamage' && action !== 'rollOpposed') return;
 
   event.preventDefault();
-  if (button.disabled) return;
-
   if (action === 'rollDamage' && !canExecuteFollowup(message)) {
     ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NotPermitted'));
     return;
