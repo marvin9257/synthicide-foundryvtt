@@ -1,3 +1,10 @@
+## [1.0.42](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.41...1.0.42) (2026-05-26)
+
+
+### Bug Fixes
+
+* try to get things working again ([c40c7ba](https://github.com/marvin9257/synthicide-foundryvtt/commit/c40c7ba865c60ff4c9bd12bde8151e87bf17422b))
+
 ## [1.0.41](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.40...1.0.41) (2026-05-25)
 
 
