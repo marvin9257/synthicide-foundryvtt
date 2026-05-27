@@ -48,6 +48,11 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
     slugShotActive,
     actorUuid: actor?.uuid ?? null,
     specialAmmoUsed,
+    isPlantedDemolitionAttack: Boolean(input.isPlantedDemolitionAttack),
+    // Propagate a planted marker for UI/derived-damage flows. Some handlers
+    // detect planted devices from `hideAttributeRow`, so mirror that flag on
+    // attack cards generated from planted demolition.
+    hideAttributeRow: Boolean(input.isPlantedDemolitionAttack),
   };
 
   // Native ChatMessage fields

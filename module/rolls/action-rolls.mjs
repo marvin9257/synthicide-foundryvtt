@@ -69,9 +69,17 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
   const actorCombatValue = Number(getActorAttributeValue(actor, 'combat') ?? 0);
-  const combatValue = sourceSubtype === SUBTYPES.ATTACK
-    ? Number(messageRollData.attributeValue ?? actorCombatValue)
-    : actorCombatValue;
+  const isPlantedDemolitionAttack = Boolean(messageRollData.isPlantedDemolitionAttack);
+  // A demolition-originated message may indicate 'planted' via `mode`,
+  // or by setting `hideAttributeRow` on the demolition card. Blast-target
+  // attack messages are marked with `isPlantedDemolitionAttack`. Check
+  // all of these to robustly detect planted devices regardless of card type.
+  const messageIsPlanted = Boolean(messageRollData.hideAttributeRow)
+    || String(messageRollData.mode ?? '') === 'planted'
+    || isPlantedDemolitionAttack;
+  const damageAttributeValue = sourceSubtype === SUBTYPES.ATTACK
+    ? Number(messageRollData.attributeValue ?? (isPlantedDemolitionAttack ? 0 : actorCombatValue))
+    : Number(messageRollData.damageAttributeValue ?? (messageIsPlanted ? 0 : actorCombatValue));
   const messageMode = normalizeMessageMode(userMessageMode ?? messageRollData.messageMode ?? 'public');
   const extraDamageDice = Number(messageRollData.extraDamageDice ?? 0);
   let extraDamageRoll = null;
@@ -82,7 +90,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   }
 
   const damageTotal = Number(messageRollData.d10 ?? 0)
-    + combatValue
+    + damageAttributeValue
     + Number(messageRollData.damageBonus ?? 0)
     + extraDamageTotal;
 
@@ -98,6 +106,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
     specializationLethalBonus: Number(messageRollData.specializationLethalBonus ?? 0),
     specializationShockRdBonus: Number(messageRollData.specializationShockRdBonus ?? 0),
     slugShotActive: Boolean(messageRollData.slugShotActive),
+    hideAttributeRow: messageIsPlanted,
     total: damageTotal,
     source: sourceMessage.speaker?.alias ?? sourceMessage.id,
     sourceMessageId: sourceMessage.id,
@@ -110,11 +119,11 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   } });
 
   // attach rollData snapshot to context for completeness
-  ctx.rollData = { attribute: combatValue, d10: messageRollData.d10, damageBonus: messageRollData.damageBonus };
+  ctx.rollData = { attribute: damageAttributeValue, d10: messageRollData.d10, damageBonus: messageRollData.damageBonus };
 
   // Propagate special ammo choice into card input
   ctx.input.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
-  const cardData = prepareDamageCardData({ input: ctx.input, actor, item: null, rollResult: extraDamageDice > 0 ? extraDamageRoll : null, attributeValue: combatValue });
+  const cardData = prepareDamageCardData({ input: ctx.input, actor, item: null, rollResult: extraDamageDice > 0 ? extraDamageRoll : null, attributeValue: damageAttributeValue });
 
   return createActionMessage({ actor, roll: extraDamageDice > 0 ? extraDamageRoll : null, messageMode, cardData, template: CARD_TEMPLATE });
 }

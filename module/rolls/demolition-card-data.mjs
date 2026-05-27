@@ -34,6 +34,11 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     input,
   });
   const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem });
+  const isPlanted = mode === 'planted';
+  const damageAttributeValue = isPlanted
+    ? 0
+    : Number(attributeValue ?? 0);
+
   // Strict system data for DataModel validation
   const system = {
     d10,
@@ -43,6 +48,10 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     actorUuid: actor?.uuid ?? null,
     sourceItemUuid,
     sourceMessageId,
+    placedTemplateUuid: input.placedTemplateUuid ?? '',
+    damageAttributeValue,
+    hideAttributeRow: isPlanted,
+    mode,
   };
 
   const cardExtras = buildBaseActionCardData({

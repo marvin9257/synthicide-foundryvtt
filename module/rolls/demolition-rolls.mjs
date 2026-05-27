@@ -163,7 +163,7 @@ async function resolveBlastTargetAttacks({ ctx, specializationContext, blastTarg
       sourceItem: null,
       input: { attackBonus: baseAttackBonus + inputAttackBonus, misc },
       subtype: 'attack',
-      attributeKey: rollData.attribute,
+      attributeKey: ctx.attributeKey,
     });
     freshCtx.normalizeInput().applyInputAdjustments();
 
@@ -183,7 +183,7 @@ async function resolveBlastTargetAttacks({ ctx, specializationContext, blastTarg
       input: { attackBonus: baseAttackBonus + inputAttackBonus, misc },
       sourceItem,
       subtype: 'attack',
-      attributeKey: rollData.attribute,
+      attributeKey: ctx.attributeKey,
     });
     freshCtx.applyInputAdjustments();
 
@@ -211,6 +211,7 @@ async function resolveBlastTargetAttacks({ ctx, specializationContext, blastTarg
       input: {
         ...input,
         armor: targetAD,
+        isPlantedDemolitionAttack: isPlantedDemolition(sourceItem),
         specializationKey: String(specializationContext.key ?? ''),
         specializationLevel: Number(specializationContext.level ?? 0),
         specializationAttackBonus: 0,

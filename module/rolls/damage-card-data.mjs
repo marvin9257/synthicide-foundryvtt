@@ -45,6 +45,10 @@ export function prepareDamageCardData({
     shockRdBonus,
     extraDamageDice,
     actorUuid,
+    // Preserve attributeValue and hideAttributeRow so downstream message
+    // rendering and follow-up damage logic can make the correct planted/weapon-only decision.
+    attributeValue: Number(attributeValue ?? 0),
+    hideAttributeRow: Boolean(input.hideAttributeRow),
     sourceItemUuid,
     sourceMessageId,
     specialAmmoUsed,
