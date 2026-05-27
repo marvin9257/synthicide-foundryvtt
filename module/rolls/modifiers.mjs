@@ -102,8 +102,13 @@ export function resolveAndApplySpecialization({ actor, sourceItem, subtype, attr
   if (rollData) {
     const bonus = parseNumeric(getDemolitionSpecializationBonus({ specializationContext, subtype, attributeKey }), 0);
     if (bonus !== 0) {
-      rollData.modifiers = parseNumeric(rollData.modifiers, 0) + bonus;
-      rollData.actorModifierTotal = parseNumeric(rollData.actorModifierTotal, 0) + bonus;
+      // Ensure modifierDetails exists and record the specialization as a modifier
+      rollData.modifierDetails = Array.isArray(rollData.modifierDetails) ? rollData.modifierDetails : [];
+      rollData.modifierDetails.push({ key: 'specialization', label: 'specialization', value: Number(bonus) });
+      // Recompute actorModifierTotal from details for consistency
+      rollData.actorModifierTotal = (rollData.modifierDetails || []).reduce((s, m) => s + parseNumeric(m.value, 0), 0);
+      // Keep rollData.modifiers as the numeric total used in formulas (actor total + range)
+      rollData.modifiers = Number(rollData.actorModifierTotal ?? 0) + Number(rollData.rangeModifier ?? 0);
     }
   }
   return specializationContext;

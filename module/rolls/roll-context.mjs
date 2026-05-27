@@ -1,6 +1,6 @@
 // Lightweight RollContext class for action/attack flows
 // Encapsulates roll inputs, computed rollData, range context, and outcome
-import { resolveAndApplySpecialization, getActorAttributeValue, hasWeaponModification, applyAttackModeAdjustments, applyAmmoAttackAdjustments, parseNumeric, ATTRIBUTE_COMBAT } from './modifiers.mjs';
+import { resolveAndApplySpecialization, getActorAttributeValue, getActorRollModifiers, hasWeaponModification, applyAttackModeAdjustments, applyAmmoAttackAdjustments, parseNumeric, ATTRIBUTE_COMBAT } from './modifiers.mjs';
 import { resolveAmmoAttackEffects } from './ammo-effects.mjs';
 
 
@@ -35,7 +35,8 @@ export class RollContext {
       attackBonus: 0,
       damageBonus: 0,
       misc: 0,
-      modifiers: [],
+      modifiers: 0,
+      modifierDetails: [],
       actorModifierTotal: 0,
       rangeModifier: 0,
     };
@@ -59,33 +60,44 @@ export class RollContext {
     return (rd.attribute || 0) + (rd.attackBonus || 0) + (rd.misc || 0) + (rd.actorModifierTotal || 0) + (rd.rangeModifier || 0);
   }
 
-  // Add a modifier object {label, value}
+  // Add a modifier object {key, label, value}
   addModifier(mod) {
-    if (!mod) return;
-    this.rollData.modifiers = this.rollData.modifiers || [];
-    this.rollData.modifiers.push(mod);
+    if (!mod || typeof mod !== 'object') return;
+    this.rollData.modifierDetails = this.rollData.modifierDetails || [];
+    this.rollData.modifierDetails.push({
+      key: String(mod?.key ?? ''),
+      label: mod?.label ?? String(mod?.key ?? ''),
+      value: Number(mod?.value ?? 0),
+    });
     this._recomputeModifierTotals();
   }
 
-  // Replace modifiers wholesale
+  // Replace modifier details wholesale and recompute totals.
   setModifiers(mods = []) {
-    this.rollData.modifiers = Array.isArray(mods) ? mods.slice() : [];
+    this.rollData.modifierDetails = Array.isArray(mods)
+      ? mods.map((mod) => ({
+        key: String(mod?.key ?? ''),
+        label: mod?.label ?? String(mod?.key ?? ''),
+        value: Number(mod?.value ?? 0),
+      }))
+      : [];
     this._recomputeModifierTotals();
   }
 
   _recomputeModifierTotals() {
-    const mods = this.rollData.modifiers || [];
+    const mods = this.rollData.modifierDetails || [];
     let total = 0;
     for (const m of mods) {
       const v = Number(m?.value ?? 0);
       if (!Number.isNaN(v)) total += v;
     }
     this.rollData.actorModifierTotal = total;
+    this.rollData.modifiers = total + Number(this.rollData.rangeModifier ?? 0);
   }
 
   applyModifiers(mods) {
     if (!mods) return this;
-    if (Array.isArray(mods)) this.setModifiers((this.rollData.modifiers || []).concat(mods));
+    if (Array.isArray(mods)) this.setModifiers((this.rollData.modifierDetails || []).concat(mods));
     else if (typeof mods === 'object') this.addModifier(mods);
     return this;
   }
@@ -255,8 +267,16 @@ export function buildRollContext(opts) {
  */
 function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = null, subtype, attributeKey = ATTRIBUTE_COMBAT, attackRangeContext = null }) {
   const modeAdjusted = applyAttackModeAdjustments({ input, sourceItem });
-  const ammoAttack = resolveAmmoAttackEffects({ ammoKey: sourceItem?.system?.specialAmmo });
+  const ammoKey = String(input?.specialAmmoUsed ?? sourceItem?.system?.specialAmmo ?? 'none');
+  const ammoAttack = resolveAmmoAttackEffects({ ammoKey });
   const ammoAdjusted = applyAmmoAttackAdjustments({ input: modeAdjusted, ammoAttack });
+
+  const actorAttribute = Number(getActorAttributeValue(actor, attributeKey));
+  rollData.attribute = actorAttribute;
+
+  const actorModifiers = getActorRollModifiers(actor);
+  rollData.modifierDetails = Array.isArray(actorModifiers) ? actorModifiers.slice() : [];
+  rollData.actorModifierTotal = rollData.modifierDetails.reduce((sum, mod) => sum + parseNumeric(mod.value, 0), 0);
 
   const finalInput = {
     ...input,
@@ -271,7 +291,7 @@ function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = nu
   const rangeModifier = parseNumeric(finalInput.rangeModifier, computedRangeModifier);
   rollData.attackBonus = parseNumeric(finalInput.attackBonus, rollData.attackBonus ?? 0);
   rollData.rangeModifier = rangeModifier;
-  rollData.modifiers = Number(rollData.modifiers ?? 0) + Number(rangeModifier);
+  rollData.modifiers = Number(rollData.actorModifierTotal ?? 0) + Number(rangeModifier);
 
   let specializationContext = null;
   if (subtype === 'demolition') {

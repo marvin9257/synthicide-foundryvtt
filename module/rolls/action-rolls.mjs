@@ -211,18 +211,26 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   return handleOtherRoll({ actor, input, sourceItem, subtype });
 }
 
-async function executeChallengeActionRoll({ actor, input, rollData }) {
-  // Use RollContext for challenge flow
-  const ctx = buildRollContext({ actor, actorToken: getControlledActor()?.token ?? null, sourceItem: null, subtype: 'challenge', attributeKey: input?.attribute ?? 'combat', input });
-  ctx.rollData = rollData;
+async function executeChallengeActionRoll({ ctx, actor, input, rollData } = {}) {
+  // Accept either a pre-built RollContext (`ctx`) or legacy actor/input/rollData
+  if (!ctx) {
+    // Build a RollContext from legacy params
+    const _actor = actor ?? null;
+    const _input = input ?? {};
+    const _attributeKey = _input?.attribute ?? 'combat';
+    ctx = buildRollContext({ actor: _actor, actorToken: getControlledActor()?.token ?? null, sourceItem: null, subtype: 'challenge', attributeKey: _attributeKey, input: _input });
+    if (rollData) ctx.rollData = rollData;
+    else ctx.applyInputAdjustments();
+  }
+  const actorObj = ctx.actor ?? actor ?? null;
   const messageMode = normalizeMessageMode(ctx.input.messageMode);
   const difficulty = Number(ctx.input.difficulty ?? 6);
   const evaluatedRoll = await new Roll('1d10 + @attribute + @misc + @modifiers', ctx.rollData).evaluate();
 
   // Propagate special ammo choice into card input
   ctx.input.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
-  const cardData = prepareChallengeCardData({ input: ctx.input, actor, rollResult: evaluatedRoll, attributeValue: ctx.rollData.attribute, difficulty });
-  return createActionMessage({ actor, roll: evaluatedRoll, messageMode, cardData, template: CARD_TEMPLATE });
+  const cardData = prepareChallengeCardData({ input: ctx.input, actor: actorObj, rollResult: evaluatedRoll, attributeValue: ctx.rollData.attribute, difficulty });
+  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, cardData, template: CARD_TEMPLATE });
 }
 
 async function handleOtherRoll({ _actor, _input, _sourceItem, subtype }) {

@@ -221,7 +221,7 @@ async function resolveBlastTargetAttacks({ ctx, specializationContext, blastTarg
         baseDamageBonus: Number(baseDamageBonus ?? 0),
         attackBonus: Number(attackRollData.attackBonus ?? 0),
         baseAttackBonus: Number(baseAttackBonus ?? 0),
-        actorModifierTotal: Number(attackRollData.modifiers ?? 0),
+        actorModifierTotal: Number(attackRollData.actorModifierTotal ?? 0),
         rangeModifier: Number(rollData.rangeModifier ?? 0),
         rangeDistance: null,
         rangeIncrement: null,
