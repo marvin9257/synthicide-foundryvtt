@@ -42,6 +42,22 @@ export function formatSignedNumber(value) {
   return `${numeric}`;
 }
 
+export function formatModifierKey(key) {
+  return String(key ?? '')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[_-]+/g, ' ')
+    .replace(/^./, (char) => char.toUpperCase());
+}
+
+export function formatRollModifiers(modifiers = []) {
+  if (!Array.isArray(modifiers)) return [];
+  return modifiers.map((modifier) => ({
+    ...modifier,
+    label: formatSignedNumber(formatModifierKey(modifier.key)),
+    valueDisplay: formatSignedNumber(modifier.value),
+  }));
+}
+
 export function normalizeAttributeKey(attributeKey) {
   return attributeKey && SYNTHICIDE.attributes?.[attributeKey] ? attributeKey : ATTRIBUTE_COMBAT;
 }
