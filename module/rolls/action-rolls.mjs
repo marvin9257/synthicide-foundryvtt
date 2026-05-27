@@ -201,9 +201,9 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   const attributeRequested = input?.attribute ?? (isDemolition ? getDemolitionRollAttributeKey(sourceItem) : 'combat');
   const attributeKey = getActionAttributeKey(resolvedSubtype, attributeRequested);
 
-  // Build a RollContext centrally and apply modifiers once for all flows
+  // Build a RollContext centrally and apply modifiers + specializations once for all flows
   const ctx = buildRollContext({ actor, actorToken: null, sourceItem, subtype: resolvedSubtype, attributeKey, input });
-  ctx.applyInputAdjustments();
+  ctx.applyRollAdjustments();
 
   if (isDemolition) {
     return executeDemolitionActionRoll({ ctx, template: CARD_TEMPLATE });
@@ -220,18 +220,9 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   return handleOtherRoll({ actor, input, sourceItem, subtype });
 }
 
-async function executeChallengeActionRoll({ ctx, actor, input, rollData } = {}) {
-  // Accept either a pre-built RollContext (`ctx`) or legacy actor/input/rollData
-  if (!ctx) {
-    // Build a RollContext from legacy params
-    const _actor = actor ?? null;
-    const _input = input ?? {};
-    const _attributeKey = _input?.attribute ?? 'combat';
-    ctx = buildRollContext({ actor: _actor, actorToken: getControlledActor()?.token ?? null, sourceItem: null, subtype: 'challenge', attributeKey: _attributeKey, input: _input });
-    if (rollData) ctx.rollData = rollData;
-    else ctx.applyInputAdjustments();
-  }
-  const actorObj = ctx.actor ?? actor ?? null;
+async function executeChallengeActionRoll({ ctx } = {}) {
+  if (!ctx) return null;
+  const actorObj = ctx.actor ?? null;
   const messageMode = normalizeMessageMode(ctx.input.messageMode);
   const difficulty = Number(ctx.input.difficulty ?? 6);
   const evaluatedRoll = await new Roll('1d10 + @attribute + @misc + @modifiers', ctx.rollData).evaluate();

@@ -172,12 +172,21 @@ export class RollContext {
   }
 
   /**
+   * Apply all roll preparation steps, including input adjustments and,
+   * optionally, specialization resolution.
+   */
+  applyRollAdjustments({ includeSpecialization = true } = {}) {
+    this.applyInputAdjustments();
+    if (includeSpecialization) this.resolveSpecialization();
+    return this;
+  }
+
+  /**
    * Resolve and apply specialization context (weapon or demolition) to `rollData`.
    *
-   * This is the canonical method to apply specialization bonuses. Callers
-   * should prefer `ctx.resolveSpecialization()` so specialization is applied
-   * exactly once; avoid calling the low-level helper `resolveAndApplySpecialization`
-   * directly from flows.
+   * This is the lower-level specialization hook. External roll flows should
+   * prefer `ctx.applyRollAdjustments()` when they want both input adjustments
+   * and specialization in one canonical step.
    *
    * Returns the resolved specialization context.
    */
@@ -298,9 +307,8 @@ function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = nu
   rollData.rangeModifier = rangeModifier;
   rollData.modifiers = Number(rollData.actorModifierTotal ?? 0) + Number(rangeModifier);
 
-  // Specialization must be applied explicitly by calling `ctx.resolveSpecialization()`.
-  // `applyInputAdjustments()` does not apply specialization; flows (attack,
-  // demolition) should call `ctx.resolveSpecialization()` when they need
-  // specialization bonuses injected into `rollData`.
+  // Specialization may be applied by the higher-level helper
+  // `RollContext.applyRollAdjustments()`, so low-level callers can opt
+  // in to specialization resolution or skip it intentionally.
   return { input: finalInput, rollData, specializationContext: null };
 }

@@ -13,7 +13,7 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
   const messageMode = normalizeMessageMode(ctx.input.messageMode);
 
   const attackRangeContext = buildAttackRangeContext({ actor, sourceItem });
-  const specializationContext = ctx.resolveSpecialization() || {};
+  const specializationContext = ctx.specialization || {};
 
   if (attackRangeContext?.isImpossible) {
     ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.MeleeOutOfRange'));
@@ -132,27 +132,6 @@ export function resolveWeaponAttackContext({ actor, sourceItem, targetToken }) {
   return {
     attackBonus: baseAttackBonus + arcAttackBonus + Number(specialization.attack ?? 0),
     damageBonus: baseDamageBonus + baneDamageBonus + Number(specialization.damage ?? 0),
-  };
-}
-
-export function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
-  if (subtype !== 'attack' || !sourceItem?.system) {
-    return {
-      attackBonus: 0,
-      damageBonus: 0,
-      slugShotModeAvailable: false,
-      rangeModifier: 0,
-    };
-  }
-
-  const rangeContext = buildAttackRangeContext({ actor, sourceItem, notify: false });
-  const targetToken = getSingleTargetToken({ notify: false });
-  const attackContext = resolveWeaponAttackContext({ actor, sourceItem, targetToken });
-  return {
-    attackBonus: attackContext.attackBonus,
-    damageBonus: attackContext.damageBonus,
-    slugShotModeAvailable: hasWeaponModification(sourceItem, 'slugShot'),
-    rangeModifier: Number(rangeContext?.rangeModifier ?? 0),
   };
 }
 

@@ -92,8 +92,9 @@ export function applyAmmoAttackAdjustments({ input, ammoAttack }) {
  * bonuses into `rollData` when provided.
  *
  * @internal This is a low-level helper. Do not call this directly from
- * external flows — prefer calling `ctx.resolveSpecialization()` on a
- * `RollContext` instance so specialization is applied exactly once.
+ * external flows — prefer calling `ctx.applyRollAdjustments()` on a
+ * `RollContext` instance so specialization and input adjustments are applied
+ * in one canonical step.
  */
 export function resolveAndApplySpecialization({ actor, sourceItem, subtype, attributeKey = ATTRIBUTE_COMBAT, rollData = null }) {
   const specializationContext = resolveWeaponSpecializationContext({

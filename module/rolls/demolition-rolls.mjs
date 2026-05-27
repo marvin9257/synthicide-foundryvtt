@@ -37,8 +37,7 @@ async function executeThrownDemolitionActionRoll({ ctx, template }) {
   if (!placement) return null;
   const { messageMode, placedRegion, placedPoint, blastDiameter } = placement;
 
-  // Ensure specialization is resolved on ctx
-  const specializationContext = ctx.resolveSpecialization() || {};
+  const specializationContext = ctx.specialization || {};
 
   // Evaluate the challenge roll using ctx.rollData (modifiers applied by caller)
   const rangeDistance = calculateVirtualZoneDistanceBetweenPoints(actorToken.center, placedPoint);
@@ -102,7 +101,7 @@ async function executePlantedDemolitionActionRoll({ ctx, plantNumber, template }
   if (!placement) return null;
   const { messageMode, placedRegion, blastDiameter } = placement;
 
-  const specializationContext = ctx.resolveSpecialization() || {};
+  const specializationContext = ctx.specialization || {};
 
   const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, ctx.rollData).evaluate();
   const success = Number(evaluatedRoll.total ?? 0) >= plantNumber;
