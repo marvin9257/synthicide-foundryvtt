@@ -88,9 +88,12 @@ export function applyAmmoAttackAdjustments({ input, ammoAttack }) {
 }
 
 /**
- * Resolve weapon specialization context and apply any demolition-specific
- * bonuses directly into `rollData` when provided.
- * @internal Prefer specialization resolution via `RollContext.resolveSpecialization()`.
+ * Resolve weapon specialization context and (optionally) apply demolition-specific
+ * bonuses into `rollData` when provided.
+ *
+ * @internal This is a low-level helper. Do not call this directly from
+ * external flows — prefer calling `ctx.resolveSpecialization()` on a
+ * `RollContext` instance so specialization is applied exactly once.
  */
 export function resolveAndApplySpecialization({ actor, sourceItem, subtype, attributeKey = ATTRIBUTE_COMBAT, rollData = null }) {
   const specializationContext = resolveWeaponSpecializationContext({

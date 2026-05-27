@@ -7,6 +7,8 @@ This note documents the recent refactor that centralizes per-roll modifier logic
 
 Key points
 - `RollContext` owns modifier application. Callers should build a context via `buildRollContext(opts)` and call `ctx.applyInputAdjustments()` once to normalize inputs and apply mode/ammo adjustments.
+ - `RollContext` owns modifier application. Callers should build a context via `buildRollContext(opts)` and call `ctx.applyInputAdjustments()` once to normalize inputs and apply mode/ammo adjustments.
+ - Specialization: do not rely on `applyInputAdjustments()` to apply specialization bonuses. Specialization is applied only when the caller invokes `ctx.resolveSpecialization()`; this avoids accidental double-application and keeps the order of adjustments explicit.
 - Low-level helpers (modes, ammo, specialization lookup) remain in `module/rolls/modifiers.mjs` as internal helpers. `computeRollModifiers()` is intentionally preserved for dialog UI defaults only.
 - Chat payloads: contexts are serializable via `ctx.toJSON()` and use `foundry.utils.deepClone` when embedded in `ChatMessage.system`.
 

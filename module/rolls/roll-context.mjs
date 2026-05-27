@@ -162,7 +162,6 @@ export class RollContext {
       rollData: this.rollData,
       input: this.input,
       sourceItem: this.sourceItem,
-      subtype: this.subtype,
       attributeKey: this.attributeKey,
       attackRangeContext: this.attackRangeContext,
     });
@@ -173,7 +172,13 @@ export class RollContext {
   }
 
   /**
-   * Resolve and apply specialization context (weapon or demolition) to rollData.
+   * Resolve and apply specialization context (weapon or demolition) to `rollData`.
+   *
+   * This is the canonical method to apply specialization bonuses. Callers
+   * should prefer `ctx.resolveSpecialization()` so specialization is applied
+   * exactly once; avoid calling the low-level helper `resolveAndApplySpecialization`
+   * directly from flows.
+   *
    * Returns the resolved specialization context.
    */
   resolveSpecialization() {
@@ -265,7 +270,7 @@ export function buildRollContext(opts) {
  * self-contained; helper functions (modes, ammo resolution, specialization)
  * remain in `modifiers.mjs` as necessary.
  */
-function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = null, subtype, attributeKey = ATTRIBUTE_COMBAT, attackRangeContext = null }) {
+function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = null, attributeKey = ATTRIBUTE_COMBAT, attackRangeContext = null }) {
   const modeAdjusted = applyAttackModeAdjustments({ input, sourceItem });
   const ammoKey = String(input?.specialAmmoUsed ?? sourceItem?.system?.specialAmmo ?? 'none');
   const ammoAttack = resolveAmmoAttackEffects({ ammoKey });
@@ -293,16 +298,9 @@ function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = nu
   rollData.rangeModifier = rangeModifier;
   rollData.modifiers = Number(rollData.actorModifierTotal ?? 0) + Number(rangeModifier);
 
-  let specializationContext = null;
-  if (subtype === 'demolition') {
-    specializationContext = resolveAndApplySpecialization({
-      actor,
-      sourceItem,
-      subtype,
-      attributeKey,
-      rollData,
-    });
-  }
-
-  return { input: finalInput, rollData, specializationContext };
+  // Specialization must be applied explicitly by calling `ctx.resolveSpecialization()`.
+  // `applyInputAdjustments()` does not apply specialization; flows (attack,
+  // demolition) should call `ctx.resolveSpecialization()` when they need
+  // specialization bonuses injected into `rollData`.
+  return { input: finalInput, rollData, specializationContext: null };
 }

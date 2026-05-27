@@ -60,6 +60,11 @@ Explain how Weapon Proficiency traits connect to weapon rolls, what bonuses are 
 4. Specialization does not auto-apply every possible RAW rider effect; current support is primarily numeric roll integration.
 5. Weapon specialization does not replace manual resolution for non-automated weapon features, modifications, or ammo behavior.
 
+### Developer note for integrators
+
+- Specialization numeric bonuses are applied by roll flows only when the flow explicitly invokes `ctx.resolveSpecialization()` on a `RollContext` instance. `applyInputAdjustments()` (the input normalization step) does not apply specialization bonuses; do not rely on automatic application from modifier normalization.
+- Avoid calling internal helpers like `resolveAndApplySpecialization()` directly from flows — use `ctx.resolveSpecialization()` so specialization is applied exactly once and in the correct order with other adjustments.
+
 ## Troubleshooting
 
 ### Q: My specialization bonus is not showing in attack totals.
