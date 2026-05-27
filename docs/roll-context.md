@@ -3,12 +3,12 @@
 This note documents the recent refactor that centralizes per-roll modifier logic in a single `RollContext` used across action flows (attack, demolition, challenge, damage).
 
 - **Location**: `module/rolls/roll-context.mjs`
-- **Purpose**: Provide a canonical per-roll object that holds `input`, normalized `rollData`, range context, resolved specialization, and helper methods such as `applyInputAdjustments()` and `resolveSpecialization()`.
+- **Purpose**: Provide a canonical per-roll object that holds `input`, normalized `rollData`, range context, resolved specialization, and helper methods such as `applyRollAdjustments()`, `applyInputAdjustments()`, and `resolveSpecialization()`.
 
 Key points
-- `RollContext` owns modifier application. Callers should build a context via `buildRollContext(opts)` and call `ctx.applyInputAdjustments()` once to normalize inputs and apply mode/ammo adjustments.
- - `RollContext` owns modifier application. Callers should build a context via `buildRollContext(opts)` and call `ctx.applyInputAdjustments()` once to normalize inputs and apply mode/ammo adjustments.
- - Specialization: do not rely on `applyInputAdjustments()` to apply specialization bonuses. Specialization is applied only when the caller invokes `ctx.resolveSpecialization()`; this avoids accidental double-application and keeps the order of adjustments explicit.
+- `RollContext` owns modifier application. Callers should build a context via `buildRollContext(opts)` and call `ctx.applyRollAdjustments()` once to normalize inputs, apply mode/ammo adjustments, and resolve specialization.
+- `applyInputAdjustments()` remains available for lower-level flows that need only mode/ammo adjustment without specialization.
+- Specialization: `applyRollAdjustments()` applies specialization by default, so callers do not need to invoke `ctx.resolveSpecialization()` explicitly in standard attack/demolition flows.
 - Low-level helpers (modes, ammo, specialization lookup) remain in `module/rolls/modifiers.mjs` as internal helpers. `computeRollModifiers()` is intentionally preserved for dialog UI defaults only.
 - Chat payloads: contexts are serializable via `ctx.toJSON()` and use `foundry.utils.deepClone` when embedded in `ChatMessage.system`.
 

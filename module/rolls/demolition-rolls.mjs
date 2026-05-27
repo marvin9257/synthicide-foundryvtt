@@ -283,7 +283,7 @@ function getDemolitionBlastDiameter(sourceItem) {
   return 0;
 }
 
-export function getDemolitionPlantNumber(sourceItem) {
+function getDemolitionPlantNumber(sourceItem) {
   if (hasWeaponFeature(sourceItem, 'plant12')) return 12;
   if (hasWeaponFeature(sourceItem, 'plant8')) return 8;
   return null;

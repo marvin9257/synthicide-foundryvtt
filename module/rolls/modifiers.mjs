@@ -121,12 +121,12 @@ export function resolveAndApplySpecialization({ actor, sourceItem, subtype, attr
 /**
  * Central modifier application: adjusts `input` for modes/ammo and
  * mutates `rollData` with attack/damage/range modifiers.
- * @internal Callers should generally use `RollContext.applyInputAdjustments()`.
+ * @internal Callers should generally use `RollContext.applyRollAdjustments()`.
  */
 // NOTE: `applyModifiersToRollData` has been moved into `roll-context.mjs`
 // so that `RollContext` is the canonical owner of modifier application
 // behavior. Callers should prefer `buildRollContext()` and
-// `RollContext.applyInputAdjustments()` instead.
+// `RollContext.applyRollAdjustments()` instead.
 
 export function getActionAttributeKey(subtype, requestedAttribute) {
   return subtype === 'attack'
@@ -137,10 +137,10 @@ export function getActionAttributeKey(subtype, requestedAttribute) {
 /**
  * Build baseline roll data for actions (attack/challenge) using actor
  * attribute and persistent modifiers.
- * @internal For full roll adjustments use `RollContext` + `applyInputAdjustments()`.
+ * @internal For full roll adjustments use `RollContext.applyRollAdjustments()`.
  */
 // `buildActionRollData` was removed: prefer `RollContext` +
-// `applyInputAdjustments()` for constructing and normalizing roll data.
+// `applyRollAdjustments()` for constructing and normalizing roll data.
 
 export function getActorAttributeValue(actor, attributeKey) {
   return Number(actor?.system?.attributes?.[attributeKey]?.value ?? 0);

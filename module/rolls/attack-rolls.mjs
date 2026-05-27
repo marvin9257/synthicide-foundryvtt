@@ -156,7 +156,7 @@ export function getTargetDefense({ notify = true } = {}) {
   return { armor: defaultValue, shieldBonus: 0 };
 }
 
-export function getSingleTargetToken({ notify = true } = {}) {
+function getSingleTargetToken({ notify = true } = {}) {
   if (game.user.targets?.size === 1) return game.user.targets.first() ?? null;
   if (game.user.targets?.size > 1) {
     if (notify) ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.TooManyTargets'));
@@ -178,14 +178,14 @@ export function getActorToken(actor) {
   return controlled.find((token) => token?.actor?.id === actor.id) ?? null;
 }
 
-export function getArcAttackBonus({ sourceItem, targetToken }) {
+function getArcAttackBonus({ sourceItem, targetToken }) {
   if (!hasWeaponFeature(sourceItem, 'arc')) return 0;
   const targetActor = targetToken?.actor;
   if (!targetActor) return 0;
   return isSyntheticTarget(targetActor) || targetHasAnyImplants(targetActor) ? SYNTHICIDE.ARC_BONUS : 0;
 }
 
-export function getBaneDamageBonus({ sourceItem, targetActor }) {
+function getBaneDamageBonus({ sourceItem, targetActor }) {
   if (!targetActor) return 0;
   const hasOrganicBane = hasWeaponModification(sourceItem, 'baneTuneOrganics');
   const hasSyntheticBane = hasWeaponModification(sourceItem, 'baneTuneSynthetics');

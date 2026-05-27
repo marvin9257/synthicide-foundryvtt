@@ -66,7 +66,7 @@ export function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, 
   };
 }
 
-export function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
+function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
   if (subtype !== 'attack' || !sourceItem?.system) {
     return {
       attackBonus: 0,
