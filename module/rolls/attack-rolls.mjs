@@ -2,6 +2,7 @@ import SYNTHICIDE from '../helpers/config.mjs';
 import { hasWeaponFeature, resolveWeaponSpecializationContext } from './weapon-proficiency-rules.mjs';
 import { FORMULA_ATTACK, hasWeaponModification } from './modifiers.mjs';
 import { prepareAttackCardData } from './attack-card-data.mjs';
+import { prepareDamageCardData } from './damage-card-data.mjs';
 import { createActionMessage, normalizeMessageMode } from './cards.mjs';
 // RollContext constructed at the action entrypoint; flows accept `ctx`.
 import { getSpreadCollateralTokens, calculateVirtualDistanceBetweenTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
@@ -250,7 +251,7 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
     const damageBonus = baseDamageBonus + doubleShotBonus + baneDamageBonus;
     const flatDamage = attributeValue + damageBonus;
 
-    const cardData = {
+    const cardData = prepareDamageCardData({
       input: {
         d10: 0,
         damageBonus,
@@ -273,7 +274,7 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
           targets: collateralToken.name,
         }),
       },
-    };
+    });
 
     await createActionMessage({ actor, roll: null, messageMode, cardData, template });
   }

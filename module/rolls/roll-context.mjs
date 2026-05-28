@@ -296,6 +296,7 @@ function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = nu
     ...input,
     attackBonus: parseNumeric(ammoAdjusted.attackBonus, 0),
     damageBonus: parseNumeric(ammoAdjusted.damageBonus, 0),
+    misc: parseNumeric(ammoAdjusted.misc, 0),
     rangeModifier: parseNumeric(ammoAdjusted.rangeModifier, 0),
     extraDamageDice: Number(ammoAdjusted.extraDamageDice ?? 0),
     lethalOverride: ammoAdjusted.lethalOverride ?? null,
@@ -304,6 +305,8 @@ function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = nu
   const computedRangeModifier = parseNumeric(attackRangeContext?.rangeModifier, 0);
   const rangeModifier = parseNumeric(finalInput.rangeModifier, computedRangeModifier);
   rollData.attackBonus = parseNumeric(finalInput.attackBonus, rollData.attackBonus ?? 0);
+  rollData.damageBonus = parseNumeric(finalInput.damageBonus, rollData.damageBonus ?? 0);
+  rollData.misc = parseNumeric(finalInput.misc, rollData.misc ?? 0);
   rollData.rangeModifier = rangeModifier;
   rollData.modifiers = Number(rollData.actorModifierTotal ?? 0) + Number(rangeModifier);
 

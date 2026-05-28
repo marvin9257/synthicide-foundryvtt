@@ -61,6 +61,7 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
 
   // Extra card rendering fields (for handlebars, etc.)
   const cardExtras = buildBaseActionCardData({
+    subtype: 'attack',
     equation,
     total,
     dieValue: d10,
