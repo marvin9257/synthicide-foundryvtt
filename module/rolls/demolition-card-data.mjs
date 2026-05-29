@@ -7,7 +7,7 @@ import {
   getRollResultSummary,
   extractCardContext
 } from './roll-utils.mjs';
-import { buildDemolitionSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
+import { buildDemolitionSpecializationMetadataRows, normalizeSpecialization } from './weapon-proficiency-rules.mjs';
 
 export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult, attributeValue }) {
   const { d10, total, equation, dieClass } = getRollResultSummary(rollResult);
@@ -40,6 +40,7 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     : Number(attributeValue ?? 0);
 
   // Strict system data for DataModel validation
+  const specialization = normalizeSpecialization(input);
   const system = {
     d10,
     total,
@@ -52,6 +53,7 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     damageAttributeValue,
     hideAttributeRow: isPlanted,
     mode,
+    specialization,
   };
 
   const cardExtras = buildBaseActionCardData({
@@ -101,6 +103,12 @@ function buildDemolitionEffectText({ mode, success, scatterApplied }) {
 }
 
 function buildDemolitionMetadataRows({ mode, difficulty, effect, blastDiameter, rangeDistance, rangeIncrement, rangeBands, input = {} }) {
+  const baseDamageBonus = Number.isFinite(Number(input.baseDamageBonus))
+    ? Number(input.baseDamageBonus)
+    : Number(input.damageBonus ?? 0);
+  const damageBonus = Number(input.damageBonus ?? 0);
+  const showBaseDamageBonus = baseDamageBonus !== 0 && damageBonus === baseDamageBonus;
+
   const metadataRows = [
     {
       label: mode === 'planted'
@@ -122,6 +130,10 @@ function buildDemolitionMetadataRows({ mode, difficulty, effect, blastDiameter, 
     if (showRangeBands) {
       metadataRows.push({ label: localize('SYNTHICIDE.Roll.Card.RangeBands'), value: rangeBands });
     }
+  }
+
+  if (showBaseDamageBonus) {
+    metadataRows.push({ label: localize('SYNTHICIDE.Roll.Card.BaseDamageBonus'), value: baseDamageBonus });
   }
 
   metadataRows.push(...buildDemolitionSpecializationMetadataRows({ input }));

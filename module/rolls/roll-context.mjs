@@ -303,7 +303,10 @@ function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = nu
   };
 
   const computedRangeModifier = parseNumeric(attackRangeContext?.rangeModifier, 0);
-  const rangeModifier = parseNumeric(finalInput.rangeModifier, computedRangeModifier);
+  const hasExplicitRangeModifier = foundry.utils.hasProperty(input ?? {}, 'rangeModifier');
+  const rangeModifier = hasExplicitRangeModifier
+    ? parseNumeric(finalInput.rangeModifier, 0)
+    : computedRangeModifier;
   rollData.attackBonus = parseNumeric(finalInput.attackBonus, rollData.attackBonus ?? 0);
   rollData.damageBonus = parseNumeric(finalInput.damageBonus, rollData.damageBonus ?? 0);
   rollData.misc = parseNumeric(finalInput.misc, rollData.misc ?? 0);

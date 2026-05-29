@@ -2,7 +2,7 @@
 // Modular function to prepare card data for derived damage rolls
 
 import { localize, buildEquationTerms, buildBaseActionCardData, extractCardContext } from './roll-utils.mjs';
-import { buildWeaponSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
+import { buildWeaponSpecializationMetadataRows, normalizeSpecialization } from './weapon-proficiency-rules.mjs';
 /**
  * Prepare cardData and flags for a derived damage roll.
  * @param {object} params
@@ -17,11 +17,12 @@ export function prepareDamageCardData({
   actor,
   item,
   attributeValue = 0,
+  rollData = {},
   overrides = {},
 }) {
-  // Extract values from input and item
+  // Extract values from input, roll state, and item
   const d10 = input.d10 ?? 0;
-  const damageBonus = input.damageBonus ?? item?.system?.bonuses?.damage ?? 0;
+  const damageBonus = Number(rollData.damageBonus ?? input.damageBonus ?? item?.system?.bonuses?.damage ?? 0);
   const source = input.source ?? item?.name ?? '';
   const rawTotal = input.total ?? d10 + attributeValue + damageBonus;
   const total = Math.max(0, rawTotal);
@@ -34,11 +35,12 @@ export function prepareDamageCardData({
   const extraDamageDice = Number(input.extraDamageDice ?? 0);
   const baseDamageBonus = Number.isFinite(Number(input.baseDamageBonus))
     ? Number(input.baseDamageBonus)
-    : damageBonus;
+    : Number(item?.system?.bonuses?.damage ?? 0);
   const actorUuid = actor?.uuid ?? null;
   const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem: item });
 
   // Strict system data for DataModel validation
+  const specialization = normalizeSpecialization(input);
   const system = {
     total,
     lethal,
@@ -52,17 +54,18 @@ export function prepareDamageCardData({
     sourceItemUuid,
     sourceMessageId,
     specialAmmoUsed,
+    specialization
   };
 
   const cardExtras = buildBaseActionCardData({
     subtype: 'damage',
     equation: extraDamageDice > 0
-      ? `${d10} + ${attributeValue} + ${baseDamageBonus} + ${extraDamageDice}d10`
-      : `${d10} + ${attributeValue} + ${baseDamageBonus}`,
+      ? `${d10} + ${attributeValue} + ${damageBonus} + ${extraDamageDice}d10`
+      : `${d10} + ${attributeValue} + ${damageBonus}`,
     total,
     dieValue: d10,
     attributeKey: 'combat',
-    equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...input, attributeValue, damageBonus: baseDamageBonus } }),
+    equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...rollData, attributeValue, damageBonus } }),
     metadataRows: overrides.metadataRows ?? buildDamageMetadataRows({
       source,
       lethal,
@@ -70,6 +73,8 @@ export function prepareDamageCardData({
       doubleShotBonus,
       input,
       slugShotActive,
+      item,
+      baseDamageBonus,
     }),
     showEffectOutcomeRow: false,
     showDamageButton: false,
@@ -90,7 +95,9 @@ export function prepareDamageCardData({
   };
 }
 
-function buildDamageMetadataRows({ source, lethal, baneDamageBonus = 0, doubleShotBonus = 0, slugShotActive = false, input = {} }) {
+function buildDamageMetadataRows({ source, lethal, baneDamageBonus = 0, doubleShotBonus = 0, slugShotActive = false, input = {}, baseDamageBonus = 0 }) {
+  const damageBonus = Number(input.damageBonus ?? 0);
+  const showBaseDamageBonus = baseDamageBonus !== 0 && damageBonus === baseDamageBonus;
   const rows = [
     { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: source },
     { label: localize('SYNTHICIDE.Roll.Card.LethalValue'), value: lethal },
@@ -106,6 +113,10 @@ function buildDamageMetadataRows({ source, lethal, baneDamageBonus = 0, doubleSh
 
   if (baneDamageBonus !== 0) {
     rows.push({ label: localize('SYNTHICIDE.Roll.Card.BaneTuneBonus'), value: `+${baneDamageBonus} DMG` });
+  }
+
+  if (showBaseDamageBonus) {
+    rows.push({ label: localize('SYNTHICIDE.Roll.Card.BaseDamageBonus'), value: baseDamageBonus });
   }
 
   rows.push(

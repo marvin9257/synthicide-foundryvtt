@@ -3,12 +3,13 @@ import { prepareChallengeCardData } from './challenge-card-data.mjs';
 import { prepareDamageCardData } from './damage-card-data.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { renderActionRollDialog, buildDialogDefaults } from './dialogs.mjs';
-import { executeAttackActionRoll } from './attack-rolls.mjs';
+import { executeAttackActionRoll, buildAttackRangeContext } from './attack-rolls.mjs';
 import { executeDemolitionActionRoll, getDemolitionRollAttributeKey } from './demolition-rolls.mjs';
 import { createActionMessage, normalizeMessageMode } from './cards.mjs';
 export { createActionMessage };
 import { getActionAttributeKey, getActorAttributeValue } from './modifiers.mjs';
 import { buildRollContext } from './roll-context.mjs';
+import { normalizeSpecialization } from './weapon-proficiency-rules.mjs';
 
 const CARD_TEMPLATE = 'systems/synthicide/templates/chat/action-roll-card.hbs';
 const SUBTYPES = {
@@ -55,6 +56,8 @@ export function registerActionRollHooks() {
   Hooks.on('renderChatMessageHTML', activateActionRollChatListeners);
 }
 
+
+
 async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   const messageRollData = getStandardizedRollData(sourceMessage);
   const sourceSubtype = messageRollData.subtype;
@@ -94,24 +97,26 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
     + Number(messageRollData.damageBonus ?? 0)
     + extraDamageTotal;
 
+  const specializationSource = normalizeSpecialization(messageRollData);
+  const sourceItem = messageRollData.sourceItemUuid ? fromUuidSync(messageRollData.sourceItemUuid, { strict: false }) : null;
+  const baseSourceLethal = Number(sourceItem?.system?.bonuses?.lethal ?? 0);
+  const rawLethal = Number(messageRollData.lethal ?? baseSourceLethal);
+  const effectiveLethal = (sourceItem && rawLethal === baseSourceLethal)
+    ? rawLethal + Number(specializationSource.lethalBonus ?? 0)
+    : rawLethal;
   const ctx = buildRollContext({ actor, actorToken: getControlledActor()?.token ?? null, sourceItem: null, subtype: 'damage', attributeKey: 'combat', input: {
     d10: messageRollData.d10,
     damageBonus: messageRollData.damageBonus,
     baneDamageBonus: Number(messageRollData.baneDamageBonus ?? 0),
     shockRdBonus: Number(messageRollData.shockRdBonus ?? 0),
-    specializationKey: String(messageRollData.specializationKey ?? ''),
-    specializationLevel: Number(messageRollData.specializationLevel ?? 0),
-    specializationAttackBonus: Number(messageRollData.specializationAttackBonus ?? 0),
-    specializationDamageBonus: Number(messageRollData.specializationDamageBonus ?? 0),
-    specializationLethalBonus: Number(messageRollData.specializationLethalBonus ?? 0),
-    specializationShockRdBonus: Number(messageRollData.specializationShockRdBonus ?? 0),
+    specialization: specializationSource,
     slugShotActive: Boolean(messageRollData.slugShotActive),
     hideAttributeRow: messageIsPlanted,
     total: damageTotal,
     source: sourceMessage.speaker?.alias ?? sourceMessage.id,
     sourceMessageId: sourceMessage.id,
     sourceItemUuid: messageRollData.sourceItemUuid ?? null,
-    lethal: messageRollData.lethal ?? 0,
+    lethal: effectiveLethal,
     extraDamageDice,
     specialAmmoUsed: messageRollData.specialAmmoUsed ?? 'none',
     messageMode,
@@ -123,7 +128,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
 
   // Propagate special ammo choice into card input
   ctx.input.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
-  const cardData = prepareDamageCardData({ input: ctx.input, actor, item: null, rollResult: extraDamageDice > 0 ? extraDamageRoll : null, attributeValue: damageAttributeValue });
+  const cardData = prepareDamageCardData({ input: ctx.input, actor, item: null, rollResult: extraDamageDice > 0 ? extraDamageRoll : null, attributeValue: damageAttributeValue, rollData: ctx.rollData, baseDamageBonus: Number(ctx.input.baseDamageBonus ?? 0) });
 
   return createActionMessage({ actor, roll: extraDamageDice > 0 ? extraDamageRoll : null, messageMode, cardData, template: CARD_TEMPLATE });
 }
@@ -203,6 +208,9 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
 
   // Build a RollContext centrally and apply modifiers + specializations once for all flows
   const ctx = buildRollContext({ actor, actorToken: null, sourceItem, subtype: resolvedSubtype, attributeKey, input });
+  if (isAttack) {
+    ctx.attackRangeContext = buildAttackRangeContext({ actor, sourceItem, notify: false });
+  }
   ctx.applyRollAdjustments();
 
   if (isDemolition) {

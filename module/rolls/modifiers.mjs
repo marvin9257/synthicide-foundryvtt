@@ -104,15 +104,21 @@ export function resolveAndApplySpecialization({ actor, sourceItem, subtype, attr
     attributeKey,
   });
   if (rollData) {
-    const bonus = parseNumeric(getDemolitionSpecializationBonus({ specializationContext, subtype, attributeKey }), 0);
-    if (bonus !== 0) {
-      // Ensure modifierDetails exists and record the specialization as a modifier
-      rollData.modifierDetails = Array.isArray(rollData.modifierDetails) ? rollData.modifierDetails : [];
-      rollData.modifierDetails.push({ key: 'specialization', label: 'specialization', value: Number(bonus) });
-      // Recompute actorModifierTotal from details for consistency
-      rollData.actorModifierTotal = (rollData.modifierDetails || []).reduce((s, m) => s + parseNumeric(m.value, 0), 0);
-      // Keep rollData.modifiers as the numeric total used in formulas (actor total + range)
-      rollData.modifiers = Number(rollData.actorModifierTotal ?? 0) + Number(rollData.rangeModifier ?? 0);
+    if (subtype === 'demolition') {
+      const bonus = parseNumeric(getDemolitionSpecializationBonus({ specializationContext, subtype, attributeKey }), 0);
+      if (bonus !== 0) {
+        // Ensure modifierDetails exists and record the specialization as a modifier
+        rollData.modifierDetails = Array.isArray(rollData.modifierDetails) ? rollData.modifierDetails : [];
+        rollData.modifierDetails.push({ key: 'specialization', label: 'specialization', value: Number(bonus) });
+        // Recompute actorModifierTotal from details for consistency
+        rollData.actorModifierTotal = (rollData.modifierDetails || []).reduce((s, m) => s + parseNumeric(m.value, 0), 0);
+        // Keep rollData.modifiers as the numeric total used in formulas (actor total + range)
+        rollData.modifiers = Number(rollData.actorModifierTotal ?? 0) + Number(rollData.rangeModifier ?? 0);
+      }
+    }
+    if (subtype === 'attack') {
+      rollData.attackBonus = parseNumeric(rollData.attackBonus, 0) + parseNumeric(specializationContext.attackBonus, 0);
+      rollData.damageBonus = parseNumeric(rollData.damageBonus, 0) + parseNumeric(specializationContext.damageBonus, 0);
     }
   }
   return specializationContext;

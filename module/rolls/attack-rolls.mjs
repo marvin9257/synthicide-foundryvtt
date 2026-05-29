@@ -1,5 +1,5 @@
 import SYNTHICIDE from '../helpers/config.mjs';
-import { hasWeaponFeature, resolveWeaponSpecializationContext } from './weapon-proficiency-rules.mjs';
+import { hasWeaponFeature, normalizeSpecialization } from './weapon-proficiency-rules.mjs';
 import { FORMULA_ATTACK, hasWeaponModification } from './modifiers.mjs';
 import { prepareAttackCardData } from './attack-card-data.mjs';
 import { prepareDamageCardData } from './damage-card-data.mjs';
@@ -13,7 +13,8 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
   const sourceItem = ctx.sourceItem;
   const messageMode = normalizeMessageMode(ctx.input.messageMode);
 
-  const attackRangeContext = buildAttackRangeContext({ actor, sourceItem });
+  const attackRangeContext = ctx.attackRangeContext || buildAttackRangeContext({ actor, sourceItem });
+  ctx.attackRangeContext = attackRangeContext;
   const specializationContext = ctx.specialization || {};
 
   if (attackRangeContext?.isImpossible) {
@@ -31,18 +32,15 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
     rollData: ctx.rollData,
     attackRangeContext,
     baneDamageBonus: getBaneDamageBonus({ sourceItem, targetActor: getSingleTargetToken({ notify: false })?.actor }),
-    specializationKey: String(specializationContext.key ?? ''),
-    specializationLevel: Number(specializationContext.level ?? 0),
-    specializationAttackBonus: Number(specializationContext.attack ?? 0),
-    specializationDamageBonus: Number(specializationContext.damage ?? 0),
-    specializationLethalBonus: Number(specializationContext.lethal ?? 0),
-    specializationShockRdBonus: Number(specializationContext.shockRdBonus ?? 0),
+    specializationContext,
   });
 
-  // Ensure special ammo selection is propagated to card builders
+  // Ensure the attack card metadata uses the fully adjusted attack and damage values.
+  resolvedInput.attackBonus = Number(ctx.rollData.attackBonus ?? resolvedInput.attackBonus);
+  resolvedInput.damageBonus = Number(ctx.rollData.damageBonus ?? resolvedInput.damageBonus);
   resolvedInput.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
 
-  const cardData = prepareAttackCardData({ input: resolvedInput, actor, sourceItem, rollResult: evaluatedRoll, attributeValue: ctx.rollData.attribute });
+  const cardData = prepareAttackCardData({ input: resolvedInput, actor, sourceItem, rollResult: evaluatedRoll, attributeValue: ctx.rollData.attribute, rollData: ctx.rollData });
 
   const attackMessage = await createActionMessage({
     actor,
@@ -58,7 +56,7 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
       sourceItem,
       attackTotal,
       attributeValue: ctx.rollData.attribute,
-      specializationDamageBonus: Number(specializationContext.damage ?? 0),
+      specializationContext,
       messageMode,
       template,
     });
@@ -118,21 +116,15 @@ export function buildAttackRangeContext({ actor, sourceItem, notify = true }) {
   return context;
 }
 
-export function resolveWeaponAttackContext({ actor, sourceItem, targetToken }) {
+export function resolveWeaponAttackContext({ _actor, sourceItem, targetToken }) {
   const baseAttackBonus = Number(sourceItem?.system?.bonuses?.attack ?? 0);
   const baseDamageBonus = Number(sourceItem?.system?.bonuses?.damage ?? 0);
-  const specialization = resolveWeaponSpecializationContext({
-    actor,
-    sourceItem,
-    subtype: 'attack',
-    attributeKey: 'combat',
-  });
   const arcAttackBonus = getArcAttackBonus({ sourceItem, targetToken });
   const baneDamageBonus = getBaneDamageBonus({ sourceItem, targetActor: targetToken?.actor });
 
   return {
-    attackBonus: baseAttackBonus + arcAttackBonus + Number(specialization.attack ?? 0),
-    damageBonus: baseDamageBonus + baneDamageBonus + Number(specialization.damage ?? 0),
+    attackBonus: baseAttackBonus + arcAttackBonus + baneDamageBonus,
+    damageBonus: baseDamageBonus + baneDamageBonus,
   };
 }
 
@@ -210,17 +202,11 @@ function targetHasAnyImplants(actor) {
   return actor.itemTypes?.implant?.length > 0;
 }
 
-function buildResolvedAttackInput({ input, rollData, attackRangeContext, baneDamageBonus = 0, specializationKey = '', specializationLevel = 0, specializationAttackBonus = 0, specializationDamageBonus = 0, specializationLethalBonus = 0, specializationShockRdBonus = 0 }) {
+function buildResolvedAttackInput({ input, rollData, attackRangeContext, baneDamageBonus = 0, specializationContext = {} }) {
   return {
     ...input,
     baneDamageBonus,
-    specializationKey,
-    specializationLevel,
-    specializationAttackBonus,
-    specializationDamageBonus,
-    specializationLethalBonus,
-    shockRdBonus: specializationShockRdBonus,
-    specializationShockRdBonus,
+    specialization: normalizeSpecialization({ specialization: specializationContext }),
     actorModifierTotal: rollData.actorModifierTotal,
     rangeModifier: rollData.rangeModifier,
     rangeDistance: attackRangeContext?.distance ?? null,
@@ -228,7 +214,7 @@ function buildResolvedAttackInput({ input, rollData, attackRangeContext, baneDam
   };
 }
 
-async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, specializationDamageBonus = 0, messageMode, template }) {
+async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, specializationContext = {}, messageMode, template }) {
   const attackerToken = getActorToken(actor);
   const targetToken = getSingleTargetToken({ notify: false });
   if (!attackerToken || !targetToken) return;
@@ -240,11 +226,22 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
     const armor = Number(token.actor?.system?.armorDefense?.value ?? token.actor?.system?.armorDefense ?? 0);
     return attackTotal >= armor;
   });
-  if (!hitTokens.length) return;
 
-  const baseDamageBonus = Number(sourceItem?.system?.bonuses.damage ?? 0) + Number(specializationDamageBonus ?? 0);
+  const baseDamageBonus = Number(sourceItem?.system?.bonuses.damage ?? 0) + Number(specializationContext.damageBonus ?? 0);
   const doubleShotBonus = Number(sourceItem?.system?.bonuses.doubleShotBonus ?? 0);
   const lethal = Number(sourceItem?.system?.bonuses.lethal ?? 0);
+
+  if (!hitTokens.length) {
+    const itemNamePrefix = sourceItem?.name ? `${sourceItem.name}: ` : '';
+    await ChatMessage.create({
+      content: `<div class="synthicide-spread-miss">${localize('SYNTHICIDE.Roll.Card.SpreadNoCollateral', {
+        itemName: itemNamePrefix,
+        count: candidates.length,
+      })}</div>`,
+      speaker: ChatMessage.getSpeaker({ actor }),
+    }, { messageMode: normalizeMessageMode(messageMode) });
+    return;
+  }
 
   for (const collateralToken of hitTokens) {
     const baneDamageBonus = getBaneDamageBonus({ sourceItem, targetActor: collateralToken?.actor });

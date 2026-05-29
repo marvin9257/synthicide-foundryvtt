@@ -7,7 +7,7 @@ import { createActionMessage, createBlastSummaryMessage, normalizeMessageMode, b
 import { parseNumeric, FORMULA_CHALLENGE, FORMULA_ATTACK } from './modifiers.mjs';
 import { buildRollContext } from './roll-context.mjs';
 import { getActorToken } from './attack-rolls.mjs';
-import { hasWeaponFeature } from './weapon-proficiency-rules.mjs';
+import { hasWeaponFeature, normalizeSpecialization } from './weapon-proficiency-rules.mjs';
 import { localize } from './roll-utils.mjs';
 
 export async function executeDemolitionActionRoll({ ctx, template }) {
@@ -58,9 +58,13 @@ async function executeThrownDemolitionActionRoll({ ctx, template }) {
   }
 
   const blastTargets = ItemTemplate.targetTokensForPlacedRegion(placedRegion) || [];
+  const specialization = buildDemolitionSpecialization(specializationContext);
+
   const damageCardData = prepareDemolitionCardData({
     input: {
       ...ctx.input,
+      damageBonus: Number(ctx.input.damageBonus ?? sourceItem?.system?.bonuses?.damage ?? 0),
+      baseDamageBonus: Number(sourceItem?.system?.bonuses?.damage ?? 0),
       actorModifierTotal: Number(ctx.rollData.actorModifierTotal ?? 0),
       difficulty,
       rangeDistance: Number(rangeDistance),
@@ -70,10 +74,7 @@ async function executeThrownDemolitionActionRoll({ ctx, template }) {
       blastDiameter,
       success,
       scatterApplied,
-      specializationKey: String(specializationContext.key ?? ''),
-      specializationLevel: Number(specializationContext.level ?? 0),
-      specializationDemolitionThrowBonus: Number(specializationContext.demolitionThrow ?? 0),
-      specializationDemolitionPlacementBonus: Number(specializationContext.demolitionPlacement ?? 0),
+      specialization,
     },
     actor,
     sourceItem,
@@ -85,7 +86,7 @@ async function executeThrownDemolitionActionRoll({ ctx, template }) {
   await createActionMessage({ actor, roll: evaluatedRoll, messageMode, cardData: damageCardData, template });
 
   if (blastTargets.length > 0) {
-    const summaryRows = await resolveBlastTargetAttacks({ ctx, specializationContext, blastTargets, messageMode, template });
+    const summaryRows = await resolveBlastTargetAttacks({ ctx, specialization, blastTargets, messageMode, template });
     if (summaryRows.length > 0) {
       await createBlastSummaryMessage({ actor, summaryRows, messageMode });
     }
@@ -102,6 +103,7 @@ async function executePlantedDemolitionActionRoll({ ctx, plantNumber, template }
   const { messageMode, placedRegion, blastDiameter } = placement;
 
   const specializationContext = ctx.specialization || {};
+  const specialization = buildDemolitionSpecialization(specializationContext);
 
   const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, ctx.rollData).evaluate();
   const success = Number(evaluatedRoll.total ?? 0) >= plantNumber;
@@ -110,6 +112,8 @@ async function executePlantedDemolitionActionRoll({ ctx, plantNumber, template }
   const cardData = prepareDemolitionCardData({
     input: {
       ...ctx.input,
+      damageBonus: Number(ctx.input.damageBonus ?? sourceItem?.system?.bonuses?.damage ?? 0),
+      baseDamageBonus: Number(sourceItem?.system?.bonuses?.damage ?? 0),
       attribute: 'operation',
       actorModifierTotal: Number(ctx.rollData.actorModifierTotal ?? 0),
       difficulty: plantNumber,
@@ -119,10 +123,7 @@ async function executePlantedDemolitionActionRoll({ ctx, plantNumber, template }
       success,
       detonated,
       scatterApplied: false,
-      specializationKey: String(specializationContext.key ?? ''),
-      specializationLevel: Number(specializationContext.level ?? 0),
-      specializationDemolitionThrowBonus: Number(specializationContext.demolitionThrow ?? 0),
-      specializationDemolitionPlacementBonus: Number(specializationContext.demolitionPlacement ?? 0),
+      specialization,
     },
     actor,
     sourceItem,
@@ -135,7 +136,7 @@ async function executePlantedDemolitionActionRoll({ ctx, plantNumber, template }
   return null;
 }
 
-async function resolveBlastTargetAttacks({ ctx, specializationContext, blastTargets, messageMode, template }) {
+async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, messageMode, template }) {
   const summaryRows = [];
   if (!blastTargets?.length) return summaryRows;
 
@@ -211,12 +212,7 @@ async function resolveBlastTargetAttacks({ ctx, specializationContext, blastTarg
         ...input,
         armor: targetAD,
         isPlantedDemolitionAttack: isPlantedDemolition(sourceItem),
-        specializationKey: String(specializationContext.key ?? ''),
-        specializationLevel: Number(specializationContext.level ?? 0),
-        specializationAttackBonus: 0,
-        specializationDamageBonus: Number(specializationContext.damage ?? 0),
-        specializationLethalBonus: Number(specializationContext.lethal ?? 0),
-        specializationShockRdBonus: Number(specializationContext.shockRdBonus ?? 0),
+        specialization,
         damageBonus: Number(baseDamageBonus ?? 0),
         baseDamageBonus: Number(baseDamageBonus ?? 0),
         attackBonus: Number(attackRollData.attackBonus ?? 0),
@@ -230,6 +226,7 @@ async function resolveBlastTargetAttacks({ ctx, specializationContext, blastTarg
       sourceItem,
       rollResult: attackRoll,
       attributeValue: attackRollData.attribute,
+      rollData: attackRollData,
     });
 
     const cardHtml = await foundry.applications.handlebars.renderTemplate(template, { ...attackCardData, rollHtml });
@@ -294,6 +291,14 @@ export function getDemolitionRollAttributeKey(sourceItem) {
 }
 function isPlantedDemolition(sourceItem) {
   return getDemolitionPlantNumber(sourceItem) !== null;
+}
+
+function buildDemolitionSpecialization(specializationContext = {}) {
+  return {
+    ...normalizeSpecialization({ specialization: specializationContext }),
+    demolitionThrow: Number(specializationContext.demolitionThrow ?? 0),
+    demolitionPlacement: Number(specializationContext.demolitionPlacement ?? 0),
+  };
 }
 
 function buildDemolitionTargetData(sourceItem) {
