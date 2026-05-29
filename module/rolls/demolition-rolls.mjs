@@ -7,7 +7,8 @@ import { createActionMessage, createBlastSummaryMessage, normalizeMessageMode, b
 import { parseNumeric, FORMULA_CHALLENGE, FORMULA_ATTACK } from './modifiers.mjs';
 import { buildRollContext } from './roll-context.mjs';
 import { getActorToken } from './attack-rolls.mjs';
-import { hasWeaponFeature, normalizeSpecialization } from './weapon-proficiency-rules.mjs';
+import { hasWeaponFeature } from './weapon-proficiency-rules.mjs';
+import { SpecializationData } from './specialization-data.mjs';
 import { localize } from './roll-utils.mjs';
 
 export async function executeDemolitionActionRoll({ ctx, template }) {
@@ -294,10 +295,12 @@ function isPlantedDemolition(sourceItem) {
 }
 
 function buildDemolitionSpecialization(specializationContext = {}) {
+  const specialization = specializationContext instanceof SpecializationData
+    ? specializationContext
+    : SpecializationData.fromObject(specializationContext);
+
   return {
-    ...normalizeSpecialization({ specialization: specializationContext }),
-    demolitionThrow: Number(specializationContext.demolitionThrow ?? 0),
-    demolitionPlacement: Number(specializationContext.demolitionPlacement ?? 0),
+    ...specialization.toCardPayload(),
   };
 }
 

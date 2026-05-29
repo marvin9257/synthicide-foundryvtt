@@ -181,27 +181,3 @@ export function buildBaseActionCardData({
     metadataRows,
   };
 }
-
-export function buildBaseActionFlags({
-  subtype,
-  actorUuid,
-  sourceItemUuid = null,
-  sourceMessageId = null,
-  messageMode,
-  userId,
-  payloadKey,
-  payload,
-} = {}) {
-  const flags = {
-    version: 2,
-    subtype,
-    actorUuid,
-    userId: userId ?? game.user.id,
-    sourceItemUuid,
-    messageMode,
-    [payloadKey]: payload,
-  };
-
-  if (sourceMessageId) flags.sourceMessageId = sourceMessageId;
-  return flags;
-}

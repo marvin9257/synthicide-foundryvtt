@@ -56,8 +56,33 @@ export default class SynthicideActorBaseData extends foundry.abstract
       }
     }
 
-    this.weaponProficiencies = buildWeaponProficiencyMap(this.parent);
+    this.weaponProficiencies = this.buildWeaponProficiencyMap();
     foundry.utils.mergeObject(this.implantSlots, getImplantSlotSummary(this.parent));
+  }
+
+  /**
+   * Build a weapon proficiency map from this actor's traits.
+   * Duplicate proficiencies for the same weapon key do not stack;
+   * the highest level is preserved.
+   *
+   * @returns {object}
+   */
+  buildWeaponProficiencyMap() {
+    const result = {};
+    const traits = this.parent?.itemTypes?.trait ?? [];
+    for (const item of traits) {
+      if (item?.system?.traitType !== 'weaponProficiency') continue;
+      const key = String(item?.system?.specializationKey ?? '').trim();
+      if (!key) continue;
+
+      const level = Number(item?.system?.level ?? 0);
+      if (!Number.isFinite(level) || level <= 0) continue;
+
+      // Duplicate proficiencies for the same weapon key should not stack.
+      // Use the highest level found for that specialization.
+      result[key] = Math.max(Number(result[key] ?? 0), level);
+    }
+    return result;
   }
 
 
@@ -72,18 +97,3 @@ export default class SynthicideActorBaseData extends foundry.abstract
   }
 }
 
-function buildWeaponProficiencyMap(actor) {
-  const result = {};
-  const traits = actor?.itemTypes?.trait ?? [];
-  for (const item of traits) {
-    if (item?.system?.traitType !== 'weaponProficiency') continue;
-    const key = String(item?.system?.specializationKey ?? '').trim();
-    if (!key) continue;
-
-    const level = Number(item?.system?.level ?? 0);
-    if (!Number.isFinite(level) || level <= 0) continue;
-
-    result[key] = Math.max(Number(result[key] ?? 0), level);
-  }
-  return result;
-}

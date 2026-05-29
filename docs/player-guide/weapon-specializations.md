@@ -63,7 +63,7 @@ Explain how Weapon Proficiency traits connect to weapon rolls, what bonuses are 
 ### Developer note for integrators
 
 - Specialization numeric bonuses are applied by roll flows only when the flow explicitly invokes `ctx.applyRollAdjustments()` or `ctx.resolveSpecialization()` on a `RollContext` instance. `applyInputAdjustments()` (the input normalization step) does not apply specialization bonuses; do not rely on automatic application from modifier normalization.
-- Avoid calling internal helpers like `resolveAndApplySpecialization()` directly from flows — prefer `ctx.applyRollAdjustments()` or `ctx.resolveSpecialization()` so specialization is applied exactly once and in the correct order with other adjustments.
+- Direct helper calls such as `resolveAndApplySpecialization()` have been removed. Prefer `ctx.applyRollAdjustments()` for standard flows, or `ctx.resolveSpecialization()` for explicitly resolving specialization after other input adjustments.
 
 ## Troubleshooting
 

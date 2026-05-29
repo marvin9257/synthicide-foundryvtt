@@ -2,7 +2,8 @@
 // Modular function to prepare card data for derived damage rolls
 
 import { localize, buildEquationTerms, buildBaseActionCardData, extractCardContext } from './roll-utils.mjs';
-import { buildWeaponSpecializationMetadataRows, normalizeSpecialization } from './weapon-proficiency-rules.mjs';
+import { SpecializationData } from './specialization-data.mjs';
+import { buildWeaponSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
 /**
  * Prepare cardData and flags for a derived damage roll.
  * @param {object} params
@@ -40,7 +41,7 @@ export function prepareDamageCardData({
   const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem: item });
 
   // Strict system data for DataModel validation
-  const specialization = normalizeSpecialization(input);
+  const specialization = SpecializationData.fromObject(input.specialization ?? {}).toCardPayload();
   const system = {
     total,
     lethal,

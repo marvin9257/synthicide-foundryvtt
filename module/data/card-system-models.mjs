@@ -11,6 +11,9 @@ function createSpecializationSchema() {
     damageBonus: new fields.NumberField({ required: false, nullable: false, integer: true, initial: 0 }),
     lethalBonus: new fields.NumberField({ required: false, nullable: false, integer: true, initial: 0 }),
     shockRdBonus: new fields.NumberField({ required: false, nullable: false, integer: true, initial: 0 }),
+    demolitionThrow: new fields.NumberField({ required: false, nullable: false, integer: true, initial: 0 }),
+    demolitionPlacement: new fields.NumberField({ required: false, nullable: false, integer: true, initial: 0 }),
+    description: new fields.StringField({ required: false, blank: true, initial: '' }),
   });
 }
 

@@ -2,7 +2,8 @@
 // Extracted from action-rolls.mjs for modularity and clarity
 
 import { localize, getAttributeLabel, buildEquationTerms, buildBaseActionCardData, getRollResultSummary } from './roll-utils.mjs';
-import { buildWeaponSpecializationMetadataRows, normalizeSpecialization } from './weapon-proficiency-rules.mjs';
+import { SpecializationData } from './specialization-data.mjs';
+import { buildWeaponSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
 /**
  * Prepare cardData for an attack roll.
  * @param {object} params
@@ -23,7 +24,7 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
   const hit = total >= effectiveArmor;
   const attributeKey = input.attribute;
   const lethalOverride = input.lethalOverride;
-  const specialization = normalizeSpecialization(input);
+  const specialization = SpecializationData.fromObject(input.specialization ?? {}).toCardPayload();
   const shockRdBonus = Number(input.shockRdBonus ?? 0);
   const lethal = Number.isFinite(lethalOverride)
     ? lethalOverride

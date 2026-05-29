@@ -1,5 +1,6 @@
 import SYNTHICIDE from '../helpers/config.mjs';
-import { hasWeaponFeature, normalizeSpecialization } from './weapon-proficiency-rules.mjs';
+import { hasWeaponFeature } from './weapon-proficiency-rules.mjs';
+import { SpecializationData } from './specialization-data.mjs';
 import { FORMULA_ATTACK, hasWeaponModification } from './modifiers.mjs';
 import { prepareAttackCardData } from './attack-card-data.mjs';
 import { prepareDamageCardData } from './damage-card-data.mjs';
@@ -206,7 +207,7 @@ function buildResolvedAttackInput({ input, rollData, attackRangeContext, baneDam
   return {
     ...input,
     baneDamageBonus,
-    specialization: normalizeSpecialization({ specialization: specializationContext }),
+    specialization: SpecializationData.fromObject(specializationContext).toCardPayload(),
     actorModifierTotal: rollData.actorModifierTotal,
     rangeModifier: rollData.rangeModifier,
     rangeDistance: attackRangeContext?.distance ?? null,

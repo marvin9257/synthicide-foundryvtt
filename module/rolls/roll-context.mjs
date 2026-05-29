@@ -1,6 +1,7 @@
 // Lightweight RollContext class for action/attack flows
 // Encapsulates roll inputs, computed rollData, range context, and outcome
-import { resolveAndApplySpecialization, getActorAttributeValue, getActorRollModifiers, hasWeaponModification, applyAttackModeAdjustments, applyAmmoAttackAdjustments, parseNumeric, ATTRIBUTE_COMBAT } from './modifiers.mjs';
+import { getActorAttributeValue, getActorRollModifiers, hasWeaponModification, applyAttackModeAdjustments, applyAmmoAttackAdjustments, parseNumeric, ATTRIBUTE_COMBAT } from './modifiers.mjs';
+import { resolveWeaponSpecializationContext, getDemolitionSpecializationBonus } from './weapon-proficiency-rules.mjs';
 import { resolveAmmoAttackEffects } from './ammo-effects.mjs';
 
 
@@ -191,9 +192,23 @@ export class RollContext {
    * Returns the resolved specialization context.
    */
   resolveSpecialization() {
-    const spec = resolveAndApplySpecialization({ actor: this.actor, sourceItem: this.sourceItem, subtype: this.subtype, attributeKey: this.attributeKey, rollData: this.rollData });
-    this.specialization = spec;
-    return spec;
+    const specializationContext = resolveWeaponSpecializationContext({ actor: this.actor, sourceItem: this.sourceItem });
+    if (this.rollData) {
+      if (this.subtype === 'demolition') {
+        const bonus = parseNumeric(getDemolitionSpecializationBonus({ specializationContext, subtype: this.subtype, attributeKey: this.attributeKey }), 0);
+        if (bonus !== 0) {
+          this.rollData.modifierDetails = Array.isArray(this.rollData.modifierDetails) ? this.rollData.modifierDetails : [];
+          this.rollData.modifierDetails.push({ key: 'specialization', label: 'specialization', value: Number(bonus) });
+          this._recomputeModifierTotals();
+        }
+      }
+      if (this.subtype === 'attack') {
+        this.rollData.attackBonus = parseNumeric(this.rollData.attackBonus, 0) + parseNumeric(specializationContext.attackBonus, 0);
+        this.rollData.damageBonus = parseNumeric(this.rollData.damageBonus, 0) + parseNumeric(specializationContext.damageBonus, 0);
+      }
+    }
+    this.specialization = specializationContext;
+    return specializationContext;
   }
 
   /**

@@ -7,7 +7,8 @@ import {
   getRollResultSummary,
   extractCardContext
 } from './roll-utils.mjs';
-import { buildDemolitionSpecializationMetadataRows, normalizeSpecialization } from './weapon-proficiency-rules.mjs';
+import { SpecializationData } from './specialization-data.mjs';
+import { buildDemolitionSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
 
 export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult, attributeValue }) {
   const { d10, total, equation, dieClass } = getRollResultSummary(rollResult);
@@ -40,7 +41,7 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     : Number(attributeValue ?? 0);
 
   // Strict system data for DataModel validation
-  const specialization = normalizeSpecialization(input);
+  const specialization = SpecializationData.fromObject(input.specialization ?? {}).toCardPayload();
   const system = {
     d10,
     total,
@@ -66,7 +67,7 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     attributeKey,
     equationTerms: buildEquationTerms({ subtype: 'demolition', attributeKey, rollData: { ...input, attributeValue } }),
     showEffectOutcomeRow: false,
-    showDamageButton: true,
+    showDamageButton: false,
     showOpposedButton: false,
     flavor: buildDemolitionFlavor({ mode, sourceItem, attributeKey, difficulty, plantNumber }),
     effectText,

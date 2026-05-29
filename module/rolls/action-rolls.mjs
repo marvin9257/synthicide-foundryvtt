@@ -9,7 +9,7 @@ import { createActionMessage, normalizeMessageMode } from './cards.mjs';
 export { createActionMessage };
 import { getActionAttributeKey, getActorAttributeValue } from './modifiers.mjs';
 import { buildRollContext } from './roll-context.mjs';
-import { normalizeSpecialization } from './weapon-proficiency-rules.mjs';
+import { SpecializationData } from './specialization-data.mjs';
 
 const CARD_TEMPLATE = 'systems/synthicide/templates/chat/action-roll-card.hbs';
 const SUBTYPES = {
@@ -97,7 +97,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
     + Number(messageRollData.damageBonus ?? 0)
     + extraDamageTotal;
 
-  const specializationSource = normalizeSpecialization(messageRollData);
+  const specializationSource = SpecializationData.fromObject(messageRollData.specialization ?? {}).toCardPayload();
   const sourceItem = messageRollData.sourceItemUuid ? fromUuidSync(messageRollData.sourceItemUuid, { strict: false }) : null;
   const baseSourceLethal = Number(sourceItem?.system?.bonuses?.lethal ?? 0);
   const rawLethal = Number(messageRollData.lethal ?? baseSourceLethal);
