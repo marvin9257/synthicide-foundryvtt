@@ -151,6 +151,8 @@ Example: a weapon with Battle Assist 2, Expert Crafting +1, and Arc feature show
    - Anchor ammo (`Restrain` marker)
    - Poison ammo (`Poison` marker)
    Other modification, feature, and ammo behavior still requires manual resolution at your table.
+
+   Note: The same status conditions are also used to track special ammo effects in combat. For example, Cryo ammo applies `Frozen` and Cinder ammo applies `Burning`. Manually setting, clearing, or otherwise changing those statuses during combat can alter the expected ammo effect flow and should only be done when your table is intentionally overriding the ammo effect.
 5. **Weapon specialization coverage is intentionally scoped**. Implemented specialization math is applied automatically, but broader specialization narrative/rider handling still needs table adjudication.
 6. Item modifiers are evaluated during actor preparation and must be deterministic: authors should use the `formula` field. Per-roll evaluation of item formulas or "roll-context" modifier behavior is not supported.
 7. Demolition and attack follow-up output can depend on correct target/token setup; missing context may block or degrade expected automation.
