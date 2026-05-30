@@ -1,3 +1,19 @@
+## [1.0.43](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.42...1.0.43) (2026-05-30)
+
+
+### Bug Fixes
+
+* a lot of code cleanup ([3cc55d9](https://github.com/marvin9257/synthicide-foundryvtt/commit/3cc55d9dd43d46d31bd91c1e138b313a77ed40b9))
+* avoid double counting specialization bonuses ([f3b2994](https://github.com/marvin9257/synthicide-foundryvtt/commit/f3b2994c4a7dc9a8ce6bbf191f7808f11a57efca))
+* error fixing ([6f6c8e7](https://github.com/marvin9257/synthicide-foundryvtt/commit/6f6c8e7b812cbf8537843385e9e1f118200fee84))
+* Merge pull request [#2](https://github.com/marvin9257/synthicide-foundryvtt/issues/2) from marvin9257/refactor-use-RollContext-model-and-refactor-roll-code ([a81a55f](https://github.com/marvin9257/synthicide-foundryvtt/commit/a81a55f8940070b3c9e714e49fcd2711a999366d))
+* missing subtype for attack html and missing misc modifier in roll context ([329a4ae](https://github.com/marvin9257/synthicide-foundryvtt/commit/329a4ae6fab26f13ba0d9c2ac4eafd5f37c911aa))
+* Normalize token handling and attack range refactor ([e9e729d](https://github.com/marvin9257/synthicide-foundryvtt/commit/e9e729d883f29dac1b1ae3348e162f7d0d22980f))
+* planted demolition damage using actor attributes where RAW says only weapon modifiers used ([98edfea](https://github.com/marvin9257/synthicide-foundryvtt/commit/98edfeab2d12225b7322db2bb790087de9a81789))
+* some last cleanup ([0cc7479](https://github.com/marvin9257/synthicide-foundryvtt/commit/0cc7479da63e9a46053fca4ea80ffce29e29591b))
+* try to cleanup refactor ([1ad2f17](https://github.com/marvin9257/synthicide-foundryvtt/commit/1ad2f17a87fc6a773237566c960c4ec715e64a68))
+* update ascii art ([e59de5c](https://github.com/marvin9257/synthicide-foundryvtt/commit/e59de5c334da178110743c3dad8a7821e7d983e2))
+
 ## [1.0.42](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.41...1.0.42) (2026-05-26)
 
 
