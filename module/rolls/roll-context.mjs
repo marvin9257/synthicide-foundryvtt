@@ -1,0 +1,350 @@
+// Lightweight RollContext class for action/attack flows
+// Encapsulates roll inputs, computed rollData, range context, and outcome
+import { getActorAttributeValue, getActorRollModifiers, hasWeaponModification, applyAttackModeAdjustments, applyAmmoAttackAdjustments, parseNumeric, ATTRIBUTE_COMBAT } from './modifiers.mjs';
+import { resolveWeaponSpecializationContext, getDemolitionSpecializationBonus } from './weapon-proficiency-rules.mjs';
+import { resolveAmmoAttackEffects } from './ammo-effects.mjs';
+import { buildAttackRangeContext } from './attack-rolls.mjs';
+
+
+
+/**
+ * @typedef {Object} RollContextOptions
+ * @property {Actor|null} actor
+ * @property {Token|null} actorToken
+ * @property {Item|null} sourceItem
+ * @property {string} subtype
+ * @property {string|null} attributeKey
+ * @property {Object} input
+ */
+
+export class RollContext {
+  /**
+   * @param {RollContextOptions} opts
+   */
+  constructor({ actor = null, actorToken = null, sourceItem = null, subtype = 'attack', attributeKey = null, input = {} } = {}) {
+    this.actor = actor;
+    this.actorToken = actorToken;
+    this.sourceItem = sourceItem;
+    this.subtype = subtype;
+    this.attributeKey = attributeKey;
+
+    // Inputs provided by dialog / caller (bonuses, options, flags)
+    this.input = Object.assign({}, input);
+
+    // Normalized roll data used by roll computation (attack/damage values)
+    this.rollData = {
+      attribute: null,
+      attackBonus: 0,
+      damageBonus: 0,
+      misc: 0,
+      modifiers: 0,
+      modifierDetails: [],
+      actorModifierTotal: 0,
+      rangeModifier: 0,
+    };
+
+    // Computed attack range context (distance, increment, modifiers)
+    this.attackRangeContext = null;
+
+    // Specialization or other resolved rule state
+    this.specialization = null;
+
+    // Free-form metadata for cards / templates
+    this.metadata = {};
+
+    // Outcome filled after roll evaluation
+    this.outcome = {};
+  }
+
+  // Derived total attack value based on rollData
+  get totalAttack() {
+    const rd = this.rollData || {};
+    return (rd.attribute || 0) + (rd.attackBonus || 0) + (rd.misc || 0) + (rd.actorModifierTotal || 0) + (rd.rangeModifier || 0);
+  }
+
+  // Add a modifier object {key, label, value}
+  addModifier(mod) {
+    if (!mod || typeof mod !== 'object') return;
+    this.rollData.modifierDetails = this.rollData.modifierDetails || [];
+    this.rollData.modifierDetails.push({
+      key: String(mod?.key ?? ''),
+      label: mod?.label ?? String(mod?.key ?? ''),
+      value: Number(mod?.value ?? 0),
+    });
+    this._recomputeModifierTotals();
+  }
+
+  // Replace modifier details wholesale and recompute totals.
+  setModifiers(mods = []) {
+    this.rollData.modifierDetails = Array.isArray(mods)
+      ? mods.map((mod) => ({
+        key: String(mod?.key ?? ''),
+        label: mod?.label ?? String(mod?.key ?? ''),
+        value: Number(mod?.value ?? 0),
+      }))
+      : [];
+    this._recomputeModifierTotals();
+  }
+
+  _recomputeModifierTotals() {
+    const mods = this.rollData.modifierDetails || [];
+    let total = 0;
+    for (const m of mods) {
+      const v = Number(m?.value ?? 0);
+      if (!Number.isNaN(v)) total += v;
+    }
+    this.rollData.actorModifierTotal = total;
+    this.rollData.modifiers = total + Number(this.rollData.rangeModifier ?? 0);
+  }
+
+  applyModifiers(mods) {
+    if (!mods) return this;
+    if (Array.isArray(mods)) this.setModifiers((this.rollData.modifierDetails || []).concat(mods));
+    else if (typeof mods === 'object') this.addModifier(mods);
+    return this;
+  }
+
+  /**
+   * Normalize `this.input` by applying defaults and coercing numeric fields.
+   * @param {Object} defaults
+   */
+  normalizeInput(defaults = {}) {
+    this.input = Object.assign({}, defaults, this.input || {});
+    // Coerce common numeric keys
+    const nums = ['attackBonus', 'damageBonus', 'misc', 'rangeModifier'];
+    for (const k of nums) {
+      if (k in this.input) this.input[k] = Number(this.input[k]) || 0;
+    }
+    return this;
+  }
+
+  /**
+   * Resolve and cache attack range context for this roll.
+   * @param {Object} opts
+   * @param {Token|null} opts.actorToken
+   * @param {Token|null} opts.targetToken
+   * @param {boolean} opts.notify
+   */
+  resolveAttackRange({ actorToken = this.actorToken, targetToken = null, notify = true } = {}) {
+    const rangeContext = buildAttackRangeContext({
+      actor: this.actor,
+      sourceItem: this.sourceItem,
+      actorToken,
+      targetToken,
+      notify,
+    });
+    this.attackRangeContext = rangeContext;
+    return rangeContext;
+  }
+
+  /**
+   * Prepare this context for rolling by normalizing input, resolving any
+   * attack range context, and applying all input and specialization adjustments.
+   * @param {Object} opts
+   * @param {Token|null} opts.targetToken
+   * @param {boolean} opts.notifyRange
+   * @param {boolean} opts.includeSpecialization
+   */
+  prepareRoll({ targetToken = null, notifyRange = true, includeSpecialization = true } = {}) {
+    this.normalizeInput();
+    if (this.subtype === 'attack') {
+      this.resolveAttackRange({ actorToken: this.actorToken, targetToken, notify: notifyRange });
+    }
+    return this.applyRollAdjustments({ includeSpecialization });
+  }
+
+  /**
+   * Apply a specialization object to the context, mutating rollData appropriately.
+   * Expected spec shape: { attackBonus?: number, damageBonus?: number, lethal?: boolean }
+   * @param {Object} spec
+   */
+  applySpecialization(spec = {}) {
+    if (!spec || typeof spec !== 'object') return this;
+    this.specialization = Object.assign({}, this.specialization || {}, spec);
+    if (Number.isFinite(spec.attackBonus)) this.rollData.attackBonus = (this.rollData.attackBonus || 0) + Number(spec.attackBonus);
+    if (Number.isFinite(spec.damageBonus)) this.rollData.damageBonus = (this.rollData.damageBonus || 0) + Number(spec.damageBonus);
+    return this;
+  }
+
+  /**
+   * Apply current `this.input` adjustments (attack modes, ammo effects) and
+   * recompute `this.rollData` using shared modifiers logic.
+   * This delegates to `applyModifiersToRollData` from `modifiers.mjs` so
+   * behavior stays consistent with existing rule helpers.
+   */
+  applyInputAdjustments() {
+    const res = applyModifiersToRollData({
+      actor: this.actor,
+      rollData: this.rollData,
+      input: this.input,
+      sourceItem: this.sourceItem,
+      attributeKey: this.attributeKey,
+      attackRangeContext: this.attackRangeContext,
+    });
+    this.input = res.input ?? this.input;
+    this.rollData = res.rollData ?? this.rollData;
+    this.specialization = res.specializationContext ?? this.specialization;
+    return this;
+  }
+
+  /**
+   * Apply all roll preparation steps, including input adjustments and,
+   * optionally, specialization resolution.
+   */
+  applyRollAdjustments({ includeSpecialization = true } = {}) {
+    this.applyInputAdjustments();
+    if (includeSpecialization) this.resolveSpecialization();
+    return this;
+  }
+
+  /**
+   * Resolve and apply specialization context (weapon or demolition) to `rollData`.
+   *
+   * This is the lower-level specialization hook. External roll flows should
+   * prefer `ctx.applyRollAdjustments()` when they want both input adjustments
+   * and specialization in one canonical step.
+   *
+   * Returns the resolved specialization context.
+   */
+  resolveSpecialization() {
+    const specializationContext = resolveWeaponSpecializationContext({ actor: this.actor, sourceItem: this.sourceItem });
+    if (this.rollData) {
+      if (this.subtype === 'demolition') {
+        const bonus = parseNumeric(getDemolitionSpecializationBonus({ specializationContext, subtype: this.subtype, attributeKey: this.attributeKey }), 0);
+        if (bonus !== 0) {
+          this.rollData.modifierDetails = Array.isArray(this.rollData.modifierDetails) ? this.rollData.modifierDetails : [];
+          this.rollData.modifierDetails.push({ key: 'specialization', label: 'specialization', value: Number(bonus) });
+          this._recomputeModifierTotals();
+        }
+      }
+      if (this.subtype === 'attack') {
+        this.rollData.attackBonus = parseNumeric(this.rollData.attackBonus, 0) + parseNumeric(specializationContext.attackBonus, 0);
+        this.rollData.damageBonus = parseNumeric(this.rollData.damageBonus, 0) + parseNumeric(specializationContext.damageBonus, 0);
+      }
+    }
+    this.specialization = specializationContext;
+    return specializationContext;
+  }
+
+  /**
+   * Convenience accessor: whether slug-shot mode is currently active and
+   * available on the source item.
+   */
+  isSlugShotActive() {
+    return Boolean(this.input?.slugShotActive) && hasWeaponModification(this.sourceItem, 'slugShot');
+  }
+
+  /**
+   * Return primary ammo keys/flags for the current source item + input.
+   */
+  getAmmoInfo() {
+    // Synthicide tracks a weapon's special ammo type on the item (system.specialAmmo).
+    // Expose it via a single `specialAmmoUsed` field for callers; UI/dialogs may
+    // override this later by setting `input.specialAmmoUsed` if desired.
+    const declared = String(this.sourceItem?.system?.specialAmmo ?? 'none');
+    // Prefer any explicit per-roll override, otherwise return the declared value.
+    const used = String(this.input?.specialAmmoUsed ?? declared);
+    return { specialAmmoUsed: used };
+  }
+
+  /**
+   * Read an effective attribute value from the actor and update rollData.attribute.
+   */
+  getEffectiveAttribute(attributeKey = this.attributeKey) {
+    const val = Number(getActorAttributeValue(this.actor, attributeKey));
+    this.rollData.attribute = val;
+    return val;
+  }
+
+  /**
+   * Return a serializable snapshot compiled for embedding into ChatMessage.system
+   */
+  toChatSystem() {
+    return this.toJSON();
+  }
+
+  /**
+   * Minimal estimated damage helper (non-rolled): sum of damage bonuses and specialization.
+   */
+  getEstimatedDamage() {
+    return (this.rollData.damageBonus || 0) + (this.specialization?.damageBonus || 0) + (this.input?.damageBonus || 0);
+  }
+
+  // Prepare a serializable snapshot suitable for embedding in ChatMessage.system
+  toJSON() {
+    return {
+      subtype: this.subtype,
+      attributeKey: this.attributeKey,
+      input: foundry.utils.deepClone(this.input),
+      rollData: foundry.utils.deepClone(this.rollData),
+      attackRangeContext: foundry.utils.deepClone(this.attackRangeContext),
+      specialization: foundry.utils.deepClone(this.specialization),
+      metadata: foundry.utils.deepClone(this.metadata),
+      outcome: foundry.utils.deepClone(this.outcome),
+    };
+  }
+
+  // Shallow clone the context (useful for branching flows without mutating original)
+  clone() {
+    const c = new RollContext({ actor: this.actor, actorToken: this.actorToken, sourceItem: this.sourceItem, subtype: this.subtype, attributeKey: this.attributeKey, input: foundry.utils.deepClone(this.input) });
+    c.rollData = foundry.utils.deepClone(this.rollData);
+    c.attackRangeContext = foundry.utils.deepClone(this.attackRangeContext);
+    c.specialization = foundry.utils.deepClone(this.specialization);
+    c.metadata = foundry.utils.deepClone(this.metadata);
+    c.outcome = foundry.utils.deepClone(this.outcome);
+    return c;
+  }
+}
+
+export function buildRollContext(opts) {
+  return new RollContext(opts);
+}
+
+/**
+ * Central modifier application moved here from `modifiers.mjs` so that
+ * `RollContext` owns the canonical behavior for applying input-mode and
+ * ammo-derived adjustments and mutating `rollData` accordingly.
+ *
+ * This is intentionally private to `roll-context.mjs` to make `RollContext`
+ * self-contained; helper functions (modes, ammo resolution, specialization)
+ * remain in `modifiers.mjs` as necessary.
+ */
+function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = null, attributeKey = ATTRIBUTE_COMBAT, attackRangeContext = null }) {
+  const modeAdjusted = applyAttackModeAdjustments({ input, sourceItem });
+  const ammoKey = String(input?.specialAmmoUsed ?? sourceItem?.system?.specialAmmo ?? 'none');
+  const ammoAttack = resolveAmmoAttackEffects({ ammoKey });
+  const ammoAdjusted = applyAmmoAttackAdjustments({ input: modeAdjusted, ammoAttack });
+
+  const actorAttribute = Number(getActorAttributeValue(actor, attributeKey));
+  rollData.attribute = actorAttribute;
+
+  const actorModifiers = getActorRollModifiers(actor);
+  rollData.modifierDetails = Array.isArray(actorModifiers) ? actorModifiers.slice() : [];
+  rollData.actorModifierTotal = rollData.modifierDetails.reduce((sum, mod) => sum + parseNumeric(mod.value, 0), 0);
+
+  const finalInput = {
+    ...input,
+    attackBonus: parseNumeric(ammoAdjusted.attackBonus, 0),
+    damageBonus: parseNumeric(ammoAdjusted.damageBonus, 0),
+    misc: parseNumeric(ammoAdjusted.misc, 0),
+    rangeModifier: parseNumeric(ammoAdjusted.rangeModifier, 0),
+    extraDamageDice: Number(ammoAdjusted.extraDamageDice ?? 0),
+    lethalOverride: ammoAdjusted.lethalOverride ?? null,
+  };
+
+  const computedRangeModifier = parseNumeric(attackRangeContext?.rangeModifier, 0);
+  const hasExplicitRangeModifier = foundry.utils.hasProperty(input ?? {}, 'rangeModifier');
+  const rangeModifier = hasExplicitRangeModifier
+    ? parseNumeric(finalInput.rangeModifier, 0)
+    : computedRangeModifier;
+  rollData.attackBonus = parseNumeric(finalInput.attackBonus, rollData.attackBonus ?? 0);
+  rollData.damageBonus = parseNumeric(finalInput.damageBonus, rollData.damageBonus ?? 0);
+  rollData.misc = parseNumeric(finalInput.misc, rollData.misc ?? 0);
+  rollData.rangeModifier = rangeModifier;
+  rollData.modifiers = Number(rollData.actorModifierTotal ?? 0) + Number(rangeModifier);
+
+  // Specialization may be applied by the higher-level helper
+  // `RollContext.applyRollAdjustments()`, so low-level callers can opt
+  // in to specialization resolution or skip it intentionally.
+  return { input: finalInput, rollData, specializationContext: null };
+}

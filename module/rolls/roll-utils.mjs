@@ -20,14 +20,16 @@ export function extractCardContext({ input = {}, sourceItem = null }) {
 export function getStandardizedRollData(message) {
   // Use native system/type fields for v14+ card data
   const type = message.type || message.getFlag('synthicide', 'actionRoll')?.subtype;
-  const system = message.system || {};
+  // `message.system` may be a DataModel instance; convert it to a plain object.
+  // Fall back to the original object if `toObject` is not available.
+  const system = message.system?.toObject?.(false) ?? message.system ?? {};
   return {
     subtype: type,
     ...system,
-    userId: system.userId ,
-    messageMode: system.messageMode ,
-    sourceItemUuid: system.sourceItemUuid ,
-    sourceMessageId: system.sourceMessageId
+    userId: system.userId,
+    messageMode: system.messageMode,
+    sourceItemUuid: system.sourceItemUuid,
+    sourceMessageId: system.sourceMessageId,
   };
 }
 
@@ -42,6 +44,22 @@ export function formatSignedNumber(value) {
   return `${numeric}`;
 }
 
+export function formatModifierKey(key) {
+  return String(key ?? '')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[_-]+/g, ' ')
+    .replace(/^./, (char) => char.toUpperCase());
+}
+
+export function formatRollModifiers(modifiers = []) {
+  if (!Array.isArray(modifiers)) return [];
+  return modifiers.map((modifier) => ({
+    ...modifier,
+    label: formatSignedNumber(formatModifierKey(modifier.key)),
+    valueDisplay: formatSignedNumber(modifier.value),
+  }));
+}
+
 export function normalizeAttributeKey(attributeKey) {
   return attributeKey && SYNTHICIDE.attributes?.[attributeKey] ? attributeKey : ATTRIBUTE_COMBAT;
 }
@@ -50,10 +68,12 @@ export function buildEquationTerms({ subtype, attributeKey, rollData }) {
   const isDamage = subtype === 'damage';
   const isAttack = subtype === 'attack';
 
-  const terms = [
-    { label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(attributeKey) },
-    { label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: rollData.attributeValue ?? rollData.attribute },
-  ];
+  const terms = [];
+  const showAttributeRow = !(subtype === 'damage' && rollData?.hideAttributeRow);
+  if (showAttributeRow) {
+    terms.push({ label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(attributeKey) });
+    terms.push({ label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: rollData.attributeValue ?? rollData.attribute });
+  }
 
   if (isDamage) {
     terms.push({ label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: rollData.damageBonus ?? 0 });
@@ -160,28 +180,4 @@ export function buildBaseActionCardData({
     outcomeClass,
     metadataRows,
   };
-}
-
-export function buildBaseActionFlags({
-  subtype,
-  actorUuid,
-  sourceItemUuid = null,
-  sourceMessageId = null,
-  messageMode,
-  userId,
-  payloadKey,
-  payload,
-} = {}) {
-  const flags = {
-    version: 2,
-    subtype,
-    actorUuid,
-    userId: userId ?? game.user.id,
-    sourceItemUuid,
-    messageMode,
-    [payloadKey]: payload,
-  };
-
-  if (sourceMessageId) flags.sourceMessageId = sourceMessageId;
-  return flags;
 }

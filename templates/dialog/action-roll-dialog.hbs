@@ -82,12 +82,12 @@
       </div>
 
       <div class="form-group">
-        <label>{{localize "SYNTHICIDE.Roll.Dialog.AttackBonus"}}</label>
+        <label>{{localize "SYNTHICIDE.Roll.Card.BaseAttackBonus"}}</label>
         <input type="number" name="attackBonus" value="{{defaultAttackBonus}}" step="1" />
       </div>
 
       <div class="form-group">
-        <label>{{localize "SYNTHICIDE.Roll.Dialog.DamageBonus"}}</label>
+        <label>{{localize "SYNTHICIDE.Roll.Card.BaseDamageBonus"}}</label>
         <input type="number" name="damageBonus" value="{{defaultDamageBonus}}" step="1" />
       </div>
 
@@ -102,6 +102,12 @@
         <label>{{localize "SYNTHICIDE.Roll.Dialog.RangeModifier"}}</label>
         <input type="number" name="rangeModifier" value="{{defaultRangeModifier}}" step="1" />
       </div>
+
+      {{#if defaultRangeIsImpossible}}
+        <div class="form-group range-warning">
+          <p class="notes warning">{{localize "SYNTHICIDE.Roll.Warnings.MeleeOutOfRange"}}</p>
+        </div>
+      {{/if}}
 
       <div class="form-group">
         <label class="shield-bonus-label">{{localize "SYNTHICIDE.Roll.Dialog.ShieldBonus"}}</label>

@@ -7,6 +7,7 @@ import {
   getRollResultSummary,
   extractCardContext
 } from './roll-utils.mjs';
+import { SpecializationData } from './specialization-data.mjs';
 import { buildDemolitionSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
 
 export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult, attributeValue }) {
@@ -34,7 +35,13 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     input,
   });
   const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem });
+  const isPlanted = mode === 'planted';
+  const damageAttributeValue = isPlanted
+    ? 0
+    : Number(attributeValue ?? 0);
+
   // Strict system data for DataModel validation
+  const specialization = SpecializationData.fromObject(input.specialization ?? {}).toCardPayload();
   const system = {
     d10,
     total,
@@ -43,6 +50,11 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     actorUuid: actor?.uuid ?? null,
     sourceItemUuid,
     sourceMessageId,
+    placedTemplateUuid: input.placedTemplateUuid ?? '',
+    damageAttributeValue,
+    hideAttributeRow: isPlanted,
+    mode,
+    specialization,
   };
 
   const cardExtras = buildBaseActionCardData({
@@ -55,7 +67,7 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     attributeKey,
     equationTerms: buildEquationTerms({ subtype: 'demolition', attributeKey, rollData: { ...input, attributeValue } }),
     showEffectOutcomeRow: false,
-    showDamageButton: true,
+    showDamageButton: false,
     showOpposedButton: false,
     flavor: buildDemolitionFlavor({ mode, sourceItem, attributeKey, difficulty, plantNumber }),
     effectText,
@@ -92,6 +104,12 @@ function buildDemolitionEffectText({ mode, success, scatterApplied }) {
 }
 
 function buildDemolitionMetadataRows({ mode, difficulty, effect, blastDiameter, rangeDistance, rangeIncrement, rangeBands, input = {} }) {
+  const baseDamageBonus = Number.isFinite(Number(input.baseDamageBonus))
+    ? Number(input.baseDamageBonus)
+    : Number(input.damageBonus ?? 0);
+  const damageBonus = Number(input.damageBonus ?? 0);
+  const showBaseDamageBonus = baseDamageBonus !== 0 && damageBonus === baseDamageBonus;
+
   const metadataRows = [
     {
       label: mode === 'planted'
@@ -113,6 +131,10 @@ function buildDemolitionMetadataRows({ mode, difficulty, effect, blastDiameter, 
     if (showRangeBands) {
       metadataRows.push({ label: localize('SYNTHICIDE.Roll.Card.RangeBands'), value: rangeBands });
     }
+  }
+
+  if (showBaseDamageBonus) {
+    metadataRows.push({ label: localize('SYNTHICIDE.Roll.Card.BaseDamageBonus'), value: baseDamageBonus });
   }
 
   metadataRows.push(...buildDemolitionSpecializationMetadataRows({ input }));

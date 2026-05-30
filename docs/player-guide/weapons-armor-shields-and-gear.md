@@ -144,6 +144,8 @@ Special ammo types are selectable on ranged weapons. Some ammo behavior is autom
 9. **Anchor**: Applies a `Restrain` status marker on hit. Movement-locking rules beyond that marker are manual.
 10. **Bouncing**: Ricochet behavior is manual.
 
+**Ammo status tracking**: Some special ammo effects are represented by status conditions that also exist elsewhere in combat. Cryo uses `Frozen`, Cinder uses `Burning`, Flash uses `Blind`, Poison uses `Poison`, Anchor uses `Restrain`, and Homing uses `Target`. These statuses are part of the ammo effect workflow, so manually toggling or removing them during combat can change how the system tracks the ammo effect and may alter expected follow-up behavior.
+
 **Important**: Ammo selection is not all-or-nothing automation. The system automates selected status application and a few direct numeric effects, but complex RAW handling for ammo still needs table resolution.
 
 ## Weapon Specialization (Weapon Proficiency Traits)

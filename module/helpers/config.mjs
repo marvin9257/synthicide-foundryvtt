@@ -331,9 +331,9 @@ SYNTHICIDE.WEAPON_SPECIALIZATIONS = {
  */
 SYNTHICIDE.WEAPON_PROFICIENCY_MVP_BONUSES = {
   axe: {
-    1: { damage: 1, lethal: 0, shockRdBonus: 2 },
-    4: { damage: 2, lethal: 1, shockRdBonus: 2 },
-    7: { damage: 3, lethal: 2, shockRdBonus: 4 },
+    1: { damageBonus: 1, lethalBonus: 0, shockRdBonus: 2 },
+    4: { damageBonus: 2, lethalBonus: 1, shockRdBonus: 2 },
+    7: { damageBonus: 3, lethalBonus: 2, shockRdBonus: 4 },
   },
   demolitions: {
     1: { demolitionThrow: 2, demolitionPlacement: 5 },
@@ -341,24 +341,24 @@ SYNTHICIDE.WEAPON_PROFICIENCY_MVP_BONUSES = {
     7: { demolitionThrow: 2, demolitionPlacement: 8 },
   },
   hammer: {
-    1: { attack: 0, damage: 2, lethal: 0 },
-    4: { attack: 0, damage: 4, lethal: 0 },
-    7: { attack: 1, damage: 7, lethal: 0 },
+    1: { attackBonus: 0, damageBonus: 2, lethalBonus: 0 },
+    4: { attackBonus: 0, damageBonus: 4, lethalBonus: 0 },
+    7: { attackBonus: 1, damageBonus: 7, lethalBonus: 0 },
   },
   knife: {
-    1: { attack: 0, damage: 2, lethal: 0 },
-    4: { attack: 0, damage: 4, lethal: 0 },
-    7: { attack: 1, damage: 6, lethal: 0 },
+    1: { attackBonus: 0, damageBonus: 2, lethalBonus: 0 },
+    4: { attackBonus: 0, damageBonus: 4, lethalBonus: 0 },
+    7: { attackBonus: 1, damageBonus: 6, lethalBonus: 0 },
   },
   martial: {
-    1: { attack: 0, damage: 2, lethal: 0 },
-    4: { attack: 0, damage: 3, lethal: 0 },
-    7: { attack: 1, damage: 5, lethal: 0 },
+    1: { attackBonus: 0, damageBonus: 2, lethalBonus: 0 },
+    4: { attackBonus: 0, damageBonus: 3, lethalBonus: 0 },
+    7: { attackBonus: 1, damageBonus: 5, lethalBonus: 0 },
   },
   pistol: {
-    1: { attack: 1, damage: 0, lethal: 0 },
-    4: { attack: 2, damage: 0, lethal: 0 },
-    7: { attack: 3, damage: 0, lethal: 0 },
+    1: { attackBonus: 1, damageBonus: 0, lethalBonus: 0 },
+    4: { attackBonus: 2, damageBonus: 0, lethalBonus: 0 },
+    7: { attackBonus: 3, damageBonus: 0, lethalBonus: 0 },
   },
   primitive: {
     1: { primitiveRangedAttack: 1, primitiveMeleeAttack: 0, primitiveMeleeDamage: 2 },
@@ -366,19 +366,19 @@ SYNTHICIDE.WEAPON_PROFICIENCY_MVP_BONUSES = {
     7: { primitiveRangedAttack: 3, primitiveMeleeAttack: 1, primitiveMeleeDamage: 5 },
   },
   rifle: {
-    1: { attack: 0, damage: 0, lethal: 0 },
-    4: { attack: 0, damage: 0, lethal: 0 },
-    7: { attack: 0, damage: 0, lethal: 0 },
+    1: { attackBonus: 0, damageBonus: 0, lethalBonus: 0 },
+    4: { attackBonus: 0, damageBonus: 0, lethalBonus: 0 },
+    7: { attackBonus: 0, damageBonus: 0, lethalBonus: 0 },
   },
   shotgun: {
-    1: { attack: 1, damage: 0, lethal: 0 },
-    4: { attack: 2, damage: 0, lethal: 0 },
-    7: { attack: 3, damage: 0, lethal: 0 },
+    1: { attackBonus: 1, damageBonus: 0, lethalBonus: 0 },
+    4: { attackBonus: 2, damageBonus: 0, lethalBonus: 0 },
+    7: { attackBonus: 3, damageBonus: 0, lethalBonus: 0 },
   },
   sword: {
-    1: { attack: 1, damage: 0, lethal: 0 },
-    4: { attack: 2, damage: 0, lethal: 0 },
-    7: { attack: 3, damage: 0, lethal: 0 },
+    1: { attackBonus: 1, damageBonus: 0, lethalBonus: 0 },
+    4: { attackBonus: 2, damageBonus: 0, lethalBonus: 0 },
+    7: { attackBonus: 3, damageBonus: 0, lethalBonus: 0 },
   },
 };
 

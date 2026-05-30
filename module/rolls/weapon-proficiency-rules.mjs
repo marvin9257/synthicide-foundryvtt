@@ -1,5 +1,6 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import { formatSignedNumber } from './roll-utils.mjs';
+import { SpecializationData } from './specialization-data.mjs';
 
 /**
  * Resolve the proficiency key for a weapon type.
@@ -8,17 +9,6 @@ export function resolveWeaponProficiencyKey(weaponType) {
   return SYNTHICIDE.WEAPON_TYPE_PROFICIENCY_KEY?.[weaponType]
     ?? SYNTHICIDE.WEAPON_TYPE_RULE_FAMILY?.[weaponType]
     ?? weaponType;
-}
-
-/**
- * Convert raw trait level to proficiency tier milestones.
- */
-export function getProficiencyTier(level) {
-  const value = Number(level);
-  if (!Number.isFinite(value) || value < 1) return 0;
-  if (value >= 7) return 7;
-  if (value >= 4) return 4;
-  return 1;
 }
 
 /**
@@ -33,13 +23,13 @@ export function getActorWeaponProficiencyLevel(actor, proficiencyKey) {
 /**
  * Build normalized specialization/proficiency bonus context for a weapon roll.
  */
-export function resolveWeaponSpecializationContext({ actor, sourceItem, subtype, attributeKey } = {}) {
+export function resolveWeaponSpecializationContext({ actor, sourceItem } = {}) {
   const empty = {
     key: '',
     level: 0,
-    attack: 0,
-    damage: 0,
-    lethal: 0,
+    attackBonus: 0,
+    damageBonus: 0,
+    lethalBonus: 0,
     shockRdBonus: 0,
     demolitionThrow: 0,
     demolitionPlacement: 0,
@@ -49,47 +39,30 @@ export function resolveWeaponSpecializationContext({ actor, sourceItem, subtype,
   const weaponType = String(sourceItem?.system?.weaponType ?? '').trim();
   if (!weaponType) return empty;
 
-  const proficiencyKey = resolveWeaponProficiencyKey(weaponType);
-  if (!proficiencyKey) return empty;
+  const primaryKey = resolveWeaponProficiencyKey(weaponType);
+  if (!primaryKey) return empty;
 
-  const level = getActorWeaponProficiencyLevel(actor, proficiencyKey);
-  if (level <= 0) return empty;
-
-  const tier = getProficiencyTier(level);
-  const table = SYNTHICIDE.WEAPON_PROFICIENCY_MVP_BONUSES?.[proficiencyKey] ?? {};
-  const raw = table?.[tier] ?? {};
-
-  const result = {
-    ...empty,
-    key: proficiencyKey,
-    level,
-    attack: Number(raw.attack ?? 0),
-    damage: Number(raw.damage ?? 0),
-    lethal: Number(raw.lethal ?? 0),
-    shockRdBonus: Number(raw.shockRdBonus ?? 0),
-    demolitionThrow: Number(raw.demolitionThrow ?? 0),
-    demolitionPlacement: Number(raw.demolitionPlacement ?? 0),
-  };
-
-  const weaponClass = String(sourceItem?.system?.weaponClass ?? '');
+  const weaponClass = String(sourceItem?.system?.weaponClass ?? '').trim();
+  const primaryLevel = getActorWeaponProficiencyLevel(actor, primaryKey);
   const isPrimitive = hasWeaponFeature(sourceItem, 'primitive');
-  if (proficiencyKey === 'primitive' && isPrimitive) {
-    if (weaponClass === 'ranged') {
-      result.attack += Number(raw.primitiveRangedAttack ?? 0);
-    } else if (weaponClass === 'melee') {
-      result.attack += Number(raw.primitiveMeleeAttack ?? 0);
-      result.damage += Number(raw.primitiveMeleeDamage ?? 0);
-    }
-  }
+  const primitiveLevel = isPrimitive ? getActorWeaponProficiencyLevel(actor, 'primitive') : 0;
 
-  if (subtype === 'demolition') {
-    if (attributeKey === 'operation') {
-      result.demolitionPlacement = Number(result.demolitionPlacement ?? 0);
-    }
-    return result;
-  }
+  const entries = [];
+  if (primaryLevel > 0) entries.push({ proficiencyKey: primaryKey, level: primaryLevel });
+  if (primitiveLevel > 0) entries.push({ proficiencyKey: 'primitive', level: primitiveLevel });
+  if (!entries.length) return empty;
 
-  return result;
+  const description = entries.length > 1
+    ? entries.map(({ proficiencyKey, level }) => `${formatSpecializationName(proficiencyKey)} (Lvl ${level})`).join(' + ')
+    : '';
+
+  const specialization = SpecializationData.fromProficiencyList({
+    entries,
+    weaponClass,
+    description,
+  });
+
+  return specialization.toCardPayload();
 }
 
 /**
@@ -97,16 +70,10 @@ export function resolveWeaponSpecializationContext({ actor, sourceItem, subtype,
  * Returns the numeric demolition bonus that callers may apply.
  */
 export function getDemolitionSpecializationBonus({ specializationContext, subtype, attributeKey } = {}) {
-  // This function returns the numeric specialization bonus for demolition
-  // flows. It does not mutate any provided roll data.
-  if (!specializationContext) return 0;
   if (subtype !== 'demolition') return 0;
 
-  const bonus = attributeKey === 'operation'
-    ? Number(specializationContext.demolitionPlacement ?? 0)
-    : Number(specializationContext.demolitionThrow ?? 0);
-
-  return Number(bonus || 0);
+  const specializationData = SpecializationData.fromInput(specializationContext);
+  return specializationData.getDemolitionBonus(attributeKey);
 }
 
 export function hasWeaponFeature(sourceItem, featureKey) {
@@ -120,21 +87,19 @@ export function hasWeaponFeature(sourceItem, featureKey) {
  * Build standardized metadata rows for weapon specialization traceability.
  */
 export function buildWeaponSpecializationMetadataRows({ input = {}, includeAttackBonus = false, includeDamageBonus = false, includeLethalBonus = false, includeShockRdBonus = false } = {}) {
-  const key = String(input?.specializationKey ?? '').trim();
-  const level = Number(input?.specializationLevel ?? 0);
-  const attackBonus = Number(input?.specializationAttackBonus ?? 0);
-  const damageBonus = Number(input?.specializationDamageBonus ?? 0);
-  const lethalBonus = Number(input?.specializationLethalBonus ?? 0);
-  const shockRdBonus = Number(input?.specializationShockRdBonus ?? 0);
+  const specializationData = SpecializationData.fromInput(input);
+  const { key, level, attackBonus, damageBonus, lethalBonus, shockRdBonus, description } = specializationData.toCardPayload();
 
   if (!key && !level && !attackBonus && !damageBonus && !lethalBonus && !shockRdBonus) return [];
 
   const rows = [];
 
-  const descriptorName = key ? formatSpecializationName(key) : '';
-  const descriptorValue = level > 0
-    ? `${descriptorName || game.i18n.localize('SYNTHICIDE.Roll.Card.SpecShort')} (Lvl ${level})`
-    : descriptorName;
+  const descriptorName = String(description || (key ? formatSpecializationName(key) : '')).trim();
+  const descriptorValue = description
+    ? descriptorName
+    : (level > 0
+      ? `${descriptorName || game.i18n.localize('SYNTHICIDE.Roll.Card.SpecShort')} (Lvl ${level})`
+      : descriptorName);
   if (descriptorValue) {
     rows.push({
       label: game.i18n.localize('SYNTHICIDE.Roll.Card.WeaponSpecialization'),
@@ -143,8 +108,8 @@ export function buildWeaponSpecializationMetadataRows({ input = {}, includeAttac
   }
 
   const bonusParts = [];
-  if (includeAttackBonus) bonusParts.push(`ATT ${formatSignedNumber(attackBonus)}`);
-  if (includeDamageBonus) bonusParts.push(`DMG ${formatSignedNumber(damageBonus)}`);
+  if (includeAttackBonus && attackBonus !== 0) bonusParts.push(`ATT ${formatSignedNumber(attackBonus)}`);
+  if (includeDamageBonus && damageBonus !== 0) bonusParts.push(`DMG ${formatSignedNumber(damageBonus)}`);
   if (bonusParts.length) {
     rows.push({
       label: game.i18n.localize('SYNTHICIDE.Roll.Card.WeaponSpecializationBonuses'),
@@ -153,8 +118,8 @@ export function buildWeaponSpecializationMetadataRows({ input = {}, includeAttac
   }
 
   const effectParts = [];
-  if (includeLethalBonus) effectParts.push(`Lethal ${formatSignedNumber(lethalBonus)}`);
-  if (includeShockRdBonus) effectParts.push(`Shock RD ${formatSignedNumber(shockRdBonus)}`);
+  if (includeLethalBonus && lethalBonus !== 0) effectParts.push(`Lethal ${formatSignedNumber(lethalBonus)}`);
+  if (includeShockRdBonus && shockRdBonus !== 0) effectParts.push(`Shock RD ${formatSignedNumber(shockRdBonus)}`);
   if (effectParts.length) {
     rows.push({
       label: game.i18n.localize('SYNTHICIDE.Roll.Card.WeaponSpecializationEffects'),
@@ -166,28 +131,21 @@ export function buildWeaponSpecializationMetadataRows({ input = {}, includeAttac
 }
 
 /**
- * Backward-compatible single-row accessor.
- */
-export function buildWeaponSpecializationMetadataRow(options = {}) {
-  return buildWeaponSpecializationMetadataRows(options)[0] ?? null;
-}
-
-/**
  * Build metadata rows for demolition specialization traceability.
  */
 export function buildDemolitionSpecializationMetadataRows({ input = {} } = {}) {
-  const key = String(input?.specializationKey ?? '').trim();
-  const level = Number(input?.specializationLevel ?? 0);
-  const throwBonus = Number(input?.specializationDemolitionThrowBonus ?? 0);
-  const placementBonus = Number(input?.specializationDemolitionPlacementBonus ?? 0);
+  const specializationData = SpecializationData.fromInput(input);
+  const { key, level, description, demolitionThrow: throwBonus, demolitionPlacement: placementBonus } = specializationData.toCardPayload();
 
   if (!key && !level && !throwBonus && !placementBonus) return [];
 
   const rows = [];
-  const descriptorName = key ? formatSpecializationName(key) : '';
-  const descriptorValue = level > 0
-    ? `${descriptorName || game.i18n.localize('SYNTHICIDE.Roll.Card.SpecShort')} (Lvl ${level})`
-    : descriptorName;
+  const descriptorName = String(description || (key ? formatSpecializationName(key) : '')).trim();
+  const descriptorValue = description
+    ? descriptorName
+    : (level > 0
+      ? `${descriptorName || game.i18n.localize('SYNTHICIDE.Roll.Card.SpecShort')} (Lvl ${level})`
+      : descriptorName);
 
   if (descriptorValue) {
     rows.push({

@@ -59,7 +59,7 @@ Hooks.once('init', function () {
         / __| | | | '_ \\| __| '_ \\| |/ __| |/ _' |/ _ \\   __) / _ \\ 
         \\__ \\ |_| | | | | |_| | | | | (__| | (_| |  __/  / __/  __/
         |___/\\__, |_| |_|\\__|_| |_|_|\\___|_|\\__,_|\\___| |_____\\___|
-            |___/                                                                                     
+             |___/                                                                                     
       `,
       "color: #ffffff; font-weight: bold; font-size: 16px;", // Style for the header
       "color:rgb(222, 51, 3); font-weight: normal; font-size: 12px;" // Style for the ASCII art
