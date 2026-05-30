@@ -1,4 +1,5 @@
 import { localize } from './roll-utils.mjs';
+import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
 
 export function normalizeMessageMode(mode) {
   return CONFIG.ChatMessage.modes?.[mode] ? mode : 'public';
@@ -31,20 +32,8 @@ export function buildChatMessageData({ actor, content, cardData, whisper }) {
   return chatData;
 }
 
-export async function createActionMessage({ actor, roll, cardData, template, messageMode, whisper } = {}) {
-  const normalizedMode = normalizeMessageMode(messageMode);
-  if (roll) {
-    const rollHtml = await roll.render();
-    const cardHtml = await renderActionCardHtml({ template, cardData, rollHtml });
-    return roll.toMessage(buildChatMessageData({ actor, content: cardHtml, cardData, whisper }), {
-      messageMode: normalizedMode,
-      create: true,
-    });
-  }
-
-  const cardHtml = await renderActionCardHtml({ template, cardData });
-  const chatData = buildChatMessageData({ actor, content: cardHtml, cardData, whisper });
-  return ChatMessage.create(chatData, { messageMode: normalizedMode });
+export async function createActionMessage(args = {}) {
+  return SynthicideChatMessage.createActionMessage(args);
 }
 
 export async function createBlastSummaryMessage({ actor, summaryRows, messageMode }) {

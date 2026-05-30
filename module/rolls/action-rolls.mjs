@@ -98,7 +98,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
     + extraDamageTotal;
 
   const specializationSource = SpecializationData.fromObject(messageRollData.specialization ?? {}).toCardPayload();
-  const sourceItem = messageRollData.sourceItemUuid ? fromUuidSync(messageRollData.sourceItemUuid, { strict: false }) : null;
+  const sourceItem = messageRollData.sourceItemUuid ? foundry.utils.fromUuidSync(messageRollData.sourceItemUuid, { strict: false }) : null;
   const baseSourceLethal = Number(sourceItem?.system?.bonuses?.lethal ?? 0);
   const rawLethal = Number(messageRollData.lethal ?? baseSourceLethal);
   const effectiveLethal = (sourceItem && rawLethal === baseSourceLethal)
@@ -319,7 +319,7 @@ function canExecuteFollowup(message, user = game.user) {
 function resolveActorFromUuidSync(uuid) {
   if (!uuid) return null;
   try {
-    return globalThis.fromUuidSync(uuid, { strict: false }) ?? null;
+    return foundry.utils.fromUuidSync(uuid, { strict: false }) ?? null;
   } catch {
     return null;
   }

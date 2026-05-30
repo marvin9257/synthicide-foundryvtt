@@ -22,6 +22,7 @@ import { registerSynthicideChatContextHook, SynthicideChatPopout } from './docum
 import { registerVirtualGridOverlay, safeRenderVirtualGrid } from './canvas/virtual-grid-overlay.mjs';
 import SynthicideVirtualRuler from './canvas/synthicide-virtual-ruler.mjs';
 import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler.mjs';
+//import { SynthicideChatMessage } from './documents/synthicide-chat-message.mjs';
 
 const collections = foundry.documents.collections;
 
@@ -29,21 +30,22 @@ const collections = foundry.documents.collections;
 /*  Init Hook                                   */
 /* -------------------------------------------- */
 
-// Add key classes to the global scope so they can be more easily used
-globalThis.synthicide = {
+// Expose a module-scoped synthicide namespace for internal use and for
+// assigning to `game.synthicide` during init. Avoid polluting globalThis.
+const synthicide = {
   documents: {
     SynthicideActor,
     SynthicideItem,
-    SynthicideActiveEffect
+    SynthicideActiveEffect,
   },
   applications: {
     SynthicideActorSheet,
     SynthicideNPCActorSheet,
-    SynthicideItemSheet
+    SynthicideItemSheet,
   },
   utils: {
     rollItemMacro,
-    openSynthicideActionRollDialog
+    openSynthicideActionRollDialog,
   },
   models,
 };
@@ -66,7 +68,7 @@ Hooks.once('init', function () {
   );
 
   // Expose the synthicide namespace on `game` for macros and user scripts.
-  if (typeof game !== 'undefined') game.synthicide = globalThis.synthicide;
+  if (typeof game !== 'undefined') game.synthicide = synthicide;
 
   // Add custom constants for configuration.
   CONFIG.SYNTHICIDE = SYNTHICIDE;
@@ -101,6 +103,8 @@ Hooks.once('init', function () {
     trait: models.SynthicideTrait,
     weapon: models.SynthicideWeapon
   };
+  // Use our custom ChatMessage subclass to centralize message preprocessing
+  //CONFIG.ChatMessage.documentClass = SynthicideChatMessage;
   
   Object.assign(CONFIG.ChatMessage.dataModels, {
     attack: models.AttackCardSystemData,
@@ -230,7 +234,7 @@ async function createDocMacro(data, slot) {
   const item = await Item.fromDropData(data);
 
   // Create the macro command using the uuid. Call the utils directly.
-  const command = `game.synthicide.utils.rollItemMacro("${data.uuid}");`;
+  const command = `await game.synthicide.utils.rollItemMacro("${data.uuid}");`;
   let macro = game.macros.find(
     (m) => m.name === item.name && m.command === command
   );
@@ -252,14 +256,11 @@ async function createDocMacro(data, slot) {
  * Get an existing item macro if one exists, otherwise create a new one.
  * @param {string} itemUuid
  */
-function rollItemMacro(itemUuid) {
+async function rollItemMacro(itemUuid) {
   // Reconstruct the drop data so that we can load the item.
-  const dropData = {
-    type: 'Item',
-    uuid: itemUuid,
-  };
-  // Load the item from the uuid.
-  Item.fromDropData(dropData).then((item) => {
+  const dropData = { type: 'Item', uuid: itemUuid };
+  try {
+    const item = await Item.fromDropData(dropData);
     // Determine if the item loaded and if it's an owned item.
     if (!item || !item.parent) {
       const itemName = item?.name ?? itemUuid;
@@ -270,8 +271,11 @@ function rollItemMacro(itemUuid) {
 
     // Trigger the item roll
     const sItem = /** @type {import('./documents/item.mjs').SynthicideItem} */ (item);
-    sItem.roll();
-  });
+    await sItem.roll();
+  } catch (err) {
+    console.error('rollItemMacro error', err);
+    ui.notifications.warn('Could not execute item macro (see console).');
+  }
 }
 
 function applySheetStyleMode(mode) {

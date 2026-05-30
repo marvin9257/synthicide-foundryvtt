@@ -36,8 +36,13 @@ export default class ItemTemplate extends foundry.canvas.placeables.Region {
       return null;
     }
 
-    // Create the region document
-    const regionDoc = new foundry.documents.RegionDocument(foundry.utils.deepClone(regionData), {parent: canvas.scene});
+    // Require an active scene to create a scene-backed RegionDocument
+    const parentScene = canvas?.scene ?? null;
+    if (!parentScene) {
+      console.warn('[Synthicide] Cannot create ItemTemplate without an active scene');
+      return null;
+    }
+    const regionDoc = new foundry.documents.RegionDocument(foundry.utils.deepClone(regionData), { parent: parentScene });
     // Create the placeable Region object (ItemTemplate extends Region)
     const region = new this(regionDoc);
     region.item = item;

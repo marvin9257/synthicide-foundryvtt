@@ -80,6 +80,10 @@ function applyChatCardDamage(li, multiplier) {
   const rollData = getStandardizedRollData(message);
   const baseDamage = rollData.total ?? message.rolls?.[0]?.total;
   if (baseDamage > 0) {
+    if (!canvas?.tokens?.controlled?.length) {
+      ui.notifications.warn("SYNTHICIDE.Roll.Warnings.NoDamageToApply", {localize: true});
+      return;
+    }
     return Promise.all(canvas.tokens.controlled.map(t => {
       const targetActor = t.actor;
       if (["sharper", "npc"].includes(targetActor.type)) {

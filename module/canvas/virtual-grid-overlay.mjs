@@ -30,6 +30,7 @@ export class VirtualGridLayer extends foundry.canvas.layers.CanvasLayer {
   }
 
   _drawGrid() {
+    if (!canvas?.ready) return;
     const grid = canvas.grid;
     if (!grid) return;
 
