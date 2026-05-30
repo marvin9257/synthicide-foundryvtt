@@ -3,7 +3,7 @@ import { prepareChallengeCardData } from './challenge-card-data.mjs';
 import { prepareDamageCardData } from './damage-card-data.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { renderActionRollDialog, buildDialogDefaults } from './dialogs.mjs';
-import { executeAttackActionRoll, buildAttackRangeContext } from './attack-rolls.mjs';
+import { executeAttackActionRoll, getActorToken } from './attack-rolls.mjs';
 import { executeDemolitionActionRoll, getDemolitionRollAttributeKey } from './demolition-rolls.mjs';
 import { createActionMessage, normalizeMessageMode } from './cards.mjs';
 export { createActionMessage };
@@ -104,7 +104,10 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   const effectiveLethal = (sourceItem && rawLethal === baseSourceLethal)
     ? rawLethal + Number(specializationSource.lethalBonus ?? 0)
     : rawLethal;
-  const ctx = buildRollContext({ actor, actorToken: getControlledActor()?.token ?? null, sourceItem: null, subtype: 'damage', attributeKey: 'combat', input: {
+  const sourceToken = getActorToken(actor);
+  const controlledActor = getControlledActor();
+  const controlledToken = sourceToken ?? (controlledActor?.uuid === actor?.uuid ? getActorToken(controlledActor) : null);
+  const ctx = buildRollContext({ actor, actorToken: controlledToken, sourceItem: null, subtype: 'damage', attributeKey: 'combat', input: {
     d10: messageRollData.d10,
     damageBonus: messageRollData.damageBonus,
     baneDamageBonus: Number(messageRollData.baneDamageBonus ?? 0),
@@ -207,11 +210,11 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   const attributeKey = getActionAttributeKey(resolvedSubtype, attributeRequested);
 
   // Build a RollContext centrally and apply modifiers + specializations once for all flows
-  const ctx = buildRollContext({ actor, actorToken: null, sourceItem, subtype: resolvedSubtype, attributeKey, input });
-  if (isAttack) {
-    ctx.attackRangeContext = buildAttackRangeContext({ actor, sourceItem, notify: false });
-  }
-  ctx.applyRollAdjustments();
+  const sourceToken = getActorToken(actor);
+  const controlledActor = getControlledActor();
+  const controlledToken = sourceToken ?? (controlledActor?.uuid === actor?.uuid ? getActorToken(controlledActor) : null);
+  const ctx = buildRollContext({ actor, actorToken: controlledToken, sourceItem, subtype: resolvedSubtype, attributeKey, input });
+  ctx.prepareRoll({ notifyRange: false });
 
   if (isDemolition) {
     return executeDemolitionActionRoll({ ctx, template: CARD_TEMPLATE });

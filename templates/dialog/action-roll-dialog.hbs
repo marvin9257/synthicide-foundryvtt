@@ -103,6 +103,12 @@
         <input type="number" name="rangeModifier" value="{{defaultRangeModifier}}" step="1" />
       </div>
 
+      {{#if defaultRangeIsImpossible}}
+        <div class="form-group range-warning">
+          <p class="notes warning">{{localize "SYNTHICIDE.Roll.Warnings.MeleeOutOfRange"}}</p>
+        </div>
+      {{/if}}
+
       <div class="form-group">
         <label class="shield-bonus-label">{{localize "SYNTHICIDE.Roll.Dialog.ShieldBonus"}}</label>
         <div class="field-stack">

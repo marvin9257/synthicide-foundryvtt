@@ -1,7 +1,9 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import { localize, formatSignedNumber, formatRollModifiers } from './roll-utils.mjs';
 import { computeRollModifiers, parseNumeric, getActionAttributeKey, ATTRIBUTE_COMBAT, hasWeaponModification } from './modifiers.mjs';
-import { buildAttackRangeContext, resolveWeaponAttackContext, getTargetDefense } from './attack-rolls.mjs';
+import { resolveWeaponAttackContext, getTargetDefense, getActorToken } from './attack-rolls.mjs';
+import { buildRollContext } from './roll-context.mjs';
+import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { normalizeMessageMode } from './cards.mjs';
 
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
@@ -57,6 +59,7 @@ export function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, 
     slugShotModeAvailable: attackDefaults.slugShotModeAvailable,
     slugShotActive: false,
     rangeModifier: attackDefaults.rangeModifier,
+    rangeIsImpossible: Boolean(attackDefaults.rangeIsImpossible),
     shieldBonus: isMeleeAttack ? targetDefense.shieldBonus : 0,
     weaponClass: String(sourceItem?.system?.weaponClass ?? ''),
     sourceItem,
@@ -76,7 +79,17 @@ function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
     };
   }
 
-  const rangeContext = buildAttackRangeContext({ actor, sourceItem, notify: false });
+  const controlledActor = getControlledActor();
+  const sourceToken = getActorToken(actor);
+  const controlledToken = sourceToken ?? (controlledActor?.uuid === actor?.uuid ? getActorToken(controlledActor) : null);
+  const rangeContext = buildRollContext({
+    actor,
+    actorToken: controlledToken,
+    sourceItem,
+    subtype: 'attack',
+    attributeKey: null,
+    input: {},
+  }).resolveAttackRange({ notify: false });
   const targetToken = game.user.targets?.size === 1 ? game.user.targets.first() : null;
   const attackContext = resolveWeaponAttackContext({ actor, sourceItem, targetToken });
   return {
@@ -84,6 +97,7 @@ function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
     damageBonus: attackContext.damageBonus,
     slugShotModeAvailable: hasWeaponModification(sourceItem, 'slugShot'),
     rangeModifier: Number(rangeContext?.rangeModifier ?? 0),
+    rangeIsImpossible: Boolean(rangeContext?.isImpossible),
   };
 }
 
@@ -114,6 +128,7 @@ function buildDialogContext(defaults) {
     showSlugShotToggle: Boolean(defaults.slugShotModeAvailable),
     defaultSlugShotActive: Boolean(defaults.slugShotActive),
     defaultRangeModifier: defaults.rangeModifier ?? 0,
+    defaultRangeIsImpossible: Boolean(defaults.rangeIsImpossible),
     defaultShieldBonus: defaults.shieldBonus ?? 0,
     shieldBonusHintKey: isMeleeAttack
       ? 'SYNTHICIDE.Roll.Dialog.ShieldBonusHint.Melee'

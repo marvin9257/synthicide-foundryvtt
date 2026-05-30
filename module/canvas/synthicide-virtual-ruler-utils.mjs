@@ -58,10 +58,15 @@ export function countVirtualGridUnitsCrossed(waypoint, vSize) {
  * @param {number} [virtualGridMultiplier=3] - Multiplier for virtual grid size (default 3).
  * @returns {number} Chebyshev distance in VCU between token centers.
  */
+function getTokenCenter(token) {
+  if (!token) return null;
+  return token.center ?? token.object?.center ?? null;
+}
+
 export function calculateVirtualDistanceBetweenTokens(tokenA, tokenB, virtualGridMultiplier = 3) {
-  if (!tokenA || !tokenB) return 0;
-  const a = tokenA.center;
-  const b = tokenB.center;
+  const a = getTokenCenter(tokenA);
+  const b = getTokenCenter(tokenB);
+  if (!a || !b) return 0;
   const gridSize = canvas?.grid?.size || 100;
   const vSize = gridSize * virtualGridMultiplier;
   const cellA = getVirtualGridCell(a.x, a.y, vSize);
@@ -81,10 +86,9 @@ export function calculateVirtualDistanceBetweenTokens(tokenA, tokenB, virtualGri
  * @returns {Token[]} Collateral tokens intersected by the spread ray.
  */
 export function getSpreadCollateralTokens(shooterToken, targetToken) {
-  if (!shooterToken?.center || !targetToken?.center) return [];
-
-  const origin = shooterToken.center;
-  const aim    = targetToken.center;
+  const origin = getTokenCenter(shooterToken);
+  const aim = getTokenCenter(targetToken);
+  if (!origin || !aim) return [];
 
   // Extend to the center of the far directional 1x1 cell inside the target's virtual zone.
   const gridSize = canvas?.grid?.size ?? 100;

@@ -14,8 +14,7 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
   const sourceItem = ctx.sourceItem;
   const messageMode = normalizeMessageMode(ctx.input.messageMode);
 
-  const attackRangeContext = ctx.attackRangeContext || buildAttackRangeContext({ actor, sourceItem });
-  ctx.attackRangeContext = attackRangeContext;
+  const attackRangeContext = ctx.attackRangeContext;
   const specializationContext = ctx.specialization || {};
 
   if (attackRangeContext?.isImpossible) {
@@ -66,7 +65,7 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
   return attackMessage;
 }
 
-export function buildAttackRangeContext({ actor, sourceItem, notify = true }) {
+export function buildAttackRangeContext({ actor, sourceItem, actorToken = null, targetToken = null, notify = true } = {}) {
   const weaponClass = String(sourceItem?.system?.weaponClass ?? '');
   const rangeIncrement = Math.max(0, Number(sourceItem?.system?.rangeIncrement ?? 0));
   const hasCloseFeature = hasWeaponFeature(sourceItem, 'close');
@@ -80,18 +79,24 @@ export function buildAttackRangeContext({ actor, sourceItem, notify = true }) {
     isImpossible: false,
   };
 
+  function normalizeToken(token) {
+    return token?.object ?? token ?? null;
+  }
+
   if (weaponClass !== 'melee' && weaponClass !== 'ranged') return context;
 
-  const targetToken = getSingleTargetToken({ notify });
+  if (!targetToken) targetToken = getSingleTargetToken({ notify });
+  targetToken = normalizeToken(targetToken);
   if (!targetToken?.center) return context;
 
-  const attackerToken = getActorToken(actor);
-  if (!attackerToken?.center) {
+  if (!actorToken) actorToken = getActorToken(actor);
+  actorToken = normalizeToken(actorToken);
+  if (!actorToken?.center) {
     if (notify && actor) ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.AttackerTokenMissing'));
     return context;
   }
 
-  const distance = Number(calculateVirtualDistanceBetweenTokens(attackerToken, targetToken) ?? 0);
+  const distance = Number(calculateVirtualDistanceBetweenTokens(actorToken, targetToken) ?? 0);
   context.distance = Number.isFinite(distance) ? Math.max(0, distance) : 0;
 
   if (weaponClass === 'melee' && rangeIncrement === 0 && context.distance > 0) {
@@ -150,8 +155,13 @@ export function getTargetDefense({ notify = true } = {}) {
   return { armor: defaultValue, shieldBonus: 0 };
 }
 
+function getTokenObject(token) {
+  if (!token) return null;
+  return token.object ?? token;
+}
+
 function getSingleTargetToken({ notify = true } = {}) {
-  if (game.user.targets?.size === 1) return game.user.targets.first() ?? null;
+  if (game.user.targets?.size === 1) return getTokenObject(game.user.targets.first() ?? null);
   if (game.user.targets?.size > 1) {
     if (notify) ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.TooManyTargets'));
     return null;
@@ -163,13 +173,13 @@ function getSingleTargetToken({ notify = true } = {}) {
 export function getActorToken(actor) {
   if (!actor) return null;
   const activeTokens = actor.getActiveTokens?.(false, false) ?? [];
-  if (activeTokens.length > 0) return activeTokens[0];
+  if (activeTokens.length > 0) return getTokenObject(activeTokens[0]);
   if (canvas?.scene?.tokens) {
     const sceneToken = canvas.scene.tokens.find((token) => token?.actorId === actor.id);
     if (sceneToken) return sceneToken.object;
   }
   const controlled = canvas?.tokens?.controlled ?? [];
-  return controlled.find((token) => token?.actor?.id === actor.id) ?? null;
+  return getTokenObject(controlled.find((token) => token?.actor?.id === actor.id) ?? null);
 }
 
 function getArcAttackBonus({ sourceItem, targetToken }) {

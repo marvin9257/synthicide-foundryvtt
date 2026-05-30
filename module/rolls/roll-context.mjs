@@ -3,6 +3,7 @@
 import { getActorAttributeValue, getActorRollModifiers, hasWeaponModification, applyAttackModeAdjustments, applyAmmoAttackAdjustments, parseNumeric, ATTRIBUTE_COMBAT } from './modifiers.mjs';
 import { resolveWeaponSpecializationContext, getDemolitionSpecializationBonus } from './weapon-proficiency-rules.mjs';
 import { resolveAmmoAttackEffects } from './ammo-effects.mjs';
+import { buildAttackRangeContext } from './attack-rolls.mjs';
 
 
 
@@ -118,24 +119,38 @@ export class RollContext {
   }
 
   /**
-   * Compute a lightweight attackRangeContext from distance and increment.
-   * This is intentionally conservative; callers can replace with domain logic.
+   * Resolve and cache attack range context for this roll.
    * @param {Object} opts
-   * @param {number} opts.distance
-   * @param {number} opts.rangeIncrement
-   * @param {number|null} opts.maxRange
+   * @param {Token|null} opts.actorToken
+   * @param {Token|null} opts.targetToken
+   * @param {boolean} opts.notify
    */
-  computeRangeContext({ distance = 0, rangeIncrement = 0, maxRange = null } = {}) {
-    const ctx = { distance: Number(distance || 0), rangeIncrement: Number(rangeIncrement || 0), increments: 0, rangeModifier: 0, isImpossible: false };
-    if (ctx.rangeIncrement > 0) {
-      ctx.increments = Math.floor(ctx.distance / ctx.rangeIncrement);
-      // Simple rule: -1 attack per increment beyond first
-      ctx.rangeModifier = -Math.max(0, ctx.increments - 1);
+  resolveAttackRange({ actorToken = this.actorToken, targetToken = null, notify = true } = {}) {
+    const rangeContext = buildAttackRangeContext({
+      actor: this.actor,
+      sourceItem: this.sourceItem,
+      actorToken,
+      targetToken,
+      notify,
+    });
+    this.attackRangeContext = rangeContext;
+    return rangeContext;
+  }
+
+  /**
+   * Prepare this context for rolling by normalizing input, resolving any
+   * attack range context, and applying all input and specialization adjustments.
+   * @param {Object} opts
+   * @param {Token|null} opts.targetToken
+   * @param {boolean} opts.notifyRange
+   * @param {boolean} opts.includeSpecialization
+   */
+  prepareRoll({ targetToken = null, notifyRange = true, includeSpecialization = true } = {}) {
+    this.normalizeInput();
+    if (this.subtype === 'attack') {
+      this.resolveAttackRange({ actorToken: this.actorToken, targetToken, notify: notifyRange });
     }
-    if (typeof maxRange === 'number' && maxRange >= 0) ctx.isImpossible = ctx.distance > maxRange;
-    this.attackRangeContext = ctx;
-    this.rollData.rangeModifier = ctx.rangeModifier;
-    return ctx;
+    return this.applyRollAdjustments({ includeSpecialization });
   }
 
   /**
