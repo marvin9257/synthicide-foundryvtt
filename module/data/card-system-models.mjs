@@ -23,6 +23,7 @@ export class BaseCardSystemData extends foundry.abstract.TypeDataModel {
     schema.actorUuid = new fields.StringField({ required: false, nullable: true, blank: true, initial: '' });
     schema.sourceItemUuid = new fields.StringField({ required: false, blank: true, initial: '' });
     schema.sourceMessageId = new fields.StringField({ required: false, blank: true, initial: '' });
+    schema.subtype = new fields.StringField({ required: false, blank: true, initial: '' });
     return schema;
   }
 }

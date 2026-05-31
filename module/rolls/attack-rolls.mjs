@@ -242,15 +242,15 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
   const doubleShotBonus = Number(sourceItem?.system?.bonuses.doubleShotBonus ?? 0);
   const lethal = Number(sourceItem?.system?.bonuses.lethal ?? 0);
 
-  if (!hitTokens.length) {
+    if (!hitTokens.length) {
     const itemNamePrefix = sourceItem?.name ? `${sourceItem.name}: ` : '';
-    await ChatMessage.create({
-      content: `<div class="synthicide-spread-miss">${localize('SYNTHICIDE.Roll.Card.SpreadNoCollateral', {
-        itemName: itemNamePrefix,
-        count: candidates.length,
-      })}</div>`,
-      speaker: ChatMessage.getSpeaker({ actor }),
-    }, { messageMode: normalizeMessageMode(messageMode) });
+      await ChatMessage.create({
+        content: `<div class="synthicide-spread-miss">${localize('SYNTHICIDE.Roll.Card.SpreadNoCollateral', {
+          itemName: itemNamePrefix,
+          count: candidates.length,
+        })}</div>`,
+        speaker: ChatMessage.getSpeaker({ actor }),
+      }, { messageMode: normalizeMessageMode(messageMode) });
     return;
   }
 

@@ -343,6 +343,8 @@
       "Gear": {
         "FIELDS": {
           "rollFormula": {"label": "Roll Formula"},
+          "rollEnabled": {"label": "Enable Roll"},
+          "rollDisabled": "No roll configured",
           "numDice": {"label": "Number of Dice"},
           "dieSize": {"label": "Die Size"},
           "rollMod": {"label": "Roll Modifier"},

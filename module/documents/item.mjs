@@ -1,6 +1,6 @@
 
 
-import { createActionMessage, openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
+import { openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
 import { getRollResultSummary } from '../rolls/roll-utils.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 
@@ -190,12 +190,14 @@ export class SynthicideItem extends foundry.documents.Item {
     const item = this;
     const speaker = ChatMessage.getSpeaker({ actor: item.actor });
     const label = game.i18n.format('SYNTHICIDE.Roll.Card.ItemRoll', { type: item.type, name: item.name });
+    const description = String(item.system.description ?? '');
+    const sanitizedDescription = foundry.utils?.sanitizeHTML ? foundry.utils.sanitizeHTML(description) : description;
 
-    if (!item.system.formula || (item.system.roll.diceSize === "" && item.system.roll.diceBonus === "")) {
+    if (!item.system.roll?.enabled || !item.system.formula || (item.system.roll.diceSize === "" && item.system.roll.diceBonus === "")) {
       return ChatMessage.create({
         speaker,
         flavor: label,
-        content: item.system.description ?? '',
+        content: sanitizedDescription,
       }, {
         messageMode: game.settings.get('core', 'messageMode'),
       });
@@ -215,23 +217,36 @@ export class SynthicideItem extends foundry.documents.Item {
       showEffectOutcomeRow: false,
       showDamageButton: false,
       showOpposedButton: false,
-      flags: {
-        actorUuid: item.actor?.uuid ?? null,
-        userId: game.user.id,
-        sourceItemUuid: item.uuid,
-        messageMode: game.settings.get('core', 'messageMode'),
-      },
-      flavor: item.system.description ?? '',
+      flavor: sanitizedDescription,
       metadataRows: [
         { label: 'Formula', valueHtml: `<code>${foundry.utils.escapeHTML(String(rollData.formula ?? ''))}</code>` },
       ],
+      flags: {
+        synthicide: {
+          total,
+          dieValue: d10,
+          userId: game.user.id,
+          actorUuid: item.actor?.uuid ?? '',
+          sourceItemUuid: item.uuid ?? '',
+          messageMode: game.settings.get('core', 'messageMode') ?? '',
+        },
+      },
     };
 
-    return createActionMessage({
-      actor: item.actor,
-      roll: evaluatedRoll,
+    const rollHtml = await evaluatedRoll.render();
+    const cardHtml = await foundry.applications.handlebars.renderTemplate(
+      'systems/synthicide/templates/chat/action-roll-card.hbs',
+      { ...cardData, rollHtml }
+    );
+
+    return evaluatedRoll.toMessage({
+      speaker,
+      content: cardHtml,
+      title: cardData.title,
+      flags: { synthicide: cardData },
+      flavor: cardData.flavor,
+    }, {
       messageMode: game.settings.get('core', 'messageMode'),
-      cardData,
     });
   }
 

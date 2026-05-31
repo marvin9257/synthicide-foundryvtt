@@ -3,7 +3,8 @@ import ItemTemplate from '../documents/ItemTemplate.mjs';
 import { calculateVirtualZoneDistanceBetweenPoints, getRandomScatterCorner } from '../canvas/demolition-scatter-utils.mjs';
 import { prepareDemolitionCardData } from './demolition-card-data.mjs';
 import { prepareAttackCardData } from './attack-card-data.mjs';
-import { createActionMessage, createBlastSummaryMessage, normalizeMessageMode, buildChatMessageData } from './cards.mjs';
+import { createActionMessage, createBlastSummaryMessage, normalizeMessageMode } from './cards.mjs';
+import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
 import { parseNumeric, FORMULA_CHALLENGE, FORMULA_ATTACK } from './modifiers.mjs';
 import { buildRollContext } from './roll-context.mjs';
 import { getActorToken } from './attack-rolls.mjs';
@@ -231,8 +232,8 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
     });
 
     const cardHtml = await foundry.applications.handlebars.renderTemplate(template, { ...attackCardData, rollHtml });
-    const chatData = buildChatMessageData({ actor, content: cardHtml, cardData: attackCardData });
-    await ChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
+    const chatData = SynthicideChatMessage.prepareData({ actor, content: cardHtml, cardData: attackCardData });
+    await SynthicideChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
 
     summaryRows.push(`<tr><td>${token.name}</td><td>${targetAD}</td><td>${attackTotal}</td><td>${hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss')}</td></tr>`);
   }

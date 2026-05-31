@@ -379,8 +379,8 @@ export class SynthicideActor extends foundry.documents.Actor {
    */
   _resolveShockMessageOptions({ options = {}, cardData } = {}) {
     return {
-      preferredMode: options?.messageMode ?? cardData?.flags?.messageMode ?? game.settings.get('core', 'messageMode'),
-      whisper: options?.whisper ?? cardData?.flags?.whisper ?? undefined,
+      preferredMode: options?.messageMode ?? cardData?.messageMode ?? cardData?.flags?.messageMode ?? game.settings.get('core', 'messageMode'),
+      whisper: options?.whisper ?? cardData?.whisper ?? cardData?.flags?.whisper ?? undefined,
     };
   }
 

@@ -1,4 +1,4 @@
-import { getStandardizedRollData, localize } from './roll-utils.mjs';
+import { localize } from './roll-utils.mjs';
 import { prepareChallengeCardData } from './challenge-card-data.mjs';
 import { prepareDamageCardData } from './damage-card-data.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
@@ -59,7 +59,15 @@ export function registerActionRollHooks() {
 
 
 async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
-  const messageRollData = getStandardizedRollData(sourceMessage);
+  if (!sourceMessage) {
+    console.warn('executeDerivedDamageRoll called without sourceMessage');
+    return null;
+  }
+  const messageRollData = sourceMessage.getCardPayload?.();
+  if (!messageRollData) {
+    console.warn('executeDerivedDamageRoll: no card payload found on sourceMessage', sourceMessage);
+    return ui.notifications?.warn(localize('SYNTHICIDE.Roll.Warnings.AttackDataMissing'));
+  }
   const sourceSubtype = messageRollData.subtype;
   if (sourceSubtype !== SUBTYPES.ATTACK && sourceSubtype !== SUBTYPES.DEMOLITION) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.AttackDataMissing'));
@@ -116,7 +124,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
     slugShotActive: Boolean(messageRollData.slugShotActive),
     hideAttributeRow: messageIsPlanted,
     total: damageTotal,
-    source: sourceMessage.speaker?.alias ?? sourceMessage.id,
+    source: sourceMessage?.getSpeakerAlias?.() ?? sourceMessage.speaker?.alias ?? sourceMessage.id,
     sourceMessageId: sourceMessage.id,
     sourceItemUuid: messageRollData.sourceItemUuid ?? null,
     lethal: effectiveLethal,
@@ -137,7 +145,15 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
 }
 
 async function executeOpposedChallengeRoll({ sourceMessage }) {
-  const sourceRollData = getStandardizedRollData(sourceMessage);
+  if (!sourceMessage) {
+    console.warn('executeOpposedChallengeRoll called without sourceMessage');
+    return null;
+  }
+  const sourceRollData = sourceMessage.getCardPayload?.();
+  if (!sourceRollData) {
+    console.warn('executeOpposedChallengeRoll: no card payload found on sourceMessage', sourceMessage);
+    return ui.notifications?.warn(localize('SYNTHICIDE.Roll.Warnings.ChallengeDataMissing'));
+  }
   if (sourceRollData.subtype !== SUBTYPES.CHALLENGE) {
     return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ChallengeDataMissing'));
   }
@@ -172,20 +188,20 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
   });
   if (!opposedRollMessage) return null;
 
-  const opposedRollData = getStandardizedRollData(opposedRollMessage);
+  const opposedRollData = opposedRollMessage.getCardPayload?.();
   const opposedTotal = Number(opposedRollData.total ?? 0);
   const sourceTotal = Number(sourceRollData.total ?? 0);
 
   let winnerText;
   if (opposedTotal > sourceTotal) {
     winnerText = localize('SYNTHICIDE.Roll.Opposed.Result.ChallengerWins', {
-      challenger: opposedRollMessage.speaker?.alias ?? localize('SYNTHICIDE.Roll.Opposed.Challenger'),
+      challenger: opposedRollMessage.getSpeakerAlias?.() ?? opposedRollMessage.speaker?.alias ?? localize('SYNTHICIDE.Roll.Opposed.Challenger'),
       total: opposedTotal,
       opposedTotal: sourceTotal,
     });
   } else if (sourceTotal > opposedTotal) {
     winnerText = localize('SYNTHICIDE.Roll.Opposed.Result.SourceWins', {
-      source: sourceMessage.speaker?.alias ?? localize('SYNTHICIDE.Roll.Opposed.Source'),
+      source: sourceMessage.getSpeakerAlias?.() ?? sourceMessage.speaker?.alias ?? localize('SYNTHICIDE.Roll.Opposed.Source'),
       total: sourceTotal,
       opposedTotal,
     });
@@ -251,7 +267,11 @@ async function handleOtherRoll({ _actor, _input, _sourceItem, subtype }) {
 
 function activateActionRollChatListeners(message, htmlElement) {
   if (!htmlElement || typeof htmlElement.querySelectorAll !== 'function' || typeof htmlElement.addEventListener !== 'function') return;
-  const messageRollData = getStandardizedRollData(message);
+  if (!message) {
+    console.warn('activateActionRollChatListeners called without message', { htmlElement });
+    return;
+  }
+  const messageRollData = message.getCardPayload?.();
   if (!messageRollData || (messageRollData.subtype !== SUBTYPES.ATTACK
     && messageRollData.subtype !== SUBTYPES.CHALLENGE
     && messageRollData.subtype !== SUBTYPES.DEMOLITION)) return;
@@ -281,6 +301,11 @@ async function onActionRollCardClick(event, message) {
   const button = event.target?.closest?.('[data-action]');
   if (!button || button.disabled) return;
 
+  if (!message) {
+    console.warn('onActionRollCardClick called without message');
+    return;
+  }
+
   const action = button.dataset.action;
   if (action !== 'rollDamage' && action !== 'rollOpposed') return;
 
@@ -303,10 +328,14 @@ async function onActionRollCardClick(event, message) {
 }
 
 function canExecuteFollowup(message, user = game.user) {
-  if (!message || !user) return false;
+  if (!message) {
+    console.warn('canExecuteFollowup called without message');
+    return false;
+  }
+  if (!user) return false;
   if (user.isGM) return true;
 
-  const rollData = getStandardizedRollData(message);
+  const rollData = message.getCardPayload?.();
   if (!rollData) return false;
 
   if (rollData.userId === user.id) return true;

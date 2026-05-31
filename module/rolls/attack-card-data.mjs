@@ -164,7 +164,7 @@ function buildAttackMetadataRows({
 
   rows.push(
     ...buildWeaponSpecializationMetadataRows({
-      input,
+      input: input.specialization ?? {},
       includeAttackBonus: true,
       includeDamageBonus: true,
       includeLethalBonus: true,

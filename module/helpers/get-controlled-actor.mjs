@@ -31,5 +31,6 @@ export function getControlledActor() {
   }
 
   // Player fallback: user's primary character
-  return game.user?.character ?? null;
+  // Prefer the user's primary character; if none, fall back to any actor the user owns
+  return game.user?.character ?? (game.actors?.find?.(a => a.isOwner) ?? null);
 }

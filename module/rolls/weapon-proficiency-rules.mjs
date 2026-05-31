@@ -90,7 +90,8 @@ export function buildWeaponSpecializationMetadataRows({ input = {}, includeAttac
   const specializationData = SpecializationData.fromInput(input);
   const { key, level, attackBonus, damageBonus, lethalBonus, shockRdBonus, description } = specializationData.toCardPayload();
 
-  if (!key && !level && !attackBonus && !damageBonus && !lethalBonus && !shockRdBonus) return [];
+  const hasSpecializationDescriptor = Boolean(key || level || description);
+  if (!hasSpecializationDescriptor) return [];
 
   const rows = [];
 

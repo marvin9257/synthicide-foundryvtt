@@ -22,7 +22,7 @@ import { registerSynthicideChatContextHook, SynthicideChatPopout } from './docum
 import { registerVirtualGridOverlay, safeRenderVirtualGrid } from './canvas/virtual-grid-overlay.mjs';
 import SynthicideVirtualRuler from './canvas/synthicide-virtual-ruler.mjs';
 import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler.mjs';
-//import { SynthicideChatMessage } from './documents/synthicide-chat-message.mjs';
+import { SynthicideChatMessage } from './documents/synthicide-chat-message.mjs';
 
 const collections = foundry.documents.collections;
 
@@ -104,7 +104,7 @@ Hooks.once('init', function () {
     weapon: models.SynthicideWeapon
   };
   // Use our custom ChatMessage subclass to centralize message preprocessing
-  //CONFIG.ChatMessage.documentClass = SynthicideChatMessage;
+  CONFIG.ChatMessage.documentClass = SynthicideChatMessage;
   
   Object.assign(CONFIG.ChatMessage.dataModels, {
     attack: models.AttackCardSystemData,

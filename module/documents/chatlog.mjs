@@ -1,4 +1,4 @@
-import { getStandardizedRollData } from '../rolls/roll-utils.mjs';
+// Use `message.getCardPayload()` on SynthicideChatMessage for standardized payloads.
 /**
  * The chat popout
  * @extends {ChatPopout}
@@ -42,10 +42,10 @@ function newContextOptions(coreContext)  {
 
   const canApply = li => {
     const message = game.messages.get(li.dataset?.messageId);
-    const rollData = getStandardizedRollData(message);
-    return Boolean((message?.isRoll || (rollData && typeof rollData.total === 'number'))
-      && message?.isContentVisible
-      && canvas.tokens?.controlled.length);
+    if (!message) return false;
+    const rollData = message.getCardPayload?.();
+    const hasTotal = message.isRoll || (rollData && typeof rollData.total === 'number');
+    return Boolean(hasTotal && message.isContentVisible && canvas.tokens?.controlled.length);
   };
   coreContext.push(
     {
@@ -77,8 +77,8 @@ function applyChatCardDamage(li, multiplier) {
     ui.notifications.warn("SYNTHICIDE.Roll.Warnings.NoDamageToApply", {localize: true});
     return;
   }
-  const rollData = getStandardizedRollData(message);
-  const baseDamage = rollData.total ?? message.rolls?.[0]?.total;
+  const rollData = message.getCardPayload?.();
+  const baseDamage = (rollData && typeof rollData.total === 'number') ? rollData.total : message.getFirstRollTotal?.();
   if (baseDamage > 0) {
     if (!canvas?.tokens?.controlled?.length) {
       ui.notifications.warn("SYNTHICIDE.Roll.Warnings.NoDamageToApply", {localize: true});
@@ -90,7 +90,7 @@ function applyChatCardDamage(li, multiplier) {
         const damage = Math.floor(baseDamage * multiplier);
         if (multiplier > 0) {
           const messageMode = rollData.messageMode ?? undefined;
-          const whisper = message.whisper ?? undefined;
+          const whisper = message.getWhisper?.();
           const lethal = rollData.lethal ?? 0;
           const options = {
             messageMode,
