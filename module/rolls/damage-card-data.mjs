@@ -122,7 +122,7 @@ function buildDamageMetadataRows({ source, lethal, baneDamageBonus = 0, doubleSh
 
   rows.push(
     ...buildWeaponSpecializationMetadataRows({
-      input,
+      input: input.specialization ?? {},
       includeAttackBonus: false,
       includeDamageBonus: true,
       includeLethalBonus: true,

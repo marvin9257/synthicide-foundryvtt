@@ -36,8 +36,13 @@ export default class ItemTemplate extends foundry.canvas.placeables.Region {
       return null;
     }
 
-    // Create the region document
-    const regionDoc = new foundry.documents.RegionDocument(foundry.utils.deepClone(regionData), {parent: canvas.scene});
+    // Require an active scene to create a scene-backed RegionDocument
+    const parentScene = canvas?.scene ?? null;
+    if (!parentScene) {
+      console.warn('[Synthicide] Cannot create ItemTemplate without an active scene');
+      return null;
+    }
+    const regionDoc = new foundry.documents.RegionDocument(foundry.utils.deepClone(regionData), { parent: parentScene });
     // Create the placeable Region object (ItemTemplate extends Region)
     const region = new this(regionDoc);
     region.item = item;
@@ -147,7 +152,7 @@ export default class ItemTemplate extends foundry.canvas.placeables.Region {
       const direction = 0;
       const angle = target.angle || 90;
       const width = target.width || 0;
-      const fillColor = color ?? game.user?.color ?? "#ff0000";
+      const fillColor = color ?? game.user.color ?? "#ff0000";
       const flags = foundry.utils.mergeObject(
         {synthicide: {origin: uuid}, core: {MeasuredTemplate: true}},
         foundry.utils.deepClone(customFlags),

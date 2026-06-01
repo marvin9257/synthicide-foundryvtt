@@ -76,12 +76,11 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
    */
   prepareDerivedData() {
     super.prepareDerivedData();
-
-    if (this.attributes) {
-      for (const attr of Object.values(this.attributes)) {
-        attr.value = (attr.base ?? 0) + (attr.modifier ?? 0) + (attr.increase ?? 0);
-      }
+    //Calculate attribute values
+    for (const attr of Object.values(this.attributes)) {
+      attr.value = (attr.base ?? 0) + (attr.modifier ?? 0) + (attr.increase ?? 0);
     }
+
     // Get worn armor values and apply armor-only modification effects.
     const currentArmorValues = getCurrentArmorValues(this.parent);
     foundry.utils.mergeObject(this.armorValues, {
@@ -91,14 +90,14 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       forceBarrier: currentArmorValues.forceBarrier,
     });
 
-    // Constrain speed.value to armor worn (guarding in case attributes are missing)
-    if (this.attributes?.speed && Number.isFinite(this.armorValues.speedMax)) {
+    // Constrain speed.value to armor worn
+    if (Number.isFinite(this.armorValues.speedMax)) {
       this.attributes.speed.value = Math.min(this.attributes.speed.value, this.armorValues.speedMax);
     }
 
     // Calculate foodDays.min as derived data for sharper actors
     this.rollModifiers.starvationPenalty = this.foodDays?.value < 0 ? -2 : 0;
-    if (this.foodDays && this.attributes?.toughness) {
+    if (this.foodDays) {
       this.foodDays.min = -(6 + (this.attributes.toughness.value ?? 0));
     }
     const level = this.level.value ?? 1;
@@ -106,7 +105,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     //Derived data calculated a bit differently for player characters; include any modifiers
     this.hitPoints.max = (this.hitPoints.base ?? 32)
       + (this.hitPoints.perLevel ?? 0) * Math.max(0, level - 1)
-      + (this.hitPoints?.modifier ?? 0);
+      + (this.hitPoints.modifier ?? 0);
     this.actionPoints.value = Math.floor(this.attributes.speed.value / 2) + this.actionPoints.modifier + 3;
     this.battleReflex.value = this.attributes.awareness.value + this.attributes.speed.value + this.battleReflex.modifier;
     const toughnessValue = this.attributes.toughness.value;
@@ -133,11 +132,10 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
 
     // Copy the attribute scores to the top level, so that rolls can use
     // formulas like `@str.mod + 4`.
-    if (this.attributes) {
-      for (let [k, v] of Object.entries(this.attributes)) {
-        data[k] = foundry.utils.duplicate(v);
-      }
+    for (let [k, v] of Object.entries(this.attributes)) {
+      data[k] = foundry.utils.duplicate(v);
     }
+    
     data.lvl = this.level.value;
     return data;
   }

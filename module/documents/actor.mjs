@@ -20,26 +20,31 @@ export class SynthicideActor extends foundry.documents.Actor {
     if (foundry.utils.hasProperty(changed, 'system.hitPoints.value')) {
       const nextHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.value') ?? 0);
       let maxHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.max'));
-      if (isNaN(maxHP)) maxHP = Number(this.system?.hitPoints?.max ?? 0);
+      if (!Number.isFinite(maxHP)) maxHP = Number(this.system.hitPoints.max ?? 0);
+      maxHP = Math.max(0, maxHP);
       foundry.utils.setProperty(changed, 'system.hitPoints.value', Math.min(maxHP, nextHP));
       foundry.utils.setProperty(changed, 'system.hitPoints.previous', this.system.hitPoints.value);
     }
 
-    const hasBarrierValue = foundry.utils.hasProperty(changed, 'system.armorValues.forceBarrier.value');
-    const hasBarrierMax = foundry.utils.hasProperty(changed, 'system.armorValues.forceBarrier.max');
+    const valuePath = 'system.armorValues.forceBarrier.value';
+    const maxPath = 'system.armorValues.forceBarrier.max';
+    const hasBarrierValue = foundry.utils.hasProperty(changed, valuePath);
+    const hasBarrierMax = foundry.utils.hasProperty(changed, maxPath);
     if (hasBarrierValue || hasBarrierMax) {
-      let maxBarrier = Number(foundry.utils.getProperty(changed, 'system.armorValues.forceBarrier.max'));
-      if (isNaN(maxBarrier)) maxBarrier = Number(this.system?.armorValues?.forceBarrier?.max ?? 0);
+      // Normalize max and persist the normalized max into the change payload
+      let maxBarrier = Number(foundry.utils.getProperty(changed, maxPath));
+      if (!Number.isFinite(maxBarrier)) maxBarrier = Number(this.system.armorValues?.forceBarrier?.max ?? 0);
       maxBarrier = Math.max(0, maxBarrier);
-      if (hasBarrierMax) {
-        foundry.utils.setProperty(changed, 'system.armorValues.forceBarrier.max', maxBarrier);
-      }
+      if (hasBarrierMax) foundry.utils.setProperty(changed, maxPath, maxBarrier);
 
-      const nextBarrier = hasBarrierValue
-        ? Number(foundry.utils.getProperty(changed, 'system.armorValues.forceBarrier.value') ?? 0)
-        : Number(this.system?.armorValues?.forceBarrier?.value ?? 0);
+      // Resolve the current/next barrier value (prefer explicit changed value)
+      const rawNext = foundry.utils.getProperty(changed, valuePath);
+      const nextBarrier = Number(rawNext ?? this.system.armorValues?.forceBarrier?.value ?? 0);
       const clampedBarrier = Math.clamp(Number.isFinite(nextBarrier) ? nextBarrier : 0, 0, maxBarrier);
-      foundry.utils.setProperty(changed, 'system.armorValues.forceBarrier.value', clampedBarrier);
+
+      // Always write the clamped value into the change payload so reductions to max
+      // (for example unequipping armor) force the stored value to be clamped.
+      foundry.utils.setProperty(changed, valuePath, clampedBarrier);
     }
     return allowed;
   }
@@ -343,7 +348,7 @@ export class SynthicideActor extends foundry.documents.Actor {
    */
   _resolveShockContext(options = {}) {
     const messageArmor = Number(options?.attack?.armor ?? options?.armor ?? NaN);
-    const actorArmor = Number(this.system?.armorDefense?.value ?? NaN);
+    const actorArmor = Number(this.system.armorDefense?.value ?? NaN);
     const armor = Number.isFinite(messageArmor)
       ? messageArmor
       : (Number.isFinite(actorArmor) ? actorArmor : 0);
@@ -379,8 +384,8 @@ export class SynthicideActor extends foundry.documents.Actor {
    */
   _resolveShockMessageOptions({ options = {}, cardData } = {}) {
     return {
-      preferredMode: options?.messageMode ?? cardData?.flags?.messageMode ?? game.settings.get('core', 'messageMode'),
-      whisper: options?.whisper ?? cardData?.flags?.whisper ?? undefined,
+      preferredMode: options?.messageMode ?? cardData?.messageMode ?? cardData?.flags?.messageMode ?? game.settings.get('core', 'messageMode'),
+      whisper: options?.whisper ?? cardData?.whisper ?? cardData?.flags?.whisper ?? undefined,
     };
   }
 

@@ -1,6 +1,6 @@
 
 
-import { createActionMessage, openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
+import { openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
 import { getRollResultSummary } from '../rolls/roll-utils.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 
@@ -116,23 +116,32 @@ export class SynthicideItem extends foundry.documents.Item {
     await super._onUpdate(changed, options, userId);
     if (game.userId !== userId) return;
 
-    // Auto-update image if weaponType changes and image is default
-    //if (this.type === 'weapon' && changed?.system?.weaponType) {
-      // Check if the image is the default for the previous type
-    //  const newImage = SynthicideItem.getDefaultArtwork(this).img;
-    //  if (this.img !== newImage && newImage) {
-    //    await this.update({ img: newImage });
-    //  }
-    //}
-
     if (!this.actor) return;
     // Enforce one-equipped-at-a-time for exclusive types unless this change was
     // triggered by the actor-level equip orchestration itself.
     if (SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES.includes(this.type) && changed?.system?.equipped !== undefined && !options._fromEquipLogic) {
       if (changed?.system?.equipped) {
         await this.actor.equipExclusiveItemType(this.type, this.id);
+        return;
       } else if (this.type === 'armor') {
-        await this.actor.update({'system.armorValues.forceBarrier.value': 0}, {render: false});
+        // When an armor is unequipped, ensure both max and value are cleared
+        // so the actor does not retain a stale barrier max.
+        await this.actor.update({
+          'system.armorValues.forceBarrier.max': 0,
+          'system.armorValues.forceBarrier.value': 0,
+        }, { render: true });
+        return;
+      }
+    }
+    
+    const newMaxBarrier = Number(foundry.utils.getProperty(changed, 'system.forceBarrier.max'));
+    if (this.type === 'armor' && this.system.equipped && Number.isFinite(newMaxBarrier)) {
+      const currentActorBarrier = this.actor.system.armorValues?.forceBarrier?.value;
+      if (currentActorBarrier > newMaxBarrier) {
+        const clampedBarrier = Math.clamp(currentActorBarrier, 0, newMaxBarrier);
+        await this.actor.update({
+          'system.armorValues.forceBarrier.value': clampedBarrier,
+        }, { render: true });
       }
     }
   }
@@ -190,12 +199,14 @@ export class SynthicideItem extends foundry.documents.Item {
     const item = this;
     const speaker = ChatMessage.getSpeaker({ actor: item.actor });
     const label = game.i18n.format('SYNTHICIDE.Roll.Card.ItemRoll', { type: item.type, name: item.name });
+    const description = String(item.system.description ?? '');
+    const sanitizedDescription = foundry.utils?.sanitizeHTML ? foundry.utils.sanitizeHTML(description) : description;
 
-    if (!item.system.formula || (item.system.roll.diceSize === "" && item.system.roll.diceBonus === "")) {
+    if (!item.system.roll?.enabled || !item.system.formula || (item.system.roll.diceSize === "" && item.system.roll.diceBonus === "")) {
       return ChatMessage.create({
         speaker,
         flavor: label,
-        content: item.system.description ?? '',
+        content: sanitizedDescription,
       }, {
         messageMode: game.settings.get('core', 'messageMode'),
       });
@@ -215,23 +226,36 @@ export class SynthicideItem extends foundry.documents.Item {
       showEffectOutcomeRow: false,
       showDamageButton: false,
       showOpposedButton: false,
-      flags: {
-        actorUuid: item.actor?.uuid ?? null,
-        userId: game.user.id,
-        sourceItemUuid: item.uuid,
-        messageMode: game.settings.get('core', 'messageMode'),
-      },
-      flavor: item.system.description ?? '',
+      flavor: sanitizedDescription,
       metadataRows: [
         { label: 'Formula', valueHtml: `<code>${foundry.utils.escapeHTML(String(rollData.formula ?? ''))}</code>` },
       ],
+      flags: {
+        synthicide: {
+          total,
+          dieValue: d10,
+          userId: game.user.id,
+          actorUuid: item.actor?.uuid ?? '',
+          sourceItemUuid: item.uuid ?? '',
+          messageMode: game.settings.get('core', 'messageMode') ?? '',
+        },
+      },
     };
 
-    return createActionMessage({
-      actor: item.actor,
-      roll: evaluatedRoll,
+    const rollHtml = await evaluatedRoll.render();
+    const cardHtml = await foundry.applications.handlebars.renderTemplate(
+      'systems/synthicide/templates/chat/action-roll-card.hbs',
+      { ...cardData, rollHtml }
+    );
+
+    return evaluatedRoll.toMessage({
+      speaker,
+      content: cardHtml,
+      title: cardData.title,
+      flags: { synthicide: cardData },
+      flavor: cardData.flavor,
+    }, {
       messageMode: game.settings.get('core', 'messageMode'),
-      cardData,
     });
   }
 

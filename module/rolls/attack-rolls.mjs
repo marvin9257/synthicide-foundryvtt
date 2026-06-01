@@ -96,7 +96,7 @@ export function buildAttackRangeContext({ actor, sourceItem, actorToken = null, 
     return context;
   }
 
-  const distance = Number(calculateVirtualDistanceBetweenTokens(actorToken, targetToken) ?? 0);
+  const distance = Number(calculateVirtualDistanceBetweenTokens(actorToken, targetToken));
   context.distance = Number.isFinite(distance) ? Math.max(0, distance) : 0;
 
   if (weaponClass === 'melee' && rangeIncrement === 0 && context.distance > 0) {
@@ -242,20 +242,20 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
   const doubleShotBonus = Number(sourceItem?.system?.bonuses.doubleShotBonus ?? 0);
   const lethal = Number(sourceItem?.system?.bonuses.lethal ?? 0);
 
-  if (!hitTokens.length) {
+    if (!hitTokens.length) {
     const itemNamePrefix = sourceItem?.name ? `${sourceItem.name}: ` : '';
-    await ChatMessage.create({
-      content: `<div class="synthicide-spread-miss">${localize('SYNTHICIDE.Roll.Card.SpreadNoCollateral', {
-        itemName: itemNamePrefix,
-        count: candidates.length,
-      })}</div>`,
-      speaker: ChatMessage.getSpeaker({ actor }),
-    }, { messageMode: normalizeMessageMode(messageMode) });
+      await ChatMessage.create({
+        content: `<div class="synthicide-spread-miss">${localize('SYNTHICIDE.Roll.Card.SpreadNoCollateral', {
+          itemName: itemNamePrefix,
+          count: candidates.length,
+        })}</div>`,
+        speaker: ChatMessage.getSpeaker({ actor }),
+      }, { messageMode: normalizeMessageMode(messageMode) });
     return;
   }
 
   for (const collateralToken of hitTokens) {
-    const baneDamageBonus = getBaneDamageBonus({ sourceItem, targetActor: collateralToken?.actor });
+    const baneDamageBonus = getBaneDamageBonus({ sourceItem, targetActor: collateralToken.actor });
     const damageBonus = baseDamageBonus + doubleShotBonus + baneDamageBonus;
     const flatDamage = attributeValue + damageBonus;
 

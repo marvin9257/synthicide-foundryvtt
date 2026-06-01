@@ -36,7 +36,13 @@
           </div>
           <div class='item-label'>{{item.name}}</div>
         </div>
-        <div class='item-formula item-prop'>{{item.system.formula}}</div>
+        <div class='item-formula item-prop'>
+          {{#if item.system.roll.enabled}}
+            {{item.system.formula}}
+          {{else}}
+            {{localize 'SYNTHICIDE.Item.Gear.FIELDS.rollDisabled'}}
+          {{/if}}
+        </div>
         <div class='item-controls'>
           {{#if @root.editable}}
             <a

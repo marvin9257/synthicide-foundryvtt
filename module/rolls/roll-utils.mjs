@@ -17,21 +17,8 @@ export function extractCardContext({ input = {}, sourceItem = null }) {
   };
 }
 
-export function getStandardizedRollData(message) {
-  // Use native system/type fields for v14+ card data
-  const type = message.type || message.getFlag('synthicide', 'actionRoll')?.subtype;
-  // `message.system` may be a DataModel instance; convert it to a plain object.
-  // Fall back to the original object if `toObject` is not available.
-  const system = message.system?.toObject?.(false) ?? message.system ?? {};
-  return {
-    subtype: type,
-    ...system,
-    userId: system.userId,
-    messageMode: system.messageMode,
-    sourceItemUuid: system.sourceItemUuid,
-    sourceMessageId: system.sourceMessageId,
-  };
-}
+// `getStandardizedRollData` moved to SynthicideChatMessage; callers should use
+// `message.getCardPayload()` when available. Kept no-op here for compatibility.
 
 export function localize(key, data) {
   return game.i18n.format(key, data);
@@ -69,7 +56,7 @@ export function buildEquationTerms({ subtype, attributeKey, rollData }) {
   const isAttack = subtype === 'attack';
 
   const terms = [];
-  const showAttributeRow = !(subtype === 'damage' && rollData?.hideAttributeRow);
+  const showAttributeRow = !(subtype === 'damage' && rollData.hideAttributeRow);
   if (showAttributeRow) {
     terms.push({ label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(attributeKey) });
     terms.push({ label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: rollData.attributeValue ?? rollData.attribute });
