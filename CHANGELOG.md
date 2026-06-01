@@ -1,3 +1,16 @@
+## [1.0.44](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.43...1.0.44) (2026-06-01)
+
+
+### Bug Fixes
+
+* Add SynthicideChatMessage and gear roll toggle ([9d95fac](https://github.com/marvin9257/synthicide-foundryvtt/commit/9d95facb79ead5a0e37fa9a9797fada7329e449a))
+* Normalize and clamp HP/Barrier; sync armor updates ([12096a2](https://github.com/marvin9257/synthicide-foundryvtt/commit/12096a2111739ddf415777a74c2755746f5f49f8))
+* normalize property access and add challenge derived data, opposed rolls now use effect not total ([8061443](https://github.com/marvin9257/synthicide-foundryvtt/commit/80614439513758345fba5b349761620ab2961032))
+* Refactor try to extend chat message ([fd682a8](https://github.com/marvin9257/synthicide-foundryvtt/commit/fd682a83d3ebdac77d6e779611a73200716348c6))
+* some small cleanup fixes ([3851597](https://github.com/marvin9257/synthicide-foundryvtt/commit/38515974e22ed2a09de2e30bacd5500748cba5a1))
+* try to address deepscan issues ([24d3b97](https://github.com/marvin9257/synthicide-foundryvtt/commit/24d3b97141bd7f8785c7897f4d0a475cd11a61c2))
+* try to set min = 0 for force barrier values for armor item ([f0330af](https://github.com/marvin9257/synthicide-foundryvtt/commit/f0330af75faaaf476919dba1b7ba484ac3a4b876))
+
 ## [1.0.43](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.42...1.0.43) (2026-05-30)
 
 
