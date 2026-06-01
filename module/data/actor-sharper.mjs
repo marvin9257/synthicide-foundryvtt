@@ -90,14 +90,14 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       forceBarrier: currentArmorValues.forceBarrier,
     });
 
-    // Constrain speed.value to armor worn (guarding in case attributes are missing)
-    if (this.attributes.speed && Number.isFinite(this.armorValues.speedMax)) {
+    // Constrain speed.value to armor worn
+    if (Number.isFinite(this.armorValues.speedMax)) {
       this.attributes.speed.value = Math.min(this.attributes.speed.value, this.armorValues.speedMax);
     }
 
     // Calculate foodDays.min as derived data for sharper actors
     this.rollModifiers.starvationPenalty = this.foodDays?.value < 0 ? -2 : 0;
-    if (this.foodDays && this.attributes.toughness) {
+    if (this.foodDays) {
       this.foodDays.min = -(6 + (this.attributes.toughness.value ?? 0));
     }
     const level = this.level.value ?? 1;

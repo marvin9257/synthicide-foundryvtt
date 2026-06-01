@@ -20,7 +20,7 @@ export class SynthicideActor extends foundry.documents.Actor {
     if (foundry.utils.hasProperty(changed, 'system.hitPoints.value')) {
       const nextHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.value') ?? 0);
       let maxHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.max'));
-      if (isNaN(maxHP)) maxHP = Number(this.system.hitPoints?.max ?? 0);
+      if (isNaN(maxHP)) maxHP = Number(this.system.hitPoints.max ?? 0);
       foundry.utils.setProperty(changed, 'system.hitPoints.value', Math.min(maxHP, nextHP));
       foundry.utils.setProperty(changed, 'system.hitPoints.previous', this.system.hitPoints.value);
     }

@@ -72,7 +72,7 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     this.hitPoints.perLevel = bioclassProfile.hitPointsPerLevel;
 
     for (const key of Object.keys(SYNTHICIDE.attributes)) {
-      if (!this.attributes?.[key]) continue;
+      if (!this.attributes[key]) continue;
       this.attributes[key].value = this.getEffectiveAttributeValue(key, {
         level,
         roleProfile,

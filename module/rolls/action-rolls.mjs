@@ -189,8 +189,8 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
   if (!opposedRollMessage) return null;
 
   const opposedRollData = opposedRollMessage.getCardPayload?.();
-  const opposedEffect = Number(opposedRollData.effectValue ?? 0);
-  const sourceEffect = Number(sourceRollData.effectValue ?? 0);
+  const opposedEffect = Number(opposedRollData?.effectValue ?? 0);
+  const sourceEffect = Number(sourceRollData?.effectValue ?? 0);
 
   let winnerText;
   if (opposedEffect > sourceEffect) {
