@@ -148,7 +148,7 @@ export default class SynthicideImplant extends SynthicideGear {
     if (allowed === false) return false;
 
     const nextSystem = changes.system ?? {};
-    const changedFlat = foundry.utils.flattenObject(changes ?? {});
+    const changedFlat = foundry.utils.flattenObject(changes);
 
     // Sanitize implant type and modifications
     const nextLocation =

@@ -152,7 +152,7 @@ export default class ItemTemplate extends foundry.canvas.placeables.Region {
       const direction = 0;
       const angle = target.angle || 90;
       const width = target.width || 0;
-      const fillColor = color ?? game.user?.color ?? "#ff0000";
+      const fillColor = color ?? game.user.color ?? "#ff0000";
       const flags = foundry.utils.mergeObject(
         {synthicide: {origin: uuid}, core: {MeasuredTemplate: true}},
         foundry.utils.deepClone(customFlags),

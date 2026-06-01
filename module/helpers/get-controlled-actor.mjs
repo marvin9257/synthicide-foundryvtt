@@ -12,7 +12,7 @@ export function getControlledActor() {
     // GM: no fallback
     if (game.user.isGM) return null;
     // Player: fallback to user's primary character
-    return game.user?.character ?? null;
+    return game.user.character ?? null;
   }
 
   const controlledTokens = canvas.tokens.controlled;
@@ -32,5 +32,5 @@ export function getControlledActor() {
 
   // Player fallback: user's primary character
   // Prefer the user's primary character; if none, fall back to any actor the user owns
-  return game.user?.character ?? (game.actors?.find?.(a => a.isOwner) ?? null);
+  return game.user.character ?? (game.actors?.find?.(a => a.isOwner) ?? null);
 }

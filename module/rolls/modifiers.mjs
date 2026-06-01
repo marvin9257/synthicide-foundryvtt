@@ -21,7 +21,7 @@ export function parseNumeric(value, fallback = 0) {
 }
 
 export function getActorRollModifiers(actor) {
-  const rollModifiers = actor?.system?.rollModifiers;
+  const rollModifiers = foundry?.utils?.getProperty(actor, 'system.rollModifiers');
   if (!rollModifiers || typeof rollModifiers !== 'object') return [];
 
   return Object.entries(rollModifiers).reduce((modifiers, [key, value]) => {
@@ -86,33 +86,16 @@ export function applyAmmoAttackAdjustments({ input, ammoAttack }) {
   };
 }
 
-
-/**
- * Central modifier application: adjusts `input` for modes/ammo and
- * mutates `rollData` with attack/damage/range modifiers.
- * @internal Callers should generally use `RollContext.applyRollAdjustments()`.
- */
-// NOTE: `applyModifiersToRollData` has been moved into `roll-context.mjs`
-// so that `RollContext` is the canonical owner of modifier application
-// behavior. Callers should prefer `buildRollContext()` and
-// `RollContext.applyRollAdjustments()` instead.
-
 export function getActionAttributeKey(subtype, requestedAttribute) {
   return subtype === 'attack'
     ? ATTRIBUTE_COMBAT
     : normalizeAttributeKey(requestedAttribute);
 }
 
-/**
- * Build baseline roll data for actions (attack/challenge) using actor
- * attribute and persistent modifiers.
- * @internal For full roll adjustments use `RollContext.applyRollAdjustments()`.
- */
-// `buildActionRollData` was removed: prefer `RollContext` +
-// `applyRollAdjustments()` for constructing and normalizing roll data.
-
 export function getActorAttributeValue(actor, attributeKey) {
-  return Number(actor?.system?.attributes?.[attributeKey]?.value ?? 0);
+  if (!actor) return 0;
+  const val = foundry.utils.getProperty(actor, `system.attributes.${attributeKey}.value`);
+  return Number(val ?? 0);
 }
 
 export function hasWeaponModification(sourceItem, modificationKey) {

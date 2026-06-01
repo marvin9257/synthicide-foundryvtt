@@ -79,7 +79,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   const actor = resolveActorFromUuidSync(messageRollData.actorUuid);
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
-  const actorCombatValue = Number(getActorAttributeValue(actor, 'combat') ?? 0);
+  const actorCombatValue = Number(getActorAttributeValue(actor, 'combat'));
   const isPlantedDemolitionAttack = Boolean(messageRollData.isPlantedDemolitionAttack);
   // A demolition-originated message may indicate 'planted' via `mode`,
   // or by setting `hideAttributeRow` on the demolition card. Blast-target
@@ -189,24 +189,24 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
   if (!opposedRollMessage) return null;
 
   const opposedRollData = opposedRollMessage.getCardPayload?.();
-  const opposedTotal = Number(opposedRollData.total ?? 0);
-  const sourceTotal = Number(sourceRollData.total ?? 0);
+  const opposedEffect = Number(opposedRollData.effectValue ?? 0);
+  const sourceEffect = Number(sourceRollData.effectValue ?? 0);
 
   let winnerText;
-  if (opposedTotal > sourceTotal) {
+  if (opposedEffect > sourceEffect) {
     winnerText = localize('SYNTHICIDE.Roll.Opposed.Result.ChallengerWins', {
       challenger: opposedRollMessage.getSpeakerAlias?.() ?? opposedRollMessage.speaker?.alias ?? localize('SYNTHICIDE.Roll.Opposed.Challenger'),
-      total: opposedTotal,
-      opposedTotal: sourceTotal,
+      total: opposedEffect,
+      opposedTotal: sourceEffect,
     });
-  } else if (sourceTotal > opposedTotal) {
+  } else if (sourceEffect > opposedEffect) {
     winnerText = localize('SYNTHICIDE.Roll.Opposed.Result.SourceWins', {
       source: sourceMessage.getSpeakerAlias?.() ?? sourceMessage.speaker?.alias ?? localize('SYNTHICIDE.Roll.Opposed.Source'),
-      total: sourceTotal,
-      opposedTotal,
+      total: sourceEffect,
+      opposedTotal: opposedEffect,
     });
   } else {
-    winnerText = localize('SYNTHICIDE.Roll.Opposed.Result.Tie', { total: sourceTotal });
+    winnerText = localize('SYNTHICIDE.Roll.Opposed.Result.Tie', { total: sourceEffect });
   }
 
   await ChatMessage.create({

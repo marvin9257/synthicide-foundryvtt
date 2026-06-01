@@ -371,7 +371,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         break;
     }
     // Get rid of duplicates just in case, since some mods can be added by multiple features
-    validKeys = Array.from(new Set(validKeys || []));
+    validKeys = Array.from(new Set(validKeys));
 
     const mods = SYNTHICIDE.WEAPON_MODIFICATIONS[itemSystem.weaponClass] || {};
     return Object.fromEntries(Object.entries(mods).filter(([k]) => validKeys.includes(k)));

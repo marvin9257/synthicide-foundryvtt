@@ -1,3 +1,5 @@
+import { getDegreeLabel } from "../rolls/roll-utils.mjs";
+
 // DataModels for Synthicide ChatMessage card types (v14+)
 const fields = foundry.data.fields;
 const requiredInteger = { required: true, nullable: false, integer: true };
@@ -63,7 +65,14 @@ export class ChallengeCardSystemData extends BaseCardSystemData {
     schema.attribute = new fields.StringField({...requiredBlankString});
     schema.difficulty = new fields.NumberField({...requiredInteger, initial: 0});
     schema.total = new fields.NumberField({...requiredInteger, initial: 0});
+    schema.effectValue = new fields.NumberField({...requiredInteger, initial: 0}, {persisted: false});
+    schema.effectDegree = new fields.StringField({...requiredBlankString}, {persisted: false});
     return schema;
+  }
+
+  prepareDerivedData() {
+    this.effectValue = this.total - this.difficulty;
+    this.effectDegree = getDegreeLabel(this.effectValue) || "";
   }
 }
 

@@ -121,7 +121,7 @@ function buildAttackMetadataRows({
   attributeValue,
 }) {
   const baseAttackBonus = Number(sourceItem?.system?.bonuses?.attack ?? 0);
-  const overrideAttackBonus = Number(input.attackBonus ?? baseAttackBonus);
+  const overrideAttackBonus = Number(input?.attackBonus ?? baseAttackBonus);
   const showBaseAttackBonus = baseAttackBonus !== 0 && overrideAttackBonus === baseAttackBonus;
   const rows = [
     { label: localize('SYNTHICIDE.Roll.Card.Armor'), value: armor },
@@ -164,7 +164,7 @@ function buildAttackMetadataRows({
 
   rows.push(
     ...buildWeaponSpecializationMetadataRows({
-      input: input.specialization ?? {},
+      input: input?.specialization ?? {},
       includeAttackBonus: true,
       includeDamageBonus: true,
       includeLethalBonus: true,

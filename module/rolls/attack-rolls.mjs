@@ -96,7 +96,7 @@ export function buildAttackRangeContext({ actor, sourceItem, actorToken = null, 
     return context;
   }
 
-  const distance = Number(calculateVirtualDistanceBetweenTokens(actorToken, targetToken) ?? 0);
+  const distance = Number(calculateVirtualDistanceBetweenTokens(actorToken, targetToken));
   context.distance = Number.isFinite(distance) ? Math.max(0, distance) : 0;
 
   if (weaponClass === 'melee' && rangeIncrement === 0 && context.distance > 0) {
@@ -255,7 +255,7 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
   }
 
   for (const collateralToken of hitTokens) {
-    const baneDamageBonus = getBaneDamageBonus({ sourceItem, targetActor: collateralToken?.actor });
+    const baneDamageBonus = getBaneDamageBonus({ sourceItem, targetActor: collateralToken.actor });
     const damageBonus = baseDamageBonus + doubleShotBonus + baneDamageBonus;
     const flatDamage = attributeValue + damageBonus;
 

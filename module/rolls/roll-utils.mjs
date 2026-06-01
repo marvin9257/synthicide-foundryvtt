@@ -56,7 +56,7 @@ export function buildEquationTerms({ subtype, attributeKey, rollData }) {
   const isAttack = subtype === 'attack';
 
   const terms = [];
-  const showAttributeRow = !(subtype === 'damage' && rollData?.hideAttributeRow);
+  const showAttributeRow = !(subtype === 'damage' && rollData.hideAttributeRow);
   if (showAttributeRow) {
     terms.push({ label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(attributeKey) });
     terms.push({ label: localize('SYNTHICIDE.Roll.Card.AttributeValue'), value: rollData.attributeValue ?? rollData.attribute });

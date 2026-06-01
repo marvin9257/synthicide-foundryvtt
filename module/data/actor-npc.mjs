@@ -80,17 +80,17 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
       });
     }
 
-    const toughnessValue = Number(this.attributes?.toughness?.value ?? 0);
-    const nerveValue = Number(this.attributes?.nerve?.value ?? 0);
-    const speedValue = Number(this.attributes?.speed?.value ?? 0);
-    const awarenessValue = Number(this.attributes?.awareness?.value ?? 0);
+    const toughnessValue = Number(this.attributes.toughness?.value ?? 0);
+    const nerveValue = Number(this.attributes.nerve?.value ?? 0);
+    const speedValue = Number(this.attributes.speed?.value ?? 0);
+    const awarenessValue = Number(this.attributes.awareness?.value ?? 0);
 
     const halfLevel = Math.floor(level / 2);
     const thirdLevel = Math.floor(level / 3);
     const bonusHitPoints = Number(this.hitPointBonus ?? 0);
     const baseHitPoints = this.hitPoints.base + (this.hitPoints.perLevel * Math.max(0, level - 1)) + bonusHitPoints;
     // Include any active modifiers to hit points so derived modifiers affect max HP
-    const effectiveBase = baseHitPoints + (this.hitPoints?.modifier ?? 0);
+    const effectiveBase = baseHitPoints + (this.hitPoints.modifier ?? 0);
 
     this.hitPoints.max = this.boss ? effectiveBase * 2 : effectiveBase;
     this.actionPoints.value = Math.floor(speedValue / 2) + 3;
@@ -123,13 +123,11 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     const baseData = super.getRollData ? super.getRollData() : {};
     const data = foundry.utils.duplicate(baseData);
 
-    if (this.attributes) {
-      for (const [key, attribute] of Object.entries(this.attributes)) {
-        data[key] = foundry.utils.duplicate(attribute);
-        data[key].value = Number(attribute.value ?? 0);
-      }
+    for (const [key, attribute] of Object.entries(this.attributes)) {
+      data[key] = foundry.utils.duplicate(attribute);
+      data[key].value = Number(attribute.value ?? 0);
     }
-
+    
     data.lvl = this.level.value;
     return data;
   }

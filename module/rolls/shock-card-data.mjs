@@ -61,7 +61,7 @@ export function buildShockCardData({ actor, options }) {
     lethal,
     rollTotal: isLethal ? damageRemaining : rollTotal,
     d10,
-    actorUuid: actor?.uuid ?? null,
+    actorUuid: actor.uuid ?? null,
     sourceItemUuid,
     sourceMessageId,
   };
