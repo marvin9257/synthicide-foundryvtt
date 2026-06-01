@@ -116,23 +116,32 @@ export class SynthicideItem extends foundry.documents.Item {
     await super._onUpdate(changed, options, userId);
     if (game.userId !== userId) return;
 
-    // Auto-update image if weaponType changes and image is default
-    //if (this.type === 'weapon' && changed?.system?.weaponType) {
-      // Check if the image is the default for the previous type
-    //  const newImage = SynthicideItem.getDefaultArtwork(this).img;
-    //  if (this.img !== newImage && newImage) {
-    //    await this.update({ img: newImage });
-    //  }
-    //}
-
     if (!this.actor) return;
     // Enforce one-equipped-at-a-time for exclusive types unless this change was
     // triggered by the actor-level equip orchestration itself.
     if (SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES.includes(this.type) && changed?.system?.equipped !== undefined && !options._fromEquipLogic) {
       if (changed?.system?.equipped) {
         await this.actor.equipExclusiveItemType(this.type, this.id);
+        return;
       } else if (this.type === 'armor') {
-        await this.actor.update({'system.armorValues.forceBarrier.value': 0}, {render: false});
+        // When an armor is unequipped, ensure both max and value are cleared
+        // so the actor does not retain a stale barrier max.
+        await this.actor.update({
+          'system.armorValues.forceBarrier.max': 0,
+          'system.armorValues.forceBarrier.value': 0,
+        }, { render: true });
+        return;
+      }
+    }
+    
+    const newMaxBarrier = Number(foundry.utils.getProperty(changed, 'system.forceBarrier.max'));
+    if (this.type === 'armor' && this.system.equipped && Number.isFinite(newMaxBarrier)) {
+      const currentActorBarrier = this.actor.system.armorValues?.forceBarrier?.value;
+      if (currentActorBarrier > newMaxBarrier) {
+        const clampedBarrier = Math.clamp(currentActorBarrier, 0, newMaxBarrier);
+        await this.actor.update({
+          'system.armorValues.forceBarrier.value': clampedBarrier,
+        }, { render: true });
       }
     }
   }
