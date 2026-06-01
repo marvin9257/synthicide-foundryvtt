@@ -23,10 +23,10 @@ export default class SynthicideArmor extends SynthicideGear {
     schema.armorBonus = new fields.NumberField({...requiredInteger, initial: 0});
     schema.stBonus = new fields.NumberField({...requiredInteger, initial: 0});
     schema.speedMax = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.forceBarrier= new fields.SchemaField({
-      max: new fields.NumberField({...requiredInteger, initial: 0}),
-      recoveryRate: new fields.NumberField({...requiredInteger, initial: 0}),
-      rechargeTime: new fields.NumberField({...requiredInteger, initial: 0})
+    schema.forceBarrier = new fields.SchemaField({
+      max: new fields.NumberField({...requiredInteger, initial: 0, min: 0}),
+      recoveryRate: new fields.NumberField({...requiredInteger, initial: 0, min: 0}),
+      rechargeTime: new fields.NumberField({...requiredInteger, initial: 0, min: 0})
     });
     schema.modifications = new fields.SetField(new fields.StringField({ required: true, blank: false }));
 
