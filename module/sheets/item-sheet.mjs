@@ -24,7 +24,7 @@ const ITEM_BASE_PARTS_BY_TYPE = {
   gear: ['rollGear'],
   implant: ['general', 'rollGear'],
   bioclass: ['attributesBioclass', 'cyberneticsBioclass', 'traitsBioclass'],
-  aspect: ['abilitiesAspect', 'traitsBioclass'],
+  aspect: ['abilitiesAspect', 'attributesAspect', 'traitsBioclass'],
   armor: ['general'],
   shield: ['general'],
   weapon: ['general', 'rollGear', 'npcTiers']
@@ -49,6 +49,7 @@ const ITEM_TAB_MAP = {
   attributesImplant: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
   rollGear: { id: 'rollGear', icon: ICON_MAP.roll, label: 'RollData' },
   attributesBioclass: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
+  attributesAspect: { id: 'attributes', icon: ICON_MAP.attributes, label: 'Attributes' },
   cyberneticsBioclass: { id: 'cybernetics', icon: ICON_MAP.cybernetics, label: 'Cybernetics' },
   traitsBioclass: { id: 'traits', icon: ICON_MAP.trait, label: 'Traits' },
   abilitiesAspect: { id: 'abilities', icon: ICON_MAP.abilities, label: 'Abilities' },
@@ -109,6 +110,9 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     },
     attributesBioclass: {
       template: 'systems/synthicide/templates/item/parts/bioclass-attributes.hbs',
+    },
+    attributesAspect: {
+      template: 'systems/synthicide/templates/item/parts/aspect-attributes.hbs',
     },
     cyberneticsBioclass: {
       template: 'systems/synthicide/templates/item/parts/bioclass-cybernetics.hbs',

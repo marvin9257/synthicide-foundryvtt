@@ -1,4 +1,5 @@
 import SynthicideFeature from './item-feature.mjs';
+import SYNTHICIDE from '../helpers/config.mjs';
 
 /**
  * A concrete subclass representing an "aspect" feature.
@@ -30,6 +31,14 @@ export default class SynthicideAspect extends SynthicideFeature {
     });
 
     schema.traits.initial = [];
+
+    // Persistent per-attribute bonuses applied during actor derived-data prep.
+    schema.attributeBonuses = new fields.SchemaField(
+      Object.keys(SYNTHICIDE.attributes).reduce((obj, attribute) => {
+        obj[attribute] = new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0 });
+        return obj;
+      }, {})
+    );
 
     // A list of special abilities granted by this aspect. Each is an object with a description property.
     schema.abilities = new fields.ArrayField(

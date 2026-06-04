@@ -76,9 +76,17 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
    */
   prepareDerivedData() {
     super.prepareDerivedData();
-    //Calculate attribute values
-    for (const attr of Object.values(this.attributes)) {
-      attr.value = (attr.base ?? 0) + (attr.modifier ?? 0) + (attr.increase ?? 0);
+    const aspect = this.parent?.itemTypes?.aspect?.[0] ?? null;
+    const aspectAttributeBonuses = aspect?.system?.attributeBonuses ?? {};
+
+    // Calculate attribute values from base + transient modifier + increase + aspect bonuses.
+    for (const [key, attr] of Object.entries(this.attributes)) {
+      const aspectBonus = aspectAttributeBonuses[key] ?? 0;
+      attr.value =
+        (attr.base ?? 0) +
+        (attr.modifier ?? 0) +
+        (attr.increase ?? 0) +
+        aspectBonus;
     }
 
     // Get worn armor values and apply armor-only modification effects.
