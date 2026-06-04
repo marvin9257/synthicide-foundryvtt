@@ -8,7 +8,7 @@ Primary files:
 
 - `module/data/item-feature.mjs` (shared lifecycle + replacement orchestration)
 - `module/data/item-bioclass.mjs` (bioclass-specific sync/cleanup)
-- `module/data/item-aspect.mjs` (aspect-specific schema for manual abilities)
+- `module/data/item-aspect.mjs` (aspect-specific schema for abilities and bonus fields)
 - `module/sheets/actor-sheet.mjs` (drop handlers that call shared replacement orchestration)
 
 ## Architecture at a Glance
@@ -146,8 +146,9 @@ Effects:
 1. Actor sheet calls `replaceOnActor(..., 'aspect', ...)`.
 2. Existing aspect delete uses cleanup-skip option.
 3. New aspect create uses apply-skip option.
-4. Explicit single `applyToActor` creates aspect trait items and executes subtype sync hook (currently no-op for actor stats).
-5. Final render occurs once with consistent data.
+4. Explicit single `applyToActor` creates aspect trait items.
+5. Aspect bonus fields are read during actor derived-data preparation (no aspect Active Effect toggling required for built-in aspect bonuses).
+6. Final render occurs once with consistent data.
 
 ---
 
@@ -156,22 +157,27 @@ Effects:
 ## Current aspect capability
 
 - Manual abilities editing via aspect sheet
+- Manual editing of aspect bonus fields via the aspect Attributes tab
 - Manual trait editing via shared feature trait flow
 - Uses shared trait apply/remove lifecycle
-- No actor-stat synchronization yet (subtype sync hook remains inherited no-op)
+- Sharper derived-data reads aspect fields directly for:
+  - per-attribute bonuses (`system.attributeBonuses.*`)
+  - HP max bonus (`system.hitPointsMaxBonus`)
+  - optional one-time add of bioclass `hpPerLevel` (`system.useBioclassHpPerLevelAsMaxBonus`)
 
-## If aspects need actor-stat side effects later
+## If aspects need additional actor-stat side effects later
 
-1. Implement `SynthicideAspect._syncSubtypeAttributes(actor, { render })`.
-2. Keep side effects idempotent (safe when apply runs repeatedly).
+1. Prefer new explicit aspect schema fields consumed from actor `prepareDerivedData`.
+2. Keep derived-data logic idempotent and deterministic.
 3. Avoid direct sheet orchestration changes; continue using `replaceOnActor`.
-4. Add/extend `_cleanupOnDelete` only for values aspects own.
+4. Use subtype sync/cleanup hooks only when persistent actor document updates are truly required.
 
 ## Recommended extension checklist
 
 - Extend aspect schema fields only when needed.
 - Keep manual edit fields (`traits`, `abilities`, `description`) explicit in sheet and schema.
-- If adding actor side effects, implement subtype hook + matching cleanup.
+- For built-in numeric bonuses, prefer field-based derived-data consumption over aspect Active Effects.
+- If adding persistent actor side effects, implement subtype hook + matching cleanup.
 - Validate replacement flow still performs single apply and single final render.
 
 ## Guardrails for future changes
@@ -189,6 +195,6 @@ Effects:
 - `SynthicideBioclass`
   - `_preUpdate` (bodyType/brainType/slot logic), `_syncSubtypeAttributes`, `_cleanupOnDelete`
 - `SynthicideAspect`
-  - schema defaults (featureType + abilities)
+  - schema defaults (featureType, abilities, and bonus fields)
 
 This design keeps shared lifecycle flow predictable while allowing bioclass/aspect divergence in small override points.

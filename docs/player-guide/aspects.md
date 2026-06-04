@@ -8,11 +8,13 @@ Assign and manage your aspect and its generated traits.
 
 1. Drag an aspect item onto your actor sheet.
 2. Open the Aspect tab and verify it's assigned.
-3. Review listed aspect abilities.
-4. Open each generated trait and finalize required choices.
-5. Save each edited trait.
-6. To replace an aspect, drag a new one onto the actor (old one is removed).
-7. Recheck traits and affected values after replacement.
+3. Open the aspect item and review the Attributes tab.
+4. Set any aspect attribute bonuses and HP bonus fields.
+5. Review listed aspect abilities.
+6. Open each generated trait and finalize required choices.
+7. Save each edited trait.
+8. To replace an aspect, drag a new one onto the actor (old one is removed).
+9. Recheck traits and affected values after replacement.
 
 ## Interactive Elements on Aspect Items
 
@@ -23,8 +25,16 @@ When you open an aspect item:
 | Element | Icon | Action |
 |---------|------|--------|
 | Aspect name | Text input | Reference; shows the aspect name |
-| Abilities list | Text entries or checkboxes | Reference or click to enable/disable listed abilities |
+| Abilities list | Text entries | Reference; review ability text |
 | Description field | Text box | Click to add/edit aspect description |
+
+### Attributes Tab (Aspect Bonuses)
+
+| Element | Icon | Action |
+|---------|------|--------|
+| Attribute bonus fields | Number inputs | Set per-attribute bonuses applied to derived values |
+| HP Max Bonus | Number input | Add a flat bonus to actor max HP |
+| Add Bioclass HP / Level | Checkbox | Add bioclass HP-per-level as a one-time bonus to max HP (Sharper only) |
 
 ### Traits Tab (Generated Traits & Options)
 
@@ -37,26 +47,25 @@ When you open an aspect item:
 
 ### What to Check
 
-1. **Abilities:** Review what abilities your aspect provides.
-2. **Generated traits:** Open each trait and finalize any required choices (choices don't apply until saved). **Important:** Choice-based traits may have multiple Active Effects. These Active Effects are stored on the Aspect's AE tab and not the Trait's AE tab.  This is due to a limitation of Foundry VTT not being able to embed items within items.  So all changes to attributes from the Aspect's traits need to be edited there.  Sometimes for prebuilt Aspects from the compendium, there will be one-enabled and others-disabled; other times multiple effects should remain enabled together. After making your choice, enable every matching effect and disable non-matching effects. Text-only traits still require manual implementation at your table.
-3. **Trait descriptions:** Verify the trait text matches your character concept.
+1. **Attributes tab values:** Confirm the expected attribute bonuses and HP bonus fields are set.
+2. **Abilities:** Review what ability bonueses or penalties your aspect provides.
+3. **Generated traits:** Open each trait and finalize any required choices (choices don't apply until saved).
+4. **Trait descriptions:** Verify the trait text matches your character concept.
 
 ## What Happens Automatically
 
 1. Your actor can only have one aspect at a time.
 2. Assigning a new aspect replaces the previous one.
 3. Aspect traits are generated automatically and linked to the aspect.
+4. Aspect bonus fields are applied through derived-data calculation (not through aspect Active Effects).
 
 ## What You Must Set Manually
 
 1. Finalize choices in generated aspect traits by opening and saving them.
-2. **For choice-based traits:** Enable the Active Effect(s) matching your choice and disable any others (on the Active Effect tab for the Aspect, not the trait). If a trait says "pick one," there are likely multiple effects—one enabled, one or more disabled. If a trait allows stacked selections, multiple effects may need to remain enabled.
-3. Traits without Active Effects — determine which ones need one-time setup on the sheet and which require manual intervention during play; add custom Active Effects if desired.
-4. Any table-specific tracking or narrative details.
+2. Set aspect field values on the Attributes tab when your build requires non-default values.
+3. Any table-specific tracking or narrative details for text-only abilities.
 
-Example: If a trait offers two options and you can see both effects in the Aspect's Effects tab (one enabled, one disabled), disable the one you didn't choose and enable the one you did, then save.
-
-Stacked example: If an aspect trait allows selecting multiple benefits, keep all Active Effects for the selected benefits enabled together and disable only the unselected benefit effects.
+Example: If your aspect grants +2 Operation and -1 Awareness, set those directly in the aspect Attributes tab.
 
 ## Limitations and Not Implemented
 
@@ -64,12 +73,13 @@ Stacked example: If an aspect trait allows selecting multiple benefits, keep all
 2. Choice-based trait effects don't finalize at creation.
 3. Aspect text dependent on scene context is manual at resolution.
 4. Aspect references to rules subsystems without dedicated automation need manual adjudication.
+5. The bioclass HP-per-level bonus checkbox affects Sharper HP calculation only (NPCs do not use this path).
 
 ## Troubleshooting
 
-### Q: An aspect effect is missing.
+### Q: An aspect bonus is missing.
 
-A: look on the Effects tab for the Aspect, make required choices, and save.
+A: Open the aspect item, verify values in the Attributes tab, then re-open the actor sheet.
 
 ### Q: I replaced an aspect but old details still show.
 

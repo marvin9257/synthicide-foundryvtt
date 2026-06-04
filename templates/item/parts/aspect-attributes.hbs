@@ -4,6 +4,7 @@
   data-group='primary'
   data-tab='attributes'
 >
+  <h4>{{localize 'SYNTHICIDE.Item.Aspect.AttributeBonusesHeader'}}</h4>
   <div class='grid grid-3col'>
     {{#each SYNTHICIDE.attributes as |labelKey key|}}
       <div class='resource'>
@@ -17,5 +18,24 @@
         />
       </div>
     {{/each}}
+
+    <div class='resource'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Aspect.FIELDS.hitPointsMaxBonus.label'}}</label>
+      <input
+        type='number'
+        name='system.hitPointsMaxBonus'
+        value='{{system.hitPointsMaxBonus}}'
+        data-dtype='Number'
+        step='1'
+      />
+    </div>
+    <div class='resource'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Aspect.FIELDS.useBioclassHpPerLevelAsMaxBonus.label'}}</label>
+      <input
+        type='checkbox'
+        name='system.useBioclassHpPerLevelAsMaxBonus'
+        {{checked system.useBioclassHpPerLevelAsMaxBonus}}
+      />
+    </div>
   </div>
 </section>

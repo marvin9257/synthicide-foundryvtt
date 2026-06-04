@@ -40,6 +40,21 @@ export default class SynthicideAspect extends SynthicideFeature {
       }, {})
     );
 
+    // Flat bonus added directly to hitPoints.max.
+    schema.hitPointsMaxBonus = new fields.NumberField({
+      required: true,
+      nullable: false,
+      integer: true,
+      initial: 0,
+    });
+
+    // When enabled, add owning bioclass hpPerLevel to hitPoints.max.
+    schema.useBioclassHpPerLevelAsMaxBonus = new fields.BooleanField({
+      required: true,
+      nullable: false,
+      initial: false,
+    });
+
     // A list of special abilities granted by this aspect. Each is an object with a description property.
     schema.abilities = new fields.ArrayField(
       new fields.SchemaField({

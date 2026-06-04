@@ -78,6 +78,16 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     super.prepareDerivedData();
     const aspect = this.parent?.itemTypes?.aspect?.[0] ?? null;
     const aspectAttributeBonuses = aspect?.system?.attributeBonuses ?? {};
+    const aspectHitPointsMaxBonusBase = Number(aspect?.system?.hitPointsMaxBonus ?? 0);
+    const useBioclassHpPerLevelAsMaxBonus = Boolean(aspect?.system?.useBioclassHpPerLevelAsMaxBonus);
+    const bioclassHpPerLevel = Number(
+      this.parent?.itemTypes?.bioclass?.[0]?.system?.startingAttributes?.hpPerLevel ??
+      this.hitPoints.perLevel ??
+      0
+    );
+    const aspectHitPointsMaxBonus =
+      aspectHitPointsMaxBonusBase +
+      (useBioclassHpPerLevelAsMaxBonus ? bioclassHpPerLevel : 0);
 
     // Calculate attribute values from base + transient modifier + increase + aspect bonuses.
     for (const [key, attr] of Object.entries(this.attributes)) {
@@ -113,7 +123,8 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     //Derived data calculated a bit differently for player characters; include any modifiers
     this.hitPoints.max = (this.hitPoints.base ?? 32)
       + (this.hitPoints.perLevel ?? 0) * Math.max(0, level - 1)
-      + (this.hitPoints.modifier ?? 0);
+      + (this.hitPoints.modifier ?? 0)
+      + aspectHitPointsMaxBonus;
     this.actionPoints.value = Math.floor(this.attributes.speed.value / 2) + this.actionPoints.modifier + 3;
     this.battleReflex.value = this.attributes.awareness.value + this.attributes.speed.value + this.battleReflex.modifier;
     const toughnessValue = this.attributes.toughness.value;
