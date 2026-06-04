@@ -55,7 +55,7 @@ When you open a bioclass item to verify values or finalize trait choices:
 
 1. Verify the bioclass item has complete starting values (attributes, HP, HP per level).
 2. Open and save generated traits when they require choices.
-3. **For choice-based traits:** Enable the Active Effect(s) matching your choice and disable any others. If a trait says "choose one," there are likely multiple effects—one enabled, one or more disabled. If a trait allows stacked selections, multiple effects may need to remain enabled.
+3. **For choice-based traits:** Enable the Active Effect(s) matching your choice and disable any others. If a trait says "choose one," there are likely multiple effects—one enabled, one or more disabled. If a trait allows stacked selections, multiple effects may need to remain enabled.  Any preconfigured Active Effects will be on the Effects tab of the Bioclass sheet and not the trait if the bioclass is dragged from compendium.
 4. Traits without Active Effects—determine which ones need one-time setup on the sheet and which require manual intervention during play; add custom Active Effects if desired.
 5. Any table-specific adjustments to trait text.
 

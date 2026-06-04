@@ -38,7 +38,7 @@ When you open an aspect item:
 ### What to Check
 
 1. **Abilities:** Review what abilities your aspect provides.
-2. **Generated traits:** Open each trait and finalize any required choices (choices don't apply until saved). **Important:** Choice-based traits may have multiple Active Effects. These Active Effects are stored on the Aspect's AE tab and not the Trait's AE tab.  This is due to a limitation of Foundry VTT not being able to embed items within items.  So all changes to attributes from the Aspect's traits need to be edited there.  Sometimes for prebuilt Aspects form the compendium, there will be one-enabled and others-disabled; other times multiple effects should remain enabled together. After making your choice, enable every matching effect and disable non-matching effects. Text-only traits still require manual implementation at your table.
+2. **Generated traits:** Open each trait and finalize any required choices (choices don't apply until saved). **Important:** Choice-based traits may have multiple Active Effects. These Active Effects are stored on the Aspect's AE tab and not the Trait's AE tab.  This is due to a limitation of Foundry VTT not being able to embed items within items.  So all changes to attributes from the Aspect's traits need to be edited there.  Sometimes for prebuilt Aspects from the compendium, there will be one-enabled and others-disabled; other times multiple effects should remain enabled together. After making your choice, enable every matching effect and disable non-matching effects. Text-only traits still require manual implementation at your table.
 3. **Trait descriptions:** Verify the trait text matches your character concept.
 
 ## What Happens Automatically
