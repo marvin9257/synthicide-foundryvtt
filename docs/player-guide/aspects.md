@@ -48,7 +48,7 @@ When you open an aspect item:
 ### What to Check
 
 1. **Attributes tab values:** Confirm the expected attribute bonuses and HP bonus fields are set.
-2. **Abilities:** Review what ability bonueses or penalties your aspect provides.
+2. **Abilities:** Review what ability bonuses or penalties your aspect provides.
 3. **Generated traits:** Open each trait and finalize any required choices (choices don't apply until saved).
 4. **Trait descriptions:** Verify the trait text matches your character concept.
 
