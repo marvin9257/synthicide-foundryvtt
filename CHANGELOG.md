@@ -1,3 +1,13 @@
+## [1.0.45](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.44...1.0.45) (2026-06-04)
+
+
+### Bug Fixes
+
+* add edit action button for embedded bioclass item ([7a39d04](https://github.com/marvin9257/synthicide-foundryvtt/commit/7a39d049f31fbe432e90128bd91f1d93fd54ca90))
+* Merge pull request [#4](https://github.com/marvin9257/synthicide-foundryvtt/issues/4) from marvin9257/fix-bioclass-tab ([b968bc5](https://github.com/marvin9257/synthicide-foundryvtt/commit/b968bc5fcac15e2534e4c8ed81b2835a2ce6e98c))
+* Update document that Aspect AE's are on Aspect Effects tabs and not on Traits ([1e52422](https://github.com/marvin9257/synthicide-foundryvtt/commit/1e52422ba175254c78169de397c47fc44efd01f4))
+* update some documents ([cb369a6](https://github.com/marvin9257/synthicide-foundryvtt/commit/cb369a6b38fa0e283b30a5ce39c49b6af478c6fd))
+
 ## [1.0.44](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.43...1.0.44) (2026-06-01)
 
 
