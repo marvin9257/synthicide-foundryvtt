@@ -23,6 +23,7 @@ import { registerVirtualGridOverlay, safeRenderVirtualGrid } from './canvas/virt
 import SynthicideVirtualRuler from './canvas/synthicide-virtual-ruler.mjs';
 import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler.mjs';
 import { SynthicideChatMessage } from './documents/synthicide-chat-message.mjs';
+import {itemPilesIntegration} from './hooks/itemPilesIntegration.js'
 
 const collections = foundry.documents.collections;
 
@@ -123,6 +124,8 @@ Hooks.once('init', function () {
   // Register application/document hooks
   registerSynthicideChatContextHook();
   registerActionRollHooks();
+  registerItemPilesWorkarounds();
+  itemPilesIntegration();
 
   // Register sheet application classes
   collections.Actors.unregisterSheet('core', foundry.applications.sheets.ActorSheetV2)
@@ -291,6 +294,19 @@ function applySheetStyleMode(mode) {
         : 'synthicide-style-classic'
     );
   }
+}
+
+function registerItemPilesWorkarounds() {
+  Hooks.on('preCreateToken', (_tokenDoc, data) => {
+    const pileData = data?.flags?.['item-piles']?.data;
+    if (!pileData?.enabled) return;
+    if (data?.actorLink) return;
+
+    data.delta ??= {};
+    data.delta.system ??= {};
+    data.delta.items ??= [];
+    data.delta.effects ??= [];
+  });
 }
 
 function registerSettings() {
