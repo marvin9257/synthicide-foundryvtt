@@ -24,6 +24,8 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
         obj[attribute] = new fields.SchemaField({
           base: new fields.NumberField({...requiredInteger, initial: 0}),
           modifier: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
+          aspectBonus: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
+          displayModifier: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
           increase: new fields.NumberField({ ...requiredInteger, initial: 0, max: 5 }),
           value: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false}),
         });
@@ -91,7 +93,9 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
 
     // Calculate attribute values from base + transient modifier + increase + aspect bonuses.
     for (const [key, attr] of Object.entries(this.attributes)) {
-      const aspectBonus = aspectAttributeBonuses[key] ?? 0;
+      const aspectBonus = Number(aspectAttributeBonuses[key] ?? 0);
+      attr.aspectBonus = aspectBonus;
+      attr.displayModifier = (attr.modifier ?? 0) + aspectBonus;
       attr.value =
         (attr.base ?? 0) +
         (attr.modifier ?? 0) +

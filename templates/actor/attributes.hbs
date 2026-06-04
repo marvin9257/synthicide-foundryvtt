@@ -46,7 +46,16 @@
               <input type="number" name="system.attributes.{{key}}.base" value="{{attribute.base}}" class="attribute-score" data-dtype="Number" max="5" step="1">
             </td>
             <td class="attribute-input">
-              <input disabled type="number" name="system.attributes.{{key}}.modifier" value="{{attribute.modifier}}" class="attribute-score" data-dtype="Number" step="1">
+              <input
+                disabled
+                type="number"
+                name="system.attributes.{{key}}.displayModifier"
+                value="{{attribute.displayModifier}}"
+                class="attribute-score"
+                data-dtype="Number"
+                step="1"
+                data-tooltip="Raw: {{numberFormat attribute.modifier decimals=0 sign=true}} | Aspect: {{numberFormat attribute.aspectBonus decimals=0 sign=true}}"
+              >
             </td>
             <td class="attribute-input">
               <div class="attribute-stepper" data-attribute-key="{{key}}">
