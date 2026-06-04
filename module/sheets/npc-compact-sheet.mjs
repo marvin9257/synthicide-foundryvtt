@@ -2,26 +2,16 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import { ICON_MAP } from '../helpers/icons.mjs';
 import { buildBaseSheetContext } from './sheet-context.mjs';
-import { deleteDocAction, makeRoll, makeSelectedAttackRoll, showInfoAction, viewDocAction } from './sheet-utils.mjs';
-const { api, sheets } = foundry.applications;
+import { SynthicideNPCActorSheet } from './npc-actor-sheet.mjs';
 
-class SynthicideNPCCompactSheet extends api.HandlebarsApplicationMixin(sheets.ActorSheetV2) {
-  static DEFAULT_OPTIONS = {
-    classes: ["synthicide", "actor", "npc", "npc-compact"],
+class SynthicideNPCCompactSheet extends SynthicideNPCActorSheet {
+  static DEFAULT_OPTIONS = foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
+    classes: [...super.DEFAULT_OPTIONS.classes, 'npc-compact'],
     position: { width: 'auto', height: 'auto' },
-    window: { 
-      resizable: true,
-      icon: ICON_MAP.person
+    window: {
+      icon: ICON_MAP.person,
     },
-    actions: {
-      viewDoc: this._viewDoc,
-      deleteDoc: this._deleteDoc,
-      showInfo: this._showInfo,
-      selectedAttackRoll: this._onSelectedAttackRoll,
-      roll: this._onRoll
-    },
-    form: { submitOnChange: true }
-  };
+  }, { inplace: false });
 
   static PARTS = {
     compact: {
@@ -79,33 +69,6 @@ class SynthicideNPCCompactSheet extends api.HandlebarsApplicationMixin(sheets.Ac
     context.bioclass = this.actor.itemTypes.bioclass?.[0] ?? null;
     return context;
   }
-
-  static async _viewDoc(event, target) {
-      await viewDocAction(this.actor, target);
-    }
-  
-    static async _deleteDoc(event, target) {
-      await deleteDocAction(this.actor, target);
-    }
-  
-    static async _showInfo(event, target) {
-      await showInfoAction(this.actor, target);
-    }
-
-    static async _onSelectedAttackRoll(event, _target) {
-      event.preventDefault();
-      makeSelectedAttackRoll(this.actor);
-    }
-    /**
-     * Handles generic roll clicks (challenge or item attacks).
-     * @this {SynthicideNPCActorSheet}
-     * @param {PointerEvent} event
-     * @param {HTMLElement} target
-     */
-    static async _onRoll(event, target) {
-      event.preventDefault();
-      makeRoll(this.actor, target)
-    }
 }
 
 export default SynthicideNPCCompactSheet;
