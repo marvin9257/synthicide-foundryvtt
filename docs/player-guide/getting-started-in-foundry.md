@@ -108,3 +108,8 @@ A: Check Foundry's core chat roll visibility mode. That behavior is not controll
 2. [Actor Sheet Tour](actor-sheet-tour.md)
 3. [Virtual Grid Units and Combat Zones](virtual-grid-units-and-combat-zones.md)
 4. [Making an Attack Roll](making-an-attack-roll.md)
+
+## Implementation Notes
+
+- Demolition auto-scatter: the system uses a simplified random-corner selection implemented in `module/canvas/demolition-scatter-utils.mjs`. See [Demolition and Range-Based Actions](demolition-and-range-based-actions.md) for player-facing details.
+- Shocking-strike automation: the shock/toughness resolution flow is implemented in `module/documents/actor.mjs` and `module/rolls/shock-card-data.mjs`; it runs only when the world setting **Use Shocking Strike Rules** is enabled.

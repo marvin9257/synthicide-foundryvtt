@@ -28,6 +28,30 @@ Example turn: check AP/Force Barrier -> select weapon modifications if needed ->
 2. At turn start, Force Barrier recovery is applied when the actor has valid recovery values (example: no recovery is applied if current Force Barrier is 0 and recovery is 0).
 3. Roll cards capture detailed combat results in chat.
 
+4. Special ammo is applied automatically when a weapon's `specialAmmo` is set (or when you override it in the attack dialog). Implemented ammo behaviors include:
+
+	- **Cryo:** On a successful hit the system toggles the `frozen` status on the target. `frozen` is cleared automatically at the end of the target's turn.
+
+	- **Cinder:** On hit the system applies immediate burning damage (1d10) and sets the `burning` status. At the start of the burning actor's turn the system rolls 1d10 for additional burning damage; if that roll is odd the `burning` status is removed.
+
+	- **Power Wounding:** Adds extra damage dice to the damage follow-up (`+2d10`) and applies a lethal override that affects shocking-strike/lethal resolution.
+
+	- **Homing:** Adjusts lethality for the attack (a lethal override) and applies a `target` status on the hit target to mark homing lock.
+
+	- **Stun:** Toggles the `stun` status on hit.
+
+	- **Poison:** Toggles the `poison` status on hit.
+
+	- **Anchor:** Toggles the `restrain` status on hit.
+
+	- **Flash:** Toggles the `blind` status on hit.
+
+	- **None / unimplemented:** Some ammo keys present in the UI (for example `knockBack` and `bouncing`) are exposed in the weapon ammo choices but do not have automated on-hit behaviors implemented; those effects remain manual and should be resolved by the GM or players.
+
+	These effects are applied by the attack/damage flows (attack adjustments, extra damage dice, lethal overrides, and on-hit status toggles/immediate damage). You only need to set the ammo on the weapon or select it in the roll dialog — the system handles the rolls and status applications for you.
+
+	Implementation reference: [module/rolls/ammo-effects.mjs](module/rolls/ammo-effects.mjs#L1-L120) and related application logic in [module/documents/actor.mjs](module/documents/actor.mjs#L1-L320) and [module/rolls/roll-context.mjs](module/rolls/roll-context.mjs#L1-L360).
+
 Example: if Force Barrier has a positive current value and recovery rate, it can recover at turn start.
 
 ## What You Must Set Manually
