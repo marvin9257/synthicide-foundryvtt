@@ -38,7 +38,7 @@ When you open an aspect item:
 ### What to Check
 
 1. **Abilities:** Review what abilities your aspect provides.
-2. **Generated traits:** Open each trait and finalize any required choices (choices don't apply until saved). **Important:** Choice-based traits may have multiple Active Effects. Sometimes this is one-enabled/others-disabled; other times multiple effects should remain enabled together. After making your choice, enable every matching effect and disable non-matching effects. Text-only traits still require manual implementation at your table.
+2. **Generated traits:** Open each trait and finalize any required choices (choices don't apply until saved). **Important:** Choice-based traits may have multiple Active Effects. These Active Effects are stored on the Aspect's AE tab and not the Trait's AE tab.  This is due to a limitation of Foundry VTT not being able to embed items within items.  So all changes to attributes from the Aspect's traits need to be edited there.  Sometimes for prebuilt Aspects form the compendium, there will be one-enabled and others-disabled; other times multiple effects should remain enabled together. After making your choice, enable every matching effect and disable non-matching effects. Text-only traits still require manual implementation at your table.
 3. **Trait descriptions:** Verify the trait text matches your character concept.
 
 ## What Happens Automatically
@@ -50,11 +50,11 @@ When you open an aspect item:
 ## What You Must Set Manually
 
 1. Finalize choices in generated aspect traits by opening and saving them.
-2. **For choice-based traits:** Enable the Active Effect(s) matching your choice and disable any others. If a trait says "pick one," there are likely multiple effects—one enabled, one or more disabled. If a trait allows stacked selections, multiple effects may need to remain enabled.
-3. Traits without Active Effects—determine which ones need one-time setup on the sheet and which require manual intervention during play; add custom Active Effects if desired.
+2. **For choice-based traits:** Enable the Active Effect(s) matching your choice and disable any others (on the Active Effect tab for the Aspect, not the trait). If a trait says "pick one," there are likely multiple effects—one enabled, one or more disabled. If a trait allows stacked selections, multiple effects may need to remain enabled.
+3. Traits without Active Effects — determine which ones need one-time setup on the sheet and which require manual intervention during play; add custom Active Effects if desired.
 4. Any table-specific tracking or narrative details.
 
-Example: If a trait offers two options and you can see both effects in the Effects tab (one enabled, one disabled), disable the one you didn't choose and enable the one you did, then save.
+Example: If a trait offers two options and you can see both effects in the Aspect's Effects tab (one enabled, one disabled), disable the one you didn't choose and enable the one you did, then save.
 
 Stacked example: If an aspect trait allows selecting multiple benefits, keep all Active Effects for the selected benefits enabled together and disable only the unselected benefit effects.
 
@@ -69,7 +69,7 @@ Stacked example: If an aspect trait allows selecting multiple benefits, keep all
 
 ### Q: An aspect effect is missing.
 
-A: Open the generated aspect trait, make required choices, and save.
+A: look on the Effects tab for the Aspect, make required choices, and save.
 
 ### Q: I replaced an aspect but old details still show.
 
