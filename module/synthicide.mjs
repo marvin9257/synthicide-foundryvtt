@@ -184,6 +184,26 @@ Handlebars.registerHelper('toLowerCase', function (str) {
   return str.toLowerCase();
 });
 
+// Provide a `format` helper that proxies to game.i18n.format and supports
+// both positional and named placeholders. Some Foundry builds may not
+// register this helper by default, so we ensure it's available for templates.
+Handlebars.registerHelper('format', function (key, ...args) {
+  const options = args[args.length - 1];
+  try {
+    if (options && options.hash && Object.keys(options.hash).length) {
+      // Named placeholders: {{format 'KEY' name=value}}
+      return game.i18n.format(key, options.hash);
+    }
+    // Positional placeholders: {{format 'KEY' val0 val1}}
+    const values = args.slice(0, -1);
+    return game.i18n.format(key, values);
+  } catch (err) {
+    // Fail gracefully in templates.
+    console.error('format helper error', { key, args, err });
+    return key;
+  }
+});
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
