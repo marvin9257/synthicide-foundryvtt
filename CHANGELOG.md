@@ -1,3 +1,15 @@
+## [1.0.46](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.45...1.0.46) (2026-06-05)
+
+
+### Bug Fixes
+
+* document type ([79bb966](https://github.com/marvin9257/synthicide-foundryvtt/commit/79bb966a4f63a75ae5332a31f386b5cf2ee83dc8))
+* localize attribute modifier tooltip ([3e9b9b6](https://github.com/marvin9257/synthicide-foundryvtt/commit/3e9b9b6051263dcf5575e270d6c6201097a7bcd1))
+* make attribute inputs signed ([c28f396](https://github.com/marvin9257/synthicide-foundryvtt/commit/c28f396281ecfb3f9dce4fbc950a8f9ff8a4b784))
+* make modifier box on attributes tab show sum of raw modifier and aspect bonus ([9522d0c](https://github.com/marvin9257/synthicide-foundryvtt/commit/9522d0cb02bce71131304a0404118608061ecf6e))
+* update header box heights ([3f43a5b](https://github.com/marvin9257/synthicide-foundryvtt/commit/3f43a5b8383ae4676d5ce7ba8ec4ad2b0363f8a8))
+* update pack items an revise bonus hp calcs ([7f3ee35](https://github.com/marvin9257/synthicide-foundryvtt/commit/7f3ee35d6ced98fee4add8e7ae6040773d7b3729))
+
 ## [1.0.45](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.44...1.0.45) (2026-06-04)
 
 
