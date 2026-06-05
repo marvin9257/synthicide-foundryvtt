@@ -258,6 +258,9 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
 
     if (item.type === 'bioclass') {
       return this._onDropBioclassItem(item);
+    } else if (item.type === 'aspect') {
+      console.warn("Cant' drop aspect on NPC");
+      return false;
     }
 
     return super._onDropItem(event, data);

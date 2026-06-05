@@ -1,0 +1,41 @@
+{{! Attributes Tab }}
+<section
+  class='tab attributes {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='attributes'
+>
+  <h4>{{localize 'SYNTHICIDE.Item.Aspect.AttributeBonusesHeader'}}</h4>
+  <div class='grid grid-3col'>
+    {{#each SYNTHICIDE.attributes as |labelKey key|}}
+      <div class='resource'>
+        <label class='resource-label'>{{localize labelKey}}</label>
+        <input
+          type='text'
+          name='system.attributeBonuses.{{key}}'
+          value='{{numberFormat (lookup ../system.attributeBonuses key) decimals=0 sign=true}}'
+          data-dtype='Number'
+          step='1'
+        />
+      </div>
+    {{/each}}
+
+    <div class='resource'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Aspect.FIELDS.hitPointsMaxBonus.label'}}</label>
+      <input
+        type='text'
+        name='system.hitPointsMaxBonus'
+        value='{{numberFormat system.hitPointsMaxBonus decimals=0 sign=true}}'
+        data-dtype='Number'
+        step='1'
+      />
+    </div>
+    <div class='resource'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Aspect.FIELDS.useBioclassHpPerLevelAsMaxBonus.label'}}</label>
+      <input
+        type='checkbox'
+        name='system.useBioclassHpPerLevelAsMaxBonus'
+        {{checked system.useBioclassHpPerLevelAsMaxBonus}}
+      />
+    </div>
+  </div>
+</section>
