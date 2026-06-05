@@ -182,3 +182,7 @@ Why this exists:
 	(old cleanup + new apply) and produce transient stale trait UI timing.
 - With these flags, replacement has a single deterministic apply flow and one
 	final render after data is fully synchronized.
+
+# Licensing
+- Synthicide:tm: and Will Power Games are the trademarks; I am not affiliated with Will Power Games. Content used from Synthicide 2e used with permission.
+- The icons in the static/assets/icons folder as well as the original icons from https://game-icons.net/ are provided under the Creative Commons Attribution 3.0 Unported (CC BY 3.0) license and were made by numerous authors. The full list of those can be found at: https://game-icons.net/about.html#authors
