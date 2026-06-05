@@ -10,9 +10,9 @@
       <div class='resource'>
         <label class='resource-label'>{{localize labelKey}}</label>
         <input
-          type='number'
+          type='text'
           name='system.attributeBonuses.{{key}}'
-          value='{{lookup ../system.attributeBonuses key}}'
+          value='{{numberFormat (lookup ../system.attributeBonuses key) decimals=0 sign=true}}'
           data-dtype='Number'
           step='1'
         />
@@ -22,9 +22,9 @@
     <div class='resource'>
       <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Aspect.FIELDS.hitPointsMaxBonus.label'}}</label>
       <input
-        type='number'
+        type='text'
         name='system.hitPointsMaxBonus'
-        value='{{system.hitPointsMaxBonus}}'
+        value='{{numberFormat system.hitPointsMaxBonus decimals=0 sign=true}}'
         data-dtype='Number'
         step='1'
       />

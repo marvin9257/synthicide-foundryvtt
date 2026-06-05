@@ -1383,7 +1383,8 @@ body.theme-dark .npc-compact .window-content {
 }
 
 input.attribute-score {
-    text-align: center;
+  text-align: center;
+  min-width: 5ch;
 }
 
 img.actions-img {
