@@ -831,7 +831,7 @@ body.theme-dark .npc-compact .window-content {
 }
 
 .synthicide .header-resource {
-  min-height: 60px;
+  min-height: 10ch;
   padding: 2px 4px;
   border: 1px solid var(--synthicide-c-faint);
   border-radius: 4px;
@@ -3166,6 +3166,7 @@ body:not(.synthicide-style-bold) .npc-compact-sheet .synthicide-window-icon img[
 .header-resource.npc-attr,
 .header-resource.npc-der {
   min-width: 14ch;
+  min-height: auto;
 }
 
 .npc-hp-align {
