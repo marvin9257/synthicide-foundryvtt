@@ -1,3 +1,10 @@
+## [1.0.48](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.47...1.0.48) (2026-06-06)
+
+
+### Bug Fixes
+
+* clean up description format for rifles in compendium ([96a92cb](https://github.com/marvin9257/synthicide-foundryvtt/commit/96a92cb1df3a9809988353418ac2a373b658d5fb))
+
 ## [1.0.47](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.46...1.0.47) (2026-06-06)
 
 
