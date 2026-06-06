@@ -1,3 +1,10 @@
+## [1.0.47](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.46...1.0.47) (2026-06-06)
+
+
+### Bug Fixes
+
+* improve readme file ([bd59c78](https://github.com/marvin9257/synthicide-foundryvtt/commit/bd59c78bcd6ce5c50150044dd88b24fd3b1cdf43))
+
 ## [1.0.46](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.45...1.0.46) (2026-06-05)
 
 
