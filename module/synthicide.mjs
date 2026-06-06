@@ -298,6 +298,10 @@ async function rollItemMacro(itemUuid) {
   }
 }
 
+/* -------------------------------------------- */
+/*  Style Sheets                                */
+/* -------------------------------------------- */
+
 function applySheetStyleMode(mode) {
   const doc = globalThis.document;
   if (!doc) return;
@@ -312,6 +316,10 @@ function applySheetStyleMode(mode) {
     );
   }
 }
+
+/* -------------------------------------------- */
+/*  Settings                                    */
+/* -------------------------------------------- */
 
 function registerSettings() {
   game.settings.register('synthicide', SYNTHICIDE.SHEET_STYLE_SETTING_KEY, {
