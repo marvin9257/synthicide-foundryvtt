@@ -18,7 +18,9 @@
 
 ![Forge installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fsynthicide)
 
-This system is a draft, unofficial version of a Synthicide 2E rpg for Foundry VTT. It is is based on v13 Boilerplate. Permission was given by Will Power Games to create this system with limitations that content is limitted to first level items. 
+This repository contains a draft, unofficial Foundry VTT system implementing parts of the Synthicide 2E ruleset. It provides core actor and item document types, item and actor sheets, compendium packing, and a generated player guide. The project is based on the v13 Boilerplate and is maintained against Foundry v14 (see badges above). Permission to develop this system was granted by Will Power Games; content is intentionally limited to first-level items only.
+
+The player guide (source: `docs/player-guide/*.md`) contains player-facing documentation including character creation (`creating-a-new-actor.md`), bioclasses (`bioclasses.md`), aspects (`aspects.md`), traits (`traits.md`), combat and attack rules (`combat-workflow.md`, `making-an-attack-roll.md`, `rolls-overview.md`), weapon specializations and gear (`weapon-specializations.md`, `weapons-armor-shields-and-gear.md`), virtual-grid units, and troubleshooting. These markdown files are the primary system documentation and are regenerated into `packs-src/player-guide-journal` and compiled into `packs/player-guide-journal` during the build (see Player Guide Journal Workflow).
 
 # Development & Build Instructions
 
@@ -65,7 +67,7 @@ To have FoundryVTT use your latest build automatically:
 	`/Users/USERNAME/Library/Application Support/FoundryVTT/Data/systems/synthicide`
 2. Create a symlink from your local `dist` folder to the FoundryVTT systems directory:
 	```sh
-	ln -sfn "$(pwd)/dist" "/Users/USERNAME/Library/Application Support/FoundryVTT/Data/systems/synthicide"
+	ln -sfn "$(pwd)/dist" "$HOME/Library/Application Support/FoundryVTT/Data/systems/synthicide"
 	```
 3. Now, every time you run `npm run build`, FoundryVTT will use the latest code and assets.
 
@@ -184,5 +186,10 @@ Why this exists:
 	final render after data is fully synchronized.
 
 # Licensing
-- Synthicide:tm: and Will Power Games are the trademarks; I am not affiliated with Will Power Games. Content used from Synthicide 2e used with permission.
-- The icons in the static/assets/icons folder as well as the original icons from https://game-icons.net/ are provided under the Creative Commons Attribution 3.0 Unported (CC BY 3.0) license and were made by numerous authors. The full list of those can be found at: https://game-icons.net/about.html#authors
+
+- **Code license:** The project's source code is licensed under the MIT License — see the `LICENSE` file for the full text and copyright notices (includes portions derived from the v13 boilerplate).
+- **Trademarks & game content:** Synthicide™ and Will Power Games are trademarks of their respective owners; I am not affiliated with Will Power Games. Portions of game content are used with permission and are intentionally limited to first-level items for this project. For any use beyond this scope (commercial distribution, additional content, or requests for broader permission), contact Will Power Games directly.
+- **Third‑party assets & attribution:**
+	- Icons in `static/assets/icons` and the original icons from https://game-icons.net/ are provided under the Creative Commons Attribution 3.0 Unported (CC BY 3.0) license. A list of original icon authors is available at: https://game-icons.net/about.html#authors
+	- Fonts included under `assets/fonts/` (for example Roboto) and other third-party assets may carry their own licenses. Check the respective font/asset directories or upstream sources for license details.
+- **Redistribution & reuse:** If you redistribute this system or include assets from this repository, preserve the `LICENSE` file and provide attribution for any CC BY items as required by their license. If in doubt about asset licensing or trademark permissions, reach out to the repository maintainer or the original rights holders.
