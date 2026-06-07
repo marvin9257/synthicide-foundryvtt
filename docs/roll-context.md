@@ -23,5 +23,3 @@ Migration guidance
 
 Rationale
 - Centralizing modifier application reduces duplication and avoids subtle inconsistencies (special ammo, slug-shot, specialization application) across different roll flows.
-
-If you want this documentation added elsewhere (developer README or a changelog fragment), say where and I'll move/duplicate it.
