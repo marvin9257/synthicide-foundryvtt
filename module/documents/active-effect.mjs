@@ -1,7 +1,7 @@
 import SYNTHICIDE from "../helpers/config.mjs";
 
 /**
- * The system-side TwodsixActiveEffect document which overrides/extends the common ActiveEffect model.
+ * The system-side SynthicideActiveEffect document which overrides/extends the common ActiveEffect model.
  * We extend to our own class to have isSuppressed getter work with equipped status
  */
 export class SynthicideActiveEffect extends foundry.documents.ActiveEffect {

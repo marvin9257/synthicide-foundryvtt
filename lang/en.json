@@ -233,6 +233,9 @@
         "Modifier": "Modifier",
         "LevelIncrease": "Level Increase",
         "Current": "Current",
+        "Raw": "Raw",
+        "Aspect": "Aspect",
+        "ModifierTooltip": "Raw: {raw} | Aspect: {aspect}",
         "label": "Attributes"
       },
       "Combat": {
@@ -553,10 +556,19 @@
       },
       "Aspect": {
         "Label": "Aspect",
+        "AttributeBonusesHeader": "Bonuses",
         "Abilities": "Abilities",
         "AddAbility": "Add Ability",
         "NoAbilities": "No abilities found.",
-        "TraitName": "Trait Name"
+        "TraitName": "Trait Name",
+        "FIELDS": {
+          "hitPointsMaxBonus": {
+            "label": "HP Max Bonus"
+          },
+          "useBioclassHpPerLevelAsMaxBonus": {
+            "label": "Add Bioclass HP / Level"
+          }
+        }
       },
       "BodyType": {
         "Organic": "Organic",

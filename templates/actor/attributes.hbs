@@ -43,10 +43,19 @@
               </span>
             </td>
             <td class="attribute-input">
-              <input type="number" name="system.attributes.{{key}}.base" value="{{attribute.base}}" class="attribute-score" data-dtype="Number" max="5" step="1">
+              <input type="text" name="system.attributes.{{key}}.base" value="{{numberFormat attribute.base decimals=0 sign=true}}" class="attribute-score" data-dtype="Number" max="5" step="1">
             </td>
             <td class="attribute-input">
-              <input disabled type="number" name="system.attributes.{{key}}.modifier" value="{{attribute.modifier}}" class="attribute-score" data-dtype="Number" step="1">
+              <input
+                disabled
+                type="text"
+                name="system.attributes.{{key}}.displayModifier"
+                value="{{numberFormat attribute.displayModifier decimals=0 sign=true}}"
+                class="attribute-score"
+                data-dtype="Number"
+                step="1"
+                data-tooltip="{{format 'SYNTHICIDE.Actor.Attributes.ModifierTooltip' raw=(numberFormat attribute.modifier decimals=0 sign=true) aspect=(numberFormat attribute.aspectBonus decimals=0 sign=true)}}"
+              >
             </td>
             <td class="attribute-input">
               <div class="attribute-stepper" data-attribute-key="{{key}}">
@@ -55,7 +64,7 @@
                     <div class="segment{{#if this}} filled{{/if}}"></div>
                   {{/each}}
                 </div>
-                <input type="number" name="system.attributes.{{key}}.increase" value="{{attribute.increase}}" class="attribute-score" data-dtype="Number" min="0" max="5" step="1">
+                <input type="text" name="system.attributes.{{key}}.increase" value="{{numberFormat attribute.increase decimals=0 sign=true}}" class="attribute-score" data-dtype="Number" min="0" max="5" step="1">
                 <div class="attribute-step-buttons">
                   <button type="button" class="attribute-step-btn" data-action="increaseAttribute" data-attribute-key="{{key}}" aria-label="Increase {{localize (lookup @root.SYNTHICIDE.attributes key)}}">+</button>
                   <button type="button" class="attribute-step-btn" data-action="decreaseAttribute" data-attribute-key="{{key}}" aria-label="Decrease {{localize (lookup @root.SYNTHICIDE.attributes key)}}">-</button>

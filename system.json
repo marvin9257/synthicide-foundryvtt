@@ -98,7 +98,7 @@
       "thumbnail": "systems/synthicide/assets/synthicideTheme2.svg"
     }
   ],
-  "version": "1.0.44",
+  "version": "1.0.48",
   "compatibility": {
     "minimum": "14",
     "verified": "14.362"
@@ -148,7 +148,7 @@
   ],
   "socket": false,
   "manifest": "https://github.com/marvin9257/synthicide-foundryvtt/releases/latest/download/system.json",
-  "download": "https://github.com/marvin9257/synthicide-foundryvtt/releases/download/1.0.44/synthicide.zip",
+  "download": "https://github.com/marvin9257/synthicide-foundryvtt/releases/download/1.0.48/synthicide.zip",
   "background": "systems/synthicide/assets/synthicideTheme2.svg",
   "grid": {
     "type": 1,

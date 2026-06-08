@@ -39,6 +39,7 @@ The system calculates these from your attributes and equipment:
 1. Bad source item data = bad derived values.
 2. Sheet doesn't enforce every progression rule your table uses.
 3. Situational adjustments (cover, penalties) must be player/GM decision.
+4. Shocking-strike automation is controlled by the world setting **Use Shocking Strike Rules**; if that setting is disabled, the shock/toughness check flow will not run automatically.
 
 ## Troubleshooting
 

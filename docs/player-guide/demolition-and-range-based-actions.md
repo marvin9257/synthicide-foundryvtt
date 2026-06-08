@@ -27,6 +27,7 @@ Explain how demolition, thrown, and other range-sensitive actions are handled by
 - Applies any demolitions/weapon specialization bonuses that have been implemented and recognized by the system (where supported by the item/trait data).
 - Shows a targeting or blast preview template when the item provides one and the scene supports templates.
  - For thrown items, automates scatter (random scatter rules implemented in the system) and resolves attack/attack-like rolls for each token in the target area, producing a summary of hits and misses in chat.
+ - For thrown items, the system optionally performs a simplified automatic scatter when a throw misses: it chooses a random corner of the target "virtual zone" and places the scatter point there, then resolves attack-like rolls for tokens in the resulting area and posts a summary of hits/misses. This behavior is a code simplification of tabletop scatter rules (not a faithful, step-by-step implementation of the rulebook scatter method, where a roll determines whether the player or GM picks the scatter location) and can be toggled with the world setting **Demolition Auto-Scatter**.
  - Note: damage calculation and application are not always automatic — users must click the item's "Calculate Damage"/apply damage controls to compute and assign damage to affected tokens unless additional automation modules are present.
 
 ## What Players or GMs Must Do Manually
@@ -84,6 +85,7 @@ Thrown (tossed charges)
 	- Measuring distance between the thrower and the target location using the ruler or token placement.
 	- Computing range bands from the weapon's range increment and displaying distance/bands in chat.
 	- Automating scatter using the system's random scatter rules (as implemented in `action-rolls.mjs`) when a throw misses.
+	- Automating a simplified random-corner scatter when a throw misses (see `module/canvas/demolition-scatter-utils.mjs`). This is an implementation convenience: it selects one corner of a virtual zone at random rather than performing a full rulebook scatter resolution. Control it with the `Demolition Auto-Scatter` world setting (see getting-started-in-foundry).
 	- Selecting tokens inside the target area and resolving attack/attack-like rolls for each token automatically, with a chat summary of hits and misses.
 - Manual / Requires GM or player action:
 	- Calculating and applying damage — the UI requires the user (or GM) to click the item's "Calculate Damage" and then apply damage to the affected tokens unless a module automates damage application.

@@ -175,6 +175,12 @@ Weapon Specialization is configured on trait items, not weapon items.
 
 Example: equipping armor with Force Barrier fields updates the actor's shown Force Barrier values.
 
+### Implementation Notes
+
+- Ammo implementation: the ammo-to-effect mapping is defined in `module/rolls/ammo-effects.mjs` (`AMMO_RULES`).
+- Roll integration: ammo attack/damage adjustments are merged into roll payloads by `module/rolls/roll-context.mjs` and `module/rolls/modifiers.mjs`.
+- On-hit application: immediate extra damage dice and status toggles are applied by `module/documents/actor.mjs` (see `_applySpecialAmmoOnHitEffects`).
+
 ## What You Must Set Manually
 
 1. Core numeric fields on authored items.
