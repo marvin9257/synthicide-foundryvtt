@@ -26,15 +26,7 @@ export function itemPilesIntegration() {
 
       "PILE_DEFAULTS": {
         "displayQuantity": "alwaysyes",
-        "merchantColumns": [
-          {
-            "label": "Qty",
-            "path": "system.quantity",
-            "formatting": "{#}",
-            "buying": true,
-            "selling": true
-          }
-        ]
+        "merchantColumns": []
       },
 
       // Item similarities determines how item piles detect similarities and differences in the system
