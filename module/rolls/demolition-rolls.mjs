@@ -47,6 +47,7 @@ async function executeThrownDemolitionActionRoll({ ctx, template }) {
   const difficulty = rangeBands * 3;
 
   const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, ctx.rollData).evaluate();
+  evaluatedRoll.options.rollOrder = 1; //Dice so nice integration
   const success = Number(evaluatedRoll.total ?? 0) >= difficulty;
   const autoScatterEnabled = Boolean(game.settings.get('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY));
 
@@ -88,9 +89,9 @@ async function executeThrownDemolitionActionRoll({ ctx, template }) {
   await createActionMessage({ actor, roll: evaluatedRoll, messageMode, cardData: damageCardData, template });
 
   if (blastTargets.length > 0) {
-    const summaryRows = await resolveBlastTargetAttacks({ ctx, specialization, blastTargets, messageMode, template });
+    const {summaryRows, firstAttackMessageId} = await resolveBlastTargetAttacks({ ctx, specialization, blastTargets, messageMode, template });
     if (summaryRows.length > 0) {
-      await createBlastSummaryMessage({ actor, summaryRows, messageMode });
+      await createBlastSummaryMessage({ actor, summaryRows, messageMode, companionMessageId: firstAttackMessageId });
     }
   }
 
@@ -140,7 +141,7 @@ async function executePlantedDemolitionActionRoll({ ctx, plantNumber, template }
 
 async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, messageMode, template }) {
   const summaryRows = [];
-  if (!blastTargets?.length) return summaryRows;
+  if (!blastTargets?.length) return { summaryRows, firstAttackMessageId: '' };
 
   const actor = ctx.actor;
   const input = ctx.input;
@@ -200,8 +201,10 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
   }
 
   const attackRoll = await new Roll(FORMULA_ATTACK, attackRollData).evaluate();
+  attackRoll.options.rollOrder = 2; ///Dice so nice integration
   const attackTotal = Number(attackRoll.total ?? 0);
   const rollHtml = await attackRoll.render();
+  let firstAttackMessageId = "";
 
   for (const token of blastTargets) {
     const targetActor = token.actor;
@@ -230,15 +233,21 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
       attributeValue: attackRollData.attribute,
       rollData: attackRollData,
     });
-
     const cardHtml = await foundry.applications.handlebars.renderTemplate(template, { ...attackCardData, rollHtml });
     const chatData = SynthicideChatMessage.prepareData({ actor, content: cardHtml, cardData: attackCardData });
-    await SynthicideChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
-
+    let tempMessage;
+    if (!firstAttackMessageId) {
+      tempMessage = await attackRoll.toMessage(chatData, { messageMode: normalizeMessageMode(messageMode) });
+      firstAttackMessageId = tempMessage.id;
+    } else {
+      chatData.flags = chatData.flags ?? {};
+      chatData.flags['dice-so-nice'] = { linkedTo: firstAttackMessageId };
+      await SynthicideChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
+    }
     summaryRows.push(`<tr><td>${token.name}</td><td>${targetAD}</td><td>${attackTotal}</td><td>${hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss')}</td></tr>`);
   }
 
-  return summaryRows;
+  return {summaryRows, firstAttackMessageId};
 }
 
 async function createDemolitionPlacementContext({ input, sourceItem, requirePoint = true }) {

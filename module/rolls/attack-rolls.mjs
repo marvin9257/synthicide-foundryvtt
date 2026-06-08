@@ -59,6 +59,7 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
       specializationContext,
       messageMode,
       template,
+      attackMessage
     });
   }
 
@@ -225,7 +226,7 @@ function buildResolvedAttackInput({ input, rollData, attackRangeContext, baneDam
   };
 }
 
-async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, specializationContext = {}, messageMode, template }) {
+async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, specializationContext = {}, messageMode, template, attackMessage }) {
   const attackerToken = getActorToken(actor);
   const targetToken = getSingleTargetToken({ notify: false });
   if (!attackerToken || !targetToken) return;
@@ -242,15 +243,23 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
   const doubleShotBonus = Number(sourceItem?.system?.bonuses.doubleShotBonus ?? 0);
   const lethal = Number(sourceItem?.system?.bonuses.lethal ?? 0);
 
-    if (!hitTokens.length) {
+  if (!hitTokens.length) {
     const itemNamePrefix = sourceItem?.name ? `${sourceItem.name}: ` : '';
-      await ChatMessage.create({
-        content: `<div class="synthicide-spread-miss">${localize('SYNTHICIDE.Roll.Card.SpreadNoCollateral', {
-          itemName: itemNamePrefix,
-          count: candidates.length,
-        })}</div>`,
-        speaker: ChatMessage.getSpeaker({ actor }),
-      }, { messageMode: normalizeMessageMode(messageMode) });
+    const chatData = {
+      content: `<div class="synthicide-spread-miss">${localize('SYNTHICIDE.Roll.Card.SpreadNoCollateral', {
+        itemName: itemNamePrefix,
+        count: candidates.length,
+      })}</div>`,
+      speaker: ChatMessage.getSpeaker({ actor }),
+    };
+    if (attackMessage?.id) {
+      chatData.flags = {
+        'dice-so-nice': {
+          linkedTo: attackMessage.id
+        }
+      };
+    }
+    await ChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
     return;
   }
 
@@ -283,6 +292,12 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
         }),
       },
     });
+
+    if (attackMessage?.id) {
+      // Preserve existing flags and attach Dice So Nice companion link when a primary exists.
+      cardData.flags = cardData.flags ?? {};
+      cardData.flags['dice-so-nice'] = { linkedTo: attackMessage.id };
+    }
 
     await createActionMessage({ actor, roll: null, messageMode, cardData, template });
   }

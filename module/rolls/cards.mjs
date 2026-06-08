@@ -9,7 +9,7 @@ export async function createActionMessage(args = {}) {
   return SynthicideChatMessage.createActionMessage(args);
 }
 
-export async function createBlastSummaryMessage({ actor, summaryRows, messageMode }) {
+export async function createBlastSummaryMessage({ actor, summaryRows, messageMode, companionMessageId }) {
   const summaryTable = `
     <div class="synthicide-blast-summary">
       <strong>${localize('SYNTHICIDE.Roll.BlastSummary.Title')}</strong>
@@ -19,8 +19,16 @@ export async function createBlastSummaryMessage({ actor, summaryRows, messageMod
       </table>
     </div>
   `;
-  await ChatMessage.create({
+  const chatData = {
     content: summaryTable,
     speaker: ChatMessage.getSpeaker({ actor }),
-  }, { messageMode: normalizeMessageMode(messageMode) });
+  };
+  if (companionMessageId) {
+    chatData.flags = {
+      'dice-so-nice': {
+        linkedTo: companionMessageId
+      }
+    };
+  }
+  await ChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
 }
