@@ -1,3 +1,14 @@
+## [1.0.49](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.48...1.0.49) (2026-06-08)
+
+
+### Bug Fixes
+
+* add dice so nice simple integration ([b295acb](https://github.com/marvin9257/synthicide-foundryvtt/commit/b295acbf48a3936abe6bde9861879aa0fcbf13da))
+* itemPiles integration and workaround ([1e6ce05](https://github.com/marvin9257/synthicide-foundryvtt/commit/1e6ce05e10484379b259ba7f3b3b18c8800ea9e8))
+* Merge pull request [#5](https://github.com/marvin9257/synthicide-foundryvtt/issues/5) from marvin9257/add-item-piles-integration ([35abaf0](https://github.com/marvin9257/synthicide-foundryvtt/commit/35abaf04ec0e8cffd6042c72b7d284d527feba5e))
+* remove duplicate Qty ([6c09247](https://github.com/marvin9257/synthicide-foundryvtt/commit/6c09247328dc02ee2949fd52ad57cfed0d9dec9f))
+* update verified ([4d598e9](https://github.com/marvin9257/synthicide-foundryvtt/commit/4d598e9b144c3164beda5b4da68fd58e4e16c2ac))
+
 ## [1.0.48](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.47...1.0.48) (2026-06-06)
 
 
