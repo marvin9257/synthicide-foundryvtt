@@ -19,6 +19,7 @@ import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
 import { registerSynthicideChatContextHook, SynthicideChatPopout } from './documents/chatlog.mjs';
+import { registerCombatTrackerApHooks } from './hooks/combat-tracker-ap.mjs';
 import { registerVirtualGridOverlay, safeRenderVirtualGrid } from './canvas/virtual-grid-overlay.mjs';
 import SynthicideVirtualRuler from './canvas/synthicide-virtual-ruler.mjs';
 import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler.mjs';
@@ -124,6 +125,7 @@ Hooks.once('init', function () {
   // Register application/document hooks
   registerSynthicideChatContextHook();
   registerActionRollHooks();
+  registerCombatTrackerApHooks();
   itemPilesIntegration();
 
   // Register sheet application classes

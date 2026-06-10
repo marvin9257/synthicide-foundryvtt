@@ -38,6 +38,7 @@
   --form-field-color: #333;
   --synthicide-c-icon-bg-dark: #222;
   --synthicide-c-icon-bg: #222; /* default fallback, overridden by theme */
+  --synthicide-c-ap-icon: #e6b11d;
 }
 
 .theme-light {
@@ -47,6 +48,7 @@
   --color-icon-filter-light: var(--synthicide-c-black);
   --synthicide-c-icon-bg: var(--form-field-color);
   --synthicide-c-border-subtle: var(--synthicide-c-faint);
+  --synthicide-c-ap-icon: #9a5f00;
 }
 
 .theme-dark {
@@ -65,6 +67,7 @@
   --form-field-bg: #232323;
   --form-field-color: #e6e4df;
   --background: rgba(0,0,0,1);
+  --synthicide-c-ap-icon: #e6b11d;
 }
 
 
@@ -978,6 +981,71 @@ body.theme-dark .npc-compact .window-content {
 
 .synthicide .tox .tox-editor-container {
   background: var(--synthicide-c-white);
+}
+
+.synthicide-ap-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-right: 0.25rem;
+  padding: 0 0.24rem;
+  border: 1px solid rgba(120, 120, 120, 0.45);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+  min-height: 1.08rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.synthicide-ap-icon {
+  color: var(--synthicide-c-ap-icon);
+  font-size: 0.7rem;
+}
+
+.synthicide-ap-value {
+  min-width: 0.8ch;
+  text-align: center;
+  font-weight: 700;
+  line-height: 1;
+  font-size: 0.82rem;
+}
+
+.synthicide-ap-btn {
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 0.62rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.synthicide-ap-pill.synthicide-ap-pill-compact {
+  gap: 0.1rem;
+  margin-right: 0.18rem;
+  padding: 0 0.18rem;
+  min-height: 0.98rem;
+}
+
+.synthicide-ap-pill.synthicide-ap-pill-compact .synthicide-ap-icon {
+  font-size: 0.64rem;
+}
+
+.synthicide-ap-pill.synthicide-ap-pill-compact .synthicide-ap-value {
+  min-width: 0.7ch;
+  font-size: 0.76rem;
+}
+
+.synthicide-ap-pill.synthicide-ap-pill-compact .synthicide-ap-btn {
+  width: 0.56rem;
+  font-size: 0.74rem;
+}
+
+.synthicide-ap-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 .synthicide .tox .tox-edit-area {
   padding: 0 8px;
