@@ -80,7 +80,7 @@ Hooks.once('init', function () {
    * @type {String}
    */
   CONFIG.Combat.initiative = {
-    formula: '1d10 + @attributes.speed.value',
+    formula: '1d10 + @battleReflex.value',
     decimals: 2,
   };
 
