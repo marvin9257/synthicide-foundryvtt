@@ -92,8 +92,10 @@ export default class SynthicideActorBaseData extends foundry.abstract
    * @returns {Object} The roll data object.
    */
   getRollData() {
-    // Return a plain, deeply cloned object to avoid read-only property assignment errors
-    return foundry.utils.duplicate(this.toObject ? this.toObject() : this);
+    // Include prepared (non-persisted) fields like derived `.value` properties
+    // so roll formulas can reference values such as battleReflex.value.
+    // DataModel#toObject(false) returns prepared data instead of raw source.
+    return foundry.utils.duplicate(this.toObject ? this.toObject(false) : this);
   }
 }
 
