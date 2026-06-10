@@ -92,7 +92,7 @@ export default class SynthicideActorBaseData extends foundry.abstract
    * @returns {Object} The roll data object.
    */
   getRollData() {
-    const data = this.toObject(false);
+    const data = foundry.utils.duplicate(this.toObject ? this.toObject(false) : this);
 
     // Provide convenience references for attributes using the
     // SYNTHICIDE attribute long-key as the property name and the
