@@ -5,29 +5,6 @@ export function registerCombatTrackerApHooks() {
       renderCombatantApPill(app, combatantRow);
     }
   });
-
-  Hooks.once('ready', () => {
-    void syncActiveCombatTrackerState();
-  });
-}
-
-async function syncActiveCombatTrackerState() {
-  if (!game.user.isActiveGM) return;
-
-  const viewedCombat = game.combats?.viewed;
-  if (!viewedCombat?.started) return;
-
-  // Ensure core tracked resources are populated for all rows on initial load.
-  for (const combatant of viewedCombat.combatants) {
-    combatant.updateResource();
-  }
-
-  // Ensure AP current is synced for the currently active turn immediately on startup.
-  if (viewedCombat.combatant && typeof viewedCombat.resetCombatantActionPointsForTurn === 'function') {
-    await viewedCombat.resetCombatantActionPointsForTurn(viewedCombat.combatant);
-  }
-
-  ui.combat?.render(false);
 }
 
 function renderCombatantApPill(app, combatantRow) {
