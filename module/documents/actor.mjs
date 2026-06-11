@@ -182,7 +182,7 @@ export class SynthicideActor extends foundry.documents.Actor {
     const attrMap = SYNTHICIDE.attributes ?? {};
     for (const [key, attr] of Object.entries(system.attributes ?? {})) {
       const longKey = game.i18n.localize(attrMap[key]);
-      data[key] = { value: Number(attr.value ?? 0) };
+      data[key] = { value: Number(attr?.value ?? 0) };
       if (typeof longKey === 'string' && attr?.value !== undefined)
         data[longKey] = attr.value;
     }
