@@ -35,7 +35,7 @@ function renderCombatantApPill(app, combatantRow) {
     pillElement = doc.createElement('span');
     pillElement.className = 'synthicide-ap-pill';
     pillElement.dataset.combatantId = combatantId;
-    pillElement.title = 'Action Points';
+    pillElement.dataset.tooltip = game.i18n.localize("SYNTHICIDE.Actor.base.FIELDS.actionPoints.value.label");
 
     const icon = doc.createElement('i');
     icon.className = 'synthicide-ap-icon fa-solid fa-gauge-high';
