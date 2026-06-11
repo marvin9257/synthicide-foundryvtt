@@ -369,15 +369,6 @@ function registerSettings() {
     onChange: () => { if (canvas.ready) safeRenderVirtualGrid(); }
   });
 
-  game.settings.register('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY, {
-    name: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Name',
-    hint: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Hint',
-    scope: 'world',
-    config: true,
-    type: Boolean,
-    default: true,
-  });
-
   game.settings.register('synthicide', SYNTHICIDE.VIRTUAL_GRID_COLOR_KEY, {
     name: 'SYNTHICIDE.Settings.VirtualGridColor.Name',
     hint: 'SYNTHICIDE.Settings.VirtualGridColor.Hint',
@@ -390,6 +381,15 @@ function registerSettings() {
     }),
     default: '#ff8800',
     onChange: () => { if (canvas.ready) safeRenderVirtualGrid(); }
+  });
+
+  game.settings.register('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY, {
+    name: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Name',
+    hint: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Hint',
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true,
   });
 
 }
