@@ -84,45 +84,5 @@ export default class SynthicideActorBaseData extends foundry.abstract
     }
     return result;
   }
-
-
-  /**
-   * Prepare flattened roll data, exposing attributes at the top level.
-   * @override
-   * @returns {Object} The roll data object.
-   */
-  getRollData() {
-    const data = foundry.utils.duplicate(this.toObject ? this.toObject(false) : this);
-
-    // Provide convenience references for attributes using the
-    // SYNTHICIDE attribute long-key as the property name and the
-    // attribute `.value` as the value. Example key: 'SYNTHICIDE.Attribute.Awareness.long'
-    try {
-      const attrMap = SYNTHICIDE.attributes ?? {};
-      const attrs = data.attributes ?? {};
-      for (const attrKey of Object.keys(attrs)) {
-        const longKey = game.i18n.localize(attrMap[attrKey]);
-        const val = attrs[attrKey]?.value ?? undefined;
-        if (typeof longKey === 'string' && val !== undefined) {
-          data[longKey] = val;
-        }
-      }
-    } catch (err) {
-      // Defensive: do not prevent roll data from returning on unexpected shape
-      console.error('getRollData: failed to attach attribute convenience keys', err);
-    }
-
-    //Conviences references to Major derived stats
-    foundry.utils.mergeObject(data, {
-      AD: this.armorDefense.value,
-      TD: this.toughnessDefense.value,
-      ND: this.nerveDefense.value,
-      BR: this.battleReflex.value,
-      AP: this.actionPoints.value,
-      ST: this.shockThreshold.value
-    });
-
-    return data;
-  }
 }
 
