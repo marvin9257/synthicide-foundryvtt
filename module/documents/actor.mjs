@@ -173,32 +173,32 @@ export class SynthicideActor extends foundry.documents.Actor {
    * only once.
    */
   getRollData() {
-  // this.system is the fully prepared DataModel — no serialization needed
-  const system = this.system;
-  const data = foundry.utils.duplicate(super.getRollData()); // plain obj via core
+    // this.system is the fully prepared DataModel — no serialization needed
+    const system = this.system;
+    const data = foundry.utils.duplicate(super.getRollData()); // plain obj via core
 
-  // Attribute convenience keys (long names)
-  try {
-    const attrMap = SYNTHICIDE.attributes ?? {};
-    for (const [key, attr] of Object.entries(system.attributes ?? {})) {
-      const longKey = game.i18n.localize(attrMap[key]);
-      data[key] = { value: Number(attr?.value ?? 0) };
-      if (typeof longKey === 'string' && attr?.value !== undefined)
-        data[longKey] = attr.value;
-    }
-  } catch (err) { console.error('getRollData: attribute keys failed', err); }
+    // Attribute convenience keys (long names)
+    try {
+      const attrMap = SYNTHICIDE.attributes ?? {};
+      for (const [key, attr] of Object.entries(system.attributes ?? {})) {
+        const longKey = game.i18n.localize(attrMap[key]);
+        data[key] = { value: Number(attr?.value ?? 0) };
+        if (typeof longKey === 'string' && attr?.value !== undefined)
+          data[longKey] = attr.value;
+      }
+    } catch (err) { console.error('getRollData: attribute keys failed', err); }
 
-  // Derived stat shorthands
-  data.AD = system.armorDefense?.value;
-  data.TD = system.toughnessDefense?.value;
-  data.ND = system.nerveDefense?.value;
-  data.BR = system.battleReflex?.value;
-  data.AP = system.actionPoints?.value;
-  data.ST = system.shockThreshold?.value;
-  data.lvl = system.level?.value;
+    // Derived stat shorthands
+    data.AD = system.armorDefense?.value;
+    data.TD = system.toughnessDefense?.value;
+    data.ND = system.nerveDefense?.value;
+    data.BR = system.battleReflex?.value;
+    data.AP = system.actionPoints?.value;
+    data.ST = system.shockThreshold?.value;
+    data.lvl = system.level?.value;
 
-  return data;
-}
+    return data;
+  }
 
   async damageActor(damage, options = {}) {
     if (!damage || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return;
