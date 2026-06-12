@@ -1,3 +1,24 @@
+## [1.0.50](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.49...1.0.50) (2026-06-12)
+
+
+### Bug Fixes
+
+* add AP tracking in combat ([6cd8048](https://github.com/marvin9257/synthicide-foundryvtt/commit/6cd8048a0a7ec0ff8c978c8ec127761b68268892))
+* add AP tracking in combat refactor getRollData to actor document ([4f9024f](https://github.com/marvin9257/synthicide-foundryvtt/commit/4f9024fb4508d5ac95cdf9fbeee933f89ed05f90)), closes [#7](https://github.com/marvin9257/synthicide-foundryvtt/issues/7)
+* Add attribute shortcuts and major stats to rolls ([51031d1](https://github.com/marvin9257/synthicide-foundryvtt/commit/51031d12a797f5e5c65258ed5623731b9ea0fb0f))
+* add localization to Action Points tooltip and make proper fvtt tooltip ([f775908](https://github.com/marvin9257/synthicide-foundryvtt/commit/f775908f33d94f1189acc047490b1f8c89818f5e))
+* cleanup setting actionPointsCurrent flag ([4dc3a0a](https://github.com/marvin9257/synthicide-foundryvtt/commit/4dc3a0a93eeebd64416efa2bed49fc4af3e3ab45))
+* deepscan issue ([1a7d816](https://github.com/marvin9257/synthicide-foundryvtt/commit/1a7d816d896733d6d9172e82da42d8e9adab21e7))
+* eslint ignore patterns ([8c4efcc](https://github.com/marvin9257/synthicide-foundryvtt/commit/8c4efcc421c37749ea58befb7ca8741421949ccf))
+* formatting issue ([4f909df](https://github.com/marvin9257/synthicide-foundryvtt/commit/4f909df2c294b65a97aa7f5ebd2d5aa2966b099b))
+* getRollData needs to include derived data. so toObject(false) ([86725a3](https://github.com/marvin9257/synthicide-foundryvtt/commit/86725a3bb8f6d0ff9f50c12def104b19f036e400))
+* initiative roll formula ([f4747c4](https://github.com/marvin9257/synthicide-foundryvtt/commit/f4747c481768a29ca81a65354182efa29f752758))
+* make certain to duplicate before mutating ([e6f83f5](https://github.com/marvin9257/synthicide-foundryvtt/commit/e6f83f53ba2c48c59f63dddf864e5ed51a33d7d9))
+* remove unneeded hook ([d291734](https://github.com/marvin9257/synthicide-foundryvtt/commit/d2917349f6164543210a19e0cd70b05cc7e4b917))
+* reorder settings so that virtual grid settings are grouped ([c3948dc](https://github.com/marvin9257/synthicide-foundryvtt/commit/c3948dc2ddcad9ae1fd9b3500801e7f2406ae3e2))
+* simplify attribute lowercase roll data reference to not use .value ([721e27d](https://github.com/marvin9257/synthicide-foundryvtt/commit/721e27deccc6dee16c9732f5df2f1bf6c3b18ff5))
+* try to fix codeql ([2c1751f](https://github.com/marvin9257/synthicide-foundryvtt/commit/2c1751f77a1a94136a44958e889e8532ef628abb))
+
 ## [1.0.49](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.48...1.0.49) (2026-06-08)
 
 
