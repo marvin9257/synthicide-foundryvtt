@@ -19,6 +19,7 @@ import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
 import { registerSynthicideChatContextHook, SynthicideChatPopout } from './documents/chatlog.mjs';
+import { registerCombatTrackerApHooks } from './hooks/combat-tracker-ap.mjs';
 import { registerVirtualGridOverlay, safeRenderVirtualGrid } from './canvas/virtual-grid-overlay.mjs';
 import SynthicideVirtualRuler from './canvas/synthicide-virtual-ruler.mjs';
 import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler.mjs';
@@ -79,7 +80,7 @@ Hooks.once('init', function () {
    * @type {String}
    */
   CONFIG.Combat.initiative = {
-    formula: '1d10 + @attributes.speed.value',
+    formula: '1d10 + @battleReflex.value',
     decimals: 2,
   };
 
@@ -124,6 +125,7 @@ Hooks.once('init', function () {
   // Register application/document hooks
   registerSynthicideChatContextHook();
   registerActionRollHooks();
+  registerCombatTrackerApHooks();
   itemPilesIntegration();
 
   // Register sheet application classes
@@ -367,15 +369,6 @@ function registerSettings() {
     onChange: () => { if (canvas.ready) safeRenderVirtualGrid(); }
   });
 
-  game.settings.register('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY, {
-    name: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Name',
-    hint: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Hint',
-    scope: 'world',
-    config: true,
-    type: Boolean,
-    default: true,
-  });
-
   game.settings.register('synthicide', SYNTHICIDE.VIRTUAL_GRID_COLOR_KEY, {
     name: 'SYNTHICIDE.Settings.VirtualGridColor.Name',
     hint: 'SYNTHICIDE.Settings.VirtualGridColor.Hint',
@@ -388,6 +381,15 @@ function registerSettings() {
     }),
     default: '#ff8800',
     onChange: () => { if (canvas.ready) safeRenderVirtualGrid(); }
+  });
+
+  game.settings.register('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY, {
+    name: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Name',
+    hint: 'SYNTHICIDE.Settings.DemolitionAutoScatter.Hint',
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true,
   });
 
 }

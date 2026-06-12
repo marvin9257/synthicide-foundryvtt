@@ -116,21 +116,6 @@ export default class SynthicideNPCData extends SynthicideActorBaseData {
     const bossBonus = this.boss && ['combat', 'toughness', 'nerve'].includes(attributeKey) ? 1 : 0;
     return baseValue + roleBonus + bossBonus;
   }
-
-  
-  getRollData() {
-    // Always start with a deep clone of the base data to ensure mutability
-    const baseData = super.getRollData ? super.getRollData() : {};
-    const data = foundry.utils.duplicate(baseData);
-
-    for (const [key, attribute] of Object.entries(this.attributes)) {
-      data[key] = foundry.utils.duplicate(attribute);
-      data[key].value = Number(attribute.value ?? 0);
-    }
-    
-    data.lvl = this.level.value;
-    return data;
-  }
 }
 
 function getRoleAttributeBonus(attributeKey, level, roleProfile, { ignoreWeakPenalty = false } = {}) {

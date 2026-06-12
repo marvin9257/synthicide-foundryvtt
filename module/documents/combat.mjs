@@ -3,6 +3,63 @@ import { prepareChallengeCardData } from "../rolls/challenge-card-data.mjs";
 import { safeRenderVirtualGrid } from "../canvas/virtual-grid-overlay.mjs";
 
 export default class SynthicideCombat extends foundry.documents.Combat {
+  /**
+   * Get the actor-derived AP cap used for per-turn combat AP.
+   * @param {Combatant} combatant
+   * @returns {number}
+   */
+  getCombatantActionPointsMax(combatant) {
+    const actorMax = Number(combatant?.actor?.system.actionPoints?.value ?? 0);
+    return Number.isFinite(actorMax) ? Math.max(0, actorMax) : 0;
+  }
+
+  /**
+   * Get current AP for a combatant, falling back to actor AP when unset.
+   * @param {Combatant} combatant
+   * @returns {number}
+   */
+  getCombatantActionPointsCurrent(combatant) {
+    const stored = Number(combatant?.flags?.synthicide?.actionPointsCurrent);
+    if (Number.isFinite(stored)) return Math.max(0, stored);
+    return this.getCombatantActionPointsMax(combatant);
+  }
+
+  /**
+   * Reset AP at the start of the combatant's turn to actor-derived AP.
+   * @param {Combatant} combatant
+   * @returns {Promise<number>}
+   */
+  async resetCombatantActionPointsForTurn(combatant) {
+    if (!combatant?.id) return 0;
+    const maxAp = this.getCombatantActionPointsMax(combatant);
+    const current = Number(combatant?.flags?.synthicide?.actionPointsCurrent);
+    if (Number.isFinite(current) && current === maxAp) return maxAp;
+
+    await combatant.setFlag('synthicide', 'actionPointsCurrent', maxAp );
+    return maxAp;
+  }
+
+  /**
+   * Modify a combatant's current AP and clamp between 0 and actor-derived AP.
+   * @param {string|Combatant} combatantOrId
+   * @param {number} delta
+   * @returns {Promise<number|null>}
+   */
+  async modifyCombatantActionPoints(combatantOrId, delta) {
+    const combatant = typeof combatantOrId === 'string'
+      ? this.combatants.get(combatantOrId)
+      : combatantOrId;
+    if (!combatant?.id) return null;
+
+    const maxAp = this.getCombatantActionPointsMax(combatant);
+    const current = this.getCombatantActionPointsCurrent(combatant);
+    const next = Math.clamp(current + Number(delta || 0), 0, maxAp);
+    if (next === current) return next;
+    await combatant.setFlag('synthicide', 'actionPointsCurrent', next);
+
+    return next;
+  }
+
   /** @override */
   async startCombat() {
     const result = await super.startCombat();
@@ -36,6 +93,8 @@ export default class SynthicideCombat extends foundry.documents.Combat {
     await super._onStartTurn(combatant);
     const actor = combatant?.actor;
     if (!actor || actor.statuses?.has('dead')) return;
+
+    await this.resetCombatantActionPointsForTurn(combatant);
 
     const messageMode = game.settings.get('core', 'messageMode');
     await this._refreshForceBarrierOnStartTurn(actor);

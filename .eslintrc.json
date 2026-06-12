@@ -16,6 +16,11 @@
   },
   "rules": {},
   "ignorePatterns": [
-    "foundry/**/*"
+    "foundry/**/*",
+    "foundry/**",
+    "dist/**",
+    "node_modules/**",
+    "coverage/**",
+    ".vscode/**"
   ]
 }

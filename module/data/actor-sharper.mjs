@@ -138,30 +138,6 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     this.shockThreshold.value = 10 + this.armorValues.stBonus + this.armorDefense.value + this.shockThreshold.modifier;
     this.nerveDefense.value = 5 + this.attributes.nerve.value + this.nerveDefense.modifier;
   }
-
-  /**
-   * Prepare flattened roll data for sharper actors, exposing attributes at the top level.
-   * @override
-   * @this {SynthicideSharperData}
-   * @returns {Object} The roll data object.
-   */
-  getRollData() {
-    // Start with base class roll data and merge with this to get derived data (deep merge)
-    const data = foundry.utils.mergeObject(
-      super.getRollData ? super.getRollData() : {},
-      this,
-      { inplace: false, recursive: true }
-    );
-
-    // Copy the attribute scores to the top level, so that rolls can use
-    // formulas like `@str.mod + 4`.
-    for (let [k, v] of Object.entries(this.attributes)) {
-      data[k] = foundry.utils.duplicate(v);
-    }
-    
-    data.lvl = this.level.value;
-    return data;
-  }
 }
 
 function getCurrentArmorValues(actor) {
