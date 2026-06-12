@@ -9,7 +9,7 @@ export default class SynthicideCombat extends foundry.documents.Combat {
    * @returns {number}
    */
   getCombatantActionPointsMax(combatant) {
-    const actorMax = Number(combatant?.actor?.system?.actionPoints?.value ?? 0);
+    const actorMax = Number(combatant?.actor?.system.actionPoints?.value ?? 0);
     return Number.isFinite(actorMax) ? Math.max(0, actorMax) : 0;
   }
 
@@ -35,11 +35,7 @@ export default class SynthicideCombat extends foundry.documents.Combat {
     const current = Number(combatant?.flags?.synthicide?.actionPointsCurrent);
     if (Number.isFinite(current) && current === maxAp) return maxAp;
 
-    await this.updateEmbeddedDocuments('Combatant', [{
-      _id: combatant.id,
-      'flags.synthicide.actionPointsCurrent': maxAp,
-    }]);
-
+    await combatant.setFlag('synthicide', 'actionPointsCurrent', maxAp );
     return maxAp;
   }
 
@@ -59,11 +55,7 @@ export default class SynthicideCombat extends foundry.documents.Combat {
     const current = this.getCombatantActionPointsCurrent(combatant);
     const next = Math.clamp(current + Number(delta || 0), 0, maxAp);
     if (next === current) return next;
-
-    await this.updateEmbeddedDocuments('Combatant', [{
-      _id: combatant.id,
-      'flags.synthicide.actionPointsCurrent': next,
-    }]);
+    await combatant.setFlag('synthicide', 'actionPointsCurrent', next);
 
     return next;
   }
