@@ -6,7 +6,19 @@ system:
   description: >-
     <p>This implant lets you perfectly store and recall all sensory information
     you experience. You can relive any memory starting from the time you had the
-    implant and may ask the GM for additional details you might have missed.</p>
+    implant and may ask the GM for additional details you might have
+    missed.</p><ul><li><p>Mental projection (<span class="s1">§</span>200): 3D
+    sensors give your memories a 360° field of vision unaffected by darkness.
+    When reviewing memories, you can rotate your perspective to glean new
+    details. This requires a successful awareness roll against an RD set by the
+    GM.</p></li><li><p class="p1">Monkey protocol (<span
+    class="s1">§</span>300): Limbic integration allows you to perfectly mimic
+    any motion or spoken phrase you’ve witnessed. You can easily replicate body
+    language, short spoken phrases, walking gaits, dances, finger motions, and
+    similar actions. While replaying a motion routine, you can’t react to
+    surprises and don’t gain a special bonus to physical attributes like combat,
+    toughness, or speed. For difficult actions, the GM may require an attribute
+    roll to determine if it’s possible.</p></li></ul>
   quantity: 1
   weight: 0
   equipped: false
@@ -27,11 +39,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.33
+  systemVersion: 1.0.50
   createdTime: 1779297566850
-  modifiedTime: 1779297670290
+  modifiedTime: 1782489863684
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

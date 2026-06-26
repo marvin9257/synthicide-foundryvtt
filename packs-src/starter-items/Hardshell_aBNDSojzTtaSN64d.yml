@@ -5,9 +5,12 @@ _id: aBNDSojzTtaSN64d
 img: systems/synthicide/assets/icons/items/bioclass.svg
 system:
   description: >-
-    Body rigs are specialized for physical tasks. This bioclass may buy
-    cybernetic body upgrades, but not brain upgrades. You have access to
-    mutations and can learn psychic powers.
+    <p>Body rigs are in high demand. To many organics, a rigged body with an
+    organic mind seems like the best of both worlds – strength without
+    sacrificing self. Being a hardshell carries no inherent social benefits, but
+    others may perceive you as a greater threat. The most common path to
+    cybernetic enhancement is joining a company or gang that offers it as a
+    condition of employment. This always involves violence and danger.</p>
   featureType: bioclass
   traits:
     - name: Starter Hardware
@@ -36,11 +39,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.26
+  systemVersion: 1.0.50
   createdTime: 1772635388563
-  modifiedTime: 1777740811819
+  modifiedTime: 1782478523477
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null

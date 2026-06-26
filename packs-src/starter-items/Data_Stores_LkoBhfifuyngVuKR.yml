@@ -3,7 +3,17 @@ name: Data Stores
 type: implant
 img: systems/synthicide/assets/icons/items/implant.svg
 system:
-  description: ''
+  description: >-
+    <p>Increase your operation by +1.</p><ul><li><p>Enhanced (§400): Increases
+    the bonus to +2.</p></li><li><p>Superior (§1200): Increases the bonus to
+    +3.</p></li><li><p>Complex storage (§300): Choose one level 1 knowledge
+    focus you qualify for. You gain access to it and all its powers. You may
+    only install one complex storage mod.</p></li><li><p>Computer interface
+    (§50): Interface your brain directly with computer systems. Your brain
+    counts as a mobile hack deck.</p></li><li><p>Skull phone (§10): A
+    mind-controlled communicator is installed in your brain, letting you send
+    and receive messages and calls. Your voice sounds distant and eerie when
+    using it.</p></li></ul>
   quantity: 1
   weight: 0
   equipped: false
@@ -62,11 +72,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.33
+  systemVersion: 1.0.50
   createdTime: 1779297372555
-  modifiedTime: 1779297372578
+  modifiedTime: 1782489776794
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

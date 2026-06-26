@@ -4,7 +4,28 @@ type: implant
 _id: 5yr9lbfr6n6yT0Eu
 img: systems/synthicide/assets/icons/items/implant.svg
 system:
-  description: ''
+  description: >-
+    <p>Increase your awareness by +1.</p><ul><li><p class="p1">Enhanced (<span
+    class="s1">§</span>400): Increases the bonus to +2.</p></li><li><p
+    class="p1">Superior (<span class="s1">§</span>1200): Increase the bonus to
+    +3. Discount this by the price of enhanced if it was purchased before
+    this.</p></li><li><p class="p1">Distance hearing (<span
+    class="s1">§</span>50): Hear events up to 2 zones away as if they were next
+    to you, including whispers.</p></li><li><p class="p1">Zoom (<span
+    class="s1">§</span>30): Magnify distant objects up to 10×.</p></li><li><p
+    class="p1">Nightvision (<span class="s1">§</span>20): Darkness does not
+    impede your vision at any distance.</p></li><li><p class="p1">Scanning
+    vision (<span class="s1">§</span>200): Characters in your zone cannot hide
+    behind objects or darkness, but may still benefit from obstructing cover
+    that can stop or redirect a round.</p></li><li><p class="p1">Gun link (<span
+    class="s1">§</span>1000): Use awareness instead of combat to calculate ATT
+    with ranged weapons, but do not modify DMG.</p></li><li><p
+    class="p1">Psychovision (<span class="s1">§</span>500): Choose one level 1
+    revelation power you qualify for. You may only install one psychovision
+    mod.</p></li><li><p class="p1">Proximity alarm (<span
+    class="s1">§</span>150): Make awareness rolls against movement within one
+    zone of you as if it was within your sight, regardless of where you are
+    looking.</p></li></ul>
   quantity: 1
   weight: 0
   equipped: false
@@ -63,11 +84,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.33
+  systemVersion: 1.0.50
   createdTime: 1779297146092
-  modifiedTime: 1779297372578
+  modifiedTime: 1782489561789
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

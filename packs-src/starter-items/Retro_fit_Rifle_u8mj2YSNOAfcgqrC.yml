@@ -3,7 +3,10 @@ name: Retro-fit Rifle
 type: weapon
 img: systems/synthicide/assets/icons/items/rifle.svg
 system:
-  description: "<p>Rifles are large projectile weapons designed to fire a single payload over long distances. All larger ranged weapons are simplified to belong to the rifle type.</p>"
+  description: >-
+    <p>Rifles are large projectile weapons designed to fire a single payload
+    over long distances. All larger ranged weapons are simplified to belong to
+    the rifle type.</p>
   quantity: 1
   weight: 0
   equipped: false

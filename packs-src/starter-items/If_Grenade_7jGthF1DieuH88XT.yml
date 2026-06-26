@@ -1,5 +1,5 @@
 folder: ybXCzCc0CtJXRYCF
-name: If Grenade
+name: IF Grenade
 type: weapon
 img: systems/synthicide/assets/icons/items/grenade.svg
 system:
@@ -19,8 +19,8 @@ system:
   weaponType: grenade
   rangeIncrement: 1
   features:
-    - blast3
     - twoHanded
+    - blast3
   modifications: []
   specialAmmo: none
   bonuses:
@@ -52,11 +52,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.30
+  systemVersion: 1.0.50
   createdTime: 1778952599982
-  modifiedTime: 1778953013558
+  modifiedTime: 1782488028502
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

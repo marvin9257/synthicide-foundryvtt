@@ -25,11 +25,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.30
+  systemVersion: 1.0.50
   createdTime: 1778954384402
-  modifiedTime: 1778954384402
+  modifiedTime: 1782488262229
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

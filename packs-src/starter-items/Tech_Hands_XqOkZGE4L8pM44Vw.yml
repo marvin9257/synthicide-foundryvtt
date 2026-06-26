@@ -10,7 +10,21 @@ system:
     paying once to apply the mod to all hands. You may treat your fists as both
     primitive and non-primitive for weapon mods, proficiencies, and battle
     powers. If you wield another martial weapon, you must choose between using
-    the weapon or your fists.</p>
+    the weapon or your fists.</p><ul><li><p>Enhanced (<span
+    class="s1">§</span>400): Increase the bonus to +2.</p></li><li><p
+    class="p1">Superior (<span class="s1">§</span>1200): Increase the bonus to
+    +3. Discount this by the price of enhanced if it was purchased before
+    this.</p></li><li><p class="p1">Gecko grip (<span
+    class="s1">§</span>100/<span class="s1">§</span>300): Gain +4 to rolls made
+    to climb; increase to +7 for an additional <span
+    class="s1">§</span>200.</p></li><li><p class="p1">Retractable blades (<span
+    class="s1">§</span>30): Extend blades to gain the counter ability. Awareness
+    RD 5 to detect during a strip search; increase to RD 12 for an additional
+    <span class="s1">§</span>100.</p></li><li><p class="p1">Finger tools (<span
+    class="s1">§</span>110): Built-in multi-tools count as a basic tool kit.
+    Upgrade to a crafting kit for <span class="s1">§</span>300 more. Awareness
+    RD 5 to detect during a strip search; increase to RD 12 for an additional
+    <span class="s1">§</span>100.</p></li></ul>
   quantity: 1
   weight: 0
   equipped: false
@@ -31,11 +45,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.33
+  systemVersion: 1.0.50
   createdTime: 1779295764260
-  modifiedTime: 1779297876862
+  modifiedTime: 1782489130703
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

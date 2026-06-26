@@ -6,9 +6,9 @@ system:
   description: Fully robotic; powerful and socially protected.
   featureType: bioclass
   traits:
-    - name: Mod Focused
+    - name: Limits
       sort: 10
-      description: You cannot gain psychic powers
+      description: You cannot have psychic powers or mutations.
     - name: Danger Points
       sort: 20
       description: '+1'
@@ -33,11 +33,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.26
+  systemVersion: 1.0.50
   createdTime: 1777744851930
-  modifiedTime: 1777745226649
+  modifiedTime: 1782479098801
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

@@ -6,7 +6,14 @@ system:
   description: >-
     <p>A metallic valve system covers your mouth and nose. You are immune to
     toxic gases and airborne microbes, and can store up to four hours of
-    oxygen.</p>
+    oxygen.</p><ul><li><p>Vacuum ready (<span class="s1">§</span>100): Seals
+    your skin and eyes to protect against space vacuum.</p></li><li><p
+    class="p1">Oxygen pod (<span class="s1">§</span>100): Increases oxygen
+    storage to 8 hours.</p></li><li><p class="p1">Ingestion filter (<span
+    class="s1">§</span>200): +5 to rolls against ingested poisons and
+    illnesses.</p></li><li><p class="p1">Nutrition amplifier (<span
+    class="s1">§</span>80): Skip 1 day of eating for every 2 days you’ve
+    eaten.</p></li></ul>
   quantity: 1
   weight: 0
   equipped: false
@@ -27,11 +34,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.33
+  systemVersion: 1.0.50
   createdTime: 1779295854177
-  modifiedTime: 1779297937916
+  modifiedTime: 1782489092915
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

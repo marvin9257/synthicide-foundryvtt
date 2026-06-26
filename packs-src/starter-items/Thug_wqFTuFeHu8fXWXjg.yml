@@ -39,8 +39,7 @@ system:
     - description: >-
         After character creation, you may purchase new attack skills with 1 less
         trait point.
-effects:
-  []
+effects: []
 flags: {}
 _stats:
   coreVersion: '14.360'

@@ -6,7 +6,11 @@ system:
   description: >-
     <p>A computer system allows your body to perform simple tasks while you
     sleep, such as standing guard or piloting a ship in calm conditions. You can
-    program it to wake you when needed.</p>
+    program it to wake you when needed.</p><ul><li><p>Complex procedure (<span
+    class="s1">§</span>100): Choose one knowledge power you possess. Your
+    computer can execute this power while you sleep and will wake you if
+    circumstances change. This add-on can be installed up to five times, each
+    tied to adifferent knowledge power.</p></li></ul>
   quantity: 1
   weight: 0
   equipped: false
@@ -27,11 +31,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.33
+  systemVersion: 1.0.50
   createdTime: 1779297643948
-  modifiedTime: 1779297643948
+  modifiedTime: 1782489911300
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

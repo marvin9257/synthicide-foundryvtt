@@ -51,3 +51,6 @@ packs-src/player-guide-journal/
 continue/
 
 AGENTS.MD
+
+.continue/
+.continueignore

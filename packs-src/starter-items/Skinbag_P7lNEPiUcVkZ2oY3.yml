@@ -5,25 +5,38 @@ _id: P7lNEPiUcVkZ2oY3
 img: systems/synthicide/assets/icons/items/bioclass.svg
 system:
   description: >-
-    To be totally organic means you can never benefit from cybernetic upgrades,
-    yet you may develop psychic powers. Players who select this bioclass must
-    decide if their character is a mutant or among the few remaining genetically
-    unaltered humans.
+    <p>Skinbags are fully organic and carry no social capital. Another one is
+    born every day. Most live and die in squalor, though a handful claw their
+    way to power. A subset are born mutants. Without a secure place in the
+    galaxy, they struggle for acceptance among the non-mutated.</p>
   featureType: bioclass
   traits:
     - name: Techless Will
       sort: 10
       description: >-
-        Three times per day, add +3 to any attribute check (including Speed). In
-        battle this lasts 1 round; in roleplay it applies to one check.
-      key: ''
+        You never needed or trusted cybernetics. Three times per day, add +3 to
+        any attribute check (including Speed). This bonus lasts for one round in
+        battle or applies to a
+
+        single roleplay action.
     - name: Genetic Legacy
       sort: 20
       description: >-
-        Choose one: Mutant Dog or Dying Breed. Mutant Dog grants 4 mutation-only
-        trait points and -2 Nerve. Dying Breed grants milestone attribute and
-        trait bonuses as described by the bioclass.
-      key: ''
+        Choose one - Mutant Scum or Dying Breed. 
+
+        Mutant scum: A prodigravus infection stripped you of your “human”
+        identity. You know your worth, but not everyone agrees. Reduce nerve by
+        2 and gain 4 trait points to spend only on mutations. These points can’t
+        be used on non-mutation traits and don’t count toward level advancement.
+        When buying mutations now or later, ignore attribute requirements; 
+        only trait and level requirements apply.
+
+        Dying breed: You belong to the last unaltered humans, untouched by
+        millennia of bio-warfare. You are vulnerable to mutations caused by
+        toxins and poisons but can never gain permanent mutations through
+        traits. At 1st and 10th levels, add +1 to any attribute except
+        toughness. At 4th and 7th levels, gain one bonus general trait and +1 to
+        any attribute except toughness.
   startingAttributes:
     awareness: 2
     combat: 0
@@ -45,11 +58,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.0
+  systemVersion: 1.0.50
   createdTime: 1772635388564
-  modifiedTime: 1777740609488
+  modifiedTime: 1782478263121
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null

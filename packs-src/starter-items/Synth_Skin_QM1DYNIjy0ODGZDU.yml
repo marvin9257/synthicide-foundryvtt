@@ -7,7 +7,14 @@ system:
   description: >-
     <p>Your cybernetic skin grants +3 AD and ST +2, but it doesn’t stack with
     worn armor or unarmored defense powers. You must choose which applies before
-    a battle.</p>
+    a battle.</p><ul><li><p class="p1">Enhanced (<span class="s1">§</span>400):
+    Increases the bonus to +4 AD and ST +3.</p></li><li><p class="p1">Superior
+    (<span class="s1">§</span>1200): Increases the bonus to +5 AD and ST
+    +4.</p></li><li><p class="p1">Morph skin (<span class="s1">§</span>200):
+    Change your skin pigment and facial features at will.</p></li><li><p
+    class="p1">Stealth skin (<span class="s1">§</span>300): Gain +4 to rolls to
+    remain hidden. Scanning technology cannot detect you unless the searcher
+    beats an awareness RD 8.</p></li></ul>
   quantity: 1
   weight: 0
   equipped: false
@@ -23,7 +30,7 @@ system:
   customMods: ''
   slotSize: 1
 effects:
-  - name: Active Effect
+  - name: AD and SD Bonus
     origin: Item.QM1DYNIjy0ODGZDU
     img: icons/svg/aura.svg
     _id: RrzG0HPqZGxQCSpM
@@ -56,11 +63,11 @@ effects:
     sort: 0
     flags: {}
     _stats:
-      coreVersion: '14.361'
+      coreVersion: '14.363'
       systemId: synthicide
       systemVersion: 1.0.33
       createdTime: 1779296379275
-      modifiedTime: 1779296379275
+      modifiedTime: 1782488890385
       lastModifiedBy: CyKka7cUoDSGKuCg
       compendiumSource: null
       duplicateSource: null
@@ -71,11 +78,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.33
+  systemVersion: 1.0.50
   createdTime: 1779296379275
-  modifiedTime: 1779297963904
+  modifiedTime: 1782488954639
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

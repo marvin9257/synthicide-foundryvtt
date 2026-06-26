@@ -3,7 +3,16 @@ name: Ventromedial Implant
 type: implant
 img: systems/synthicide/assets/icons/items/implant.svg
 system:
-  description: ''
+  description: >-
+    <p>Increase your nerve by +1.</p><ul><li><p class="p1">Enhanced (<span
+    class="s1">§</span>400): Increases the bonus to +2.</p></li><li><p
+    class="p1">Superior (<span class="s1">§</span>1200): Increase the bonus to
+    +3. Discount this by the price of enhanced if it was purchased before
+    this.</p></li><li><p class="p1">Mindshield (<span class="s1">§</span>150):
+    Add +2 to your ND and gain ST +5 against projection powers.</p></li><li><p
+    class="p1">Psychonautalis (<span class="s1">§</span>500): Choose one level 1
+    manifestation power you qualify for. You may only install one psychonautalis
+    mod.</p></li></ul>
   quantity: 1
   weight: 0
   equipped: false
@@ -62,11 +71,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.33
+  systemVersion: 1.0.50
   createdTime: 1779297318158
-  modifiedTime: 1779297372578
+  modifiedTime: 1782489695484
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

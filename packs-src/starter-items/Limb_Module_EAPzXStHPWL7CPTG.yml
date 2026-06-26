@@ -8,7 +8,14 @@ system:
     cybernetic arms. You gain 1 AP each turn to spend on actions involving extra
     arms. If you have more arms than your opponent in a takedown, this AP is
     available to use against opponents with fewer arms locked with you in a
-    melee takedown, even though such actions are usually not allowed.</p>
+    melee takedown, even though such actions are usually not
+    allowed.</p><ul><li><p>Advanced control (<span class="s1">§</span>300): Gain
+    1 additional AP per installed extra arm. This AP can only be used for
+    actions made by those arms and is also available against opponents with
+    fewer arms locked with you in a melee takedown.</p></li><li><p
+    class="p1">Fury protocol (<span class="s1">§</span>250): You can make a 4th
+    attack each round for 3 AP, as long as that attack is made with an extra arm
+    not already used to attack that turn.</p></li></ul>
   quantity: 1
   weight: 0
   equipped: false
@@ -29,11 +36,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.33
+  systemVersion: 1.0.50
   createdTime: 1779297762217
-  modifiedTime: 1779297762217
+  modifiedTime: 1782489965506
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

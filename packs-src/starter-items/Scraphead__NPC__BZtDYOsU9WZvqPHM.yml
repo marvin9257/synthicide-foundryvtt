@@ -3,14 +3,10 @@ name: Scraphead (NPC)
 type: bioclass
 img: systems/synthicide/assets/icons/items/bioclass.svg
 system:
-  description: >-
-    An extensive surgical operation empowered your brain with cybernetic plugs,
-    amplifying your cognitive functiing. This bioclass may benefit from
-    cybernetic brain upgrades, but never body upgrades. Scrapheads cannot
-    develop psychic powers, but they may access mutations.
+  description: <p>Mostly organic with cybernetic brain implants,</p>
   featureType: bioclass
   traits:
-    - name: Hard Brain
+    - name: Limits
       sort: 10
       description: Cannot have psychic powers or body cybernetics.
     - name: Brainy
@@ -37,11 +33,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.26
+  systemVersion: 1.0.50
   createdTime: 1777744383115
-  modifiedTime: 1777745226649
+  modifiedTime: 1782478837138
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

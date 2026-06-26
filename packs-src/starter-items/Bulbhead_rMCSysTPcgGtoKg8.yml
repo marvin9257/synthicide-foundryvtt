@@ -39,18 +39,21 @@ system:
         wish to use (1 dose for 1st level powers, 4 doses for 4th level, and so
         on). If  you don’t take enough to access higher-level powers, you lose
         the bonuses those powers provide to lower levels.
+
+        If you fail to get a dose, you suffer intense withdrawal: you lose
+        access to all psychic powers and take -2 to every attribute score. Taking
+        one dose removes this penalty.
     - description: >-
         After character creation, you may purchase new psychic powers for 1 less
         trait point.
-effects:
-  []
+effects: []
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.26
+  systemVersion: 1.0.50
   createdTime: 1772636180123
-  modifiedTime: 1777742003872
+  modifiedTime: 1782480477768
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

@@ -3,7 +3,18 @@ name: Cortex Plug
 type: implant
 img: systems/synthicide/assets/icons/items/implant.svg
 system:
-  description: ''
+  description: >-
+    <p>Increase your influence by +1.</p><ul><li><p class="p1">Enhanced (<span
+    class="s1">§</span>400): Increases the bonus to +2.</p></li><li><p
+    class="p1">Superior (<span class="s1">§</span>1200): Increase the bonus to
+    +3. Discount this by the price of enhanced if it was purchased before
+    this.</p></li><li><p class="p1">Deadface (<span class="s1">§</span>150):
+    Suppress revealing body language and gain +2 on influence checks to mislead
+    or negotiate. You can also turn off all body language entirely, unsettling
+    observers but making your intentions unreadable.</p></li><li><p
+    class="p1">Psychocortex (<span class="s1">§</span>500): Choose one level 1
+    projection power you qualify for. You may only install one psychocortex
+    mod.</p></li></ul>
   quantity: 1
   weight: 0
   equipped: false
@@ -62,11 +73,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.33
+  systemVersion: 1.0.50
   createdTime: 1779297257274
-  modifiedTime: 1779297372578
+  modifiedTime: 1782489626979
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

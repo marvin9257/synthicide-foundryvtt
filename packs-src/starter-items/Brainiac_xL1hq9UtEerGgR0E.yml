@@ -27,21 +27,18 @@ system:
       description: '-1 to any one attribute except Operation (awareness chosen as default)'
   aspectType: brainiac
   abilities:
-    - description: >-
-        So long as requirements are met, select 3 knowledge focuses and gain 2
-        powers from each.
+    - description: Select 3 knowledge focuses and gain 2 powers from each.
     - description: >-
         After character creation, you may purchase new knowledge focuses with 1
         less trait point.
-effects:
-  []
+effects: []
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.26
+  systemVersion: 1.0.50
   createdTime: 1772636180123
-  modifiedTime: 1777741419354
+  modifiedTime: 1782480351888
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

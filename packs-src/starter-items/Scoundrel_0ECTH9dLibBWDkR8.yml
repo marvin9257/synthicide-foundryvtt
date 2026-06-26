@@ -27,7 +27,9 @@ system:
         selected as default)
   aspectType: scoundrel
   abilities:
-    - description: Gain access to any 1 knowledge focus you meet requirements for
+    - description: >-
+        You rely on cunning and surprise to get the upper hand. Gain access to
+        any 1 knowledge focus you meet requirements for.
     - description: >-
         Battle Opportunist ability:  Once per turn, when you use gain advantage
         or setup, you get a free move action to use before or after it.
@@ -38,15 +40,14 @@ system:
 
         This stacks with other effects that raise die results. Battle
         opportunist can be improved through general traits at 4th and 7th level.
-effects:
-  []
+effects: []
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.26
+  systemVersion: 1.0.50
   createdTime: 1772636180124
-  modifiedTime: 1777742728586
+  modifiedTime: 1782481068855
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

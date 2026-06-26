@@ -23,23 +23,22 @@ system:
         to each)
     - name: Attribute Penalty (Mandatory)
       sort: 20
-      description: '-1 to any one attribute except Awareness or Nerve'
+      description: '-1 to any one attribute except Awareness or Nerve. (default to Speed)'
   aspectType: leader
   abilities:
     - description: >-
         You uplift those around you and refuse to be crushed by circumstance.
-        Gain any 2 tactical powers for which you meet the requirements.
+        Gain any 2 tactical powers for which you qualify.
     - description: New tactical powers cost 1 less TP
-effects:
-  []
+effects: []
 folder: OL8WfY5Fhoh6AVQP
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.26
+  systemVersion: 1.0.50
   createdTime: 1772636180124
-  modifiedTime: 1777742330320
+  modifiedTime: 1782480573692
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

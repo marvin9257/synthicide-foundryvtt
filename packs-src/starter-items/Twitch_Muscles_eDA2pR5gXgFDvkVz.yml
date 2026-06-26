@@ -3,7 +3,19 @@ type: implant
 _id: eDA2pR5gXgFDvkVz
 img: systems/synthicide/assets/icons/items/implant.svg
 system:
-  description: ''
+  description: >-
+    <p>Increase your speed by +1. Additional mods:</p><ul><li><p
+    class="p1">Enhanced (<span class="s1">§</span>400): Increase the bonus to
+    +2.</p></li><li><p class="p1">Superior (<span class="s1">§</span>1200):
+    Increase the bonus to +3. Discount this by the price of enhanced if it was
+    purchased before this.</p></li><li><p class="p1">Reflex training (<span
+    class="s1">§</span>50/<span class="s1">§</span>150): Increase your BR by +1
+    or +2.</p></li><li><p class="p1">Catfoot program (<span
+    class="s1">§</span>150): Muscle-level programming helps you move more
+    quietly, granting +2 to speed rolls to avoid being heard.</p></li><li><p
+    class="p1">Extended gait (<span class="s1">§</span>400): Whenever you take
+    two move actions in a row, you may take a third move action for
+    free.</p></li></ul>
   quantity: 1
   weight: 0
   equipped: false
@@ -19,7 +31,7 @@ system:
   customMods: ''
   slotSize: 1
 effects:
-  - name: Active Effect
+  - name: Increase Speed
     origin: Item.eDA2pR5gXgFDvkVz
     img: icons/svg/aura.svg
     _id: Kg56SmFOPkWPzaYy
@@ -47,11 +59,11 @@ effects:
     sort: 0
     flags: {}
     _stats:
-      coreVersion: '14.361'
+      coreVersion: '14.363'
       systemId: synthicide
       systemVersion: 1.0.33
       createdTime: 1779292708619
-      modifiedTime: 1779292708619
+      modifiedTime: 1782488587690
       lastModifiedBy: CyKka7cUoDSGKuCg
       compendiumSource: null
       duplicateSource: null
@@ -63,11 +75,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.33
+  systemVersion: 1.0.50
   createdTime: 1779292708619
-  modifiedTime: 1779295764292
+  modifiedTime: 1782489164991
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

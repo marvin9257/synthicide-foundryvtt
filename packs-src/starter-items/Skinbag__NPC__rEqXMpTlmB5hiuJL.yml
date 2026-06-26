@@ -3,11 +3,7 @@ name: Skinbag (NPC)
 type: bioclass
 img: systems/synthicide/assets/icons/items/bioclass.svg
 system:
-  description: >-
-    To be totally organic means you can never benefit from cybernetic upgrades,
-    yet you may develop psychic powers. Players who select this bioclass must
-    decide if their character is a mutant or among the few remaining genetically
-    unaltered humans.
+  description: <p>Organic human with no cybernetics; may be a normal human or mutant.</p>
   featureType: bioclass
   traits:
     - name: Genetic Legacy
@@ -121,11 +117,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.26
+  systemVersion: 1.0.50
   createdTime: 1777744222648
-  modifiedTime: 1777745226648
+  modifiedTime: 1782478760029
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

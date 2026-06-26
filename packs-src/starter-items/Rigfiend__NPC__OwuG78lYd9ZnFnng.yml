@@ -3,20 +3,17 @@ name: Rigfiend (NPC)
 type: bioclass
 img: systems/synthicide/assets/icons/items/bioclass.svg
 system:
-  description: >-
-    Someone with both a rigged body and rigged mind is entirely dependent on
-    cybernetics. This bioclass may gain any cybernetic upgrade. However, a
-    Rigfiend may not access mutations or psychic powers.
+  description: <p>Heavily cybernetic in both body and brain.</p>
   featureType: bioclass
   traits:
-    - sort: 10
-      name: Mod Focused
-      description: You cannot gain psychic powers
+    - name: Limits
+      sort: 10
+      description: You cannot have psychic powers
   startingAttributes:
     awareness: 0
     combat: 0
     toughness: 0
-    influence: -1
+    influence: -2
     operation: 1
     nerve: 1
     speed: 1
@@ -33,11 +30,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.360'
+  coreVersion: '14.363'
   systemId: synthicide
-  systemVersion: 1.0.26
+  systemVersion: 1.0.50
   createdTime: 1777744705738
-  modifiedTime: 1777745226649
+  modifiedTime: 1782479047173
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
