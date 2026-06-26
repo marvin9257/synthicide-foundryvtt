@@ -1,3 +1,10 @@
+## [1.0.51](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.50...1.0.51) (2026-06-26)
+
+
+### Bug Fixes
+
+* update compendium starter items to early release version ([e63db92](https://github.com/marvin9257/synthicide-foundryvtt/commit/e63db92d678094a15fe499da2f89ca439e24c819))
+
 ## [1.0.50](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.49...1.0.50) (2026-06-12)
 
 
