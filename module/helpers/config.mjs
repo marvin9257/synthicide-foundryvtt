@@ -9,6 +9,7 @@ SYNTHICIDE.ICON_TYPE_MAP = {
   implant: 'implant.svg',
   shield: 'shield.svg',
   trait: 'trait.svg',
+  shipWeapon: 'spaceWeapon.svg',
   weapon: {
     axe: 'axe.svg',
     blaster: 'blaster.svg',
@@ -816,6 +817,11 @@ SYNTHICIDE.vehicleCustomizations = {
     other: 'SYNTHICIDE.Vehicle.ShipFlavors.other'
   }
 };
+
+SYNTHICIDE.SHIP_WEAPON_RANGES = {
+  far: 'SYNTHICIDE.Item.ShipWeapon.Range.far',
+  sight: 'SYNTHICIDE.Item.ShipWeapon.Range.sight'
+}
 
 export default SYNTHICIDE;
 

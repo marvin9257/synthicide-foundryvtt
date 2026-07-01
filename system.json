@@ -72,6 +72,11 @@
         "htmlFields": [
           "description"
         ]
+      },
+      "shipWeapon": {
+        "htmlFields": [
+          "description"
+        ]
       }
     },
     "ChatMessage": {

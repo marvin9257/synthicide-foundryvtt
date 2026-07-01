@@ -14,8 +14,8 @@ import { SynthicideActorSheet } from './actor-sheet.mjs';
  * - Any part listed here should also exist in static PARTS.
  */
 const VEHICLE_PARTS_BY_TYPE = {
-  planetary: [ 'capacity', 'cargo', 'effects', 'description'],
-  ship: [ 'capacity', 'flavor', 'cargo', 'effects', 'description']
+  planetary: [ 'capacity', 'cargo', 'shipWeapons', 'effects', 'description'],
+  ship: [ 'capacity', 'flavor', 'cargo', 'shipWeapons', 'effects', 'description']
 };
 
 /**
@@ -36,6 +36,7 @@ const VEHICLE_TAB_MAP = {
   capacity: { id: 'capacity', icon: ICON_MAP.capacity, label: 'Capacity' },
   flavor: {id: 'flavor', icon: ICON_MAP.flavor, label: 'Flavor' },
   cargo: {id: 'cargo', icon: ICON_MAP.cargo, label: 'Cargo' },
+  shipWeapons: { id: 'shipWeapons', icon: ICON_MAP.shipWeapon, label: 'ShipWeapons' },
   description: { id: 'description', icon: ICON_MAP.description, label: 'Description' },
   effects: { id: 'effects', icon: ICON_MAP.effects, label: 'Effects' }
 };
@@ -74,6 +75,10 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
     },
     cargo: {
       template: 'systems/synthicide/templates/vehicle/cargo.hbs',
+      scrollable: [""]
+    },
+    shipWeapons: {
+      template: 'systems/synthicide/templates/vehicle/ship-weapons.hbs',
       scrollable: [""]
     },
     description: {
@@ -162,6 +167,12 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
       case 'cargo' :{
         const cargo = this.actor.itemTypes.cargo;
         context.cargo = cargo?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+        break;
+      }
+      case 'shipWeapons': {
+        const shipWeapons = this.actor.itemTypes.shipWeapon;
+        context.shipWeapons = shipWeapons?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+        context.shipWeaponRanges = SYNTHICIDE.SHIP_WEAPON_RANGES;
         break;
       }
         

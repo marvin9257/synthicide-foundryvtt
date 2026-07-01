@@ -317,7 +317,8 @@
         "Description": "Description",
         "Effects": "Effects",
         "Flavor": "Flavor",
-        "Cargo": "Cargo"
+        "Cargo": "Cargo",
+        "ShipWeapons": "Ship Weapons"
       },
       "Customizations": {
         "label": "Customizations",
@@ -457,6 +458,19 @@
         "FIELDS": {
           "Quantity": "Quantity",
           "UnitPrice": "Unit Price (§)"
+        }
+      },
+      "ShipWeapon": {
+        "FIELDS": {
+          "Range": "Range",
+          "DmgMultiplier": "DMG Multiplier",
+          "AmmoUnitCost": "Ammo Unit Cost (§)",
+          "ItemCost": "Item Cost (§)",
+          "IsMissile": "Is Missile?"
+        },
+        "Range": {
+          "far": "Far",
+          "sight": "Sight"
         }
       },
       "Gear": {
@@ -902,6 +916,8 @@
         "BlastDiameter": "Blast Diameter",
         "FinalPoint": "Final Point",
         "SourceAttack": "Source Attack",
+        "ShipWeaponMultiplier": "Ship Weapon DMG Multiplier",
+        "ShipWeaponAutoHitFlavor": "{item}: automatic-hit ship weapon damage",
         "DerivedFromAttack": "Derived from attack",
         "DefaultFlavorChallenge": "{difficulty} roll made using {attribute}",
         "DefaultFlavorAttack": "{item}: attack roll using {attribute} vs armor {armor}",
@@ -981,7 +997,8 @@
       },
       "Tooltip": {
         "AttackWithItem": "Attack with {item}",
-        "RollWithItem": "Roll with {item}"
+        "RollWithItem": "Roll with {item}",
+        "RollShipWeaponDamage": "Roll automatic-hit ship weapon damage for {item}"
       },
       "Actions": {
         "Attack": "Attack"
@@ -1045,7 +1062,8 @@
       "armor": "Armor",
       "weapon" : "Weapon",
       "shield": "Shield",
-      "cargo": "Cargo"
+      "cargo": "Cargo",
+      "shipWeapon": "Ship Weapon"
     }
   }
 }

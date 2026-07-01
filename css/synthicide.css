@@ -3565,3 +3565,111 @@ body.synthicide-style-bold .synthicide .tab.cargo .items-list .item:not(.items-h
   padding: 2px 6px;
   white-space: nowrap;
 }
+
+/* ============================== */
+/* Ship Weapons Panel             */
+/* ============================== */
+
+.synthicide .tab.shipWeapons .items-list .item-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.synthicide .tab.shipWeapons .items-list .item {
+  flex-wrap: nowrap;
+}
+
+.synthicide .tab.shipWeapons .items-list .items-header {
+  flex-wrap: nowrap;
+}
+
+.synthicide .tab.shipWeapons .items-list .item-name .item-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.synthicide .tab.shipWeapons .items-list .item-prop--quantity {
+  flex: 0 0 10%;
+  min-width: 0;
+}
+
+.synthicide .tab.shipWeapons .items-list .item-prop--range {
+  flex: 0 0 12%;
+  min-width: 0;
+}
+
+.synthicide .tab.shipWeapons .items-list .item-prop--is-missile {
+  flex: 0 0 6%;
+  min-width: 0;
+  text-align: center;
+  line-height: 1;
+}
+
+.synthicide .tab.shipWeapons .items-list .item-prop--is-missile i {
+  font-size: 1.1rem;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.synthicide .tab.shipWeapons .items-list .item-prop--dmg-multiplier {
+  flex: 0 0 14%;
+  min-width: 0;
+}
+
+.synthicide .tab.shipWeapons .items-list .item-prop--item-cost {
+  flex: 0 0 12%;
+  min-width: 0;
+}
+
+.synthicide .tab.shipWeapons .items-list .item-controls--ship-weapons {
+  flex: 0 0 24%;
+  min-width: 0;
+}
+
+.synthicide .tab.shipWeapons .items-list .item-controls--ship-weapons .item-roll-ship-weapon {
+  color: var(--color-text-hyperlink);
+}
+
+.synthicide .tab.shipWeapons .items-list > .items-header .item-controls--ship-weapons a {
+  margin: 0;
+  white-space: nowrap;
+}
+
+body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list > .items-header {
+  border-left: 5px solid var(--rb-accent);
+  padding: 0 2px;
+}
+
+body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item:not(.items-header) {
+  border-left-width: 5px;
+  border-left-style: solid;
+  border-left-color: transparent;
+  padding: 1px 2px;
+}
+
+body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--quantity,
+body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--range,
+body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--is-missile,
+body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--dmg-multiplier,
+body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--item-cost,
+body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-controls--ship-weapons {
+  box-sizing: border-box;
+}
+
+body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item:not(.items-header) .item-prop {
+  font-family: var(--synthicide-default-font);
+  font-size: var(--reduced-font-size);
+  font-weight: 500;
+  background: var(--rb-cell);
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  border-radius: 3px;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--is-missile i {
+  color: var(--rb-accent);
+}
