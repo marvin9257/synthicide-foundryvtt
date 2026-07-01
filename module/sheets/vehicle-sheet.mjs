@@ -88,11 +88,11 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
 
   /** @override */
   _configureRenderOptions(options) {
-    this.options.window.icon = this.document?.system.isShip ? ICON_MAP.spaceShip: ICON_MAP.vehicle;
+    this.options.window.icon = this.document.system.isShip ? ICON_MAP.spaceShip: ICON_MAP.vehicle;
     super._configureRenderOptions(options);
     options.parts = ['header', 'tabs'];
     if (this.document.limited) return;
-    options.parts.push(...(VEHICLE_PARTS_BY_TYPE[this.document?.system.isShip ? 'ship' : 'planetary'] ?? []));
+    options.parts.push(...(VEHICLE_PARTS_BY_TYPE[this.document.system.isShip ? 'ship' : 'planetary'] ?? []));
   }
 
   /* -------------------------------------------- */
