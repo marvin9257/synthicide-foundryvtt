@@ -864,6 +864,7 @@ body.theme-dark .npc-compact .window-content {
 .synthicide .header-resource .resource-content.resource-single {
   justify-content: center;
 }
+
 .synthicide .header-resource input[type="text"],
 .synthicide .header-resource input[type="number"] {
   min-width: 3.5ch;
@@ -3473,6 +3474,11 @@ body.synthicide-style-bold .npc-mastered-weapon input[type="checkbox"] {
 }
 
 /********************** Vehicles ************/
+
+.synthicide .header-resource .vehicle-is-ship-checkbox {
+  text-align: center;
+}
+
 /* ============================== */
 /* Capacity Panel                 */
 /* ============================== */
