@@ -9,6 +9,7 @@ SYNTHICIDE.ICON_TYPE_MAP = {
   implant: 'implant.svg',
   shield: 'shield.svg',
   trait: 'trait.svg',
+  shipWeapon: 'spaceWeapon.svg',
   weapon: {
     axe: 'axe.svg',
     blaster: 'blaster.svg',
@@ -720,6 +721,107 @@ SYNTHICIDE.npc = {
     priest: { label: 'SYNTHICIDE.Actor.NPC.Wealth.priest' },
   },
 };
+
+SYNTHICIDE.shipFlavors = {
+  origins: {
+    none: 'SYNTHICIDE.Vehicle.ShipFlavors.none',
+    hardEarned: 'SYNTHICIDE.Vehicle.ShipFlavors.Origins.hardEarned',
+    stolen: 'SYNTHICIDE.Vehicle.ShipFlavors.Origins.stolen',
+    borrowed: 'SYNTHICIDE.Vehicle.ShipFlavors.Origins.borrowed',
+    salvaged: 'SYNTHICIDE.Vehicle.ShipFlavors.Origins.salvaged',
+    discovered: 'SYNTHICIDE.Vehicle.ShipFlavors.Origins.discovered',
+    inherited: 'SYNTHICIDE.Vehicle.ShipFlavors.Origins.inherited',
+    experimental: 'SYNTHICIDE.Vehicle.ShipFlavors.Origins.experimental',
+    customMade: 'SYNTHICIDE.Vehicle.ShipFlavors.Origins.customMade',
+    paidCompanions: 'SYNTHICIDE.Vehicle.ShipFlavors.Origins.paidCompanions',
+    churchAffiliation: 'SYNTHICIDE.Vehicle.ShipFlavors.Origins.churchAffiliation',
+    other: 'SYNTHICIDE.Vehicle.ShipFlavors.other'
+  },
+  appearance: {
+    none: 'SYNTHICIDE.Vehicle.ShipFlavors.none',
+    boring: 'SYNTHICIDE.Vehicle.ShipFlavors.Appearance.boring',
+    overdone: 'SYNTHICIDE.Vehicle.ShipFlavors.Appearance.overdone',
+    cruddy: 'SYNTHICIDE.Vehicle.ShipFlavors.Appearance.cruddy',
+    sleak: 'SYNTHICIDE.Vehicle.ShipFlavors.Appearance.sleak',
+    fearsome: 'SYNTHICIDE.Vehicle.ShipFlavors.Appearance.fearsome',
+    ancient: 'SYNTHICIDE.Vehicle.ShipFlavors.Appearance.ancient',
+    churchSurplus: 'SYNTHICIDE.Vehicle.ShipFlavors.Appearance.churchSurplus',
+    workhorse: 'SYNTHICIDE.Vehicle.ShipFlavors.Appearance.workhorse',
+    plainUgly: 'SYNTHICIDE.Vehicle.ShipFlavors.Appearance.plainUgly',
+    gadgetHeavy: 'SYNTHICIDE.Vehicle.ShipFlavors.Appearance.gadgetHeavy',
+    other: 'SYNTHICIDE.Vehicle.ShipFlavors.other'
+  },
+  flaws: {
+    none: 'SYNTHICIDE.Vehicle.ShipFlavors.none',
+    awfulNoise: 'SYNTHICIDE.Vehicle.ShipFlavors.Flaws.awfulNoise',
+    visibleExhaust: 'SYNTHICIDE.Vehicle.ShipFlavors.Flaws.visibleExhaust',
+    sluggish: 'SYNTHICIDE.Vehicle.ShipFlavors.Flaws.sluggish',
+    electroInterference: 'SYNTHICIDE.Vehicle.ShipFlavors.Flaws.electroInterference',
+    badAir: 'SYNTHICIDE.Vehicle.ShipFlavors.Flaws.badAir',
+    thermalError: 'SYNTHICIDE.Vehicle.ShipFlavors.Flaws.thermalError',
+    toxicResidue: 'SYNTHICIDE.Vehicle.ShipFlavors.Flaws.toxicResidue',
+    vermin: 'SYNTHICIDE.Vehicle.ShipFlavors.Flaws.vermin',
+    brittleFrame: 'SYNTHICIDE.Vehicle.ShipFlavors.Flaws.brittleFrame',
+    trulyAwful: 'SYNTHICIDE.Vehicle.ShipFlavors.Flaws.trulyAwful',
+    other: 'SYNTHICIDE.Vehicle.ShipFlavors.other'
+  },
+  mysteries: {
+    none: 'SYNTHICIDE.Vehicle.ShipFlavors.none',
+    impossibleJumps: 'SYNTHICIDE.Vehicle.ShipFlavors.Mysteries.impossibleJumps',
+    follower: 'SYNTHICIDE.Vehicle.ShipFlavors.Mysteries.follower',
+    crypts: 'SYNTHICIDE.Vehicle.ShipFlavors.Mysteries.crypts',
+    mindOfItsOwn: 'SYNTHICIDE.Vehicle.ShipFlavors.Mysteries.mindOfItsOwn',
+    voices: 'SYNTHICIDE.Vehicle.ShipFlavors.Mysteries.voices',
+    madWriting: 'SYNTHICIDE.Vehicle.ShipFlavors.Mysteries.madWriting',
+    sharedDreams: 'SYNTHICIDE.Vehicle.ShipFlavors.Mysteries.sharedDreams',
+    apparition: 'SYNTHICIDE.Vehicle.ShipFlavors.Mysteries.apparition',
+    spectralShifts: 'SYNTHICIDE.Vehicle.ShipFlavors.Mysteries.spectralShifts',
+    sharedMemory: 'SYNTHICIDE.Vehicle.ShipFlavors.Mysteries.sharedMemory',
+    other: 'SYNTHICIDE.Vehicle.ShipFlavors.other'
+  },
+  upgrades: {
+    none: 'SYNTHICIDE.Vehicle.ShipFlavors.none',
+    hotSensors: 'SYNTHICIDE.Vehicle.ShipFlavors.Upgrades.hotSensors',
+    efficient: 'SYNTHICIDE.Vehicle.ShipFlavors.Upgrades.efficient',
+    magneticDefense: 'SYNTHICIDE.Vehicle.ShipFlavors.Upgrades.magneticDefense',
+    extraArmor: 'SYNTHICIDE.Vehicle.ShipFlavors.Upgrades.extraArmor',
+    extraEngines: 'SYNTHICIDE.Vehicle.ShipFlavors.Upgrades.extraEngines',
+    crashAlert: 'SYNTHICIDE.Vehicle.ShipFlavors.Upgrades.crashAlert',
+    extraStorage: 'SYNTHICIDE.Vehicle.ShipFlavors.Upgrades.extraStorage',
+    toughLocks: 'SYNTHICIDE.Vehicle.ShipFlavors.Upgrades.toughLocks',
+    secureSoftware: 'SYNTHICIDE.Vehicle.ShipFlavors.Upgrades.secureSoftware',
+    highGrade: 'SYNTHICIDE.Vehicle.ShipFlavors.Upgrades.highGrade',
+    other: 'SYNTHICIDE.Vehicle.ShipFlavors.other'
+  }
+};
+
+SYNTHICIDE.vehicleCustomizations = {
+  ship: {
+    engineAmp: 'SYNTHICIDE.Vehicle.Customizations.engineAmp',
+    crashDampeners: 'SYNTHICIDE.Vehicle.Customizations.crashDampeners',
+    extendedLivingQuarters: 'SYNTHICIDE.Vehicle.Customizations.extendedLivingQuarters',
+    combatPlating: 'SYNTHICIDE.Vehicle.Customizations.combatPlating',
+    secretCompartment: 'SYNTHICIDE.Vehicle.Customizations.secretCompartment',
+    antiSniff: 'SYNTHICIDE.Vehicle.Customizations.antiSniff',
+    grappler: 'SYNTHICIDE.Vehicle.Customizations.grappler',
+    crusher: 'SYNTHICIDE.Vehicle.Customizations.crusher',
+    other: 'SYNTHICIDE.Vehicle.ShipFlavors.other'
+  },
+  planetary: {
+    engineAmp: 'SYNTHICIDE.Vehicle.Customizations.engineAmp',
+    extraSeating: 'SYNTHICIDE.Vehicle.Customizations.extraSeating',
+    combatPlating: 'SYNTHICIDE.Vehicle.Customizations.combatPlating',
+    secretCompartment: 'SYNTHICIDE.Vehicle.Customizations.secretCompartment',
+    antiSniff: 'SYNTHICIDE.Vehicle.Customizations.antiSniff',
+    weaponMount: 'SYNTHICIDE.Vehicle.Customizations.weaponMount',
+    other: 'SYNTHICIDE.Vehicle.ShipFlavors.other'
+  }
+};
+
+SYNTHICIDE.SHIP_WEAPON_RANGES = {
+  far: 'SYNTHICIDE.Item.ShipWeapon.Range.far',
+  sight: 'SYNTHICIDE.Item.ShipWeapon.Range.sight'
+}
 
 export default SYNTHICIDE;
 

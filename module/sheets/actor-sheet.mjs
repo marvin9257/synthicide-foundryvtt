@@ -3,7 +3,7 @@ import SynthicideFeature from '../data/item-feature.mjs';
 import { FEATURE_TYPE, isFeatureType } from '../helpers/feature-types.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
 import { ICON_MAP } from '../helpers/icons.mjs';
-import { openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
+import { openSynthicideActionRollDialog, rollShipWeaponDamageCard } from '../rolls/action-rolls.mjs';
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import { computeHpPercent, deleteDocAction, getEmbeddedDocument, prepareBiographyPartContext, showInfoAction, toggleEffectAction, viewDocAction } from './sheet-utils.mjs';
 const { api, sheets } = foundry.applications;
@@ -422,6 +422,16 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         /** @type {import('../documents/item.mjs').SynthicideItem | null} */
         const item = this._getEmbeddedDocument(target);
         if (item) return item.roll();
+        return null;
+      }
+      case 'shipWeaponDamage': {
+        /** @type {import('../documents/item.mjs').SynthicideItem | null} */
+        const item = this._getEmbeddedDocument(target);
+        if (!item) return null;
+        return rollShipWeaponDamageCard({
+          actor: this.actor,
+          sourceItem: item,
+        });
       }
     }
 

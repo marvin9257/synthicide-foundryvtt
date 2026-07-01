@@ -86,7 +86,7 @@ function applyChatCardDamage(li, multiplier) {
     }
     return Promise.all(canvas.tokens.controlled.map(t => {
       const targetActor = t.actor;
-      if (["sharper", "npc"].includes(targetActor.type)) {
+      if (["sharper", "npc", "vehicle"].includes(targetActor.type)) {
         const damage = Math.floor(baseDamage * multiplier);
         if (multiplier > 0) {
           const messageMode = rollData.messageMode ?? undefined;

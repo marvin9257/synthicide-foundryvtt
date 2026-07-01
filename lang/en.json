@@ -13,7 +13,8 @@
       "Actor": "Sharper Sheet",
       "NPCActor": "NPC Sheet",
       "NPCCompact": "NPC Compact",
-      "Item": "Synthicide Item Sheet"
+      "Item": "Synthicide Item Sheet",
+      "Vehicle": "Vehicle Sheet"
     },
     "Settings": {
       "SheetStyleMode": {
@@ -292,6 +293,116 @@
         }
       }
     },
+    "Vehicle": {
+      "isShip": "Is Ship?",
+      "FuelUnits": "Fuel Tank",
+      "Velocity": "Velocity",
+      "Capacity": {
+        "label": "Capacity",
+        "Characters": "Characters",
+        "Crates": "Crates",
+        "HasLivingQuarters": "Living Quarters?"
+      },
+      "Modifications": "Modifications",
+      "DamageThreshold": "Damage Threshold",
+      "fuelUnits": {
+        "cost": "Fuel Cost (§/unit)"
+      },
+      "Header": {
+        "VehicleName": "Vehicle Name",
+        "Price": "Price (§)"
+      },
+      "Tabs": {
+        "Capacity": "Capacity & Customizations",
+        "Description": "Description",
+        "Effects": "Effects",
+        "Flavor": "Flavor",
+        "Cargo": "Cargo",
+        "ShipWeapons": "Ship Weapons"
+      },
+      "Customizations": {
+        "label": "Customizations",
+        "engineAmp": "Engine Amp",
+        "crashDampeners": "Crash Dampeners",
+        "extendedLivingQuarters": "Extended Living Quarters",
+        "combatPlating": "Combat Plating",
+        "secretCompartment": "Secret Compartment",
+        "antiSniff": "Anti-Sniff",
+        "grappler": "Grappler",
+        "crusher": "Crusher",
+        "extraSeating": "Extra Seating",
+        "weaponMount": "Weapon Mount"
+      },
+      "ShipFlavors": {
+        "none": "None",
+        "other": "Other",
+        "Origins": {
+          "label": "Origin",
+          "hardEarned": "Hard Earned",
+          "stolen": "Stolen",
+          "borrowed": "Borrowed",
+          "salvaged": "Salvaged",
+          "discovered": "Discovered",
+          "inherited": "Inherited",
+          "experimental": "Experimental",
+          "customMade": "Custom Made",
+          "paidCompanions": "Paid Companions",
+          "churchAffiliation": "Church Affiliation"
+        },
+        "Appearance": {
+          "label": "Appearance",
+          "boring": "Boring",
+          "overdone": "Overdone",
+          "cruddy": "Cruddy",
+          "sleak": "Sleak",
+          "fearsome": "Fearsome",
+          "ancient": "Acient",
+          "churchSurplus": "Church Surplus",
+          "workhorse": "Workhorse",
+          "plainUgly": "Plain Ugly",
+          "gadgetHeavy": "Gadget Heavy"
+        },
+        "Flaws": {
+          "label": "Flaw",
+          "awfulNoise": "Awful Noise",
+          "visibleExhaust": "Visible Exhaust",
+          "sluggish": "Sluggish",
+          "electroInterference": "Electro Interference",
+          "badAir": "Bad Air",
+          "thermalError": "Thermal Error",
+          "toxicResidue": "Toxic Residue",
+          "vermin": "Vermin",
+          "brittleFrame": "Brittle Frame",
+          "trulyAwful": "Truly Awful"
+        },
+        "Mysteries": {
+          "label": "Mystery",
+          "impossibleJumps": "Impossible Jumps",
+          "follower": "Follower",
+          "crypts": "Crypts",
+          "mindOfItsOwn": "Mind of Its Own",
+          "voices": "Voices",
+          "madWriting": "Mad Writing",
+          "sharedDreams": "Shared Dreams",
+          "apparition": "Apparition",
+          "spectralShifts": "Spectral Shifts",
+          "sharedMemory": "Shared Memory"
+        },
+        "Upgrades": {
+          "label": "Upgrade",
+          "hotSensors": "Hot Sensors",
+          "efficient": "Efficient",
+          "magneticDefense": "Magnetic Defense",
+          "extraArmor": "Extra Armor",
+          "extraEngines": "Extra Engines",
+          "crashAlert": "Crash Alert",
+          "extraStorage": "Extra Storage",
+          "toughLocks": "Tough Locks",
+          "secureSoftware": "Secure Software",
+          "highGrade": "HighGrade"
+        }
+      }
+    },
     "Item": {
       "ModifierTargets": {
         "attributes_awareness_modifier": "Awareness",
@@ -341,6 +452,25 @@
           "Bonus": "Bonus",
           "NoTierBonuses": "No tier bonuses defined.",
           "MasteredWeapon": "Mastered Weapon"
+        }
+      },
+      "Cargo": {
+        "FIELDS": {
+          "Quantity": "Quantity",
+          "UnitPrice": "Unit Price (§)"
+        }
+      },
+      "ShipWeapon": {
+        "FIELDS": {
+          "Range": "Range",
+          "DmgMultiplier": "DMG Multiplier",
+          "AmmoUnitCost": "Ammo Unit Cost (§)",
+          "ItemCost": "Item Cost (§)",
+          "IsMissile": "Is Missile?"
+        },
+        "Range": {
+          "far": "Far",
+          "sight": "Sight"
         }
       },
       "Gear": {
@@ -786,6 +916,8 @@
         "BlastDiameter": "Blast Diameter",
         "FinalPoint": "Final Point",
         "SourceAttack": "Source Attack",
+        "ShipWeaponMultiplier": "Ship Weapon DMG Multiplier",
+        "ShipWeaponAutoHitFlavor": "{item}: automatic-hit ship weapon damage",
         "DerivedFromAttack": "Derived from attack",
         "DefaultFlavorChallenge": "{difficulty} roll made using {attribute}",
         "DefaultFlavorAttack": "{item}: attack roll using {attribute} vs armor {armor}",
@@ -865,7 +997,8 @@
       },
       "Tooltip": {
         "AttackWithItem": "Attack with {item}",
-        "RollWithItem": "Roll with {item}"
+        "RollWithItem": "Roll with {item}",
+        "RollShipWeaponDamage": "Roll automatic-hit ship weapon damage for {item}"
       },
       "Actions": {
         "Attack": "Attack"
@@ -917,7 +1050,8 @@
   "TYPES": {
     "Actor": {
       "sharper": "Sharper",
-      "npc": "NPC"
+      "npc": "NPC",
+      "vehicle": "Vehicle"
     },
     "Item": {
       "gear": "Gear",
@@ -927,7 +1061,9 @@
       "implant": "Implant",
       "armor": "Armor",
       "weapon" : "Weapon",
-      "shield": "Shield"
+      "shield": "Shield",
+      "cargo": "Cargo",
+      "shipWeapon": "Ship Weapon"
     }
   }
 }

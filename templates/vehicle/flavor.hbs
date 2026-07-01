@@ -1,0 +1,45 @@
+<section
+  class='tab flavor scrollable {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='flavor'
+> 
+
+  <div class='flavor-fields'>
+    <div class='resource resource-pair'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Vehicle.ShipFlavors.Origins.label'}}</label>
+      <select name='system.flavor.origin'>
+        {{selectOptions originOptions selected=system.flavor.origin localize=true}}
+      </select>
+    </div>
+
+    <div class='resource resource-pair'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Vehicle.ShipFlavors.Appearance.label'}}</label>
+      <select name='system.flavor.appearance'>
+        {{selectOptions appearanceOptions selected=system.flavor.appearance localize=true}}
+      </select>
+    </div>
+
+    <div class='resource resource-pair'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Vehicle.ShipFlavors.Flaws.label'}}</label>
+      <select name='system.flavor.flaw'>
+        {{selectOptions flawOptions selected=system.flavor.flaw localize=true}}
+      </select>
+    </div>
+
+    <div class='resource resource-pair'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Vehicle.ShipFlavors.Mysteries.label'}}</label>
+      <select name='system.flavor.mystery'>
+        {{selectOptions mysteryOptions selected=system.flavor.mystery localize=true}}
+      </select>
+    </div>
+
+    <div class='resource resource-pair'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Vehicle.ShipFlavors.Upgrades.label'}}</label>
+      <select name='system.flavor.upgrade'>
+        {{selectOptions upgradeOptions selected=system.flavor.upgrade localize=true}}
+      </select>
+    </div>
+
+  </div>
+
+</section>

@@ -3,6 +3,7 @@ export const ICON_MAP = {
   bioclass: 'fa-solid fa-heart-circle-bolt',
   aspect: 'fa-solid fa-atom',
   attributes: 'fa-solid fa-sliders',
+  capacity: 'fa-solid fa-sliders',
   general: 'fa-solid fa-info-circle',
   implant: 'fa-solid fa-microchip',
   cybernetics: 'fa-solid fa-microchip',
@@ -14,13 +15,18 @@ export const ICON_MAP = {
   armor: 'fa-solid fa-shield',
   consumable: 'fa-solid fa-battery-full',
   gear: 'fa-solid fa-toolbox',
+  shipWeapon: 'fa-solid fa-explosion',
   tool: 'fa-solid fa-hammer',
   default: 'fa-solid fa-box',
   description: 'fa-solid fa-file-lines',
   roll: 'fa-solid fa-dice-d20',
   combat: 'fa-solid fa-person-rifle',
-  npcTiers: 'fa-solid fa-ranking-star'
-};
+  npcTiers: 'fa-solid fa-ranking-star',
+  vehicle: 'fa-solid fa-truck-plane',
+  spaceShip: 'fa-solid fa-rocket',
+  flavor: 'fa-solid fa-list',
+  cargo: 'fa-solid fa-box'
+}
 
 /**
  * Return a Font Awesome icon string based on an Item document.
