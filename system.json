@@ -19,6 +19,12 @@
         "htmlFields": [
           "biography"
         ]
+      },
+      "vehicle":
+      {
+        "htmlFields": [
+          "description"
+        ]
       }
     },
     "Item": {
@@ -58,6 +64,11 @@
         ]
       },
       "weapon": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "cargo": {
         "htmlFields": [
           "description"
         ]

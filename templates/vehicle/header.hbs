@@ -1,0 +1,103 @@
+{{! Sheet Header }}
+<header class='sheet-header'>
+  <img
+    class='profile-img'
+    src='{{actor.img}}'
+    data-edit='img'
+    data-action='editImage'
+    data-tooltip='{{actor.name}}'
+    height='100'
+    width='100'
+  />
+  <div class='header-fields'>
+    <!-- restructure to use CSS grid for neat alignment -->
+    <div class="header-info-grid">
+      <!-- row 1 -->
+      <div class="header-info-name-block">
+        <div class="header-info-label">{{localize 'SYNTHICIDE.Vehicle.Header.VehicleName'}}</div>
+        <div class="header-info-value header-info-name">
+          <input
+            name="name"
+            type="text"
+            value="{{actor.name}}"
+            placeholder="{{localize 'SYNTHICIDE.Vehicle.Header.VehicleName'}}"
+            class="header-info-input"
+          />
+        </div>
+      </div>
+      <div class="header-info-lurans-block">
+        <div class="header-info-label header-info-label-lurans">{{localize 'SYNTHICIDE.Vehicle.Header.Price'}}</div>
+        <div class="header-info-value header-info-lurans">
+          <input
+            id="system.price"
+            type="number"
+            name="system.price"
+            value="{{system.price}}"
+            class="header-info-lurans-input"
+            min="1"
+          />
+        </div>
+      </div>
+
+      <!-- row 2 -->
+
+    </div>
+    
+    {{! The grid classes are defined in scss/global/_grid.scss. To use,
+        use both the "grid" and "grid-Ncol" class where "N" can be any number
+        from 1 to 12 and will create that number of columns.  }}
+    <div class="synthicide header-resource-flex">
+        {{! "flex-group-center" is also defined in the _grid.scss file
+          and it will add a small amount of padding, a border, and will
+          center all of its child elements content and text. }}
+        <div class="header-resource">
+          <b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Vehicle.isShip'}}</b> 
+          <div class='resource-content flexrow flex-center flex-between resource-counter'>
+            <input type='checkbox' name='system.isShip' {{checked system.isShip}} />
+          </div>
+        </div>
+        <!-- Hit Points Resource -->
+        <div class='resource flex-group-center header-resource'>
+          <label for='system.hitPoints.value' class='resource-label'>
+            {{localize 'SYNTHICIDE.Actor.base.FIELDS.hitPoints.value.label'}}
+          </label>
+          <div class='resource-content flexrow flex-center flex-between resource-pair'>
+            <input
+              type='number'
+              name='system.hitPoints.value'
+              value='{{system.hitPoints.value}}'
+              data-dtype='Number'
+              max='{{system.hitPoints.max}}'
+              step='1'
+            />
+            <span> / </span>
+            <input
+              type='number'
+              name='system.hitPoints.max'
+              value='{{system.hitPoints.max}}'
+              data-dtype='Number'
+            />
+          </div>
+          <div class='resource-track'>
+            <div class="resource-track-fill {{#if (gte hpPercent 0.5)}}resource-track-fill-green{{else if (gte hpPercent 0.25)}}resource-track-fill-yellow{{else}}resource-track-fill-red{{/if}}"
+                 style="width: calc({{hpPercent}} * 100%);"></div>
+          </div>
+        </div>
+
+        <div class="resource flex-group-center header-resource">
+          <b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Vehicle.Velocity'}}</b> 
+          <div class='resource-content flexrow flex-center flex-between resource-counter'>
+            <input type='number' name='system.velocity' value='{{system.velocity}}' data-dtype='Number' min='0'/>
+          </div>
+        </div>
+
+        <div class="resource flex-group-center header-resource">
+          <b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Vehicle.DamageThreshold'}}</b> 
+          <div class='resource-content flexrow flex-center flex-between resource-counter'>
+            <input type='number' name='system.damageThreshold' value='{{system.damageThreshold}}' data-dtype='Number' min='0'/>
+          </div>
+        </div>
+        
+    </div>
+  </div>
+</header>

@@ -115,8 +115,9 @@ export class SynthicideItem extends foundry.documents.Item {
   async _onUpdate(changed, options, userId) {
     await super._onUpdate(changed, options, userId);
     if (game.userId !== userId) return;
+    if (!this.actor) return;  //Must be held on actor
+    if (!['sharper', 'npc'].includes(this.actor.type)) return; //Only sharpers and npc's can equip items and have barriers
 
-    if (!this.actor) return;
     // Enforce one-equipped-at-a-time for exclusive types unless this change was
     // triggered by the actor-level equip orchestration itself.
     if (SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES.includes(this.type) && changed?.system?.equipped !== undefined && !options._fromEquipLogic) {
@@ -149,6 +150,7 @@ export class SynthicideItem extends foundry.documents.Item {
   /**
    * Equip this item. Exclusive types ensure only one item of that type is
    * equipped at a time. Other equipable items are toggled on directly.
+   * IS THIS STILL NEEDED?
    */
   async equip() {
     if (!SYNTHICIDE.EQUIPABLE.includes(this.type)) return;

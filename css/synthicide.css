@@ -39,6 +39,7 @@
   --synthicide-c-icon-bg-dark: #222;
   --synthicide-c-icon-bg: #222; /* default fallback, overridden by theme */
   --synthicide-c-ap-icon: #e6b11d;
+  --synthicide-c-bar: blue;
 }
 
 .theme-light {
@@ -1528,6 +1529,10 @@ img.actions-img {
   background: var(--synthicide-c-success);
 }
 
+.synthicide .resource-track-fuel .resource-track-fill {
+  background: var(--synthicide-c-bar);
+}
+
 
 /* ============================== */
 /* Header Info Block (grouped)    */
@@ -2310,23 +2315,8 @@ body.theme-dark.synthicide-style-bold .synthicide h4 {
   color: var(--synthicide-c-black);
 }
 
-/* Aspect & Combat tab: h4 is a full-width header bar */
-body.synthicide-style-bold .synthicide .tab.aspect h4,
-body.synthicide-style-bold .synthicide .tab.combat h4,
-body.synthicide-style-bold .synthicide .tab.cybernetics h4,
-body.synthicide-style-bold .synthicide .tab.info h4,
-body.synthicide-style-bold .synthicide .tab.biography h4,
-body.synthicide-style-bold .synthicide .tab.npcTiers h4 {
-  background: var(--rb-strong);
-  color: var(--rb-on-accent);
-  border-left: 5px solid var(--rb-accent);
-  padding: 6px 14px;
-  margin: 0 0 4px;
-  font-size: var(--reduced-font-size);
-  border-radius: 0;
-}
-
-body.synthicide-style-bold .synthicide .tab.attributes h4 {
+/* Bar labels using h4 is a full-width header bar */
+body.synthicide-style-bold .synthicide .tab:is(.aspect, .combat, .cybernetics, .info, .biography, .npcTiers, .description, .attributes, .capacity) h4 {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
   border-left: 5px solid var(--rb-accent);
@@ -3393,6 +3383,7 @@ body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes {
   border-radius: 8px;
   padding: 0.5em 1em;
 }
+/*
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-powers label,
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-wealth label,
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-loot label,
@@ -3401,6 +3392,7 @@ body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes label {
   font-weight: bold;
   font-size: 1em;
 }
+  */
 body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes textarea {
   width: 100%;
   min-height: 2.5em;
@@ -3475,8 +3467,101 @@ body.synthicide-style-bold .npc-mastered-weapon input[type="checkbox"] {
   height: 1.1em;
 }
 
-
 .synthicide-blast-summary th, .synthicide-blast-summary td {
     padding: 2px;
     text-align: center;
+}
+
+/********************** Vehicles ************/
+/* ============================== */
+/* Capacity Panel                 */
+/* ============================== */
+
+.tab.capacity .capacity-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 16px;
+}
+
+.tab.capacity .capacity-list {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.tab.capacity .capacity-list .element-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2ch;
+  justify-content: space-evenly;
+}
+
+/* ============================== */
+/* Flavor Panel                 */
+/* ============================== */
+
+.synthicide .flavor-fields {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* ============================== */
+/* Cargo Panel                 */
+/* ============================== */
+
+.synthicide .tab.cargo .items-list .item-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.synthicide .tab.cargo .items-list .item-prop--quantity {
+  flex: 0 0 22%;
+  min-width: 0;
+}
+
+.synthicide .tab.cargo .items-list .item-prop--unit-price {
+  flex: 0 0 20%;
+  min-width: 0;
+}
+
+.synthicide .tab.cargo .items-list .item-controls--cargo {
+  flex: 0 0 20%;
+  min-width: 0;
+}
+
+.synthicide .tab.cargo .items-list > .items-header .item-controls--cargo a {
+  margin: 0;
+  white-space: nowrap;
+}
+
+body.synthicide-style-bold .synthicide .tab.cargo .items-list > .items-header {
+  border-left: 5px solid var(--rb-accent);
+  padding: 0 2px;
+}
+
+body.synthicide-style-bold .synthicide .tab.cargo .items-list .item:not(.items-header) {
+  border-left-width: 5px;
+  border-left-style: solid;
+  border-left-color: transparent;
+  padding: 1px 2px;
+}
+
+body.synthicide-style-bold .synthicide .tab.cargo .items-list .item-prop--quantity,
+body.synthicide-style-bold .synthicide .tab.cargo .items-list .item-prop--unit-price,
+body.synthicide-style-bold .synthicide .tab.cargo .items-list .item-controls--cargo {
+  box-sizing: border-box;
+}
+
+body.synthicide-style-bold .synthicide .tab.cargo .items-list .item:not(.items-header) .item-prop {
+  font-family: var(--synthicide-default-font);
+  font-size: var(--reduced-font-size);
+  font-weight: 500;
+  background: var(--rb-cell);
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+  border-radius: 3px;
+  padding: 2px 6px;
+  white-space: nowrap;
 }

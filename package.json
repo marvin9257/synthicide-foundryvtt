@@ -42,5 +42,9 @@
   },
   "dependencies": {
     "gulp": "^5.0.1"
+  },
+  "allowScripts": {
+    "classic-level@1.4.1": true,
+    "fsevents@2.3.3": true
   }
 }
