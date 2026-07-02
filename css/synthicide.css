@@ -3518,6 +3518,10 @@ body.synthicide-style-bold .npc-mastered-weapon input[type="checkbox"] {
   justify-content: space-evenly;
 }
 
+.synthicide .header-resource input.weapon-capacity {
+    min-width: 8ch;
+}
+
 /* ============================== */
 /* Flavor Panel                 */
 /* ============================== */

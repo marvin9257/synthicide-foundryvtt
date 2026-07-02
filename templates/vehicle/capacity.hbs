@@ -83,6 +83,30 @@
             />
           </div>
         </div>
+
+        <div class='resource flex-group-center header-resource'>
+          <b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Vehicle.Capacity.Weapons'}}</b> 
+          <div class='resource-content flexrow flex-center flex-between resource-pair'>
+            <input
+              type='number'
+              name='system.capacity.weapons.value'
+              class='weapon-capacity {{#if (gt system.capacity.weapons.value system.capacity.weapons.max)}}capacity-crates-over-max{{/if}}'
+              value='{{system.capacity.weapons.value}}'
+              data-dtype='Number'
+              disabled
+            />
+            <span> / </span>
+            <input
+              type='number'
+              name='system.capacity.weapons.max'
+              class='weapon-capacity'
+              value='{{system.capacity.weapons.max}}'
+              data-dtype='Number'
+              min='0'
+              disabled
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -301,7 +301,8 @@
         "label": "Capacity",
         "Characters": "Characters",
         "Crates": "Crates",
-        "HasLivingQuarters": "Living Quarters?"
+        "HasLivingQuarters": "Living Quarters?",
+        "Weapons": "Weapons (§)"
       },
       "Modifications": "Modifications",
       "DamageThreshold": "Damage Threshold",

@@ -21,9 +21,13 @@ export default class SynthicideVehicleBaseData extends foundry.abstract
       characters: new fields.NumberField({ ...requiredInteger, initial: 1 }),
       crates: new fields.SchemaField({
         value: new fields.NumberField({...requiredInteger, initial: 0}, {persisted: false}),
-        max: new fields.NumberField({...requiredInteger, initial: 3}),
+        max: new fields.NumberField({...requiredInteger, initial: 3})
       }),
-      hasLivingQuarters: new fields.BooleanField({ initial: false })
+      hasLivingQuarters: new fields.BooleanField({ initial: false }),
+      weapons: new fields.SchemaField({
+        value: new fields.NumberField({...requiredInteger, initial: 0}, {persisted: false}),
+        max: new fields.NumberField({...requiredInteger, initial: 0}, {persisted: false})
+      })
     });
     schema.fuelUnits = new fields.SchemaField({
       value: new fields.NumberField({...requiredInteger, initial: 3}),
@@ -47,11 +51,18 @@ export default class SynthicideVehicleBaseData extends foundry.abstract
 
   prepareDerivedData() {
     super.prepareDerivedData();
-    const cargoItems = this.parent?.itemTypes?.cargo ?? [];
-    let totalCargo = 0;
-    for (const cargoItem of cargoItems) {
-      totalCargo += Number(cargoItem.system?.quantity) || 0;
+  
+    // 1. Calculate cargo capacity
+    const cargoItems = this.parent?.itemTypes.cargo ?? [];
+    this.capacity.crates.value = cargoItems.reduce((acc, item) => 
+      acc + (Number(item.system.quantity) || 0), 0);
+
+    // 2. Set weapon limits
+    this.capacity.weapons.max = (this.price || 0) * 2;
+
+    // 3. Calculate used weapon capacity (quantity * price)
+    const weaponItems = this.parent?.itemTypes.shipWeapon ?? [];
+    this.capacity.weapons.value = weaponItems.reduce((acc, item) => 
+      acc + (Number(item.system.quantity * item.system.price) || 0), 0);
     }
-    this.capacity.crates.value = totalCargo;
-  }
 }
