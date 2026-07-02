@@ -810,7 +810,11 @@ body.theme-dark .npc-compact .window-content {
 }
 .synthicide .sheet-header .profile-img {
   flex: 0 0 120px;
+  width: 120px;
   height: 120px;
+  object-fit: contain;
+  object-position: center;
+  background: var(--synthicide-c-faint);
   margin-right: 10px;
 }
 .synthicide .sheet-header .header-fields {
