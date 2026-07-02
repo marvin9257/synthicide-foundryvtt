@@ -8,6 +8,7 @@ import { SynthicideNPCActorSheet } from './sheets/npc-actor-sheet.mjs';
 import SynthicideNPCCompactSheet from './sheets/npc-compact-sheet.mjs';
 import { SynthicideItemSheet } from './sheets/item-sheet.mjs';
 import SynthicideActiveEffectConfig from './applications/synthicide-active-effect-config.mjs';
+import { SynthicideVehicleSheet } from './sheets/vehicle-sheet.mjs';
 // Import helper/utility classes and constants.
 import SYNTHICIDE from './helpers/config.mjs';
 // Import DataModel classes
@@ -93,6 +94,7 @@ Hooks.once('init', function () {
   CONFIG.Actor.dataModels = {
     sharper: models.SynthicideSharperData,
     npc: models.SynthicideNPCData,
+    vehicle: models.SynthicideVehicleBaseData
   };
   CONFIG.Item.documentClass = SynthicideItem;
   CONFIG.Item.dataModels = {
@@ -103,7 +105,9 @@ Hooks.once('init', function () {
     gear: models.SynthicideGear,
     shield: models.SynthicideShield,
     trait: models.SynthicideTrait,
-    weapon: models.SynthicideWeapon
+    weapon: models.SynthicideWeapon,
+    cargo: models.SynthicideCargo,
+    shipWeapon: models.SynthicideShipWeapon
   };
   // Use our custom ChatMessage subclass to centralize message preprocessing
   CONFIG.ChatMessage.documentClass = SynthicideChatMessage;
@@ -144,6 +148,11 @@ Hooks.once('init', function () {
     types: ['npc'],
     makeDefault: false,
     label: 'SYNTHICIDE.SheetLabels.NPCCompact',
+  });
+  collections.Actors.registerSheet('synthicide', SynthicideVehicleSheet, {
+    types: ['vehicle'],
+    makeDefault: true,
+    label: 'SYNTHICIDE.SheetLabels.Vehicle',
   });
   collections.Items.unregisterSheet('core', foundry.applications.sheets.ItemSheetV2);
   collections.Items.registerSheet('synthicide', SynthicideItemSheet, {

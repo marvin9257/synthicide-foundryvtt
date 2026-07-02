@@ -1,0 +1,48 @@
+<div class='trait-top-fields'>
+  <div class='resource resource-pair'>
+    <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Cargo.FIELDS.Quantity'}}</label>
+    <input
+      type='number'
+      name='system.quantity'
+      value='{{system.quantity}}'
+      min='1'
+    />
+  </div>
+  <div class='resource resource-pair'>
+    <label class='resource-label'>{{localize 'SYNTHICIDE.Item.ShipWeapon.FIELDS.Range'}}</label>
+    <select name='system.range'>
+      {{selectOptions shipWeaponRanges selected=system.range localize=true}}
+    </select>
+  </div>
+  <div class='resource resource-pair'>
+    <label class='resource-label'>{{localize 'SYNTHICIDE.Item.ShipWeapon.FIELDS.DmgMultiplier'}}</label>
+    <input
+      type='number'
+      name='system.dmgMultiplier'
+      value='{{system.dmgMultiplier}}'
+      min='1'
+    />
+  </div>
+  <div class='resource resource-pair'>
+    <label class='resource-label'>{{localize 'SYNTHICIDE.Item.ShipWeapon.FIELDS.AmmoUnitCost'}}</label>
+    <input
+      type='number'
+      name='system.ammoUnitCost'
+      value='{{system.ammoUnitCost}}'
+      min='0'
+    />
+  </div>
+  <div class='resource resource-pair'>
+    <label class='resource-label'>{{localize 'SYNTHICIDE.Item.ShipWeapon.FIELDS.ItemCost'}}</label>
+    <input
+      type='number'
+      name='system.price'
+      value='{{system.price}}'
+      min='0'
+    />
+  </div>
+  <div class='resource resource-pair'>
+    <label class='resource-label'>{{localize 'SYNTHICIDE.Item.ShipWeapon.FIELDS.IsMissile'}}</label>
+    <input type='checkbox' name='system.isMissile' {{checked system.isMissile}} />
+  </div>
+</div>

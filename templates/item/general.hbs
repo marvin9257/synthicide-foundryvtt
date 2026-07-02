@@ -17,6 +17,10 @@
     {{> "systems/synthicide/templates/item/parts/general-weapon.hbs"}}
   {{else if (eq item.type 'implant')}}
     {{> "systems/synthicide/templates/item/parts/general-implant.hbs"}}
+  {{else if (eq item.type 'cargo')}}
+    {{> "systems/synthicide/templates/item/parts/general-cargo.hbs"}}
+  {{else if (eq item.type 'shipWeapon')}}
+    {{> "systems/synthicide/templates/item/parts/general-shipWeapon.hbs"}}
   {{/if}}
 
 </section>

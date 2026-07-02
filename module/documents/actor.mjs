@@ -3,7 +3,7 @@ import { createActionMessage } from "../rolls/action-rolls.mjs";
 import { buildShockCardData, resolveShockOutcome } from "../rolls/shock-card-data.mjs";
 import { resolveAmmoOnHitEffects } from "../rolls/ammo-effects.mjs";
 
-const DAMAGEABLE_ACTOR_TYPES = new Set(['sharper', 'npc']);
+const DAMAGEABLE_ACTOR_TYPES = new Set(['sharper', 'npc', 'vehicle']);
 
 
 /**
@@ -17,6 +17,7 @@ export class SynthicideActor extends foundry.documents.Actor {
     const allowed = await super._preUpdate(changed, options, user);
     if (allowed === false) return false;
 
+    // 1. Clamp and normalize Hit Points
     if (foundry.utils.hasProperty(changed, 'system.hitPoints.value')) {
       const nextHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.value') ?? 0);
       let maxHP = Number(foundry.utils.getProperty(changed, 'system.hitPoints.max'));
@@ -26,26 +27,30 @@ export class SynthicideActor extends foundry.documents.Actor {
       foundry.utils.setProperty(changed, 'system.hitPoints.previous', this.system.hitPoints.value);
     }
 
-    const valuePath = 'system.armorValues.forceBarrier.value';
-    const maxPath = 'system.armorValues.forceBarrier.max';
-    const hasBarrierValue = foundry.utils.hasProperty(changed, valuePath);
-    const hasBarrierMax = foundry.utils.hasProperty(changed, maxPath);
-    if (hasBarrierValue || hasBarrierMax) {
-      // Normalize max and persist the normalized max into the change payload
-      let maxBarrier = Number(foundry.utils.getProperty(changed, maxPath));
-      if (!Number.isFinite(maxBarrier)) maxBarrier = Number(this.system.armorValues?.forceBarrier?.max ?? 0);
-      maxBarrier = Math.max(0, maxBarrier);
-      if (hasBarrierMax) foundry.utils.setProperty(changed, maxPath, maxBarrier);
+    // 2. Clamp and normalize Force Barrier values
+    if (['sharper', 'npc'].includes(this.type)) {
+      const valuePath = 'system.armorValues.forceBarrier.value';
+      const maxPath = 'system.armorValues.forceBarrier.max';
+      const hasBarrierValue = foundry.utils.hasProperty(changed, valuePath);
+      const hasBarrierMax = foundry.utils.hasProperty(changed, maxPath);
+      if (hasBarrierValue || hasBarrierMax) {
+        // Normalize max and persist the normalized max into the change payload
+        let maxBarrier = Number(foundry.utils.getProperty(changed, maxPath));
+        if (!Number.isFinite(maxBarrier)) maxBarrier = Number(this.system.armorValues?.forceBarrier?.max ?? 0);
+        maxBarrier = Math.max(0, maxBarrier);
+        if (hasBarrierMax) foundry.utils.setProperty(changed, maxPath, maxBarrier);
 
-      // Resolve the current/next barrier value (prefer explicit changed value)
-      const rawNext = foundry.utils.getProperty(changed, valuePath);
-      const nextBarrier = Number(rawNext ?? this.system.armorValues?.forceBarrier?.value ?? 0);
-      const clampedBarrier = Math.clamp(Number.isFinite(nextBarrier) ? nextBarrier : 0, 0, maxBarrier);
+        // Resolve the current/next barrier value (prefer explicit changed value)
+        const rawNext = foundry.utils.getProperty(changed, valuePath);
+        const nextBarrier = Number(rawNext ?? this.system.armorValues?.forceBarrier?.value ?? 0);
+        const clampedBarrier = Math.clamp(Number.isFinite(nextBarrier) ? nextBarrier : 0, 0, maxBarrier);
 
-      // Always write the clamped value into the change payload so reductions to max
-      // (for example unequipping armor) force the stored value to be clamped.
-      foundry.utils.setProperty(changed, valuePath, clampedBarrier);
+        // Always write the clamped value into the change payload so reductions to max
+        // (for example unequipping armor) force the stored value to be clamped.
+        foundry.utils.setProperty(changed, valuePath, clampedBarrier);
+      }
     }
+    
     return allowed;
   }
 
@@ -55,6 +60,8 @@ export class SynthicideActor extends foundry.documents.Actor {
 
     // Only the client that initiated the change should apply actor-level toggles
     if (user !== game.user.id) return;
+    //Only sharpers and npc have statuses
+    if (!['sharper', 'npc'].includes(this.type)) return;
 
     const hpPath = "system.hitPoints.value";
 
@@ -96,8 +103,8 @@ export class SynthicideActor extends foundry.documents.Actor {
    * @returns {Promise}
    */
   async modifyTokenAttribute(attribute, value, isDelta, isBar) {
-    //Must override hipPoints to allow negative values, super clamps a min at zero
-    if (attribute === 'hitPoints') {
+    //Must override hipPoints to allow negative values for actors as super clamps a min at zero
+    if (attribute === 'hitPoints' && ['sharper', 'npc'].includes(this.type)) {
       const attr = foundry.utils.getProperty(this.system, attribute);
       const current = isBar ? attr.value : attr;
       const update = isDelta ? current + value : value;
@@ -109,7 +116,7 @@ export class SynthicideActor extends foundry.documents.Actor {
       if ( isBar ) updates = {[`system.${attribute}.value`]: Math.min(update, attr.max)};
       else updates = {[`system.${attribute}`]: update};
 
-      this.update(updates);
+      await this.update(updates);
     } else {
       return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
     }
@@ -163,9 +170,9 @@ export class SynthicideActor extends foundry.documents.Actor {
    * Backward-compatible armor equip wrapper.
    * @param {string} armorItemId - The ID of the armor item to equip.
    */
-  async equipArmor(armorItemId) {
-    return this.equipExclusiveItemType('armor', armorItemId);
-  }
+  //async equipArmor(armorItemId) {
+  //  return this.equipExclusiveItemType('armor', armorItemId);
+  //}
 
   /**
    * @override
@@ -174,9 +181,9 @@ export class SynthicideActor extends foundry.documents.Actor {
    */
   getRollData() { 
     const data = foundry.utils.duplicate(super.getRollData()); // plain obj via core
-
+    const system = this.system;
     if (['sharper', 'npc'].includes(this.type)) {
-      const system = this.system;
+      
       // Attribute convenience keys (long names)
       try {
         const attrMap = SYNTHICIDE.attributes ?? {};
@@ -196,52 +203,125 @@ export class SynthicideActor extends foundry.documents.Actor {
       data.AP = system.actionPoints?.value;
       data.ST = system.shockThreshold?.value;
       data.lvl = system.level?.value;
+    } else if (['vehicle'].includes(this.type)) {
+      data.DT = system.damageThreshold;
     }
     
     return data;
   }
 
-  async damageActor(damage, options = {}) {
+  /*async damageActor(damage, options = {}) {
     if (!damage || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return;
-    const normalizedOptions = {
-      ...options,
-      specialAmmoUsed: String(options?.specialAmmoUsed ?? 'none'),
-    };
-    const isFlashAmmo = normalizedOptions.specialAmmoUsed === 'flash';
     const updates = {};
-    let damageRemaining = damage;
-    // Apply force barrier first.
-    let barrierAbsorbed = 0;
-    if (!isFlashAmmo && this.system.armorValues?.forceBarrier.value > 0) {
-      barrierAbsorbed = Math.min(this.system.armorValues.forceBarrier.value, damageRemaining);
-      if (barrierAbsorbed > 0) {
-        damageRemaining -= barrierAbsorbed;
-        updates['system.armorValues.forceBarrier.value'] = Math.max(this.system.armorValues.forceBarrier.value - barrierAbsorbed, 0);
+    if (['sharper', 'npc'].includes(this.type)) {
+      const normalizedOptions = {
+        ...options,
+        specialAmmoUsed: String(options?.specialAmmoUsed ?? 'none'),
+      };
+      const isFlashAmmo = normalizedOptions.specialAmmoUsed === 'flash';
+      
+      let damageRemaining = damage;
+      // Apply force barrier first.
+      let barrierAbsorbed = 0;
+      if (!isFlashAmmo && this.system.armorValues?.forceBarrier.value > 0) {
+        barrierAbsorbed = Math.min(this.system.armorValues.forceBarrier.value, damageRemaining);
+        if (barrierAbsorbed > 0) {
+          damageRemaining -= barrierAbsorbed;
+          updates['system.armorValues.forceBarrier.value'] = Math.max(this.system.armorValues.forceBarrier.value - barrierAbsorbed, 0);
+        }
       }
+
+      // Compute outcomes if not dead.
+      const preHP = Number(this.system.hitPoints.value ?? 0);
+
+      if (!isFlashAmmo && damageRemaining > 0 && !this.statuses?.has("dead")) {
+        updates['system.hitPoints.value'] = preHP - damageRemaining;
+
+        if (game.settings.get('synthicide', SYNTHICIDE.USE_SHOCKING_STRIKE_KEY)) {
+          const outcome = await this._handleShockingStrike(damageRemaining, preHP, updates, { ...normalizedOptions, barrierAbsorbed });
+          if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL || outcome === SYNTHICIDE.SHOCK_OUTCOMES.DEATH) {
+            if (!this.statuses?.has("dead")) {
+              await this.toggleStatusEffect("dead", { active: true });
+            }
+          }
+        }
+      }
+
+      await this.update(updates);
+
+      if (damageRemaining > 0 || isFlashAmmo) {
+        await this._applySpecialAmmoOnHitEffects(normalizedOptions);
+      }
+    } else if (['vehicle'].includes(this.type)) {
+      const preHP = Number(this.system.hitPoints.value ?? 0);
+      if (damage > this.system.damageThreshold) {
+        updates['system.hitPoints.value'] = Math.clamp(preHP - damage, 0, this.system.hitPoints.max);
+      }
+
+      await this.update(updates);
+    }
+  }*/
+
+  async damageActor(damage, options = {}) {
+    // 1. Guard clause: Exit early if invalid damage or un-damageable actor type
+    if (!damage || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return;
+
+    const updates = {};
+    const isVehicle = this.type === 'vehicle';
+    const isNpcOrSharper = ['sharper', 'npc'].includes(this.type);
+
+    // 2. Handle Vehicle logic
+    if (isVehicle) {
+      const preHP = Number(this.system.hitPoints.value ?? 0);
+      if (damage > this.system.damageThreshold) {
+        updates['system.hitPoints.value'] = Math.clamp(preHP - damage, 0, this.system.hitPoints.max);
+        await this.update(updates);
+      }
+      return; // Exit early after vehicle resolution
     }
 
-    // Compute outcomes if not dead.
-    const preHP = Number(this.system.hitPoints.value ?? 0);
+    // 3. Handle NPC and Sharper logic
+    if (isNpcOrSharper) {
+      const specialAmmo = String(options?.specialAmmoUsed ?? 'none');
+      const isFlashAmmo = specialAmmo === 'flash';
+      const forceBarrier = this.system.armorValues?.forceBarrier?.value ?? 0;
+      
+      // Process barrier reduction
+      let damageRemaining = damage;
+      if (!isFlashAmmo && forceBarrier > 0) {
+        const absorbed = Math.min(forceBarrier, damageRemaining);
+        damageRemaining -= absorbed;
+        updates['system.armorValues.forceBarrier.value'] = forceBarrier - absorbed;
+      }
 
-    if (!isFlashAmmo && damageRemaining > 0 && !this.statuses?.has("dead")) {
-      updates['system.hitPoints.value'] = preHP - damageRemaining;
+      // Process health reduction and special status effects
+      const preHP = Number(this.system.hitPoints.value ?? 0);
+      const isDead = this.statuses?.has("dead");
 
-      if (game.settings.get('synthicide', SYNTHICIDE.USE_SHOCKING_STRIKE_KEY)) {
-        const outcome = await this._handleShockingStrike(damageRemaining, preHP, updates, { ...normalizedOptions, barrierAbsorbed });
-        if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL || outcome === SYNTHICIDE.SHOCK_OUTCOMES.DEATH) {
-          if (!this.statuses?.has("dead")) {
+      if (!isFlashAmmo && damageRemaining > 0 && !isDead) {
+        updates['system.hitPoints.value'] = preHP - damageRemaining;
+
+        const useShockingStrike = game.settings.get('synthicide', SYNTHICIDE.USE_SHOCKING_STRIKE_KEY);
+        if (useShockingStrike) {
+          const shockArgs = { ...options, specialAmmoUsed: specialAmmo, barrierAbsorbed: damage - damageRemaining };
+          const outcome = await this._handleShockingStrike(damageRemaining, preHP, updates, shockArgs);
+          
+          const isLethal = [SYNTHICIDE.SHOCK_OUTCOMES.LETHAL, SYNTHICIDE.SHOCK_OUTCOMES.DEATH].includes(outcome);
+          if (isLethal && !this.statuses?.has("dead")) {
             await this.toggleStatusEffect("dead", { active: true });
           }
         }
       }
-    }
 
-    await this.update(updates);
+      // Finalize state updates and hit triggers
+      await this.update(updates);
 
-    if (damageRemaining > 0 || isFlashAmmo) {
-      await this._applySpecialAmmoOnHitEffects(normalizedOptions);
+      if (damageRemaining > 0 || isFlashAmmo) {
+        await this._applySpecialAmmoOnHitEffects({ ...options, specialAmmoUsed: specialAmmo });
+      }
     }
   }
+
 
   async healActor(healing) {
     if (!healing || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return;
@@ -362,8 +442,6 @@ export class SynthicideActor extends foundry.documents.Actor {
     return { armor, barrierAbsorbed, lethal, shockRdBonus };
   }
 
-
-
   /**
    * Apply post-roll/non-roll shocking-strike outcomes to the pending update payload.
    * @private
@@ -388,8 +466,6 @@ export class SynthicideActor extends foundry.documents.Actor {
       whisper: options?.whisper ?? cardData?.whisper ?? cardData?.flags?.whisper ?? undefined,
     };
   }
-
-
 
   /**
    * Build localized outcome flavor text for shocking strike cards.

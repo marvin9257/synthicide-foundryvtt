@@ -25,7 +25,7 @@ export function makeResourceField(initialValue, initialMax, schemaOptions={}) {
  */
 export function makeValueField(initialValue = 0, schemaOptions={}) {
   return new fields.SchemaField({
-    value: new fields.NumberField({required: true, integer: false, initial: initialValue}),
+    value: new fields.NumberField({required: true, integer: true, initial: initialValue}),
   }, schemaOptions);
 }
 

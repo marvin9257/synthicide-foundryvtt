@@ -3,7 +3,7 @@ import SynthicideFeature from '../data/item-feature.mjs';
 import { FEATURE_TYPE, isFeatureType } from '../helpers/feature-types.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
 import { ICON_MAP } from '../helpers/icons.mjs';
-import { openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
+import { openSynthicideActionRollDialog, rollShipWeaponDamageCard } from '../rolls/action-rolls.mjs';
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import { computeHpPercent, deleteDocAction, getEmbeddedDocument, prepareBiographyPartContext, showInfoAction, toggleEffectAction, viewDocAction } from './sheet-utils.mjs';
 const { api, sheets } = foundry.applications;
@@ -422,6 +422,16 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         /** @type {import('../documents/item.mjs').SynthicideItem | null} */
         const item = this._getEmbeddedDocument(target);
         if (item) return item.roll();
+        return null;
+      }
+      case 'shipWeaponDamage': {
+        /** @type {import('../documents/item.mjs').SynthicideItem | null} */
+        const item = this._getEmbeddedDocument(target);
+        if (!item) return null;
+        return rollShipWeaponDamageCard({
+          actor: this.actor,
+          sourceItem: item,
+        });
       }
     }
 
@@ -637,6 +647,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     const dropTarget = event.target.closest('[data-effect-id]');
     if (!dropTarget) return;
     const target = this._getEmbeddedDocument(dropTarget);
+    if (!target) return;
 
     // Don't sort on yourself
     if (effect.uuid === target.uuid) return;
@@ -704,12 +715,13 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   async _onDropFolder(event, folder) {
     if (!this.actor.isOwner) return [];
     if (folder.type !== 'Item') return [];
-    const droppedItemData = await Promise.all(
+    const droppedItemData = (await Promise.all(
       folder.contents.map(async (item) => {
         if (!(item instanceof Item)) item = await fromUuid(item.uuid);
         return item;
       })
-    );
+    )).filter(Boolean);
+    if (!droppedItemData.length) return [];
     return this._onDropItemCreate(droppedItemData, event);
   }
 
@@ -748,21 +760,69 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @private
    */
   async _onDropItemCreate(itemData, _event) {
-    itemData = itemData instanceof Array ? itemData : [itemData];
-    const resolvedData = await Promise.all(itemData.map(async entry => {
-      if (entry.uuid) {
+    const dataArray = Array.isArray(itemData) ? itemData : [itemData];
+    
+    // 1. Resolve live Item documents to plain data objects
+    const resolvedData = await Promise.all(dataArray.map(async entry => {
+      if (entry?.uuid) {
         const doc = await fromUuid(entry.uuid);
         return doc ? doc.toObject() : entry;
       }
       return entry instanceof Item ? entry.toObject() : { ...entry };
     }));
 
-    const featureEntry = resolvedData.find(entryData => this._isFeatureEntry(entryData));
-    const otherEntries = featureEntry
-      ? resolvedData.filter(entryData => entryData !== featureEntry)
-      : resolvedData;
+    // Disallow certain item types per actor type using a concise mapping.
+    const FORBIDDEN_BY_ACTOR = {
+      sharper: new Set(['cargo', 'shipWeapon']),
+      npc: new Set(['aspect', 'cargo', 'shipWeapon', 'trait']),
+      vehicle: new Set(['aspect', 'bioclass', 'trait']),
+    };
 
-    if (featureEntry) return this._handleFeatureDrop(featureEntry, otherEntries);
+    const actorForbidden = FORBIDDEN_BY_ACTOR[this.actor.type];
+    let allowedData = resolvedData;
+
+    // 2. Filter forbidden entries if rules exist for this actor type (Single Pass)
+    if (actorForbidden) {
+      const forbiddenNames = [];
+      allowedData = [];
+
+      for (const entry of resolvedData) {
+        if (!entry) continue; // Skip broken or missing data references
+
+        if (actorForbidden.has(entry.type)) {
+          forbiddenNames.push(entry.name || entry.type || game.i18n.localize('ITEM.TypeUnknown'));
+        } else {
+          allowedData.push(entry);
+        }
+      }
+
+      // Display native Foundry notification for skipped items
+      if (forbiddenNames.length) {
+        const messagePrefix = this.actor.type === 'vehicle'
+          ? game.i18n.localize('SYNTHICIDE.Roll.Warnings.VehicleDroppedCharacterFeatures')
+          : game.i18n.localize('SYNTHICIDE.Roll.Warnings.DroppedVehicleItems');
+        ui.notifications.warn(`${messagePrefix} ${forbiddenNames.join(', ')}`);
+      }
+    }
+
+    if (!allowedData.length) return [];
+
+    // 3. Find the primary feature to process
+    const featureEntry = allowedData.find(entryData => this._isFeatureEntry(entryData));
+    let otherEntries = allowedData;
+
+    if (featureEntry) {
+      // CRITICAL SAFEGUARD: Exclude the primary feature AND completely strip out any 
+      // subsequent extra features. This prevents duplicates from entering replaceOnActor's generic creation phase.
+      otherEntries = allowedData.filter(entryData => entryData !== featureEntry && !this._isFeatureEntry(entryData));
+      const skippedFeaturesCount = allowedData.length - otherEntries.length - 1;
+      if (skippedFeaturesCount > 0) {
+        ui.notifications.warn(game.i18n.format('SYNTHICIDE.Warnings.OnlyOneFeatureDropped', { count: skippedFeaturesCount }));
+      }
+    }
+
+    // 4. Hand off to the appropriate drop handler
+    if (featureEntry) return SynthicideFeature.replaceOnActor(this.actor, featureEntry.type, featureEntry, otherEntries, { render: true });
     return this._handleGenericItemDrop(otherEntries);
   }
 
@@ -774,56 +834,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    */
   _isFeatureEntry(entryData) {
     return isFeatureType(entryData?.type);
-  }
-
-  /**
-   * Route a feature drop (either bioclass or aspect) to the appropriate
-   * handler.  This prevents duplicating the "remove old feature" logic.
-   * @param {object} entry     The feature item data being dropped
-   * @param {object[]} others  Additional items accompanying the drop
-   * @returns {Promise<Item[]>}
-   */
-  async _handleFeatureDrop(entry, others) {
-    const type = entry.type;
-    switch (type) {
-      case FEATURE_TYPE.BIOCLASS:
-        return this._handleBioclassDrop(entry, others);
-      case FEATURE_TYPE.ASPECT:
-        return this._handleAspectDrop(entry, others);
-      default:
-        // Fallback if something unexpected slips through
-        return this._handleGenericItemDrop([entry, ...others]);
-    }
-  }
-
-  /**
-   * Handle dropping an aspect feature.  We treat aspects much like
-   * bioclasses but ensure only one aspect may exist at a time.
-    *
-    * Operation flags used by SynthicideFeature.replaceOnActor:
-    * - SynthicideFeature.OPERATION_OPTIONS.SKIP_FEATURE_CLEANUP
-    * - SynthicideFeature.OPERATION_OPTIONS.SKIP_FEATURE_APPLY
-    *
-    * We then explicitly await applyToActor once to avoid duplicate side effects
-    * and to keep one final sheet refresh with fully up-to-date trait data.
-   * @param {object} aspectEntry
-   * @param {object[]} otherEntries
-   */
-  async _handleAspectDrop(aspectEntry, otherEntries) {
-    return SynthicideFeature.replaceOnActor(this.actor, FEATURE_TYPE.ASPECT, aspectEntry, otherEntries, { render: true });
-  }
-
-  /**
-   * Handle dropping a bioclass item.
-   * UI only triggers bioclass creation/deletion; trait logic is handled in item hooks.
-    *
-    * See notes in _handleAspectDrop for operation option rationale.
-   * @param {object} bioclassEntry - The bioclass item data
-   * @param {object[]} otherEntries - Other item data to create
-   * @returns {Promise<Item[]>}
-   */
-  async _handleBioclassDrop(bioclassEntry, otherEntries) {
-    return SynthicideFeature.replaceOnActor(this.actor, FEATURE_TYPE.BIOCLASS, bioclassEntry, otherEntries, { render: true });
   }
 
   /**
@@ -884,5 +894,3 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     }
   }
 }
-
-

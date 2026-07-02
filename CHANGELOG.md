@@ -1,3 +1,23 @@
+# [1.1.0](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.51...1.1.0) (2026-07-02)
+
+
+### Bug Fixes
+
+* Add ship weapon type and vehicle tab ([00c9c6f](https://github.com/marvin9257/synthicide-foundryvtt/commit/00c9c6f0a6faffce6ef54200de6f0114cb6c6348))
+* add storage locker ([f2c193e](https://github.com/marvin9257/synthicide-foundryvtt/commit/f2c193e1afa0b8d93396d8483ca0b1e19bb84ca4))
+* center is ship vehicle sheet checkbox ([7273260](https://github.com/marvin9257/synthicide-foundryvtt/commit/7273260cfaad24a0b974c754126b8719fb754fde))
+* deepscan issues ([17c270c](https://github.com/marvin9257/synthicide-foundryvtt/commit/17c270ccfdf181bf8afd59d6e80643c8a37f9171))
+* Filter invalid drops and enforce feature limits ([2840418](https://github.com/marvin9257/synthicide-foundryvtt/commit/284041894213f4a6dca63fcbba451dca71f09fe4))
+* make dropping items more robust ([8f57e35](https://github.com/marvin9257/synthicide-foundryvtt/commit/8f57e355dd6af11dd0fbdc764d73c35f46909a30))
+* Merge pull request [#8](https://github.com/marvin9257/synthicide-foundryvtt/issues/8) from marvin9257/fix-add-vehicle-actor ([5d20335](https://github.com/marvin9257/synthicide-foundryvtt/commit/5d20335236c88b14e4865c9cb3111cfac1041078))
+* small style improvements to ship sheet ([4fba0ec](https://github.com/marvin9257/synthicide-foundryvtt/commit/4fba0ecdb9d0e9ac6109121319e77f49bf602b83))
+* update header images to fit within box and not presume square shape ([ebebfc0](https://github.com/marvin9257/synthicide-foundryvtt/commit/ebebfc00e55a747c26889daccffcd25d835be5db))
+
+
+### Features
+
+* add vehicle actor and sheet and cargo item type ([49481b4](https://github.com/marvin9257/synthicide-foundryvtt/commit/49481b4205521eb0d781bc13adb06174d37f82d3))
+
 ## [1.0.51](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.50...1.0.51) (2026-06-26)
 
 
