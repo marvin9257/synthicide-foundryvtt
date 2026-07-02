@@ -3475,8 +3475,13 @@ body.synthicide-style-bold .npc-mastered-weapon input[type="checkbox"] {
 
 /********************** Vehicles ************/
 
-.synthicide .header-resource .vehicle-is-ship-checkbox {
+.synthicide .header-resource .vehicle-checkbox {
   text-align: center;
+}
+
+.synthicide.vehicle .header-resource {
+  /*justify-content: center;*/
+  min-height: 9ch;
 }
 
 /* ============================== */

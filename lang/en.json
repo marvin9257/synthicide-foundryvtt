@@ -983,7 +983,10 @@
         "DemolitionRangeIncrementMissing": "This demolition weapon needs a range increment greater than zero.",
         "DemolitionPlacementMissing": "Could not determine the placed demolition point.",
         "NoDamageToApply": "Could not apply damage - either missing or negative.",
-        "CantAutoDamage": "Cannot automatically apply damage to this target."
+        "CantAutoDamage": "Cannot automatically apply damage to this target.",
+        "DroppedVehicleItems": "Some vehicle items were skipped when dropping onto this actor:",
+        "VehicleDroppedCharacterFeatures": "Some character features were skipped when dropping onto this vehicle:",
+        "OnlyOneFeatureDropped": "Only one feature can be dropped at a time. {count} extra feature(s) skipped."
       },
       "Opposed": {
         "SummaryTitle": "Opposed Challenge Result",
