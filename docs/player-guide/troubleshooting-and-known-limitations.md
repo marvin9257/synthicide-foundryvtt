@@ -40,6 +40,8 @@ Example: assigning a new bioclass replaces the old one and refreshes associated 
 4. Rules text effects without dedicated automation remain manual (example: many trait-text and ammo-text effects still need player/GM application).
 5. Demolition setup is strict (example: missing token or missing range increment blocks the roll with a warning).
 6. Cybernetics package choices and many implant-specific effects are visible on sheets but are not auto-applied end-to-end, so they require manual table handling.
+7. On vehicle sheets, some flavor categories can be multi-pick in RAW, but the sheet currently supports one selection per flavor category.
+8. On vehicle sheets, ship weapons roll damage only; attack resolution and range validation are manual.
 
 ## Rules Update Coverage Gaps (Quick Reference)
 
@@ -102,9 +104,18 @@ A: Partly. Some ammo is automated and some is not. The system currently applies 
 
 A: Check three things first: trait type is Weapon Proficiency, specialization matches the weapon family, and level is 1, 4, or 7. For blaster weapons, use Shotgun specialization. See [Weapon Specializations](weapon-specializations.md).
 
+### Q: Vehicle flavor rules at my table allow multiple picks in one category. Why can I only choose one?
+
+A: Vehicle flavor fields are currently single-select per category on the sheet. If your table uses multiple picks in a category, track extra selections manually in vehicle notes. See [Vehicle Sheet Tour](vehicle-sheet-tour.md).
+
+### Q: Why does my ship weapon only roll damage?
+
+A: Current ship-weapon controls produce damage rolls only. Hit chance and range checks are not automated for ship weapons and must be resolved manually at the table. See [Vehicle Sheet Tour](vehicle-sheet-tour.md).
+
 ## Related Pages
 
 1. [Bioclasses](bioclasses.md)
 2. [Aspects](aspects.md)
 3. [Weapon Specializations](weapon-specializations.md)
 4. [Demolition and Range-Based Actions](demolition-and-range-based-actions.md)
+5. [Vehicle Sheet Tour](vehicle-sheet-tour.md)
