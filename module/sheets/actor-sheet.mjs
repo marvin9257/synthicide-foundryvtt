@@ -758,20 +758,70 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    * @private
    */
   async _onDropItemCreate(itemData, _event) {
-    itemData = itemData instanceof Array ? itemData : [itemData];
-    const resolvedData = await Promise.all(itemData.map(async entry => {
-      if (entry.uuid) {
+    const dataArray = Array.isArray(itemData) ? itemData : [itemData];
+    
+    // 1. Resolve references safely (guards against stale/deleted entries)
+    const resolvedData = await Promise.all(dataArray.map(async entry => {
+      if (entry?.uuid) {
         const doc = await fromUuid(entry.uuid);
         return doc ? doc.toObject() : entry;
       }
       return entry instanceof Item ? entry.toObject() : { ...entry };
     }));
 
-    const featureEntry = resolvedData.find(entryData => this._isFeatureEntry(entryData));
-    const otherEntries = featureEntry
-      ? resolvedData.filter(entryData => entryData !== featureEntry)
-      : resolvedData;
+    // Disallow certain item types per actor type using a concise mapping.
+    const FORBIDDEN_BY_ACTOR = {
+      sharper: new Set(['cargo', 'shipWeapon']),
+      npc: new Set(['aspect', 'cargo', 'shipWeapon', 'trait']),
+      vehicle: new Set(['aspect', 'bioclass', 'trait']),
+    };
 
+    const actorForbidden = FORBIDDEN_BY_ACTOR[this.actor.type];
+    let allowedData = resolvedData;
+
+    // 2. Filter forbidden entries if rules exist for this actor type (Single Pass)
+    if (actorForbidden) {
+      const forbiddenNames = [];
+      allowedData = [];
+
+      for (const entry of resolvedData) {
+        if (!entry) continue; // Skip broken or missing data references
+
+        if (actorForbidden.has(entry.type)) {
+          forbiddenNames.push(entry.name || entry.type || game.i18n.localize("ITEM.TypeUnknown"));
+        } else {
+          allowedData.push(entry);
+        }
+      }
+
+      // Display native Foundry notification for skipped items
+      if (forbiddenNames.length) {
+        const messagePrefix = this.actor.type === 'vehicle'
+          ? 'Some character features were skipped when dropping onto this vehicle:'
+          : 'Some vehicle items were skipped when dropping onto this actor:';
+          
+        ui.notifications.warn(`${messagePrefix} ${forbiddenNames.join(', ')}`);
+      }
+    }
+
+    if (!allowedData.length) return [];
+
+    // 3. Find the primary feature to process
+    const featureEntry = allowedData.find(entryData => this._isFeatureEntry(entryData));
+    let otherEntries = allowedData;
+
+    if (featureEntry) {
+      // CRITICAL SAFEGUARD: Exclude the primary feature AND completely strip out any 
+      // subsequent extra features. This prevents duplicates from entering replaceOnActor's generic creation phase.
+      otherEntries = allowedData.filter(entryData => entryData !== featureEntry && !this._isFeatureEntry(entryData));
+      
+      const skippedFeaturesCount = allowedData.length - otherEntries.length - 1;
+      if (skippedFeaturesCount > 0) {
+        ui.notifications.warn(`Only one feature can be dropped at a time. ${skippedFeaturesCount} extra feature(s) skipped.`);
+      }
+    }
+
+    // 4. Hand off cleanly to your system drop orchestrators
     if (featureEntry) return this._handleFeatureDrop(featureEntry, otherEntries);
     return this._handleGenericItemDrop(otherEntries);
   }
@@ -894,5 +944,3 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     }
   }
 }
-
-
