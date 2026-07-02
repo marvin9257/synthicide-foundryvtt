@@ -881,6 +881,12 @@ body.theme-dark .npc-compact .window-content {
   font-size: 1rem;
 }
 
+.synthicide .header-resource input[type="number"].capacity-crates-over-max,
+.synthicide .header-resource input[type="number"].capacity-crates-over-max:disabled {
+  color: var(--synthicide-c-danger);
+  opacity: 1;
+}
+
 .synthicide .header-resource select {
   width: 100%;
   min-width: 0;

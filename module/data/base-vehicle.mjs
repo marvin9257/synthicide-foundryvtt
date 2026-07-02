@@ -47,7 +47,11 @@ export default class SynthicideVehicleBaseData extends foundry.abstract
 
   prepareDerivedData() {
     super.prepareDerivedData();
+    const cargoItems = this.parent?.itemTypes?.cargo ?? [];
+    let totalCargo = 0;
+    for (const cargoItem of cargoItems) {
+      totalCargo += Number(cargoItem.system?.quantity) || 0;
+    }
+    this.capacity.crates.value = totalCargo;
   }
-
 }
-

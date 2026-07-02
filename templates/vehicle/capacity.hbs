@@ -68,6 +68,7 @@
             <input
               type='number'
               name='system.capacity.crates.value'
+              class='{{#if (gt system.capacity.crates.value system.capacity.crates.max)}}capacity-crates-over-max{{/if}}'
               value='{{system.capacity.crates.value}}'
               data-dtype='Number'
               disabled
