@@ -27,7 +27,9 @@ const ITEM_BASE_PARTS_BY_TYPE = {
   aspect: ['abilitiesAspect', 'attributesAspect', 'traitsBioclass'],
   armor: ['general'],
   shield: ['general'],
-  weapon: ['general', 'rollGear', 'npcTiers']
+  weapon: ['general', 'rollGear', 'npcTiers'],
+  cargo: ['general'],
+  shipWeapon: ['general']
 };
 
 /**
@@ -102,7 +104,10 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
                   'systems/synthicide/templates/item/parts/general-armor.hbs',
                   'systems/synthicide/templates/item/parts/general-weapon.hbs',
                   'systems/synthicide/templates/item/parts/general-shield.hbs',
-                  'systems/synthicide/templates/item/parts/general-implant.hbs'],
+                  'systems/synthicide/templates/item/parts/general-implant.hbs',
+                  'systems/synthicide/templates/item/parts/general-cargo.hbs',
+                  'systems/synthicide/templates/item/parts/general-shipWeapon.hbs'
+                ],
       scrollable: [""]
     },
     rollGear: {
@@ -151,8 +156,11 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         }
       }
       options.parts.push(...baseParts);
-      // every item type can have effects
-      options.parts.push('effects');
+      
+      // every item type but cargo can have effects
+      if (this.document.type !== 'cargo') {
+        options.parts.push('effects');
+      }
     }
     // every item type has a description
     options.parts.push('description');
@@ -216,6 +224,11 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       if (this.item.system.weaponClass === "ranged") {
         context.weaponAmmoOptions = this._getValidAmmo();
       }
+    } else if (this.item.type === 'shipWeapon') {
+      context.shipWeaponRanges = {
+        far: 'SYNTHICIDE.Item.ShipWeapon.Range.far',
+        sight: 'SYNTHICIDE.Item.ShipWeapon.Range.sight',
+      };
     } else if (this.item.type === 'shield') {
       context.shieldModificationsOptions = SYNTHICIDE.SHIELD_MODIFICATIONS;
     }

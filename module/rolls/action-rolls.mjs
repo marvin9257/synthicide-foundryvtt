@@ -52,6 +52,55 @@ export async function openSynthicideActionRollDialog({
   return executeActionRoll({ actor, input: dialogResult, sourceItem, subtype: resolvedSubtype });
 }
 
+export async function rollShipWeaponDamageCard({ actor, sourceItem, messageMode } = {}) {
+  if (!actor || !sourceItem || sourceItem.type !== 'shipWeapon') {
+    ui.notifications?.warn(localize('SYNTHICIDE.Roll.Warnings.AttackDataMissing'));
+    return null;
+  }
+
+  const normalizedMode = normalizeMessageMode(messageMode ?? game.settings.get('core', 'messageMode'));
+  const dieRoll = await new Roll('1d10').evaluate();
+  const dieValue = Number(dieRoll.total ?? 0);
+  const dmgMultiplier = Math.max(1, Number(sourceItem.system?.dmgMultiplier ?? 1));
+  const bonusDamage = dieValue * (dmgMultiplier - 1);
+  const totalDamage = dieValue + bonusDamage;
+
+  const cardData = prepareDamageCardData({
+    input: {
+      d10: dieValue,
+      damageBonus: bonusDamage,
+      baseDamageBonus: 0,
+      total: totalDamage,
+      source: sourceItem.name ?? '',
+      lethal: 0,
+      hideAttributeRow: true,
+      sourceItemUuid: sourceItem.uuid,
+      messageMode: normalizedMode,
+      userId: game.user.id,
+    },
+    actor,
+    item: sourceItem,
+    attributeValue: 0,
+    rollData: {
+      attributeValue: 0,
+      damageBonus: bonusDamage,
+      hideAttributeRow: true,
+    },
+    overrides: {
+      title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
+      flavor: localize('SYNTHICIDE.Roll.Card.ShipWeaponAutoHitFlavor', {
+        item: sourceItem.name ?? '',
+      }),
+      metadataRows: [
+        { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: sourceItem.name ?? '' },
+        { label: localize('SYNTHICIDE.Roll.Card.ShipWeaponMultiplier'), value: `x${dmgMultiplier}` },
+      ],
+    },
+  });
+
+  return createActionMessage({ actor, roll: dieRoll, messageMode: normalizedMode, cardData, template: CARD_TEMPLATE });
+}
+
 export function registerActionRollHooks() {
   Hooks.on('renderChatMessageHTML', activateActionRollChatListeners);
 }

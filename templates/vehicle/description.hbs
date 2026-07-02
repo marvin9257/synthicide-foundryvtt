@@ -1,0 +1,17 @@
+{{! Description Tab }}
+<section
+  class='tab description scrollable {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='description'
+> 
+  <div class="flexrow">
+    <h4>{{localize "SYNTHICIDE.Vehicle.Tabs.Description"}}</h4>
+  </div>
+  {{! Editors must receive enriched text data from getData to properly handle rolls, UUID links, etc. }}
+  {{#if editable}} 
+    <prose-mirror name="system.description" data-document-uuid="{{actor.uuid}}" value="{{system.description}}" collaborate="true" toggled="true">
+      {{{enrichedDescription}}}
+    </prose-mirror>
+  {{else}} {{{enrichedDescription}}}
+  {{/if}}
+</section>

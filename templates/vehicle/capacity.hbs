@@ -1,0 +1,96 @@
+{{! Attributes Tab }}
+<section
+  class='tab capacity scrollable {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='capacity'
+> 
+  <h4>{{localize "SYNTHICIDE.Vehicle.Capacity.label"}}</h4>
+  <div class='capacity-layout'>
+    <div class='capacity-list'>
+      
+      <div class="element-list">
+        {{#if system.isShip}}
+          <!-- Fuel Units Resource -->
+          <div class='resource flex-group-center header-resource'>
+            <label for='system.fuelUnits.value' class='resource-label'>
+              {{localize 'SYNTHICIDE.Vehicle.FuelUnits'}}
+            </label>
+            <div class='resource-content flexrow flex-center flex-between resource-pair'>
+              <input
+                type='number'
+                name='system.fuelUnits.value'
+                value='{{system.fuelUnits.value}}'
+                data-dtype='Number'
+                min='0'
+                max='{{system.fuelUnits.max}}'
+              />
+              <span> / </span>
+              <input
+                type='number'
+                name='system.fuelUnits.max'
+                value='{{system.fuelUnits.max}}'
+                data-dtype='Number'
+                min='0'
+              />
+            </div>
+            <div class='resource-track resource-track-fuel'>
+              <div class='resource-track-fill' style='width: calc({{fuelPercent}} * 100%);'></div>
+            </div>
+          </div>
+
+          <div class='resource flex-group-center header-resource'>
+            <b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Vehicle.fuelUnits.cost'}}</b> 
+            <div class='resource-content flexrow flex-center flex-between resource-counter'>
+              <input type='number' name='system.fuelUnits.cost' value='{{system.fuelUnits.cost}}' data-dtype='Number' min='0'/>
+            </div>
+          </div>
+        {{/if}}
+
+        <div class='resource flex-group-center header-resource'>
+          <b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Vehicle.Capacity.Characters'}}</b> 
+          <div class='resource-content flexrow flex-center flex-between resource-counter'>
+            <input type='number' name='system.capacity.characters' value='{{system.capacity.characters}}' data-dtype='Number' min='0'/>
+          </div>
+        </div>
+
+        {{#if system.isShip}}
+          <div class="resource flex-group-center header-resource">
+            <b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Vehicle.Capacity.HasLivingQuarters'}}</b> 
+            <div class='resource-content flexrow flex-center flex-between resource-counter'>
+              <input type='checkbox' class='vehicle-checkbox' name='system.capacity.hasLivingQuarters' {{checked system.capacity.hasLivingQuarters}} />
+            </div>
+          </div>
+        {{/if}}
+
+        <div class='resource flex-group-center header-resource'>
+          <b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Vehicle.Capacity.Crates'}}</b> 
+          <div class='resource-content flexrow flex-center flex-between resource-pair'>
+            <input
+              type='number'
+              name='system.capacity.crates.value'
+              value='{{system.capacity.crates.value}}'
+              data-dtype='Number'
+              disabled
+            />
+            <span> / </span>
+            <input
+              type='number'
+              name='system.capacity.crates.max'
+              value='{{system.capacity.crates.max}}'
+              data-dtype='Number'
+              min='0'
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h4>{{localize "SYNTHICIDE.Vehicle.Customizations.label"}}</h4>
+  <div class='resource resource-pair'>
+    <multi-select class="select weapon-features" name="system.customizations" multiple>
+      {{selectOptions customizationOptions selected=system.customizations localize=true}}
+    </multi-select>
+  </div>
+
+</section>
