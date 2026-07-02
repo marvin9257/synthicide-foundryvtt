@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.0...1.1.1) (2026-07-02)
+
+
+### Bug Fixes
+
+* add missing document changes for vehicle sheet ([8fa8f80](https://github.com/marvin9257/synthicide-foundryvtt/commit/8fa8f80368497c43520b889f52592c55c1f68036))
+
 # [1.1.0](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.0.51...1.1.0) (2026-07-02)
 
 
