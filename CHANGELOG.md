@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.1...1.1.2) (2026-07-02)
+
+
+### Bug Fixes
+
+* add cargo capacity used auto calc ([e90c557](https://github.com/marvin9257/synthicide-foundryvtt/commit/e90c557b162430b54fb54444e3587afc9b1b3204))
+
 ## [1.1.1](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.0...1.1.1) (2026-07-02)
 
 
