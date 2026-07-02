@@ -647,6 +647,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     const dropTarget = event.target.closest('[data-effect-id]');
     if (!dropTarget) return;
     const target = this._getEmbeddedDocument(dropTarget);
+    if (!target) return;
 
     // Don't sort on yourself
     if (effect.uuid === target.uuid) return;
@@ -714,12 +715,13 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   async _onDropFolder(event, folder) {
     if (!this.actor.isOwner) return [];
     if (folder.type !== 'Item') return [];
-    const droppedItemData = await Promise.all(
+    const droppedItemData = (await Promise.all(
       folder.contents.map(async (item) => {
         if (!(item instanceof Item)) item = await fromUuid(item.uuid);
         return item;
       })
-    );
+    )).filter(Boolean);
+    if (!droppedItemData.length) return [];
     return this._onDropItemCreate(droppedItemData, event);
   }
 
@@ -760,7 +762,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   async _onDropItemCreate(itemData, _event) {
     const dataArray = Array.isArray(itemData) ? itemData : [itemData];
     
-    // 1. Resolve references safely (guards against stale/deleted entries)
+    // 1. Resolve live Item documents to plain data objects
     const resolvedData = await Promise.all(dataArray.map(async entry => {
       if (entry?.uuid) {
         const doc = await fromUuid(entry.uuid);
@@ -788,7 +790,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         if (!entry) continue; // Skip broken or missing data references
 
         if (actorForbidden.has(entry.type)) {
-          forbiddenNames.push(entry.name || entry.type || game.i18n.localize("ITEM.TypeUnknown"));
+          forbiddenNames.push(entry.name || entry.type || game.i18n.localize('ITEM.TypeUnknown'));
         } else {
           allowedData.push(entry);
         }
@@ -797,9 +799,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       // Display native Foundry notification for skipped items
       if (forbiddenNames.length) {
         const messagePrefix = this.actor.type === 'vehicle'
-          ? 'Some character features were skipped when dropping onto this vehicle:'
-          : 'Some vehicle items were skipped when dropping onto this actor:';
-          
+          ? game.i18n.localize('SYNTHICIDE.Roll.Warnings.VehicleDroppedCharacterFeatures')
+          : game.i18n.localize('SYNTHICIDE.Roll.Warnings.DroppedVehicleItems');
         ui.notifications.warn(`${messagePrefix} ${forbiddenNames.join(', ')}`);
       }
     }
@@ -814,15 +815,14 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       // CRITICAL SAFEGUARD: Exclude the primary feature AND completely strip out any 
       // subsequent extra features. This prevents duplicates from entering replaceOnActor's generic creation phase.
       otherEntries = allowedData.filter(entryData => entryData !== featureEntry && !this._isFeatureEntry(entryData));
-      
       const skippedFeaturesCount = allowedData.length - otherEntries.length - 1;
       if (skippedFeaturesCount > 0) {
-        ui.notifications.warn(`Only one feature can be dropped at a time. ${skippedFeaturesCount} extra feature(s) skipped.`);
+        ui.notifications.warn(game.i18n.format('SYNTHICIDE.Warnings.OnlyOneFeatureDropped', { count: skippedFeaturesCount }));
       }
     }
 
-    // 4. Hand off cleanly to your system drop orchestrators
-    if (featureEntry) return this._handleFeatureDrop(featureEntry, otherEntries);
+    // 4. Hand off to the appropriate drop handler
+    if (featureEntry) return SynthicideFeature.replaceOnActor(this.actor, featureEntry.type, featureEntry, otherEntries, { render: true });
     return this._handleGenericItemDrop(otherEntries);
   }
 
@@ -834,56 +834,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
    */
   _isFeatureEntry(entryData) {
     return isFeatureType(entryData?.type);
-  }
-
-  /**
-   * Route a feature drop (either bioclass or aspect) to the appropriate
-   * handler.  This prevents duplicating the "remove old feature" logic.
-   * @param {object} entry     The feature item data being dropped
-   * @param {object[]} others  Additional items accompanying the drop
-   * @returns {Promise<Item[]>}
-   */
-  async _handleFeatureDrop(entry, others) {
-    const type = entry.type;
-    switch (type) {
-      case FEATURE_TYPE.BIOCLASS:
-        return this._handleBioclassDrop(entry, others);
-      case FEATURE_TYPE.ASPECT:
-        return this._handleAspectDrop(entry, others);
-      default:
-        // Fallback if something unexpected slips through
-        return this._handleGenericItemDrop([entry, ...others]);
-    }
-  }
-
-  /**
-   * Handle dropping an aspect feature.  We treat aspects much like
-   * bioclasses but ensure only one aspect may exist at a time.
-    *
-    * Operation flags used by SynthicideFeature.replaceOnActor:
-    * - SynthicideFeature.OPERATION_OPTIONS.SKIP_FEATURE_CLEANUP
-    * - SynthicideFeature.OPERATION_OPTIONS.SKIP_FEATURE_APPLY
-    *
-    * We then explicitly await applyToActor once to avoid duplicate side effects
-    * and to keep one final sheet refresh with fully up-to-date trait data.
-   * @param {object} aspectEntry
-   * @param {object[]} otherEntries
-   */
-  async _handleAspectDrop(aspectEntry, otherEntries) {
-    return SynthicideFeature.replaceOnActor(this.actor, FEATURE_TYPE.ASPECT, aspectEntry, otherEntries, { render: true });
-  }
-
-  /**
-   * Handle dropping a bioclass item.
-   * UI only triggers bioclass creation/deletion; trait logic is handled in item hooks.
-    *
-    * See notes in _handleAspectDrop for operation option rationale.
-   * @param {object} bioclassEntry - The bioclass item data
-   * @param {object[]} otherEntries - Other item data to create
-   * @returns {Promise<Item[]>}
-   */
-  async _handleBioclassDrop(bioclassEntry, otherEntries) {
-    return SynthicideFeature.replaceOnActor(this.actor, FEATURE_TYPE.BIOCLASS, bioclassEntry, otherEntries, { render: true });
   }
 
   /**
