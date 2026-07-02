@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.2...1.1.3) (2026-07-02)
+
+
+### Bug Fixes
+
+* add weapons capacity for vehicles ([0fc8769](https://github.com/marvin9257/synthicide-foundryvtt/commit/0fc876942e641b44d81f719bc9d10a0aee74b4f7))
+
 ## [1.1.2](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.1...1.1.2) (2026-07-02)
 
 
