@@ -15,7 +15,7 @@ import { SynthicideActorSheet } from './actor-sheet.mjs';
  */
 const VEHICLE_PARTS_BY_TYPE = {
   planetary: [ 'capacity', 'cargo', 'shipWeapons', 'effects', 'description'],
-  ship: [ 'capacity', 'flavor', 'cargo', 'shipWeapons', 'effects', 'description']
+  ship: [ 'capacity', 'flavor', 'cargo', 'shipWeapons', 'locker', 'effects', 'description']
 };
 
 /**
@@ -37,6 +37,7 @@ const VEHICLE_TAB_MAP = {
   flavor: {id: 'flavor', icon: ICON_MAP.flavor, label: 'Flavor' },
   cargo: {id: 'cargo', icon: ICON_MAP.cargo, label: 'Cargo' },
   shipWeapons: { id: 'shipWeapons', icon: ICON_MAP.shipWeapon, label: 'ShipWeapons' },
+  locker: {id:'locker', icon: ICON_MAP.locker, label: 'Locker'},
   description: { id: 'description', icon: ICON_MAP.description, label: 'Description' },
   effects: { id: 'effects', icon: ICON_MAP.effects, label: 'Effects' }
 };
@@ -79,6 +80,10 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
     },
     shipWeapons: {
       template: 'systems/synthicide/templates/vehicle/ship-weapons.hbs',
+      scrollable: [""]
+    },
+    locker: {
+      template: 'systems/synthicide/templates/vehicle/locker.hbs',
       scrollable: [""]
     },
     description: {
@@ -173,6 +178,12 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
         const shipWeapons = this.actor.itemTypes.shipWeapon;
         context.shipWeapons = shipWeapons?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
         context.shipWeaponRanges = SYNTHICIDE.SHIP_WEAPON_RANGES;
+        break;
+      }
+      case 'locker': {
+        const locker = this.actor.items.filter(item => item.type !== 'cargo' && item.type !== 'shipWeapon');
+        context.locker = locker.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+        context.itemTypeIcons = ICON_MAP;
         break;
       }
         

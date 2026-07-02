@@ -318,7 +318,8 @@
         "Effects": "Effects",
         "Flavor": "Flavor",
         "Cargo": "Cargo",
-        "ShipWeapons": "Ship Weapons"
+        "ShipWeapons": "Ship Weapons",
+        "Locker": "Storage Locker"
       },
       "Customizations": {
         "label": "Customizations",

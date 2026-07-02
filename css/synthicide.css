@@ -3578,6 +3578,116 @@ body.synthicide-style-bold .synthicide .tab.cargo .items-list .item:not(.items-h
 }
 
 /* ============================== */
+/* Locker Panel                  */
+/* ============================== */
+
+.synthicide .tab.locker .items-list .item-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.synthicide .tab.locker .items-list .item-prop--type {
+  flex: 0 0 8%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.synthicide .tab.locker .items-list .item-prop--quantity {
+  flex: 0 0 14%;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.synthicide .tab.locker .items-list .item-prop--unit-price {
+  flex: 0 0 18%;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.synthicide .tab.locker .items-list .item-controls--locker {
+  flex: 0 0 18%;
+  min-width: 0;
+}
+
+.synthicide .tab.locker .items-list > .items-header .item-controls--locker a {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.synthicide .tab.locker .items-list .item-controls--locker a {
+  margin: 0 4px;
+}
+
+.synthicide .tab.locker .items-list .item:not(.items-header) {
+  border-left: 3px solid transparent;
+  transition: background-color 120ms ease, border-left-color 120ms ease;
+}
+
+.synthicide .tab.locker .items-list .item:not(.items-header):hover {
+  background: color-mix(in srgb, var(--synthicide-c-faint) 18%, transparent);
+  border-left-color: color-mix(in srgb, var(--synthicide-c-faint) 65%, transparent);
+}
+
+.synthicide .tab.locker .locker-item-type-icon {
+  color: color-mix(in srgb, var(--synthicide-c-muted) 88%, white);
+  font-size: 0.95rem;
+  line-height: 1;
+  width: 1.35rem;
+  height: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--synthicide-c-faint) 65%, transparent);
+  background: color-mix(in srgb, var(--synthicide-c-faint) 26%, transparent);
+  flex: 0 0 auto;
+}
+
+body.synthicide-style-bold .synthicide .tab.locker .items-list > .items-header {
+  border-left: 5px solid var(--rb-accent);
+  padding: 0 2px;
+}
+
+body.synthicide-style-bold .synthicide .tab.locker .items-list .item:not(.items-header) {
+  border-left-width: 5px;
+  border-left-style: solid;
+  border-left-color: transparent;
+  padding: 1px 2px;
+}
+
+body.synthicide-style-bold .synthicide .tab.locker .items-list .item:not(.items-header):hover {
+  border-left-color: var(--rb-accent);
+  background: color-mix(in srgb, var(--rb-accent) 10%, transparent);
+}
+
+body.synthicide-style-bold .synthicide .tab.locker .items-list .item-prop--type,
+body.synthicide-style-bold .synthicide .tab.locker .items-list .item-prop--quantity,
+body.synthicide-style-bold .synthicide .tab.locker .items-list .item-prop--unit-price,
+body.synthicide-style-bold .synthicide .tab.locker .items-list .item-controls--locker {
+  box-sizing: border-box;
+}
+
+body.synthicide-style-bold .synthicide .tab.locker .items-list .item:not(.items-header) .item-prop {
+  font-family: var(--synthicide-default-font);
+  font-size: var(--reduced-font-size);
+  font-weight: 500;
+  background: var(--rb-cell);
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 22%, transparent);
+  border-radius: 3px;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+body.synthicide-style-bold .synthicide .tab.locker .locker-item-type-icon {
+  color: var(--rb-accent);
+  border-color: color-mix(in srgb, var(--rb-accent) 35%, transparent);
+  background: color-mix(in srgb, var(--rb-accent) 16%, transparent);
+}
+
+/* ============================== */
 /* Ship Weapons Panel             */
 /* ============================== */
 

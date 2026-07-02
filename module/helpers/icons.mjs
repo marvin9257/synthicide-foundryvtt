@@ -12,7 +12,8 @@ export const ICON_MAP = {
   effects: 'fa-solid fa-bolt',
   abilities: 'fa-solid fa-gem',
   weapon: 'fa-solid fa-gun',
-  armor: 'fa-solid fa-shield',
+  armor: 'fa-solid fa-shirt',
+  shield: 'fa-solid fa-shield',
   consumable: 'fa-solid fa-battery-full',
   gear: 'fa-solid fa-toolbox',
   shipWeapon: 'fa-solid fa-explosion',
@@ -25,7 +26,8 @@ export const ICON_MAP = {
   vehicle: 'fa-solid fa-truck-plane',
   spaceShip: 'fa-solid fa-rocket',
   flavor: 'fa-solid fa-list',
-  cargo: 'fa-solid fa-box'
+  cargo: 'fa-solid fa-box',
+  locker: 'fa-solid fa-vault'
 }
 
 /**
