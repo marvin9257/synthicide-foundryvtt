@@ -834,7 +834,8 @@
         "Demolition": "Demolition",
         "DriverVelocity": "Driver Velocity",
         "Damage": "Damage",
-        "ItemRoll": "Item Roll"
+        "ItemRoll": "Item Roll",
+        "InitiativeRoll": "Initiative Roll"
       },
       "Dialog": {
         "Title": "Synthicide Roll",

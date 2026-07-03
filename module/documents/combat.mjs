@@ -1,8 +1,49 @@
 import { createActionMessage } from "../rolls/action-rolls.mjs";
 import { prepareChallengeCardData } from "../rolls/challenge-card-data.mjs";
 import { safeRenderVirtualGrid } from "../canvas/virtual-grid-overlay.mjs";
+import { confirmRollFormula } from "./combatant.mjs";
 
 export default class SynthicideCombat extends foundry.documents.Combat {
+  /** @override */
+  async rollInitiative(ids, options = {}) {
+    const idList = typeof ids === 'string' ? [ids] : ids;
+    if (!idList?.length) return this;
+
+    // Preserve Foundry core behavior whenever the formula is explicitly provided.
+    if (options.formula) {
+      return super.rollInitiative(idList, options);
+    }
+
+    const vehicleIds = [];
+    const defaultIds = [];
+    for (const id of idList) {
+      const combatant = this.combatants.get(id);
+      if (combatant?.actor?.type === 'vehicle') vehicleIds.push(id);
+      else defaultIds.push(id);
+    }
+
+    if (!vehicleIds.length) {
+      return super.rollInitiative(idList, options);
+    }
+
+    if (defaultIds.length) {
+      await super.rollInitiative(defaultIds, options);
+    }
+
+    for (const id of vehicleIds) {
+      const formula = await confirmRollFormula(
+        '1d10 + @velocity',
+        game.i18n.localize('SYNTHICIDE.Roll.Subtype.InitiativeRoll')
+      );
+      await super.rollInitiative([id], {
+        ...options,
+        formula: formula || undefined,
+      });
+    }
+
+    return this;
+  }
+
   /**
    * Get the actor-derived AP cap used for per-turn combat AP.
    * @param {Combatant} combatant

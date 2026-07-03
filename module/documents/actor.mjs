@@ -181,13 +181,13 @@ export class SynthicideActor extends foundry.documents.Actor {
    */
   getRollData() { 
     const data = foundry.utils.duplicate(super.getRollData()); // plain obj via core
-    const system = this.system;
+    foundry.utils.mergeObject(data, this.system);
     if (['sharper', 'npc'].includes(this.type)) {
       
       // Attribute convenience keys (long names)
       try {
         const attrMap = SYNTHICIDE.attributes ?? {};
-        for (const [key, attr] of Object.entries(system.attributes ?? {})) {
+        for (const [key, attr] of Object.entries(data.attributes ?? {})) {
           const longKey = game.i18n.localize(attrMap[key]);
           data[key] = Number(attr?.value ?? 0);
           if (typeof longKey === 'string' && attr?.value !== undefined)
@@ -196,15 +196,15 @@ export class SynthicideActor extends foundry.documents.Actor {
       } catch (err) { console.error('getRollData: attribute keys failed', err); }
 
       // Derived stat shorthands
-      data.AD = system.armorDefense?.value;
-      data.TD = system.toughnessDefense?.value;
-      data.ND = system.nerveDefense?.value;
-      data.BR = system.battleReflex?.value;
-      data.AP = system.actionPoints?.value;
-      data.ST = system.shockThreshold?.value;
-      data.lvl = system.level?.value;
+      data.AD = data.armorDefense?.value;
+      data.TD = data.toughnessDefense?.value;
+      data.ND = data.nerveDefense?.value;
+      data.BR = data.battleReflex?.value;
+      data.AP = data.actionPoints?.value;
+      data.ST = data.shockThreshold?.value;
+      data.lvl = data.level?.value;
     } else if (['vehicle'].includes(this.type)) {
-      data.DT = system.damageThreshold;
+      data.DT = data.damageThreshold;
     }
     
     return data;
