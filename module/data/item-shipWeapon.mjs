@@ -1,4 +1,5 @@
 import SynthicideGear from './item-gear.mjs';
+import SYNTHICIDE from '../helpers/config.mjs';
 
 /**
  * Ship weapon item system model.
@@ -22,10 +23,7 @@ export default class SynthicideShipWeapon extends SynthicideGear {
 
     schema.range = new fields.StringField({
       required: true,
-      choices: {
-        far: 'far',
-        sight: 'sight',
-      },
+      choices: SYNTHICIDE.SHIP_WEAPON_RANGES,
       initial: 'far',
     });
     schema.dmgMultiplier = new fields.NumberField({ ...requiredInteger, initial: 1, min: 1 });

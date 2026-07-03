@@ -472,7 +472,8 @@
         },
         "Range": {
           "far": "Far",
-          "sight": "Sight"
+          "sight": "Sight",
+          "close": "Close"
         }
       },
       "Gear": {
