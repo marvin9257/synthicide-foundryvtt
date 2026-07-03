@@ -14,7 +14,7 @@ function renderCombatantApPill(app, combatantRow) {
 
   const combat = app.viewed;
   const combatant = combat.combatants.get(combatantId);
-  if (!combatant) return;
+  if (!combatant || combatant.actor?.type === 'vehicle') return;
 
   const anchor =
     combatantRow.querySelector('.token-initiative')
