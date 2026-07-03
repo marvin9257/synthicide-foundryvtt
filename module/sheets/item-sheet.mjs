@@ -225,10 +225,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         context.weaponAmmoOptions = this._getValidAmmo();
       }
     } else if (this.item.type === 'shipWeapon') {
-      context.shipWeaponRanges = {
-        far: 'SYNTHICIDE.Item.ShipWeapon.Range.far',
-        sight: 'SYNTHICIDE.Item.ShipWeapon.Range.sight',
-      };
+      context.shipWeaponRanges = SYNTHICIDE.SHIP_WEAPON_RANGES;
     } else if (this.item.type === 'shield') {
       context.shieldModificationsOptions = SYNTHICIDE.SHIELD_MODIFICATIONS;
     }
