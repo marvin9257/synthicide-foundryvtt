@@ -26,28 +26,3 @@ export default class SynthicideCombatant extends Combatant {
     return '1d10 + @velocity';
   }
 }
-
-/**
- * @param {string} initFormula
- * @param {string} title
- * @returns {Promise<string>}
- */
-export async function confirmRollFormula(initFormula, title) {
-  let returnText = "";
-  await foundry.applications.api.DialogV2.wait({
-    window: {title: title},
-    content: `<label for="outputFormula">Formula</label><input type="text" name="outputFormula" value="` + initFormula + `"></input>`,
-    buttons: [
-      {
-        action: "roll",
-        icon: "fa-solid fa-dice",
-        label: "SYNTHICIDE.Roll.Dialog.RollButton",
-        default: true,
-        callback: (event, button, dialog) => {
-          returnText = dialog.element.querySelector('[name="outputFormula"]')?.value;
-        }
-      }
-    ],
-  });
-  return (returnText ?? "");
-}
