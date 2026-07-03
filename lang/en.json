@@ -870,6 +870,17 @@
         "General": "General",
         "RollModifiers": "Roll Modifiers"
       },
+      "ModifierLabels": {
+        "fastTalker": "Fast Talker",
+        "guardian": "Guardian",
+        "killer": "Killer",
+        "professional": "Professional",
+        "psycherManifestor": "Psycher, Manifestor",
+        "psycherProjector": "Psycher, Projector",
+        "psycherRevelator": "Psycher, Revelator",
+        "sneak": "Sneak",
+        "starvationPenalty": "Starvation Penalty"
+      },
       "Card": {
         "TitleChallenge": "Challenge Roll",
         "TitleShock": "Shocking Strike: Toughness Check",

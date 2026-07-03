@@ -49,7 +49,13 @@ export async function openSynthicideActionRollDialog({
   if (!dialogResult) return null;
 
   const resolvedSubtype = resolveActionSubtype({ subtype: dialogResult.subtype, sourceItem });
-  return executeActionRoll({ actor, input: dialogResult, sourceItem, subtype: resolvedSubtype });
+  const resolvedInput = {
+    ...dialogResult,
+    // Keep caller-provided situational modifiers (e.g. NPC role bonuses)
+    // because they are display-only in the dialog and not form-submitted.
+    rollModifiers,
+  };
+  return executeActionRoll({ actor, input: resolvedInput, sourceItem, subtype: resolvedSubtype });
 }
 
 export async function rollShipWeaponDamageCard({ actor, sourceItem, messageMode } = {}) {
@@ -305,7 +311,14 @@ async function executeChallengeActionRoll({ ctx } = {}) {
 
   // Propagate special ammo choice into card input
   ctx.input.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
-  const cardData = prepareChallengeCardData({ input: ctx.input, actor: actorObj, rollResult: evaluatedRoll, attributeValue: ctx.rollData.attribute, difficulty });
+  const cardData = prepareChallengeCardData({
+    input: ctx.input,
+    actor: actorObj,
+    rollResult: evaluatedRoll,
+    attributeValue: ctx.rollData.attribute,
+    difficulty,
+    rollData: ctx.rollData,
+  });
   return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, cardData, template: CARD_TEMPLATE });
 }
 
