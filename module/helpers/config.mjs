@@ -820,8 +820,9 @@ SYNTHICIDE.vehicleCustomizations = {
 
 SYNTHICIDE.SHIP_WEAPON_RANGES = {
   far: 'SYNTHICIDE.Item.ShipWeapon.Range.far',
-  sight: 'SYNTHICIDE.Item.ShipWeapon.Range.sight'
-}
+  sight: 'SYNTHICIDE.Item.ShipWeapon.Range.sight',
+  close: 'SYNTHICIDE.Item.ShipWeapon.Range.close'
+};
 
 export default SYNTHICIDE;
 

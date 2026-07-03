@@ -1,6 +1,6 @@
 // Lightweight RollContext class for action/attack flows
 // Encapsulates roll inputs, computed rollData, range context, and outcome
-import { getActorAttributeValue, getActorRollModifiers, hasWeaponModification, applyAttackModeAdjustments, applyAmmoAttackAdjustments, parseNumeric, ATTRIBUTE_COMBAT } from './modifiers.mjs';
+import { getActorAttributeValue, computeRollModifiers, hasWeaponModification, applyAttackModeAdjustments, applyAmmoAttackAdjustments, parseNumeric, ATTRIBUTE_COMBAT } from './modifiers.mjs';
 import { resolveWeaponSpecializationContext, getDemolitionSpecializationBonus } from './weapon-proficiency-rules.mjs';
 import { resolveAmmoAttackEffects } from './ammo-effects.mjs';
 import { buildAttackRangeContext } from './attack-rolls.mjs';
@@ -318,8 +318,8 @@ function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = nu
   const actorAttribute = Number(getActorAttributeValue(actor, attributeKey));
   rollData.attribute = actorAttribute;
 
-  const actorModifiers = getActorRollModifiers(actor);
-  rollData.modifierDetails = Array.isArray(actorModifiers) ? actorModifiers.slice() : [];
+  const resolvedModifiers = computeRollModifiers(actor, input?.rollModifiers);
+  rollData.modifierDetails = Array.isArray(resolvedModifiers.modifiers) ? resolvedModifiers.modifiers.slice() : [];
   rollData.actorModifierTotal = rollData.modifierDetails.reduce((sum, mod) => sum + parseNumeric(mod.value, 0), 0);
 
   const finalInput = {

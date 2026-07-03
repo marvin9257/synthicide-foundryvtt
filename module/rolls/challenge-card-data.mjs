@@ -10,8 +10,9 @@ import { localize, getAttributeLabel, getDegreeLabel, getDifficultyLabel, format
  * @param {object} params.rollResult - The evaluated Roll object
  * @param {number} params.attributeValue - The resolved attribute value
  * @param {number} params.difficulty - The challenge difficulty
+ * @param {object} params.rollData - Prepared roll data used in the formula
  */
-export function prepareChallengeCardData({ input, actor, rollResult, attributeValue, difficulty }) {
+export function prepareChallengeCardData({ input, actor, rollResult, attributeValue, difficulty, rollData = {} }) {
   const { d10, total, equation, dieClass } = getRollResultSummary(rollResult);
   const attributeKey = input.attribute;
   const effect = total - difficulty;
@@ -35,7 +36,7 @@ export function prepareChallengeCardData({ input, actor, rollResult, attributeVa
     dieClass,
     rollResult,
     attributeKey,
-    equationTerms: buildEquationTerms({ subtype: 'challenge', attributeKey, rollData: { ...input, attributeValue } }),
+    equationTerms: buildEquationTerms({ subtype: 'challenge', attributeKey, rollData: { ...input, ...rollData, attributeValue } }),
     showEffectOutcomeRow: true,
     showDamageButton: false,
     showOpposedButton: true,

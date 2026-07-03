@@ -26,6 +26,7 @@ import SynthicideVirtualRuler from './canvas/synthicide-virtual-ruler.mjs';
 import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler.mjs';
 import { SynthicideChatMessage } from './documents/synthicide-chat-message.mjs';
 import {itemPilesIntegration} from './hooks/itemPilesIntegration.js'
+import SynthicideCombatant from './documents/combatant.mjs';
 
 const collections = foundry.documents.collections;
 
@@ -166,8 +167,9 @@ Hooks.once('init', function () {
   // Add custom chat popout class.
   CONFIG.ChatMessage.popoutClass = SynthicideChatPopout;
 
-  //Combat tracking
+  //Combat
   CONFIG.Combat.documentClass = SynthicideCombat;
+  CONFIG.Combatant.documentClass = SynthicideCombatant;
 
   CONFIG.fontDefinitions["Roboto"] = {
     editor: true,

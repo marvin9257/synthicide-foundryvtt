@@ -38,11 +38,25 @@ export function formatModifierKey(key) {
     .replace(/^./, (char) => char.toUpperCase());
 }
 
+function getModifierLabel(modifier = {}) {
+  const explicitLabel = String(modifier?.label ?? '').trim();
+  if (explicitLabel) return explicitLabel;
+
+  const key = String(modifier?.key ?? '').trim();
+  if (!key) return localize('SYNTHICIDE.Roll.Dialog.RollModifiers');
+
+  const modifierLabelKey = `SYNTHICIDE.Roll.ModifierLabels.${key}`;
+  const localizedModifierLabel = game.i18n.localize(modifierLabelKey);
+  if (localizedModifierLabel && localizedModifierLabel !== modifierLabelKey) return localizedModifierLabel;
+
+  return formatModifierKey(key);
+}
+
 export function formatRollModifiers(modifiers = []) {
   if (!Array.isArray(modifiers)) return [];
   return modifiers.map((modifier) => ({
     ...modifier,
-    label: formatSignedNumber(formatModifierKey(modifier.key)),
+    label: getModifierLabel(modifier),
     valueDisplay: formatSignedNumber(modifier.value),
   }));
 }

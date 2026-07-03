@@ -16,6 +16,7 @@ const SUBTYPES = {
   CHALLENGE: 'challenge',
   ATTACK: 'attack',
   DEMOLITION: 'demolition',
+  DRIVER_VELOCITY: 'driverVelocity',
   DAMAGE: 'damage',
 };
 
@@ -49,7 +50,13 @@ export async function openSynthicideActionRollDialog({
   if (!dialogResult) return null;
 
   const resolvedSubtype = resolveActionSubtype({ subtype: dialogResult.subtype, sourceItem });
-  return executeActionRoll({ actor, input: dialogResult, sourceItem, subtype: resolvedSubtype });
+  const resolvedInput = {
+    ...dialogResult,
+    // Keep caller-provided situational modifiers (e.g. NPC role bonuses)
+    // because they are display-only in the dialog and not form-submitted.
+    rollModifiers,
+  };
+  return executeActionRoll({ actor, input: resolvedInput, sourceItem, subtype: resolvedSubtype });
 }
 
 export async function rollShipWeaponDamageCard({ actor, sourceItem, messageMode } = {}) {
@@ -271,6 +278,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
   const isDemolition = resolvedSubtype === SUBTYPES.DEMOLITION;
   const isAttack = resolvedSubtype === SUBTYPES.ATTACK;
   const isChallenge = resolvedSubtype === SUBTYPES.CHALLENGE;
+  const isDriverVelocity = resolvedSubtype === SUBTYPES.DRIVER_VELOCITY;
   const attributeRequested = input?.attribute ?? (isDemolition ? getDemolitionRollAttributeKey(sourceItem) : 'combat');
   const attributeKey = getActionAttributeKey(resolvedSubtype, attributeRequested);
 
@@ -293,6 +301,10 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
     return executeChallengeActionRoll({ ctx });
   }
 
+  if (isDriverVelocity) {
+    return executeDriverVelocityActionRoll({ ctx });
+  }
+
   return handleOtherRoll({ actor, input, sourceItem, subtype });
 }
 
@@ -305,7 +317,64 @@ async function executeChallengeActionRoll({ ctx } = {}) {
 
   // Propagate special ammo choice into card input
   ctx.input.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
-  const cardData = prepareChallengeCardData({ input: ctx.input, actor: actorObj, rollResult: evaluatedRoll, attributeValue: ctx.rollData.attribute, difficulty });
+  const cardData = prepareChallengeCardData({
+    input: ctx.input,
+    actor: actorObj,
+    rollResult: evaluatedRoll,
+    attributeValue: ctx.rollData.attribute,
+    difficulty,
+    rollData: ctx.rollData,
+  });
+  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, cardData, template: CARD_TEMPLATE });
+}
+
+async function executeDriverVelocityActionRoll({ ctx } = {}) {
+  if (!ctx) return null;
+  const actorObj = ctx.actor ?? null;
+  const messageMode = normalizeMessageMode(ctx.input.messageMode);
+  const difficulty = Number(ctx.input.difficulty ?? 6);
+  const velocity = Number(foundry.utils.getProperty(actorObj, 'system.velocity') ?? 0);
+
+  ctx.rollData.velocity = velocity;
+  const evaluatedRoll = await new Roll('1d10 + @velocity + @misc + @modifiers', ctx.rollData).evaluate();
+
+  const cardData = prepareChallengeCardData({
+    input: ctx.input,
+    actor: actorObj,
+    rollResult: evaluatedRoll,
+    attributeValue: velocity,
+    difficulty,
+    rollData: {
+      ...ctx.rollData,
+      attributeValue: velocity,
+    },
+  });
+
+  cardData.title = localize('SYNTHICIDE.Roll.Card.TitleDriverVelocity');
+  cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorDriverVelocity');
+  cardData.showEffectOutcomeRow = false;
+  cardData.showTotalRow = true;
+  delete cardData.effectText;
+  delete cardData.outcomeLabel;
+  delete cardData.outcomeClass;
+  cardData.showOpposedButton = false;
+  if (Array.isArray(cardData.metadataRows)) {
+    const labelsToHide = new Set([
+      localize('SYNTHICIDE.Roll.Card.Effect'),
+      localize('SYNTHICIDE.Roll.Card.Difficulty'),
+    ]);
+    cardData.metadataRows = cardData.metadataRows.filter((row) => !labelsToHide.has(row?.label));
+  }
+  if (Array.isArray(cardData.equationTerms) && cardData.equationTerms.length >= 2) {
+    cardData.equationTerms[0] = {
+      label: localize('SYNTHICIDE.Vehicle.Velocity'),
+      value: velocity,
+    };
+    cardData.equationTerms = cardData.equationTerms.filter((term, index) => (
+      index !== 1 && term?.label !== localize('SYNTHICIDE.Roll.Card.AttributeValue')
+    ));
+  }
+
   return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, cardData, template: CARD_TEMPLATE });
 }
 
@@ -405,6 +474,7 @@ function resolveActorFromUuidSync(uuid) {
 
 function resolveActionSubtype({ subtype, sourceItem }) {
   if (String(sourceItem?.system?.weaponClass ?? '') === 'demolition') return SUBTYPES.DEMOLITION;
+  if (subtype === SUBTYPES.DRIVER_VELOCITY) return SUBTYPES.DRIVER_VELOCITY;
   if (subtype === SUBTYPES.ATTACK) return SUBTYPES.ATTACK;
   if (subtype === SUBTYPES.DEMOLITION) return SUBTYPES.DEMOLITION;
   return SUBTYPES.CHALLENGE;
