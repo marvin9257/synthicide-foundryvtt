@@ -2,9 +2,8 @@ import SYNTHICIDE from '../helpers/config.mjs';
 import ItemTemplate from '../documents/ItemTemplate.mjs';
 import { calculateVirtualZoneDistanceBetweenPoints, getRandomScatterCorner } from '../canvas/demolition-scatter-utils.mjs';
 import { prepareDemolitionCardData } from './demolition-card-data.mjs';
-import { prepareAttackCardData } from './attack-card-data.mjs';
+import { createAttackMessageFromRoll } from './attack-rolls.mjs';
 import { createActionMessage, createBlastSummaryMessage, normalizeMessageMode } from './cards.mjs';
-import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
 import { parseNumeric, FORMULA_CHALLENGE, FORMULA_ATTACK } from './modifiers.mjs';
 import { buildRollContext } from './roll-context.mjs';
 import { getActorToken } from './attack-rolls.mjs';
@@ -174,6 +173,7 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
       attribute: Number(freshCtx.rollData.attribute ?? 0),
       misc: Number(freshCtx.rollData.misc ?? 0),
       attackBonus: Number(freshCtx.rollData.attackBonus ?? 0),
+      actorModifierTotal: Number(freshCtx.rollData.actorModifierTotal ?? 0),
       // No actor modifiers for planted devices; only include placement rangeModifier.
       modifiers: Number(freshCtx.rollData.actorModifierTotal ?? 0) + Number(rollData?.rangeModifier ?? 0),
     };
@@ -194,6 +194,7 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
       attribute: freshCtx.rollData.attribute,
       misc: freshCtx.rollData.misc,
       attackBonus: freshCtx.rollData.attackBonus,
+      actorModifierTotal: Number(freshCtx.rollData.actorModifierTotal ?? 0),
       // Keep range modifier from the original rollData (placement range),
       // but use the canonical actor modifier total from the fresh context.
       modifiers: Number(freshCtx.rollData.actorModifierTotal) + Number(rollData?.rangeModifier ?? 0),
@@ -203,7 +204,6 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
   const attackRoll = await new Roll(FORMULA_ATTACK, attackRollData).evaluate();
   attackRoll.options.rollOrder = 2; ///Dice so nice integration
   const attackTotal = Number(attackRoll.total ?? 0);
-  const rollHtml = await attackRoll.render();
   let firstAttackMessageId = "";
 
   for (const token of blastTargets) {
@@ -212,38 +212,38 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
     const targetAD = Number(targetActor.system.armorDefense?.value ?? 0);
     const hit = attackTotal >= targetAD;
 
-    const attackCardData = prepareAttackCardData({
-      input: {
-        ...input,
-        armor: targetAD,
-        isPlantedDemolitionAttack: isPlantedDemolition(sourceItem),
-        specialization,
-        damageBonus: baseDamageBonus,
-        baseDamageBonus: baseDamageBonus,
-        attackBonus: Number(attackRollData.attackBonus ?? 0),
-        baseAttackBonus: baseAttackBonus,
-        actorModifierTotal: Number(attackRollData.actorModifierTotal ?? 0),
-        rangeModifier: Number(rollData.rangeModifier ?? 0),
-        rangeDistance: null,
-        rangeIncrement: null,
-      },
+    const attackInput = {
+      ...input,
+      armor: targetAD,
+      isPlantedDemolitionAttack: isPlantedDemolition(sourceItem),
+      specialization,
+      damageBonus: baseDamageBonus,
+      baseDamageBonus,
+      attackBonus: Number(attackRollData.attackBonus ?? 0),
+      baseAttackBonus: baseAttackBonus,
+      actorModifierTotal: Number(attackRollData.actorModifierTotal ?? 0),
+      rangeModifier: Number(rollData.rangeModifier ?? 0),
+      rangeDistance: null,
+      rangeIncrement: null,
+      messageMode: normalizeMessageMode(messageMode),
+      userId: game.user.id,
+    };
+    const attackMessage = await createAttackMessageFromRoll({
       actor,
       sourceItem,
-      rollResult: attackRoll,
+      template,
+      roll: attackRoll,
+      messageMode: normalizeMessageMode(messageMode),
+      input: attackInput,
       attributeValue: attackRollData.attribute,
-      rollData: attackRollData,
+      rollData: {
+        ...attackRollData,
+        rangeModifier: Number(rollData.rangeModifier ?? 0),
+      },
+      useRollMessage: !firstAttackMessageId,
+      linkToMessageId: firstAttackMessageId,
     });
-    const cardHtml = await foundry.applications.handlebars.renderTemplate(template, { ...attackCardData, rollHtml });
-    const chatData = SynthicideChatMessage.prepareData({ actor, content: cardHtml, cardData: attackCardData });
-    let tempMessage;
-    if (!firstAttackMessageId) {
-      tempMessage = await attackRoll.toMessage(chatData, { messageMode: normalizeMessageMode(messageMode) });
-      firstAttackMessageId = tempMessage.id;
-    } else {
-      chatData.flags = chatData.flags ?? {};
-      chatData.flags['dice-so-nice'] = { linkedTo: firstAttackMessageId };
-      await SynthicideChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
-    }
+    if (!firstAttackMessageId) firstAttackMessageId = attackMessage?.id ?? '';
     summaryRows.push(`<tr><td>${token.name}</td><td>${targetAD}</td><td>${attackTotal}</td><td>${hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss')}</td></tr>`);
   }
 

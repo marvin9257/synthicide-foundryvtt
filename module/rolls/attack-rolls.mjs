@@ -3,6 +3,7 @@ import { hasWeaponFeature } from './weapon-proficiency-rules.mjs';
 import { SpecializationData } from './specialization-data.mjs';
 import { FORMULA_ATTACK, hasWeaponModification } from './modifiers.mjs';
 import { prepareAttackCardData } from './attack-card-data.mjs';
+import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
 import { prepareDamageCardData } from './damage-card-data.mjs';
 import { createActionMessage, normalizeMessageMode } from './cards.mjs';
 // RollContext constructed at the action entrypoint; flows accept `ctx`.
@@ -40,14 +41,15 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
   resolvedInput.damageBonus = Number(ctx.rollData.damageBonus ?? resolvedInput.damageBonus);
   resolvedInput.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
 
-  const cardData = prepareAttackCardData({ input: resolvedInput, actor, sourceItem, rollResult: evaluatedRoll, attributeValue: ctx.rollData.attribute, rollData: ctx.rollData });
-
-  const attackMessage = await createActionMessage({
+  const attackMessage = await createAttackMessageFromRoll({
     actor,
+    sourceItem,
     template,
     roll: evaluatedRoll,
     messageMode,
-    cardData,
+    input: resolvedInput,
+    attributeValue: ctx.rollData.attribute,
+    rollData: ctx.rollData,
   });
 
   if (hasWeaponFeature(sourceItem, 'spread')) {
@@ -64,6 +66,50 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
   }
 
   return attackMessage;
+}
+
+export async function createAttackMessageFromRoll({
+  actor,
+  sourceItem,
+  template,
+  roll,
+  messageMode,
+  input,
+  attributeValue,
+  rollData = {},
+  whisper,
+  useRollMessage = true,
+  linkToMessageId = '',
+} = {}) {
+  const cardData = prepareAttackCardData({
+    input,
+    actor,
+    sourceItem,
+    rollResult: roll,
+    attributeValue,
+    rollData,
+  });
+
+  if (linkToMessageId) {
+    cardData.flags = cardData.flags ?? {};
+    cardData.flags['dice-so-nice'] = { linkedTo: linkToMessageId };
+  }
+
+  if (!useRollMessage) {
+    const rollHtml = roll ? await roll.render() : '';
+    const cardHtml = await foundry.applications.handlebars.renderTemplate(template, { ...cardData, rollHtml });
+    const chatData = SynthicideChatMessage.prepareData({ actor, content: cardHtml, cardData, whisper });
+    return SynthicideChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
+  }
+
+  return createActionMessage({
+    actor,
+    template,
+    roll,
+    messageMode,
+    cardData,
+    whisper,
+  });
 }
 
 export function buildAttackRangeContext({ actor, sourceItem, actorToken = null, targetToken = null, notify = true } = {}) {
@@ -156,6 +202,45 @@ export function getTargetDefense({ notify = true } = {}) {
   return { armor: defaultValue, shieldBonus: 0 };
 }
 
+export function getAttackDialogDefaults({ actor, sourceItem, notifyTarget = true } = {}) {
+  if (!sourceItem?.system) {
+    return {
+      attackBonus: 0,
+      damageBonus: 0,
+      slugShotModeAvailable: false,
+      rangeModifier: 0,
+      rangeIsImpossible: false,
+      armor: 0,
+      shieldBonus: 0,
+      weaponClass: '',
+    };
+  }
+
+  const targetDefense = getTargetDefense({ notify: notifyTarget });
+  const actorToken = getActorToken(actor);
+  const targetToken = game.user.targets?.size === 1 ? game.user.targets.first() : null;
+  const attackContext = resolveWeaponAttackContext({ actor, sourceItem, targetToken });
+  const rangeContext = buildAttackRangeContext({
+    actor,
+    sourceItem,
+    actorToken,
+    targetToken,
+    notify: false,
+  });
+  const weaponClass = String(sourceItem?.system?.weaponClass ?? '');
+
+  return {
+    attackBonus: attackContext.attackBonus,
+    damageBonus: attackContext.damageBonus,
+    slugShotModeAvailable: hasWeaponModification(sourceItem, 'slugShot'),
+    rangeModifier: Number(rangeContext?.rangeModifier ?? 0),
+    rangeIsImpossible: Boolean(rangeContext?.isImpossible),
+    armor: targetDefense.armor,
+    shieldBonus: weaponClass === 'melee' ? targetDefense.shieldBonus : 0,
+    weaponClass,
+  };
+}
+
 function getTokenObject(token) {
   if (!token) return null;
   return token.object ?? token;
@@ -173,14 +258,17 @@ function getSingleTargetToken({ notify = true } = {}) {
 
 export function getActorToken(actor) {
   if (!actor) return null;
+  const controlled = canvas?.tokens?.controlled ?? [];
+  const controlledToken = controlled.find((token) => token?.actor?.id === actor.id);
+  if (controlledToken) return getTokenObject(controlledToken);
+
   const activeTokens = actor.getActiveTokens?.(false, false) ?? [];
   if (activeTokens.length > 0) return getTokenObject(activeTokens[0]);
   if (canvas?.scene?.tokens) {
     const sceneToken = canvas.scene.tokens.find((token) => token?.actorId === actor.id);
     if (sceneToken) return sceneToken.object;
   }
-  const controlled = canvas?.tokens?.controlled ?? [];
-  return getTokenObject(controlled.find((token) => token?.actor?.id === actor.id) ?? null);
+  return null;
 }
 
 function getArcAttackBonus({ sourceItem, targetToken }) {

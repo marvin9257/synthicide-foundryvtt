@@ -1,9 +1,7 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import { localize, formatSignedNumber, formatRollModifiers } from './roll-utils.mjs';
-import { computeRollModifiers, parseNumeric, getActionAttributeKey, ATTRIBUTE_COMBAT, hasWeaponModification } from './modifiers.mjs';
-import { resolveWeaponAttackContext, getTargetDefense, getActorToken } from './attack-rolls.mjs';
-import { buildRollContext } from './roll-context.mjs';
-import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
+import { computeRollModifiers, parseNumeric, getActionAttributeKey, ATTRIBUTE_COMBAT } from './modifiers.mjs';
+import { getAttackDialogDefaults } from './attack-rolls.mjs';
 import { normalizeMessageMode } from './cards.mjs';
 
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
@@ -41,11 +39,18 @@ export async function renderActionRollDialog({ title, defaults }) {
 }
 
 export function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, allowSubtypeChange, rollModifiers = undefined }) {
-  const attackDefaults = getAttackDialogDefaults({ actor, subtype, sourceItem });
-  const isMeleeAttack = String(sourceItem?.system?.weaponClass ?? '') === 'melee';
-  const targetDefense = subtype === 'attack'
-    ? getTargetDefense({ notify: true })
-    : { armor: 0, shieldBonus: 0 };
+  const attackDefaults = subtype === 'attack'
+    ? getAttackDialogDefaults({ actor, sourceItem, notifyTarget: true })
+    : {
+      attackBonus: 0,
+      damageBonus: 0,
+      slugShotModeAvailable: false,
+      rangeModifier: 0,
+      rangeIsImpossible: false,
+      armor: 0,
+      shieldBonus: 0,
+      weaponClass: String(sourceItem?.system?.weaponClass ?? ''),
+    };
 
   return {
     actor,
@@ -53,51 +58,19 @@ export function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, 
     attribute: attributeKey,
     difficulty: 6,
     misc: 0,
-    armor: targetDefense.armor,
+    armor: attackDefaults.armor,
     attackBonus: attackDefaults.attackBonus,
     damageBonus: attackDefaults.damageBonus,
     slugShotModeAvailable: attackDefaults.slugShotModeAvailable,
     slugShotActive: false,
     rangeModifier: attackDefaults.rangeModifier,
     rangeIsImpossible: Boolean(attackDefaults.rangeIsImpossible),
-    shieldBonus: isMeleeAttack ? targetDefense.shieldBonus : 0,
-    weaponClass: String(sourceItem?.system?.weaponClass ?? ''),
+    shieldBonus: attackDefaults.shieldBonus,
+    weaponClass: attackDefaults.weaponClass,
     sourceItem,
     messageMode: getDefaultMessageMode(),
     allowSubtypeChange,
     rollModifiers,
-  };
-}
-
-function getAttackDialogDefaults({ actor, subtype, sourceItem }) {
-  if (subtype !== 'attack' || !sourceItem?.system) {
-    return {
-      attackBonus: 0,
-      damageBonus: 0,
-      slugShotModeAvailable: false,
-      rangeModifier: 0,
-    };
-  }
-
-  const controlledActor = getControlledActor();
-  const sourceToken = getActorToken(actor);
-  const controlledToken = sourceToken ?? (controlledActor?.uuid === actor?.uuid ? getActorToken(controlledActor) : null);
-  const rangeContext = buildRollContext({
-    actor,
-    actorToken: controlledToken,
-    sourceItem,
-    subtype: 'attack',
-    attributeKey: null,
-    input: {},
-  }).resolveAttackRange({ notify: false });
-  const targetToken = game.user.targets?.size === 1 ? game.user.targets.first() : null;
-  const attackContext = resolveWeaponAttackContext({ actor, sourceItem, targetToken });
-  return {
-    attackBonus: attackContext.attackBonus,
-    damageBonus: attackContext.damageBonus,
-    slugShotModeAvailable: hasWeaponModification(sourceItem, 'slugShot'),
-    rangeModifier: Number(rangeContext?.rangeModifier ?? 0),
-    rangeIsImpossible: Boolean(rangeContext?.isImpossible),
   };
 }
 

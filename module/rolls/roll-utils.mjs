@@ -17,6 +17,27 @@ export function extractCardContext({ input = {}, sourceItem = null }) {
   };
 }
 
+export function buildRollPayloadContext({
+  input = {},
+  actor = null,
+  sourceItem = null,
+  rollData = {},
+  extra = {},
+} = {}) {
+  const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem });
+  return {
+    actorUuid: actor?.uuid ?? null,
+    userId: input.userId ?? game.user?.id ?? null,
+    messageMode,
+    sourceItemUuid,
+    sourceMessageId,
+    misc: Number(rollData.misc ?? input.misc ?? 0),
+    actorModifierTotal: Number(rollData.actorModifierTotal ?? input.actorModifierTotal ?? 0),
+    rangeModifier: Number(rollData.rangeModifier ?? input.rangeModifier ?? 0),
+    ...extra,
+  };
+}
+
 // `getStandardizedRollData` moved to SynthicideChatMessage; callers should use
 // `message.getCardPayload()` when available. Kept no-op here for compatibility.
 

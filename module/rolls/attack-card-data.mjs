@@ -1,7 +1,7 @@
 // Attack card data preparation for Synthicide
 // Extracted from action-rolls.mjs for modularity and clarity
 
-import { localize, getAttributeLabel, buildEquationTerms, buildBaseActionCardData, getRollResultSummary } from './roll-utils.mjs';
+import { localize, getAttributeLabel, buildEquationTerms, buildBaseActionCardData, getRollResultSummary, buildRollPayloadContext } from './roll-utils.mjs';
 import { SpecializationData } from './specialization-data.mjs';
 import { buildWeaponSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
 /**
@@ -35,29 +35,36 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
   const specialAmmoUsed = String(input.specialAmmoUsed ?? sourceItem?.system?.specialAmmo ?? 'none');
 
   // Data for strict DataModel validation
-  const system = {
-    armor: effectiveArmor,
-    damageBonus,
-    baseAttackBonus: Number(input.baseAttackBonus ?? sourceItem?.system?.bonuses?.attack ?? 0),
-    baseDamageBonus: Number(input.baseDamageBonus ?? sourceItem?.system?.bonuses?.damage ?? 0),
-    attribute: attributeKey,
-    attributeValue,
-    d10,
-    hit,
-    lethal,
-    shockRdBonus,
-    extraDamageDice,
-    baneDamageBonus,
-    slugShotActive,
-    specialization,
-    actorUuid: actor?.uuid ?? null,
-    specialAmmoUsed,
-    isPlantedDemolitionAttack: Boolean(input.isPlantedDemolitionAttack),
-    // Propagate a planted marker for UI/derived-damage flows. Some handlers
-    // detect planted devices from `hideAttributeRow`, so mirror that flag on
-    // attack cards generated from planted demolition.
-    hideAttributeRow: Boolean(input.isPlantedDemolitionAttack),
-  };
+  const system = buildRollPayloadContext({
+    input,
+    actor,
+    sourceItem,
+    rollData,
+    extra: {
+      total,
+      armor: effectiveArmor,
+      damageBonus,
+      baseAttackBonus: Number(input.baseAttackBonus ?? sourceItem?.system?.bonuses?.attack ?? 0),
+      baseDamageBonus: Number(input.baseDamageBonus ?? sourceItem?.system?.bonuses?.damage ?? 0),
+      attribute: attributeKey,
+      attributeValue,
+      attackBonus: Number(rollData.attackBonus ?? input.attackBonus ?? 0),
+      d10,
+      hit,
+      lethal,
+      shockRdBonus,
+      extraDamageDice,
+      baneDamageBonus,
+      slugShotActive,
+      specialAmmoUsed,
+      specialization,
+      isPlantedDemolitionAttack: Boolean(input.isPlantedDemolitionAttack),
+      // Propagate a planted marker for UI/derived-damage flows. Some handlers
+      // detect planted devices from `hideAttributeRow`, so mirror that flag on
+      // attack cards generated from planted demolition.
+      hideAttributeRow: Boolean(input.isPlantedDemolitionAttack),
+    },
+  });
 
   // Native ChatMessage fields
   const title = localize('SYNTHICIDE.Roll.Card.TitleAttack');

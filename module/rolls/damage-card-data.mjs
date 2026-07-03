@@ -1,7 +1,7 @@
 // module/rolls/damage-card-data.js
 // Modular function to prepare card data for derived damage rolls
 
-import { localize, buildEquationTerms, buildBaseActionCardData, extractCardContext } from './roll-utils.mjs';
+import { localize, buildEquationTerms, buildBaseActionCardData, buildRollPayloadContext } from './roll-utils.mjs';
 import { SpecializationData } from './specialization-data.mjs';
 import { buildWeaponSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
 /**
@@ -37,26 +37,28 @@ export function prepareDamageCardData({
   const baseDamageBonus = Number.isFinite(Number(input.baseDamageBonus))
     ? Number(input.baseDamageBonus)
     : Number(item?.system?.bonuses?.damage ?? 0);
-  const actorUuid = actor?.uuid ?? null;
-  const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem: item });
-
   // Strict system data for DataModel validation
   const specialization = SpecializationData.fromObject(input.specialization ?? {}).toCardPayload();
-  const system = {
-    total,
-    lethal,
-    shockRdBonus,
-    extraDamageDice,
-    actorUuid,
-    // Preserve attributeValue and hideAttributeRow so downstream message
-    // rendering and follow-up damage logic can make the correct planted/weapon-only decision.
-    attributeValue: Number(attributeValue ?? 0),
-    hideAttributeRow: Boolean(input.hideAttributeRow),
-    sourceItemUuid,
-    sourceMessageId,
-    specialAmmoUsed,
-    specialization
-  };
+  const system = buildRollPayloadContext({
+    input,
+    actor,
+    sourceItem: item,
+    rollData,
+    extra: {
+      total,
+      d10: Number(d10 ?? 0),
+      damageBonus,
+      lethal,
+      shockRdBonus,
+      extraDamageDice,
+      // Preserve attributeValue and hideAttributeRow so downstream message
+      // rendering and follow-up damage logic can make the correct planted/weapon-only decision.
+      attributeValue: Number(attributeValue ?? 0),
+      hideAttributeRow: Boolean(input.hideAttributeRow),
+      specialAmmoUsed,
+      specialization,
+    },
+  });
 
   const cardExtras = buildBaseActionCardData({
     subtype: 'damage',
@@ -85,7 +87,6 @@ export function prepareDamageCardData({
   return {
     type: 'damage',
     system,
-    messageMode, 
     ...cardExtras,
     title: overrides.title ?? localize('SYNTHICIDE.Roll.Card.TitleDamage'),
     flavor: overrides.flavor ?? localize('SYNTHICIDE.Roll.Card.DerivedFromAttack'),

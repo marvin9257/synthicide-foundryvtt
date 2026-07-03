@@ -5,7 +5,7 @@ import {
   formatSignedNumber,
   buildBaseActionCardData,
   getRollResultSummary,
-  extractCardContext
+  buildRollPayloadContext
 } from './roll-utils.mjs';
 import { SpecializationData } from './specialization-data.mjs';
 import { buildDemolitionSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
@@ -34,7 +34,6 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
     rangeBands,
     input,
   });
-  const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input, sourceItem });
   const isPlanted = mode === 'planted';
   const damageAttributeValue = isPlanted
     ? 0
@@ -42,20 +41,26 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
 
   // Strict system data for DataModel validation
   const specialization = SpecializationData.fromObject(input.specialization ?? {}).toCardPayload();
-  const system = {
-    d10,
-    total,
-    damageBonus: Number(sourceItem?.system?.bonuses?.damage ?? 0),
-    lethal: Number(sourceItem?.system?.bonuses?.lethal ?? 0),
-    actorUuid: actor?.uuid ?? null,
-    sourceItemUuid,
-    sourceMessageId,
-    placedTemplateUuid: input.placedTemplateUuid ?? '',
-    damageAttributeValue,
-    hideAttributeRow: isPlanted,
-    mode,
-    specialization,
-  };
+  const system = buildRollPayloadContext({
+    input,
+    actor,
+    sourceItem,
+    rollData: input,
+    extra: {
+      d10,
+      total,
+      difficulty,
+      effectValue: effect,
+      damageBonus: Number(sourceItem?.system?.bonuses?.damage ?? 0),
+      lethal: Number(sourceItem?.system?.bonuses?.lethal ?? 0),
+      specialAmmoUsed: String(input.specialAmmoUsed ?? sourceItem?.system?.specialAmmo ?? 'none'),
+      placedTemplateUuid: input.placedTemplateUuid ?? '',
+      damageAttributeValue,
+      hideAttributeRow: isPlanted,
+      mode,
+      specialization,
+    },
+  });
 
   const cardExtras = buildBaseActionCardData({
     subtype: 'demolition',
@@ -78,7 +83,6 @@ export function prepareDemolitionCardData({ input, actor, sourceItem, rollResult
   return {
     type: 'demolition',
     system,
-    messageMode,
     ...cardExtras,
     title: localize('SYNTHICIDE.Roll.Card.TitleDemolition'),
     flavor: buildDemolitionFlavor({ mode, sourceItem, attributeKey, difficulty, plantNumber }),

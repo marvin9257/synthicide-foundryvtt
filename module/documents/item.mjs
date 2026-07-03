@@ -215,7 +215,7 @@ export class SynthicideItem extends foundry.documents.Item {
     }
 
     const rollData = item.getRollData();
-    const evaluatedRoll = await new Roll(rollData.formula, rollData.actor).evaluate();
+    const evaluatedRoll = await new Roll(rollData.formula, rollData).evaluate();
     const { total, d10, equation, dieClass } = getRollResultSummary(evaluatedRoll);
     const cardData = {
       title: label,

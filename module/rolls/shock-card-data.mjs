@@ -40,7 +40,7 @@ export function buildShockCardData({ actor, options }) {
     outcome,
     lethal,
   } = options;
-  const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input: options });
+  const { sourceItemUuid, sourceMessageId } = extractCardContext({ input: options });
   const isLethal = outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL;
   const isSuccess = outcome === SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS;
   const d10 = Number(roll?.dice?.[0]?.results?.[0]?.result ?? 0);
@@ -69,7 +69,6 @@ export function buildShockCardData({ actor, options }) {
   return {
     type: 'shock',
     system,
-    messageMode,
     equation: roll?.result ?? '',
     dieValue: d10,
     dieClass: '',

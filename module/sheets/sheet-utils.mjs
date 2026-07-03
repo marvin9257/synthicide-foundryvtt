@@ -1,4 +1,4 @@
-import { openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
+import { openSynthicideActionRollDialog, rollShipWeaponDamageCard } from '../rolls/action-rolls.mjs';
 import { enrichSheetHtml } from './sheet-context.mjs';
 
 /**
@@ -194,6 +194,21 @@ export async function makeRoll(actor, target) {
     return openSynthicideActionRollDialog({
       actor: actor,
       subtype: 'attack',
+      sourceItem: item,
+    });
+  }
+
+  if (rollType === 'item') {
+    const item = getEmbeddedDocument(actor, target);
+    if (item) return item.roll();
+    return null;
+  }
+
+  if (rollType === 'shipWeaponDamage') {
+    const item = getEmbeddedDocument(actor, target);
+    if (!item) return null;
+    return rollShipWeaponDamageCard({
+      actor,
       sourceItem: item,
     });
   }

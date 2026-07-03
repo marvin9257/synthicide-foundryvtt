@@ -1,6 +1,6 @@
 // Challenge card data preparation for Synthicide
 // Extracted from action-rolls.mjs for modularity and clarity
-import { localize, getAttributeLabel, getDegreeLabel, getDifficultyLabel, formatSignedNumber, getChallengeOutcomeClass, buildEquationTerms, buildBaseActionCardData, getRollResultSummary } from './roll-utils.mjs';
+import { localize, getAttributeLabel, getDegreeLabel, getDifficultyLabel, formatSignedNumber, getChallengeOutcomeClass, buildEquationTerms, buildBaseActionCardData, getRollResultSummary, buildRollPayloadContext } from './roll-utils.mjs';
 
 /**
  * Prepare cardData and flags for a challenge roll.
@@ -20,12 +20,19 @@ export function prepareChallengeCardData({ input, actor, rollResult, attributeVa
   const effectValue = formatSignedNumber(effect);
 
   // Data for strict DataModel validation
-  const system = {
-    attribute: attributeKey,
-    difficulty,
-    total,
-    actorUuid: actor?.uuid ?? null,
-  };
+  const system = buildRollPayloadContext({
+    input,
+    actor,
+    rollData,
+    extra: {
+      attribute: attributeKey,
+      attributeValue,
+      difficulty,
+      d10,
+      total,
+      effectValue: effect,
+    },
+  });
 
   const cardExtras = buildBaseActionCardData({
     subtype: 'challenge',
