@@ -1,3 +1,16 @@
+## [1.1.4](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.3...1.1.4) (2026-07-03)
+
+
+### Bug Fixes
+
+* add dialog popup for initiative roll for vehicles ([47b819f](https://github.com/marvin9257/synthicide-foundryvtt/commit/47b819ffba42839393c543799e83718bacf3b87f))
+* add driver roll to vehicle sheet ([9558c05](https://github.com/marvin9257/synthicide-foundryvtt/commit/9558c0527d527bea4716bcdfbc92df6a7fb56431))
+* Merge pull request [#9](https://github.com/marvin9257/synthicide-foundryvtt/issues/9) from marvin9257/fix-vehicle-combat-improvements ([fd319f9](https://github.com/marvin9257/synthicide-foundryvtt/commit/fd319f93979ec1d3b29fee2d485c298acb6b2891))
+* no action points for vehicle combay ([eeb3b2b](https://github.com/marvin9257/synthicide-foundryvtt/commit/eeb3b2b75a6a0473487ecebb750c169cdd3509d9))
+* uneccessary export import ([6217353](https://github.com/marvin9257/synthicide-foundryvtt/commit/6217353899351828064f7574be817c90397d7a4c))
+* update vehicle weapon ranges to include close ([fcf11dd](https://github.com/marvin9257/synthicide-foundryvtt/commit/fcf11ddb7acb64b10a69d96b90ce13321a3839b9))
+* use ship weapon range context from config ([1083d7a](https://github.com/marvin9257/synthicide-foundryvtt/commit/1083d7a7ef7acda01789454b9f3403abe4f93f4e))
+
 ## [1.1.3](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.2...1.1.3) (2026-07-02)
 
 
