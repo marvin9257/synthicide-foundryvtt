@@ -410,6 +410,12 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           attribute: dataset.attributeKey,
         });
       }
+      case 'driverVelocity': {
+        return openSynthicideActionRollDialog({
+          actor: this.actor,
+          subtype: 'driverVelocity',
+        });
+      }
       case 'attack': {
         const item = this._getEmbeddedDocument(target);
         return openSynthicideActionRollDialog({

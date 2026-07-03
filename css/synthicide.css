@@ -847,7 +847,7 @@ body.theme-dark .npc-compact .window-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  /*justify-content: flex-start;*/
 }
 
 .synthicide .header-resource .resource-label {
@@ -2686,6 +2686,14 @@ body.synthicide-style-bold .synthicide-action-roll-card .card-title.item-header 
   object-fit: contain;
 }
 
+.synthicide .resource-label-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  vertical-align: middle;
+}
+
 /* ========================= */
 /* Armor Item Sheet          */
 /* ========================= */
@@ -3807,4 +3815,9 @@ body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item:not(.i
 
 body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--is-missile i {
   color: var(--rb-accent);
+}
+
+body.synthicide-style-bold .vehicle .synthicide-window-icon, body.synthicide-style-bold .vehicle .synthicide-window-icon {
+  background-color: var(--rb-strong);
+  border-radius: 8px;
 }

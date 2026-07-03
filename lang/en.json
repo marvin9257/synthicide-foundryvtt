@@ -832,6 +832,7 @@
         "Challenge": "Challenge",
         "Attack": "Attack",
         "Demolition": "Demolition",
+        "DriverVelocity": "Driver Velocity",
         "Damage": "Damage",
         "ItemRoll": "Item Roll"
       },
@@ -883,6 +884,7 @@
       },
       "Card": {
         "TitleChallenge": "Challenge Roll",
+        "TitleDriverVelocity": "Driver Velocity Roll",
         "TitleShock": "Shocking Strike: Toughness Check",
         "TitleAttack": "Attack Roll",
         "TitleDemolition": "Demolition Roll",
@@ -934,6 +936,7 @@
         "ShipWeaponAutoHitFlavor": "{item}: automatic-hit ship weapon damage",
         "DerivedFromAttack": "Derived from attack",
         "DefaultFlavorChallenge": "{difficulty} roll made using {attribute}",
+        "DefaultFlavorDriverVelocity": "Driver velocity roll",
         "DefaultFlavorAttack": "{item}: attack roll using {attribute} vs armor {armor}",
         "DefaultFlavorDemolition": "{item}: demolition roll using {attribute} vs RD {rd}",
         "DefaultFlavorDemolitionPlanted": "{item}: plant roll using {attribute} vs Plant {plant}",
