@@ -24,6 +24,7 @@ export function prepareDamageCardData({
   // Extract values from input, roll state, and item
   const d10 = input.d10 ?? 0;
   const damageBonus = Number(rollData.damageBonus ?? input.damageBonus ?? item?.system?.bonuses?.damage ?? 0);
+  const dmgMultiplier = input.dmgMultiplier ?? 0;
   const source = input.source ?? item?.name ?? '';
   const rawTotal = input.total ?? d10 + attributeValue + damageBonus;
   const total = Math.max(0, rawTotal);
@@ -58,15 +59,23 @@ export function prepareDamageCardData({
     specialization
   };
 
+  if (!item && sourceItemUuid) item = foundry.utils.fromUuidSync(sourceItemUuid);
+
+  const equationFormula = item?.type === 'vehicleWeapon' //item may be null if from attack card
+  ? `${d10} x ${dmgMultiplier}` 
+  : extraDamageDice > 0 
+    ? `${d10} + ${attributeValue} + ${damageBonus} + ${extraDamageDice}d10` 
+    : `${d10} + ${attributeValue} + ${damageBonus}`;
+
+  const subtype = item?.type === 'vehicleWeapon' ? 'vehicleDamage' : 'damage'; 
+  
   const cardExtras = buildBaseActionCardData({
     subtype: 'damage',
-    equation: extraDamageDice > 0
-      ? `${d10} + ${attributeValue} + ${damageBonus} + ${extraDamageDice}d10`
-      : `${d10} + ${attributeValue} + ${damageBonus}`,
+    equation: equationFormula,
     total,
     dieValue: d10,
     attributeKey: 'combat',
-    equationTerms: buildEquationTerms({ subtype: 'damage', attributeKey: 'combat', rollData: { ...rollData, attributeValue, damageBonus } }),
+    equationTerms: buildEquationTerms({ subtype, attributeKey: 'combat', rollData: { ...rollData, attributeValue, damageBonus } }),
     metadataRows: overrides.metadataRows ?? buildDamageMetadataRows({
       source,
       lethal,
