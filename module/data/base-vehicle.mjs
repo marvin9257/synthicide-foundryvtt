@@ -61,7 +61,7 @@ export default class SynthicideVehicleBaseData extends foundry.abstract
     this.capacity.weapons.max = (this.price || 0) * 2;
 
     // 3. Calculate used weapon capacity (quantity * price)
-    const weaponItems = this.parent?.itemTypes.shipWeapon ?? [];
+    const weaponItems = this.parent?.itemTypes.vehicleWeapon ?? [];
     this.capacity.weapons.value = weaponItems.reduce((acc, item) => 
       acc + (Number(item.system.quantity * item.system.price) || 0), 0);
     }

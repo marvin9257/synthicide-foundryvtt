@@ -29,7 +29,7 @@ const ITEM_BASE_PARTS_BY_TYPE = {
   shield: ['general'],
   weapon: ['general', 'rollGear', 'npcTiers'],
   cargo: ['general'],
-  shipWeapon: ['general']
+  vehicleWeapon: ['general']
 };
 
 /**
@@ -106,7 +106,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
                   'systems/synthicide/templates/item/parts/general-shield.hbs',
                   'systems/synthicide/templates/item/parts/general-implant.hbs',
                   'systems/synthicide/templates/item/parts/general-cargo.hbs',
-                  'systems/synthicide/templates/item/parts/general-shipWeapon.hbs'
+                  'systems/synthicide/templates/item/parts/general-vehicleWeapon.hbs'
                 ],
       scrollable: [""]
     },
@@ -224,8 +224,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       if (this.item.system.weaponClass === "ranged") {
         context.weaponAmmoOptions = this._getValidAmmo();
       }
-    } else if (this.item.type === 'shipWeapon') {
-      context.shipWeaponRanges = SYNTHICIDE.SHIP_WEAPON_RANGES;
+    } else if (this.item.type === 'vehicleWeapon') {
+      context.vehicleWeaponRanges = SYNTHICIDE.VEHICLE_WEAPON_RANGES;
     } else if (this.item.type === 'shield') {
       context.shieldModificationsOptions = SYNTHICIDE.SHIELD_MODIFICATIONS;
     }

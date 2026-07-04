@@ -16,7 +16,7 @@ export const ICON_MAP = {
   shield: 'fa-solid fa-shield',
   consumable: 'fa-solid fa-battery-full',
   gear: 'fa-solid fa-toolbox',
-  shipWeapon: 'fa-solid fa-explosion',
+  vehicleWeapon: 'fa-solid fa-explosion',
   tool: 'fa-solid fa-hammer',
   default: 'fa-solid fa-box',
   description: 'fa-solid fa-file-lines',
