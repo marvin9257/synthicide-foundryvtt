@@ -9,7 +9,7 @@ SYNTHICIDE.ICON_TYPE_MAP = {
   implant: 'implant.svg',
   shield: 'shield.svg',
   trait: 'trait.svg',
-  vehicleWeapon: 'spaceWeapon.svg',
+  vehicleWeapon: 'vehicleWeapon.svg',
   weapon: {
     axe: 'axe.svg',
     blaster: 'blaster.svg',
