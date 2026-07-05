@@ -1,0 +1,38 @@
+folder: NP6BjsncamGSm6FB
+name: Missile Bay
+type: vehicleWeapon
+img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+system:
+  description: <p>Launches fusion, cluster, and seeker missiles.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 3000
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  range: sight
+  dmgMultiplier: 1
+  ammoUnitCost: 0
+  isMissile: false
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783262332545
+  modifiedTime: 1783262723950
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: XizaMSowQKdOlI8P
+sort: 600000
+_key: '!items!XizaMSowQKdOlI8P'

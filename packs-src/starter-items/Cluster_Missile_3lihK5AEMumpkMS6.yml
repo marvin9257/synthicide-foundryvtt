@@ -1,0 +1,41 @@
+folder: NP6BjsncamGSm6FB
+name: Cluster Missile
+type: vehicleWeapon
+img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+system:
+  description: >-
+    <p>Shatters into multiple explosive payloads before impact. Ignores all
+    vehicle damage thresholds and always deals damage. In character battles, it
+    hits all characters and objects within a 3 zone × 3 zone square.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  range: sight
+  dmgMultiplier: 50
+  ammoUnitCost: 3000
+  isMissile: true
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783262530414
+  modifiedTime: 1783262723949
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: 3lihK5AEMumpkMS6
+sort: 100000
+_key: '!items!3lihK5AEMumpkMS6'

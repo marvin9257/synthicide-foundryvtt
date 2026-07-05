@@ -23,7 +23,7 @@ system:
         to each)
     - name: Attribute Penalty (Mandatory)
       sort: 20
-      description: '-1 to any one attribute except Awareness or Nerve. (default to Speed)'
+      description: -1 to any one attribute except Awareness or Nerve. (default to Speed)
   aspectType: leader
   abilities:
     - description: >-

@@ -1,0 +1,42 @@
+name: Stopper Missile
+type: vehicleWeapon
+img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+system:
+  description: >-
+    <p>Designed to immobilize enemy vehicles by targeting engines and
+    propulsion. Regardless of damage dealt, the driver of the hit vehicle must
+    beat a speed RD equal to the d10 result × 2 or crash. Uses a 3-unit blast
+    template in character battles.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  range: far
+  dmgMultiplier: 10
+  ammoUnitCost: 1200
+  isMissile: true
+effects: []
+folder: IhUzGRr0q4E3PllE
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783263204300
+  modifiedTime: 1783263204300
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: 5yCoeSJkqFyKlXXN
+sort: 0
+_key: '!items!5yCoeSJkqFyKlXXN'
