@@ -6,7 +6,7 @@ system:
     value: 5000
     max: 5000
     previous: 5000
-  isShip: true
+  vehicleType: spaceship
   velocity: 495
   price: 14000
   damageThreshold: 150

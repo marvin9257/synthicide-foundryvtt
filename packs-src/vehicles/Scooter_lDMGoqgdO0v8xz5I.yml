@@ -8,7 +8,7 @@ system:
     value: 50
     max: 50
     previous: 50
-  isShip: false
+  vehicleType: cycle
   velocity: 15
   price: 500
   damageThreshold: 9

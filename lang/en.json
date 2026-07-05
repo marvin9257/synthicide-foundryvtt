@@ -294,6 +294,13 @@
       }
     },
     "Vehicle": {
+      "Type": {
+        "GroundCar": "Ground Car",
+        "Cycle": "Cycle",
+        "SkyCar": "Sky Car",
+        "Spaceship": "Spaceship",
+        "label": "Vehicle Type"
+      },
       "isShip": "Is Ship?",
       "FuelUnits": "Fuel Tank",
       "Velocity": "Velocity",

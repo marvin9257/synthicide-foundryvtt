@@ -7,7 +7,7 @@ system:
     value: 150
     max: 150
     previous: 150
-  isShip: false
+  vehicleType: groundCar
   velocity: 12
   price: 1200
   damageThreshold: 17

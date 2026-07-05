@@ -51,9 +51,11 @@
           and it will add a small amount of padding, a border, and will
           center all of its child elements content and text. }}
         <div class="resource flex-group-center header-resource">
-          <b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Vehicle.isShip'}}</b> 
-          <div class='resource-content flexrow flex-center resource-counter resource-single vehicle-is-ship-toggle'>
-            <input class='vehicle-checkbox' type='checkbox' name='system.isShip' {{checked system.isShip}} />
+          <b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Vehicle.Type.label'}}</b> 
+          <div class='resource-content flexrow flex-center resource-counter resource-single'>
+            <select name='system.vehicleType'>
+              {{selectOptions vehicleTypes selected=system.vehicleType localize=true}}
+            </select>
           </div>
         </div>
         <!-- Hit Points Resource -->

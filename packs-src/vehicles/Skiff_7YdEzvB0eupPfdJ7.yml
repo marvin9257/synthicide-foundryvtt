@@ -8,7 +8,7 @@ system:
     value: 200
     max: 200
     previous: 200
-  isShip: true
+  vehicleType: skyCar
   velocity: 45
   price: 2000
   damageThreshold: 18

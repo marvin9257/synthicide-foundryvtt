@@ -824,5 +824,12 @@ SYNTHICIDE.VEHICLE_WEAPON_RANGES = {
   close: 'SYNTHICIDE.Item.VehicleWeapon.Range.close'
 };
 
+SYNTHICIDE.VEHICLE_TYPES = {
+  groundCar: 'SYNTHICIDE.Vehicle.Type.GroundCar',
+  cycle: 'SYNTHICIDE.Vehicle.Type.Cycle',
+  skyCar: 'SYNTHICIDE.Vehicle.Type.SkyCar',
+  spaceship: 'SYNTHICIDE.Vehicle.Type.Spaceship'
+};
+
 export default SYNTHICIDE;
 

@@ -98,11 +98,12 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
 
   /** @override */
   _configureRenderOptions(options) {
-    this.options.window.icon = this.document.system.isShip ? ICON_MAP.spaceShip: ICON_MAP.vehicle;
+    const isShip = this.document.system.vehicleType === "spaceship"
+    this.options.window.icon = isShip ? ICON_MAP.spaceShip: ICON_MAP.vehicle;
     super._configureRenderOptions(options);
     options.parts = ['header', 'tabs'];
     if (this.document.limited) return;
-    options.parts.push(...(VEHICLE_PARTS_BY_TYPE[this.document.system.isShip ? 'ship' : 'planetary'] ?? []));
+    options.parts.push(...(VEHICLE_PARTS_BY_TYPE[isShip ? 'ship' : 'planetary'] ?? []));
   }
 
   /* -------------------------------------------- */
@@ -134,7 +135,9 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
     // Offloading item context prep to a helper function
     await this._prepareItems(context);
 
-    // Modifiers are aggregated during actor preparation; no pre-render aggregation needed.
+    context.isShip = this.actor.system.vehicleType === 'spaceship';
+    context.usesFuel = ['spaceship', 'skyCar'].includes(this.actor.system.vehicleType);
+    context.vehicleTypes = SYNTHICIDE.VEHICLE_TYPES;
 
     return context;
   }
@@ -156,7 +159,7 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
         context.effects = prepareActiveEffectCategories(this.actor.allApplicableEffects());
         break;
       case 'capacity': {
-        const type = this.actor.system.isShip ? 'ship' : 'planetary';
+        const type = this.actor.system.vehicleType === 'spaceship' ? 'ship' : 'planetary';
         context.customizationOptions = { ...SYNTHICIDE.vehicleCustomizations[type] };
         break;
       }
