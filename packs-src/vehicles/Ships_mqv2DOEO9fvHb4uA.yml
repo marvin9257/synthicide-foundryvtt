@@ -1,0 +1,20 @@
+type: Actor
+folder: null
+name: Ships
+color: null
+sorting: a
+_id: mqv2DOEO9fvHb4uA
+description: ''
+sort: 100000
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783271062497
+  modifiedTime: 1783271062529
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!folders!mqv2DOEO9fvHb4uA'

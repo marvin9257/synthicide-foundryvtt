@@ -1,0 +1,20 @@
+type: Actor
+folder: null
+name: Sky Cars
+color: null
+sorting: a
+_id: M4HrgV4mIFNFqI4G
+description: ''
+sort: 400000
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783272018085
+  modifiedTime: 1783272018106
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!folders!M4HrgV4mIFNFqI4G'

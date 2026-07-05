@@ -142,6 +142,15 @@
       "type": "Item"
     },
     {
+      "name": "vehicles",
+      "label": "Vehicles",
+      "system": "synthicide",
+      "module": "synthicide",
+      "path": "./packs/vehicles",
+      "entity": "Actor",
+      "type": "Actor"
+    },
+    {
       "name": "player-guide-journal",
       "label": "Player Guide",
       "system": "synthicide",
@@ -157,6 +166,7 @@
       "sorting": "m",
       "packs": [
         "starter-items",
+        "vehicles",
         "player-guide-journal"
       ]
     }

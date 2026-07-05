@@ -3502,6 +3502,10 @@ body.synthicide-style-bold .npc-mastered-weapon input[type="checkbox"] {
   min-height: 9ch;
 }
 
+.synthicide.vehicle .header-resource input[type="number"] {
+    min-width: 7ch;
+}
+
 /* ============================== */
 /* Capacity Panel                 */
 /* ============================== */
