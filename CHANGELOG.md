@@ -1,3 +1,17 @@
+## [1.1.5](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.4...1.1.5) (2026-07-06)
+
+
+### Bug Fixes
+
+* add vehicle compendium ([8a7e2ff](https://github.com/marvin9257/synthicide-foundryvtt/commit/8a7e2ff42232e48ad9afd8411a58aa6c86c8c8ea))
+* add vehicle weapons to starter items ([0fec8d8](https://github.com/marvin9257/synthicide-foundryvtt/commit/0fec8d88014fa6fd7df51917ab3e340a5800e37b))
+* adjust vehicleWeapon icon name ([3920e1e](https://github.com/marvin9257/synthicide-foundryvtt/commit/3920e1e70bd971150f4d3ba174e4571f3230ab1a))
+* damage card and attack card bugs ([d9b8a57](https://github.com/marvin9257/synthicide-foundryvtt/commit/d9b8a57d786df3cd6f4a8a39aed0a7e739d1fd6c))
+* Merge pull request [#10](https://github.com/marvin9257/synthicide-foundryvtt/issues/10) from marvin9257/fix-shipWeapon-to-vehicleWeapon ([2cc4088](https://github.com/marvin9257/synthicide-foundryvtt/commit/2cc40887f624063b5ce23a4972991b42b0c4302d))
+* refactor vehicle actor to have type rather than binary IsShip ([9878532](https://github.com/marvin9257/synthicide-foundryvtt/commit/987853296fad83ed98aa761bd1e8077d4def7b3f))
+* rename vehicle weapon img to just lowercase ([bca5285](https://github.com/marvin9257/synthicide-foundryvtt/commit/bca5285d1ca85380f9facb2f62d7d4e13fc15ce3))
+* update verified ([c3d08fc](https://github.com/marvin9257/synthicide-foundryvtt/commit/c3d08fc5e142649cdfa1b58672970d7e624178d8))
+
 ## [1.1.4](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.3...1.1.4) (2026-07-03)
 
 
