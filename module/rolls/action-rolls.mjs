@@ -59,8 +59,8 @@ export async function openSynthicideActionRollDialog({
   return executeActionRoll({ actor, input: resolvedInput, sourceItem, subtype: resolvedSubtype });
 }
 
-export async function rollShipWeaponDamageCard({ actor, sourceItem, messageMode } = {}) {
-  if (!actor || !sourceItem || sourceItem.type !== 'shipWeapon') {
+export async function rollVehicleWeaponDamageCard({ actor, sourceItem, messageMode } = {}) {
+  if (!actor || !sourceItem || sourceItem.type !== 'vehicleWeapon') {
     ui.notifications?.warn(localize('SYNTHICIDE.Roll.Warnings.AttackDataMissing'));
     return null;
   }
@@ -84,6 +84,7 @@ export async function rollShipWeaponDamageCard({ actor, sourceItem, messageMode 
       sourceItemUuid: sourceItem.uuid,
       messageMode: normalizedMode,
       userId: game.user.id,
+      dmgMultiplier
     },
     actor,
     item: sourceItem,
@@ -95,12 +96,12 @@ export async function rollShipWeaponDamageCard({ actor, sourceItem, messageMode 
     },
     overrides: {
       title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
-      flavor: localize('SYNTHICIDE.Roll.Card.ShipWeaponAutoHitFlavor', {
+      flavor: localize('SYNTHICIDE.Roll.Card.VehicleWeaponAutoHitFlavor', {
         item: sourceItem.name ?? '',
       }),
       metadataRows: [
         { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: sourceItem.name ?? '' },
-        { label: localize('SYNTHICIDE.Roll.Card.ShipWeaponMultiplier'), value: `x${dmgMultiplier}` },
+        { label: localize('SYNTHICIDE.Roll.Card.VehicleWeaponMultiplier'), value: `x${dmgMultiplier}` },
       ],
     },
   });

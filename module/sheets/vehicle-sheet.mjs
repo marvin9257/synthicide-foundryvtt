@@ -14,8 +14,8 @@ import { SynthicideActorSheet } from './actor-sheet.mjs';
  * - Any part listed here should also exist in static PARTS.
  */
 const VEHICLE_PARTS_BY_TYPE = {
-  planetary: [ 'capacity', 'cargo', 'shipWeapons', 'effects', 'description'],
-  ship: [ 'capacity', 'flavor', 'cargo', 'shipWeapons', 'locker', 'effects', 'description']
+  planetary: [ 'capacity', 'cargo', 'vehicleWeapons', 'effects', 'description'],
+  ship: [ 'capacity', 'flavor', 'cargo', 'vehicleWeapons', 'locker', 'effects', 'description']
 };
 
 /**
@@ -36,7 +36,7 @@ const VEHICLE_TAB_MAP = {
   capacity: { id: 'capacity', icon: ICON_MAP.capacity, label: 'Capacity' },
   flavor: {id: 'flavor', icon: ICON_MAP.flavor, label: 'Flavor' },
   cargo: {id: 'cargo', icon: ICON_MAP.cargo, label: 'Cargo' },
-  shipWeapons: { id: 'shipWeapons', icon: ICON_MAP.shipWeapon, label: 'ShipWeapons' },
+  vehicleWeapons: { id: 'vehicleWeapons', icon: ICON_MAP.vehicleWeapon, label: 'VehicleWeapons' },
   locker: {id:'locker', icon: ICON_MAP.locker, label: 'Locker'},
   description: { id: 'description', icon: ICON_MAP.description, label: 'Description' },
   effects: { id: 'effects', icon: ICON_MAP.effects, label: 'Effects' }
@@ -78,8 +78,8 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
       template: 'systems/synthicide/templates/vehicle/cargo.hbs',
       scrollable: [""]
     },
-    shipWeapons: {
-      template: 'systems/synthicide/templates/vehicle/ship-weapons.hbs',
+    vehicleWeapons: {
+      template: 'systems/synthicide/templates/vehicle/vehicle-weapons.hbs',
       scrollable: [""]
     },
     locker: {
@@ -98,11 +98,12 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
 
   /** @override */
   _configureRenderOptions(options) {
-    this.options.window.icon = this.document.system.isShip ? ICON_MAP.spaceShip: ICON_MAP.vehicle;
+    const isShip = this.document.system.vehicleType === "spaceship"
+    this.options.window.icon = isShip ? ICON_MAP.spaceShip: ICON_MAP.vehicle;
     super._configureRenderOptions(options);
     options.parts = ['header', 'tabs'];
     if (this.document.limited) return;
-    options.parts.push(...(VEHICLE_PARTS_BY_TYPE[this.document.system.isShip ? 'ship' : 'planetary'] ?? []));
+    options.parts.push(...(VEHICLE_PARTS_BY_TYPE[isShip ? 'ship' : 'planetary'] ?? []));
   }
 
   /* -------------------------------------------- */
@@ -134,7 +135,9 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
     // Offloading item context prep to a helper function
     await this._prepareItems(context);
 
-    // Modifiers are aggregated during actor preparation; no pre-render aggregation needed.
+    context.isShip = this.actor.system.vehicleType === 'spaceship';
+    context.usesFuel = ['spaceship', 'skyCar'].includes(this.actor.system.vehicleType);
+    context.vehicleTypes = SYNTHICIDE.VEHICLE_TYPES;
 
     return context;
   }
@@ -156,7 +159,7 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
         context.effects = prepareActiveEffectCategories(this.actor.allApplicableEffects());
         break;
       case 'capacity': {
-        const type = this.actor.system.isShip ? 'ship' : 'planetary';
+        const type = this.actor.system.vehicleType === 'spaceship' ? 'ship' : 'planetary';
         context.customizationOptions = { ...SYNTHICIDE.vehicleCustomizations[type] };
         break;
       }
@@ -174,14 +177,14 @@ export class SynthicideVehicleSheet extends SynthicideActorSheet {
         context.cargo = cargo?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
         break;
       }
-      case 'shipWeapons': {
-        const shipWeapons = this.actor.itemTypes.shipWeapon;
-        context.shipWeapons = shipWeapons?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-        context.shipWeaponRanges = SYNTHICIDE.SHIP_WEAPON_RANGES;
+      case 'vehicleWeapons': {
+        const vehicleWeapons = this.actor.itemTypes.vehicleWeapon;
+        context.vehicleWeapons = vehicleWeapons?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+        context.vehicleWeaponRanges = SYNTHICIDE.VEHICLE_WEAPON_RANGES;
         break;
       }
       case 'locker': {
-        const locker = this.actor.items.filter(item => item.type !== 'cargo' && item.type !== 'shipWeapon');
+        const locker = this.actor.items.filter(item => item.type !== 'cargo' && item.type !== 'vehicleWeapon');
         context.locker = locker.sort((a, b) => (a.sort || 0) - (b.sort || 0));
         context.itemTypeIcons = ICON_MAP;
         break;

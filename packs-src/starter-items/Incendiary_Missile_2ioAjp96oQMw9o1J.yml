@@ -1,0 +1,42 @@
+name: Incendiary Missile
+type: vehicleWeapon
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
+system:
+  description: >-
+    <p>Unleashes burning chemicals on impact. If damage is dealt, the target
+    continuously takes 1d10 × 5 damage at the start of its turn. The fire cannot
+    be extinguished during battle. Uses a 5-unit blast template in character
+    battles.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  range: far
+  dmgMultiplier: 10
+  ammoUnitCost: 2500
+  isMissile: true
+effects: []
+folder: IhUzGRr0q4E3PllE
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783263154574
+  modifiedTime: 1783263154574
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: 2ioAjp96oQMw9o1J
+sort: 0
+_key: '!items!2ioAjp96oQMw9o1J'

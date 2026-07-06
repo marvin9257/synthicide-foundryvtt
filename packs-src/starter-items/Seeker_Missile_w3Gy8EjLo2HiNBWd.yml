@@ -1,0 +1,42 @@
+folder: NP6BjsncamGSm6FB
+name: Seeker Missile
+type: vehicleWeapon
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
+system:
+  description: >-
+    <p>An extremely long-range missile designed to target engines. When it
+    damages a spaceship, there is a 5 in 10 chance of reducing its velocity by
+    50. A ship reduced to 0 velocity is immobilized. In character battles, it
+    hits all characters and objects within a zone.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  range: sight
+  dmgMultiplier: 50
+  ammoUnitCost: 3000
+  isMissile: true
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783262605731
+  modifiedTime: 1783262723950
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: w3Gy8EjLo2HiNBWd
+sort: 300000
+_key: '!items!w3Gy8EjLo2HiNBWd'

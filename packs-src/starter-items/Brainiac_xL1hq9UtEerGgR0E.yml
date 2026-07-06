@@ -24,7 +24,7 @@ system:
       description: +2 Operation
     - name: Attribute Penalty (Mandatory)
       sort: 20
-      description: '-1 to any one attribute except Operation (awareness chosen as default)'
+      description: -1 to any one attribute except Operation (awareness chosen as default)
   aspectType: brainiac
   abilities:
     - description: Select 3 knowledge focuses and gain 2 powers from each.

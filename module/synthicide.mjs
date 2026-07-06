@@ -108,7 +108,7 @@ Hooks.once('init', function () {
     trait: models.SynthicideTrait,
     weapon: models.SynthicideWeapon,
     cargo: models.SynthicideCargo,
-    shipWeapon: models.SynthicideShipWeapon
+    vehicleWeapon: models.SynthicideVehicleWeapon
   };
   // Use our custom ChatMessage subclass to centralize message preprocessing
   CONFIG.ChatMessage.documentClass = SynthicideChatMessage;

@@ -9,7 +9,7 @@ SYNTHICIDE.ICON_TYPE_MAP = {
   implant: 'implant.svg',
   shield: 'shield.svg',
   trait: 'trait.svg',
-  shipWeapon: 'spaceWeapon.svg',
+  vehicleWeapon: 'vehicle_weapon.svg',
   weapon: {
     axe: 'axe.svg',
     blaster: 'blaster.svg',
@@ -818,10 +818,17 @@ SYNTHICIDE.vehicleCustomizations = {
   }
 };
 
-SYNTHICIDE.SHIP_WEAPON_RANGES = {
-  far: 'SYNTHICIDE.Item.ShipWeapon.Range.far',
-  sight: 'SYNTHICIDE.Item.ShipWeapon.Range.sight',
-  close: 'SYNTHICIDE.Item.ShipWeapon.Range.close'
+SYNTHICIDE.VEHICLE_WEAPON_RANGES = {
+  far: 'SYNTHICIDE.Item.VehicleWeapon.Range.far',
+  sight: 'SYNTHICIDE.Item.VehicleWeapon.Range.sight',
+  close: 'SYNTHICIDE.Item.VehicleWeapon.Range.close'
+};
+
+SYNTHICIDE.VEHICLE_TYPES = {
+  groundCar: 'SYNTHICIDE.Vehicle.Type.GroundCar',
+  cycle: 'SYNTHICIDE.Vehicle.Type.Cycle',
+  skyCar: 'SYNTHICIDE.Vehicle.Type.SkyCar',
+  spaceship: 'SYNTHICIDE.Vehicle.Type.Spaceship'
 };
 
 export default SYNTHICIDE;

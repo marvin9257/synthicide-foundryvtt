@@ -51,6 +51,7 @@ export function prepareAttackCardData({ input, actor, sourceItem, rollResult, at
     slugShotActive,
     specialization,
     actorUuid: actor?.uuid ?? null,
+    sourceItemUuid: sourceItem?.uuid ?? null,
     specialAmmoUsed,
     isPlantedDemolitionAttack: Boolean(input.isPlantedDemolitionAttack),
     // Propagate a planted marker for UI/derived-damage flows. Some handlers

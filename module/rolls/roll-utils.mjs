@@ -68,8 +68,11 @@ export function normalizeAttributeKey(attributeKey) {
 export function buildEquationTerms({ subtype, attributeKey, rollData }) {
   const isDamage = subtype === 'damage';
   const isAttack = subtype === 'attack';
+  const isVehicleDamage = subtype === 'vehicleDamage';
 
   const terms = [];
+  if (isVehicleDamage) return terms;
+
   const showAttributeRow = !(subtype === 'damage' && rollData.hideAttributeRow);
   if (showAttributeRow) {
     terms.push({ label: localize('SYNTHICIDE.Roll.Card.Attribute'), valueHtml: getAttributeValueHtml(attributeKey) });

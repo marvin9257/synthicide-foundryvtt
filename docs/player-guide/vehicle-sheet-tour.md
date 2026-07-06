@@ -22,7 +22,7 @@ Open a vehicle actor sheet. Confirm whether **Is Ship** is enabled, because ship
 | Vehicle portrait | Image | Click to choose a new portrait |
 | Vehicle name | Text input | Click to rename the vehicle |
 | Price | Numeric input | Click to set vehicle price |
-| Is Ship toggle | Checkbox | Enable for ship behavior and tabs; disable for planetary behavior |
+| Vehicle Type | Dropdown | Select vehicle type|
 | HP current/max | Numeric inputs | Click to set exact current and max HP |
 | Velocity | Numeric input | Click to set speed value |
 | Damage Threshold | Numeric input | Click to set threshold value |
@@ -31,10 +31,10 @@ Open a vehicle actor sheet. Confirm whether **Is Ship** is enabled, because ship
 
 | Element | Icon | Action |
 |---------|------|--------|
-| Fuel Units current/max (ship) | Numeric inputs + bar | Click to set fuel value/max for ships |
-| Fuel cost (ship) | Numeric input | Click to set fuel unit cost |
+| Fuel Units current/max (spaceship or sky car)  | Numeric inputs + bar | Click to set fuel value/max for ships |
+| Fuel cost (spaceship or sky car) | Numeric input | Click to set fuel unit cost |
 | Character capacity | Numeric input | Click to set passenger capacity |
-| Living quarters (ship) | Checkbox | Toggle whether the ship has living quarters |
+| Living quarters (spaceship) | Checkbox | Toggle whether the ship has living quarters |
 | Crates current/max | Numeric pair | Max is editable; current value is tracked by system state |
 | Customizations | Multi-select list | Choose installed customization options |
 
@@ -59,18 +59,18 @@ Open a vehicle actor sheet. Confirm whether **Is Ship** is enabled, because ship
 | Edit cargo | Pencil icon | Open cargo item for editing |
 | Delete cargo | Trash icon | Remove cargo item from vehicle |
 
-### Ship Weapons Tab
+### Vehicle Weapons Tab
 
 | Element | Icon | Action |
 |---------|------|--------|
-| Add ship weapon | Plus button | Create a new ship weapon item |
-| Ship weapon image | Image button | Click to roll ship-weapon damage |
-| Roll ship weapon | Crosshairs icon | Click to roll ship-weapon damage |
+| Add vehicle weapon | Plus button | Create a new vehicle weapon item |
+| Vehicle weapon image | Image button | Click to roll vehicle-weapon damage |
+| Roll vehicle weapon | Crosshairs icon | Click to roll vehicle-weapon damage |
 | Range column | Text value | Reference-only weapon range band |
 | Missile column | Rocket/check icon | Reference whether weapon is marked as missile |
 | Damage multiplier | Text value | Reference item multiplier |
-| Edit ship weapon | Pencil icon | Open ship weapon item sheet |
-| Delete ship weapon | Trash icon | Remove ship weapon item |
+| Edit vehicle weapon | Pencil icon | Open vehicle weapon item sheet |
+| Delete vehicle weapon | Trash icon | Remove vehicle weapon item |
 
 ### Locker Tab (Ship Only)
 
@@ -101,11 +101,11 @@ Open a vehicle actor sheet. Confirm whether **Is Ship** is enabled, because ship
 ## Steps
 
 1. Set the basics in the header: name, price, HP, velocity, and damage threshold.
-2. Set **Is Ship** correctly first; this controls ship-only tabs such as Flavor and Locker.
+2. Set **Vehicle Type** correctly first; this controls ship-only tabs such as Flavor and Locker.
 3. In Capacity, configure passenger/cargo values and ship fuel settings when applicable.
 4. Select customizations and, for ships, choose Flavor fields (origin, appearance, flaw, mystery, upgrade) as needed.
 5. Add cargo and any ship weapons you need on the vehicle.
-6. Use Ship Weapons controls when resolving vehicle weapon damage.
+6. Use Vehicle Weapons controls when resolving vehicle weapon damage.
 7. Track conditions in Effects and table notes in Description.
 
 ## What Happens Automatically
@@ -123,7 +123,7 @@ Open a vehicle actor sheet. Confirm whether **Is Ship** is enabled, because ship
 
 ## Limitations and Not Implemented
 
-1. **Ship weapons currently roll damage only.** There is no ship-weapon attack roll and no automatic range calculation/check.
+1. **Vehicle weapons currently roll damage only.** There is no ship-weapon attack roll and no automatic range calculation/check.
 2. Flavor selections are primarily tracking/narrative fields.
 3. Some flavor categories may allow multiple picks in RAW, but this sheet is currently restricted to one selection per flavor category.
 4. Flavor **Upgrade** selections do not automatically adjust vehicle characteristics.
@@ -134,7 +134,7 @@ Open a vehicle actor sheet. Confirm whether **Is Ship** is enabled, because ship
 
 ### Q: I cannot see the Flavor tab.
 
-A: Enable **Is Ship** in the header. Flavor is ship-only.
+A: Enable **Vehicle Type** to **Spaceship** in the header. Flavor is ship-only.
 
 ### Q: I clicked a ship weapon and expected an attack roll.
 

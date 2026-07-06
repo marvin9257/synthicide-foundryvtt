@@ -41,8 +41,8 @@ system:
         the bonuses those powers provide to lower levels.
 
         If you fail to get a dose, you suffer intense withdrawal: you lose
-        access to all psychic powers and take -2 to every attribute score. Taking
-        one dose removes this penalty.
+        access to all psychic powers and take -2 to every attribute score.
+        Taking one dose removes this penalty.
     - description: >-
         After character creation, you may purchase new psychic powers for 1 less
         trait point.

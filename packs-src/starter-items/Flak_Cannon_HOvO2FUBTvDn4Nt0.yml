@@ -1,0 +1,40 @@
+folder: NP6BjsncamGSm6FB
+name: Flak Cannon
+type: vehicleWeapon
+_id: HOvO2FUBTvDn4Nt0
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
+system:
+  description: >-
+    <p>Magnetically launches heavy metal scraps. In character battles, it hits
+    all characters and objects within a zone.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 2000
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  range: far
+  dmgMultiplier: 50
+  ammoUnitCost: 2000
+  isMissile: false
+effects: []
+sort: 400000
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783262114484
+  modifiedTime: 1783262723950
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!items!HOvO2FUBTvDn4Nt0'

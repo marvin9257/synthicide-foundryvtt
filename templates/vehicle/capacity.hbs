@@ -9,7 +9,7 @@
     <div class='capacity-list'>
       
       <div class="element-list">
-        {{#if system.isShip}}
+        {{#if usesFuel}}
           <!-- Fuel Units Resource -->
           <div class='resource flex-group-center header-resource'>
             <label for='system.fuelUnits.value' class='resource-label'>
@@ -53,7 +53,7 @@
           </div>
         </div>
 
-        {{#if system.isShip}}
+        {{#if isShip}}
           <div class="resource flex-group-center header-resource">
             <b class="header-info-label resource-label">{{localize 'SYNTHICIDE.Vehicle.Capacity.HasLivingQuarters'}}</b> 
             <div class='resource-content flexrow flex-center flex-between resource-counter'>

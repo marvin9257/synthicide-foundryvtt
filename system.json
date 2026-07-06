@@ -72,7 +72,7 @@
           "description"
         ]
       },
-      "shipWeapon": {
+      "vehicleWeapon": {
         "htmlFields": [
           "description"
         ]
@@ -116,7 +116,7 @@
   "version": "1.1.4",
   "compatibility": {
     "minimum": "14",
-    "verified": "14.363"
+    "verified": "14.364"
   },
   "esmodules": [
     "module/synthicide.mjs"
@@ -142,6 +142,15 @@
       "type": "Item"
     },
     {
+      "name": "vehicles",
+      "label": "Vehicles",
+      "system": "synthicide",
+      "module": "synthicide",
+      "path": "./packs/vehicles",
+      "entity": "Actor",
+      "type": "Actor"
+    },
+    {
       "name": "player-guide-journal",
       "label": "Player Guide",
       "system": "synthicide",
@@ -157,6 +166,7 @@
       "sorting": "m",
       "packs": [
         "starter-items",
+        "vehicles",
         "player-guide-journal"
       ]
     }

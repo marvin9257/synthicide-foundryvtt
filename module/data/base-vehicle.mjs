@@ -13,7 +13,7 @@ export default class SynthicideVehicleBaseData extends foundry.abstract
       max: new fields.NumberField({ ...requiredInteger, initial: 50 }),
       previous: new fields.NumberField({ ...requiredInteger, initial: 0 }, {persisted: false})
     });
-    schema.isShip = new fields.BooleanField({ initial: false });
+    schema.vehicleType = new fields.StringField({ required: true, choices: Object.keys(SYNTHICIDE.VEHICLE_TYPES), initial: "groundCar"})
     schema.velocity = new fields.NumberField({ ...requiredInteger, initial: 10 });
     schema.price = new fields.NumberField({ ...requiredInteger, initial: 1000 });
     schema.damageThreshold = new fields.NumberField({ ...requiredInteger, initial: 10 });
@@ -61,7 +61,7 @@ export default class SynthicideVehicleBaseData extends foundry.abstract
     this.capacity.weapons.max = (this.price || 0) * 2;
 
     // 3. Calculate used weapon capacity (quantity * price)
-    const weaponItems = this.parent?.itemTypes.shipWeapon ?? [];
+    const weaponItems = this.parent?.itemTypes.vehicleWeapon ?? [];
     this.capacity.weapons.value = weaponItems.reduce((acc, item) => 
       acc + (Number(item.system.quantity * item.system.price) || 0), 0);
     }

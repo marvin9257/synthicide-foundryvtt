@@ -1,0 +1,132 @@
+folder: M4HrgV4mIFNFqI4G
+name: Skiff
+type: vehicle
+_id: 7YdEzvB0eupPfdJ7
+img: icons/svg/mystery-man.svg
+system:
+  hitPoints:
+    value: 200
+    max: 200
+    previous: 200
+  vehicleType: skyCar
+  velocity: 45
+  price: 2000
+  damageThreshold: 18
+  capacity:
+    characters: 6
+    crates:
+      value: 0
+      max: 8
+    hasLivingQuarters: false
+    weapons:
+      value: 0
+      max: 0
+  fuelUnits:
+    value: 5
+    max: 5
+    cost: 20
+  customizations: []
+  flavor:
+    origin: none
+    appearance: none
+    flaw: none
+    mystery: none
+    upgrade: none
+  description: ''
+prototypeToken:
+  name: Skiff
+  displayName: 0
+  actorLink: false
+  width: 1
+  height: 1
+  depth: 1
+  texture:
+    src: icons/svg/mystery-man.svg
+    anchorX: 0.5
+    anchorY: 0.5
+    fit: contain
+    scaleX: 1
+    scaleY: 1
+    tint: '#ffffff'
+    alphaThreshold: 0.75
+  lockRotation: false
+  rotation: 0
+  alpha: 1
+  disposition: -1
+  displayBars: 0
+  bar1:
+    attribute: hitPoints
+  bar2:
+    attribute: null
+  light:
+    negative: false
+    priority: 0
+    alpha: 0.5
+    angle: 360
+    bright: 0
+    color: null
+    coloration: 1
+    dim: 0
+    attenuation: 0.5
+    luminosity: 0.5
+    saturation: 0
+    contrast: 0
+    shadows: 0
+    animation:
+      type: null
+      speed: 5
+      intensity: 5
+      reverse: false
+    darkness:
+      min: 0
+      max: 1
+  sight:
+    enabled: false
+    range: 0
+    angle: 360
+    visionMode: basic
+    color: null
+    attenuation: 0.1
+    brightness: 0
+    saturation: 0
+    contrast: 0
+  detectionModes: {}
+  occludable:
+    radius: 0
+  ring:
+    enabled: false
+    colors:
+      ring: null
+      background: null
+    effects: 1
+    subject:
+      scale: 1
+      texture: null
+  turnMarker:
+    mode: 1
+    animation: null
+    src: null
+    disposition: false
+  movementAction: null
+  flags: {}
+  randomImg: false
+  appendNumber: false
+  prependAdjective: false
+items: []
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783272018093
+  modifiedTime: 1783272018093
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!actors!7YdEzvB0eupPfdJ7'

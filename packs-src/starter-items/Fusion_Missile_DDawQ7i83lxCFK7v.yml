@@ -1,0 +1,40 @@
+folder: NP6BjsncamGSm6FB
+name: Fusion Missile
+type: vehicleWeapon
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
+system:
+  description: >-
+    <p>A high-damage, high-cost missile. In character battles, it hits all
+    characters and objects within a 2 zone × 2 zone square.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  range: sight
+  dmgMultiplier: 100
+  ammoUnitCost: 4500
+  isMissile: true
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783262449102
+  modifiedTime: 1783262723950
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+_id: DDawQ7i83lxCFK7v
+sort: 500000
+_key: '!items!DDawQ7i83lxCFK7v'

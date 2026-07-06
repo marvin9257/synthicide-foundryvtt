@@ -3502,6 +3502,10 @@ body.synthicide-style-bold .npc-mastered-weapon input[type="checkbox"] {
   min-height: 9ch;
 }
 
+.synthicide.vehicle .header-resource input[type="number"] {
+    min-width: 7ch;
+}
+
 /* ============================== */
 /* Capacity Panel                 */
 /* ============================== */
@@ -3713,20 +3717,20 @@ body.synthicide-style-bold .synthicide .tab.locker .locker-item-type-icon {
 /* Ship Weapons Panel             */
 /* ============================== */
 
-.synthicide .tab.shipWeapons .items-list .item-name {
+.synthicide .tab.vehicleWeapons .items-list .item-name {
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.synthicide .tab.shipWeapons .items-list .item {
+.synthicide .tab.vehicleWeapons .items-list .item {
   flex-wrap: nowrap;
 }
 
-.synthicide .tab.shipWeapons .items-list .items-header {
+.synthicide .tab.vehicleWeapons .items-list .items-header {
   flex-wrap: nowrap;
 }
 
-.synthicide .tab.shipWeapons .items-list .item-name .item-label {
+.synthicide .tab.vehicleWeapons .items-list .item-name .item-label {
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
@@ -3734,75 +3738,75 @@ body.synthicide-style-bold .synthicide .tab.locker .locker-item-type-icon {
   white-space: nowrap;
 }
 
-.synthicide .tab.shipWeapons .items-list .item-prop--quantity {
+.synthicide .tab.vehicleWeapons .items-list .item-prop--quantity {
   flex: 0 0 10%;
   min-width: 0;
 }
 
-.synthicide .tab.shipWeapons .items-list .item-prop--range {
+.synthicide .tab.vehicleWeapons .items-list .item-prop--range {
   flex: 0 0 12%;
   min-width: 0;
 }
 
-.synthicide .tab.shipWeapons .items-list .item-prop--is-missile {
+.synthicide .tab.vehicleWeapons .items-list .item-prop--is-missile {
   flex: 0 0 6%;
   min-width: 0;
   text-align: center;
   line-height: 1;
 }
 
-.synthicide .tab.shipWeapons .items-list .item-prop--is-missile i {
+.synthicide .tab.vehicleWeapons .items-list .item-prop--is-missile i {
   font-size: 1.1rem;
   line-height: 1;
   vertical-align: middle;
 }
 
-.synthicide .tab.shipWeapons .items-list .item-prop--dmg-multiplier {
+.synthicide .tab.vehicleWeapons .items-list .item-prop--dmg-multiplier {
   flex: 0 0 14%;
   min-width: 0;
 }
 
-.synthicide .tab.shipWeapons .items-list .item-prop--item-cost {
+.synthicide .tab.vehicleWeapons .items-list .item-prop--item-cost {
   flex: 0 0 12%;
   min-width: 0;
 }
 
-.synthicide .tab.shipWeapons .items-list .item-controls--ship-weapons {
+.synthicide .tab.vehicleWeapons .items-list .item-controls--ship-weapons {
   flex: 0 0 24%;
   min-width: 0;
 }
 
-.synthicide .tab.shipWeapons .items-list .item-controls--ship-weapons .item-roll-ship-weapon {
+.synthicide .tab.vehicleWeapons .items-list .item-controls--ship-weapons .item-roll-ship-weapon {
   color: var(--color-text-hyperlink);
 }
 
-.synthicide .tab.shipWeapons .items-list > .items-header .item-controls--ship-weapons a {
+.synthicide .tab.vehicleWeapons .items-list > .items-header .item-controls--ship-weapons a {
   margin: 0;
   white-space: nowrap;
 }
 
-body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list > .items-header {
+body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list > .items-header {
   border-left: 5px solid var(--rb-accent);
   padding: 0 2px;
 }
 
-body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item:not(.items-header) {
+body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item:not(.items-header) {
   border-left-width: 5px;
   border-left-style: solid;
   border-left-color: transparent;
   padding: 1px 2px;
 }
 
-body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--quantity,
-body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--range,
-body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--is-missile,
-body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--dmg-multiplier,
-body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--item-cost,
-body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-controls--ship-weapons {
+body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--quantity,
+body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--range,
+body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--is-missile,
+body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--dmg-multiplier,
+body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--item-cost,
+body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-controls--ship-weapons {
   box-sizing: border-box;
 }
 
-body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item:not(.items-header) .item-prop {
+body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item:not(.items-header) .item-prop {
   font-family: var(--synthicide-default-font);
   font-size: var(--reduced-font-size);
   font-weight: 500;
@@ -3813,7 +3817,7 @@ body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item:not(.i
   white-space: nowrap;
 }
 
-body.synthicide-style-bold .synthicide .tab.shipWeapons .items-list .item-prop--is-missile i {
+body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--is-missile i {
   color: var(--rb-accent);
 }
 

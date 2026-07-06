@@ -3,7 +3,7 @@ import SynthicideFeature from '../data/item-feature.mjs';
 import { FEATURE_TYPE, isFeatureType } from '../helpers/feature-types.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
 import { ICON_MAP } from '../helpers/icons.mjs';
-import { openSynthicideActionRollDialog, rollShipWeaponDamageCard } from '../rolls/action-rolls.mjs';
+import { openSynthicideActionRollDialog, rollVehicleWeaponDamageCard } from '../rolls/action-rolls.mjs';
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import { computeHpPercent, deleteDocAction, getEmbeddedDocument, prepareBiographyPartContext, showInfoAction, toggleEffectAction, viewDocAction } from './sheet-utils.mjs';
 const { api, sheets } = foundry.applications;
@@ -430,11 +430,11 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         if (item) return item.roll();
         return null;
       }
-      case 'shipWeaponDamage': {
+      case 'vehicleWeaponDamage': {
         /** @type {import('../documents/item.mjs').SynthicideItem | null} */
         const item = this._getEmbeddedDocument(target);
         if (!item) return null;
-        return rollShipWeaponDamageCard({
+        return rollVehicleWeaponDamageCard({
           actor: this.actor,
           sourceItem: item,
         });
@@ -779,8 +779,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     // Disallow certain item types per actor type using a concise mapping.
     const FORBIDDEN_BY_ACTOR = {
-      sharper: new Set(['cargo', 'shipWeapon']),
-      npc: new Set(['aspect', 'cargo', 'shipWeapon', 'trait']),
+      sharper: new Set(['cargo', 'vehicleWeapon']),
+      npc: new Set(['aspect', 'cargo', 'vehicleWeapon', 'trait']),
       vehicle: new Set(['aspect', 'bioclass', 'trait']),
     };
 

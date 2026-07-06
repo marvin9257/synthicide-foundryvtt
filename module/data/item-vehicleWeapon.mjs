@@ -9,11 +9,11 @@ import SYNTHICIDE from '../helpers/config.mjs';
  *
  * @extends {SynthicideGear}
  */
-export default class SynthicideShipWeapon extends SynthicideGear {
+export default class SynthicideVehicleWeapon extends SynthicideGear {
   static LOCALIZATION_PREFIXES = [
     'SYNTHICIDE.Item.base',
     'SYNTHICIDE.Item.Gear',
-    'SYNTHICIDE.Item.ShipWeapon',
+    'SYNTHICIDE.Item.VehicleWeapon',
   ];
 
   static defineSchema() {
@@ -23,7 +23,7 @@ export default class SynthicideShipWeapon extends SynthicideGear {
 
     schema.range = new fields.StringField({
       required: true,
-      choices: SYNTHICIDE.SHIP_WEAPON_RANGES,
+      choices: SYNTHICIDE.VEHICLE_WEAPON_RANGES,
       initial: 'far',
     });
     schema.dmgMultiplier = new fields.NumberField({ ...requiredInteger, initial: 1, min: 1 });

@@ -1,0 +1,132 @@
+name: Transport Pod
+type: vehicle
+_id: QKiI2jTkdVXkM6gA
+img: icons/svg/mystery-man.svg
+system:
+  hitPoints:
+    value: 800
+    max: 800
+    previous: 800
+  vehicleType: spaceship
+  velocity: 510
+  price: 3000
+  damageThreshold: 40
+  capacity:
+    characters: 5
+    crates:
+      value: 0
+      max: 5
+    hasLivingQuarters: false
+    weapons:
+      value: 0
+      max: 0
+  fuelUnits:
+    value: 3
+    max: 3
+    cost: 20
+  customizations: []
+  flavor:
+    origin: none
+    appearance: none
+    flaw: none
+    mystery: none
+    upgrade: none
+  description: ''
+prototypeToken:
+  name: Transport Pod
+  displayName: 0
+  actorLink: false
+  width: 1
+  height: 1
+  depth: 1
+  texture:
+    src: icons/svg/mystery-man.svg
+    anchorX: 0.5
+    anchorY: 0.5
+    fit: contain
+    scaleX: 1
+    scaleY: 1
+    tint: '#ffffff'
+    alphaThreshold: 0.75
+  lockRotation: false
+  rotation: 0
+  alpha: 1
+  disposition: -1
+  displayBars: 0
+  bar1:
+    attribute: hitPoints
+  bar2:
+    attribute: null
+  light:
+    negative: false
+    priority: 0
+    alpha: 0.5
+    angle: 360
+    bright: 0
+    color: null
+    coloration: 1
+    dim: 0
+    attenuation: 0.5
+    luminosity: 0.5
+    saturation: 0
+    contrast: 0
+    shadows: 0
+    animation:
+      type: null
+      speed: 5
+      intensity: 5
+      reverse: false
+    darkness:
+      min: 0
+      max: 1
+  sight:
+    enabled: false
+    range: 0
+    angle: 360
+    visionMode: basic
+    color: null
+    attenuation: 0.1
+    brightness: 0
+    saturation: 0
+    contrast: 0
+  detectionModes: {}
+  occludable:
+    radius: 0
+  ring:
+    enabled: false
+    colors:
+      ring: null
+      background: null
+    effects: 1
+    subject:
+      scale: 1
+      texture: null
+  turnMarker:
+    mode: 1
+    animation: null
+    src: null
+    disposition: false
+  movementAction: null
+  flags: {}
+  randomImg: false
+  appendNumber: false
+  prependAdjective: false
+items: []
+effects: []
+folder: mqv2DOEO9fvHb4uA
+sort: 200000
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783271062513
+  modifiedTime: 1783271062513
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Actor.QKiI2jTkdVXkM6gA
+  exportSource: null
+_key: '!actors!QKiI2jTkdVXkM6gA'

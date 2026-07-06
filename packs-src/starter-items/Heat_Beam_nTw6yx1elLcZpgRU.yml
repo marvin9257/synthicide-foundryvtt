@@ -1,0 +1,43 @@
+name: Heat Beam
+type: vehicleWeapon
+_id: nTw6yx1elLcZpgRU
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
+system:
+  description: >-
+    <p>Fires pure energy at extreme range. In character battles, it hits all
+    characters and objects within a zone. It generates enough heat to kill
+    characters fully covered by protective structures. largest cargo holds,
+    along with fully stocked infirmaries and workshops for crafting
+    equipment.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 5000
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  range: sight
+  dmgMultiplier: 107
+  ammoUnitCost: 4000
+  isMissile: false
+effects: []
+folder: NP6BjsncamGSm6FB
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.363'
+  systemId: synthicide
+  systemVersion: 1.1.4
+  createdTime: 1783262723915
+  modifiedTime: 1783262723949
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  exportSource: null
+  compendiumSource: null
+  duplicateSource: null
+sort: 200000
+_key: '!items!nTw6yx1elLcZpgRU'

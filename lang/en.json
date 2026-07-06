@@ -294,6 +294,13 @@
       }
     },
     "Vehicle": {
+      "Type": {
+        "GroundCar": "Ground Car",
+        "Cycle": "Cycle",
+        "SkyCar": "Sky Car",
+        "Spaceship": "Spaceship",
+        "label": "Vehicle Type"
+      },
       "isShip": "Is Ship?",
       "FuelUnits": "Fuel Tank",
       "Velocity": "Velocity",
@@ -319,7 +326,7 @@
         "Effects": "Effects",
         "Flavor": "Flavor",
         "Cargo": "Cargo",
-        "ShipWeapons": "Ship Weapons",
+        "VehicleWeapons": "Vehicle Weapons",
         "Locker": "Storage Locker"
       },
       "Customizations": {
@@ -462,7 +469,7 @@
           "UnitPrice": "Unit Price (§)"
         }
       },
-      "ShipWeapon": {
+      "VehicleWeapon": {
         "FIELDS": {
           "Range": "Range",
           "DmgMultiplier": "DMG Multiplier",
@@ -933,8 +940,8 @@
         "BlastDiameter": "Blast Diameter",
         "FinalPoint": "Final Point",
         "SourceAttack": "Source Attack",
-        "ShipWeaponMultiplier": "Ship Weapon DMG Multiplier",
-        "ShipWeaponAutoHitFlavor": "{item}: automatic-hit ship weapon damage",
+        "VehicleWeaponMultiplier": "Vehicle Weapon DMG Multiplier",
+        "VehicleWeaponAutoHitFlavor": "{item}: automatic-hit vehicle weapon damage",
         "DerivedFromAttack": "Derived from attack",
         "DefaultFlavorChallenge": "{difficulty} roll made using {attribute}",
         "DefaultFlavorDriverVelocity": "Driver velocity roll",
@@ -1019,7 +1026,7 @@
       "Tooltip": {
         "AttackWithItem": "Attack with {item}",
         "RollWithItem": "Roll with {item}",
-        "RollShipWeaponDamage": "Roll automatic-hit ship weapon damage for {item}"
+        "RollVehicleWeaponDamage": "Roll automatic-hit vehicle weapon damage for {item}"
       },
       "Actions": {
         "Attack": "Attack"
@@ -1084,7 +1091,7 @@
       "weapon" : "Weapon",
       "shield": "Shield",
       "cargo": "Cargo",
-      "shipWeapon": "Ship Weapon"
+      "vehicleWeapon": "Vehicle Weapon"
     }
   }
 }
