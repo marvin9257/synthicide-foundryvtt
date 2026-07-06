@@ -1,7 +1,7 @@
 name: Anti Personnel
 type: vehicleWeapon
 _id: mWVcERqgG0IOXIPJ
-img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
 system:
   description: >-
     <p>Unleashes long belts of large ammunition with a single trigger pull. Uses

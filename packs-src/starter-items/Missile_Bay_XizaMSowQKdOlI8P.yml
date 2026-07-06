@@ -1,7 +1,7 @@
 folder: NP6BjsncamGSm6FB
 name: Missile Bay
 type: vehicleWeapon
-img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
 system:
   description: <p>Launches fusion, cluster, and seeker missiles.</p>
   quantity: 1

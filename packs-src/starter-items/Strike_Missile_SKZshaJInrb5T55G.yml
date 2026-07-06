@@ -1,7 +1,7 @@
 name: Strike Missile
 type: vehicleWeapon
 _id: SKZshaJInrb5T55G
-img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
 system:
   description: >-
     <p>A standard rocket explosive. Uses a 5-unit blast template in character

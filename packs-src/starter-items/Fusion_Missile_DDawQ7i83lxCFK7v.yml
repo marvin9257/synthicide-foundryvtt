@@ -1,7 +1,7 @@
 folder: NP6BjsncamGSm6FB
 name: Fusion Missile
 type: vehicleWeapon
-img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
 system:
   description: >-
     <p>A high-damage, high-cost missile. In character battles, it hits all

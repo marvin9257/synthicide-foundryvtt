@@ -1,7 +1,7 @@
 name: Heat Beam
 type: vehicleWeapon
 _id: nTw6yx1elLcZpgRU
-img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
 system:
   description: >-
     <p>Fires pure energy at extreme range. In character battles, it hits all

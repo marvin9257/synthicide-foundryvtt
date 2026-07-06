@@ -1,6 +1,6 @@
 name: Stopper Missile
 type: vehicleWeapon
-img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
 system:
   description: >-
     <p>Designed to immobilize enemy vehicles by targeting engines and

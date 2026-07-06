@@ -1,7 +1,7 @@
 folder: NP6BjsncamGSm6FB
 name: Seeker Missile
 type: vehicleWeapon
-img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
 system:
   description: >-
     <p>An extremely long-range missile designed to target engines. When it

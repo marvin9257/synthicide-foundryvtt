@@ -1,7 +1,7 @@
 name: Missile Pod
 type: vehicleWeapon
 _id: Sh03CD4wNtTNMbem
-img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
 system:
   description: <p>Launches strike, incendiary, and stopper missiles.</p>
   quantity: 1

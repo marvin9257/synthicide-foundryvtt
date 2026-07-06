@@ -2,7 +2,7 @@ folder: NP6BjsncamGSm6FB
 name: Flak Cannon
 type: vehicleWeapon
 _id: HOvO2FUBTvDn4Nt0
-img: systems/synthicide/assets/icons/items/vehicleWeapon.svg
+img: systems/synthicide/assets/icons/items/vehicle_weapon.svg
 system:
   description: >-
     <p>Magnetically launches heavy metal scraps. In character battles, it hits
