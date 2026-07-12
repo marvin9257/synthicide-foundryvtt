@@ -1,3 +1,11 @@
+## [1.1.6](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.5...1.1.6) (2026-07-12)
+
+
+### Bug Fixes
+
+* Merge pull request [#11](https://github.com/marvin9257/synthicide-foundryvtt/issues/11) from marvin9257/fix-toughness-defense-calculation ([087b49c](https://github.com/marvin9257/synthicide-foundryvtt/commit/087b49ccfa1be37904c10746763a5926ba3af8b9))
+* update toughnessForArmorDefense calc ([0c236db](https://github.com/marvin9257/synthicide-foundryvtt/commit/0c236dbb7fd07dfe49e375151865cc43edfcae37))
+
 ## [1.1.5](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.4...1.1.5) (2026-07-06)
 
 
