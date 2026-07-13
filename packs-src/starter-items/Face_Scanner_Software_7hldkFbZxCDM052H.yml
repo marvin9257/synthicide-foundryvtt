@@ -1,0 +1,39 @@
+folder: kIltxFTsv5z6qE3C
+name: Face Scanner Software
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Paired with any decent lens, this software matches faces to identities
+    using Reaper Forum’s library.</p><ul><li><p class="p1">100% match chance for
+    uncovered, frontal to profile views</p></li><li><p class="p1">80% for up to
+    half-covered faces</p></li><li><p class="p1">25% for heavily modified faces
+    as long as both eyes or front teeth match records</p></li></ul>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 300
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657787
+  modifiedTime: 1783959657787
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.gpfTPcup7QuEEY7g
+  exportSource: null
+_id: 7hldkFbZxCDM052H
+_key: '!items!7hldkFbZxCDM052H'

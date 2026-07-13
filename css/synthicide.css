@@ -2388,6 +2388,10 @@ body.synthicide-style-bold .synthicide .tab.gear .item-formula.item-prop {
   white-space: nowrap;
 }
 
+.vertically-align-text {
+  align-self: baseline;
+  align-items: baseline;
+}
 /* ============================================================ */
 /* COMBAT TAB                                    */
 /* ============================================================ */

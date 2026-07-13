@@ -1,0 +1,37 @@
+folder: Y8YvjO0SjF8lycC9
+name: Smart Belt
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Magnetic fastening system. Draw or stow 1 item per turn without spending
+    AP (storing still requires 1 AP). Stores up to 4 hands of weapons plus a
+    reasonable number of tools.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 70
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657766
+  modifiedTime: 1783959657766
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.pS5KleTnZm4sqRtu
+  exportSource: null
+_id: GueTnIvlm6qnLDlK
+_key: '!items!GueTnIvlm6qnLDlK'

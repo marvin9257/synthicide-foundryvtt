@@ -1,0 +1,37 @@
+folder: GQBS2RFASYhHTilw
+name: Skycar Cab Fare (any destination)
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>§100 per passenger. Varies by vehicle and destination. Sharpers tempted
+    to rob a cab driver should know most are protected by gangs or corporations,
+    and their vehicles stream live footage to a central security station.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 100
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657772
+  modifiedTime: 1783959657772
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.6ywMIDd1QQRe6gcL
+  exportSource: null
+_id: PZWzfmpgwVdJysce
+_key: '!items!PZWzfmpgwVdJysce'

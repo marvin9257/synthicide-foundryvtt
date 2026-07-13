@@ -7,11 +7,11 @@
   {{! As you add new fields, add them in here! }}
   <div class='resource'>
     <div class='grid grid-2col'>
-      <div>
+      <div class='grid-span-1 vertically-align-text'>
         <span class='resource-label'>{{localize 'SYNTHICIDE.Item.Gear.FIELDS.rollFormula.label'}}:</span>
-        <span>{{#if system.roll.enabled}}{{system.formula}}{{else}}{{localize 'SYNTHICIDE.Item.Gear.FIELDS.rollDisabled'}}{{/if}}</span>
+        <span class='vertically-align-text'>{{#if system.roll.enabled}}{{system.formula}}{{else}}{{localize 'SYNTHICIDE.Item.Gear.FIELDS.rollDisabled'}}{{/if}}</span>
       </div>
-      <div class='grid-span-1'>
+      <div class='grid-span-1 vertically-align-text'>
         <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Gear.FIELDS.rollEnabled.label'}}</label>
         <input
           type='checkbox'

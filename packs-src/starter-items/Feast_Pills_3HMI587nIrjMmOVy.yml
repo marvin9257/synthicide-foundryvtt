@@ -1,0 +1,39 @@
+folder: ckMelika8pDUsXyF
+name: Feast Pills
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Counteract the penalties for skipping meals but cause the body to reject
+    real food for 48 hours. More pills may always be taken, but real food cannot
+    be consumed until the rejection period ends. Without real food, starvation
+    eventually follows. Feast pills can only be purchased by trading actual food
+    (§5/food).</p>
+  quantity: 10
+  weight: 0
+  equipped: false
+  price: 5
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657773
+  modifiedTime: 1783959657773
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.3JcJcBlRORcUhFKh
+  exportSource: null
+_id: 3HMI587nIrjMmOVy
+_key: '!items!3HMI587nIrjMmOVy'

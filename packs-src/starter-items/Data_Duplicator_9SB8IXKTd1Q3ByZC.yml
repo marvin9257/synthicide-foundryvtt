@@ -1,0 +1,36 @@
+folder: 9gPDhWN636hHES5e
+name: Data Duplicator
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Copies all data from any drive within two feet, even secured ones, up to
+    an exabyte. Decryption may require a master device.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 300
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657778
+  modifiedTime: 1783959657778
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.SQun8B6CayiJvsxx
+  exportSource: null
+_id: 9SB8IXKTd1Q3ByZC
+_key: '!items!9SB8IXKTd1Q3ByZC'

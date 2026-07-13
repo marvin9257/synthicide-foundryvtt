@@ -1,0 +1,37 @@
+folder: GQBS2RFASYhHTilw
+name: Extravagant Meal
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>A high-end restaurant worth dressing up for. Food may be off-world or
+    organic, with meat from actual livestock instead of the synthetic
+    variety.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 55
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657767
+  modifiedTime: 1783959657767
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.dsUMQIxqz6AmrlgW
+  exportSource: null
+_id: SIoKP6RcjejMUMr5
+_key: '!items!SIoKP6RcjejMUMr5'

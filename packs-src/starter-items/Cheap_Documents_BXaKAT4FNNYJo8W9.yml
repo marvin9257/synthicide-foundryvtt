@@ -1,0 +1,39 @@
+folder: ckMelika8pDUsXyF
+name: Cheap Documents
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Cargo manifests, ship licenses, identity files – anything can be faked.
+    Requires an operation AD 12 check to identify as fake. Possession is a
+    moderate charge, typically carrying a fine of triple the forgery’s price.
+    Fake documents often conceal more serious crimes, which carry their own
+    consequences when discovered.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 10
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657773
+  modifiedTime: 1783959657773
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.3JcJcBlRORcUhFKh
+  exportSource: null
+_id: BXaKAT4FNNYJo8W9
+_key: '!items!BXaKAT4FNNYJo8W9'

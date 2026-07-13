@@ -1,0 +1,38 @@
+folder: 9gPDhWN636hHES5e
+name: Flex Mask
+type: gear
+_id: 16wlEs8HDEJYeBy5
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>A synth-skin hood that can make your face appear like any organic
+    humanoid. With sufficient recordings, it can replicate someone else’s
+    likeness. It cannot reproduce long hair or bushy beards. Usable 20 times
+    before a §100 recharge.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 200
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657775
+  modifiedTime: 1783959657775
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!items!16wlEs8HDEJYeBy5'

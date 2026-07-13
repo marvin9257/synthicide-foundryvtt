@@ -1,0 +1,36 @@
+folder: kIltxFTsv5z6qE3C
+name: Spy Cam
+type: gear
+_id: GG5TYmpDEyiEfqBt
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Transmits video to a receiver up to 4 miles away. 90-degree field of
+    view. Easily concealed.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 80
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657780
+  modifiedTime: 1783959657780
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!items!GG5TYmpDEyiEfqBt'

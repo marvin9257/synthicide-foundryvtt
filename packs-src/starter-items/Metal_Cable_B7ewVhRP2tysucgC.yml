@@ -1,0 +1,34 @@
+folder: Y8YvjO0SjF8lycC9
+name: Metal Cable
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: "<p><span class=\"Apple-converted-space\">\_</span>Extremely difficult to cut without proper tools. Supports heavy weight. Cut to 100-foot lengths.</p>"
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 50
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657764
+  modifiedTime: 1783959657764
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.dwNQSC7X6Q0RXoDy
+  exportSource: null
+_id: B7ewVhRP2tysucgC
+_key: '!items!B7ewVhRP2tysucgC'

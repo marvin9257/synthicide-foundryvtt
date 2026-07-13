@@ -1,0 +1,20 @@
+type: Item
+folder: Rz5IxPRFs7RGdvmv
+name: Goods and Services
+color: null
+sorting: a
+_id: GQBS2RFASYhHTilw
+description: ''
+sort: 0
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657724
+  modifiedTime: 1783959657724
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!folders!GQBS2RFASYhHTilw'

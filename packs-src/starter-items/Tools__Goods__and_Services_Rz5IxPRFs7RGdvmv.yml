@@ -1,0 +1,20 @@
+type: Item
+folder: null
+name: Tools, Goods, and Services
+color: null
+sorting: a
+_id: Rz5IxPRFs7RGdvmv
+description: ''
+sort: 500000
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657724
+  modifiedTime: 1783959657822
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!folders!Rz5IxPRFs7RGdvmv'

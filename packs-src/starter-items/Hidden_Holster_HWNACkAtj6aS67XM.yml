@@ -1,0 +1,36 @@
+folder: 9gPDhWN636hHES5e
+name: Hidden Holster
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>A skin-seal holster for one miniaturized pistol. Often worn in pairs on
+    the buttocks to balance the weight. Awareness RD 9 to detect.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 90
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657779
+  modifiedTime: 1783959657779
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.777RBe61gFP3z7VV
+  exportSource: null
+_id: HWNACkAtj6aS67XM
+_key: '!items!HWNACkAtj6aS67XM'

@@ -1,0 +1,36 @@
+folder: Y8YvjO0SjF8lycC9
+name: Backpack
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Carries up to 7 hands of weapons and 3 small tool kits. Costs 1 AP to
+    stow an item and 1 AP to retrieve it (2 AP total to swap weapons).</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 5
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657762
+  modifiedTime: 1783959657762
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.5hWJW6JTmtKdQPkq
+  exportSource: null
+_id: TaZDssO5eULZoc5Y
+_key: '!items!TaZDssO5eULZoc5Y'

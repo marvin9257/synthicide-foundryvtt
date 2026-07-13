@@ -1,0 +1,36 @@
+folder: 9gPDhWN636hHES5e
+name: Data Decrypter
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Decrypts low-level security (up to operation RD 9) at a rate of one day
+    per exabyte.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 360
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657778
+  modifiedTime: 1783959657778
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.9SB8IXKTd1Q3ByZC
+  exportSource: null
+_id: 5pIdP1qk5hN9ENw5
+_key: '!items!5pIdP1qk5hN9ENw5'
