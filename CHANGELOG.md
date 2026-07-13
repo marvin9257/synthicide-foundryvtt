@@ -1,3 +1,11 @@
+## [1.1.7](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.6...1.1.7) (2026-07-13)
+
+
+### Bug Fixes
+
+* style adjustments and new equipment to compendium ([ff5f754](https://github.com/marvin9257/synthicide-foundryvtt/commit/ff5f754cabfca3d62fe2c7470ffc1243411cdea0)), closes [#12](https://github.com/marvin9257/synthicide-foundryvtt/issues/12)
+* style adjustments and new equipment to compendium ([b903ce9](https://github.com/marvin9257/synthicide-foundryvtt/commit/b903ce903e3f393264ee26bb33644e92d2d60916))
+
 ## [1.1.6](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.5...1.1.6) (2026-07-12)
 
 
