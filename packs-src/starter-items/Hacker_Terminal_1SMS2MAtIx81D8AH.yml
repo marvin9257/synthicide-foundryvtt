@@ -1,0 +1,36 @@
+folder: Ku9LRHfMXoTOWltf
+name: Hacker Terminal
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>A large computer requiring a ship power supply or equivalent energy
+    source. Adds +3 to computer operation checks.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 150
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657793
+  modifiedTime: 1783959657793
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.pY7fMpVGK82r1Ql7
+  exportSource: null
+_id: 1SMS2MAtIx81D8AH
+_key: '!items!1SMS2MAtIx81D8AH'

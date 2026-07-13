@@ -1,0 +1,40 @@
+folder: ckMelika8pDUsXyF
+name: Illuminix
+type: gear
+_id: cSs4KdVXMWYuOMow
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Psychic powers are not a natural development in mankind. They are the
+    consequence of mind-altering, brain-enhancing chemical research. Any
+    character with psychic power traits must consume 1 dose of Illuminix per day
+    or suffer -2 to all attributes until their next dose. Possession is a petty
+    crime the church routinely exploits to escalate investigations and
+    interrogations.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 5
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657772
+  modifiedTime: 1783959657772
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!items!cSs4KdVXMWYuOMow'

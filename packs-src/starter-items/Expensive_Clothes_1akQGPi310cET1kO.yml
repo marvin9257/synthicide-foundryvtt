@@ -1,0 +1,36 @@
+folder: GQBS2RFASYhHTilw
+name: Expensive Clothes
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Bold patterns, wild cuts, and unnecessary flowing fabric are in fashion –
+    bright colors are not. Nearly impervious to stains and odor.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 150
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657769
+  modifiedTime: 1783959657769
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.oLZhMjJ1TJ5aJb5F
+  exportSource: null
+_id: 1akQGPi310cET1kO
+_key: '!items!1akQGPi310cET1kO'

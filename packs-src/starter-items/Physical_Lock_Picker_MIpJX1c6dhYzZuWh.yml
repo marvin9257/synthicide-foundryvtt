@@ -1,0 +1,36 @@
+folder: 9gPDhWN636hHES5e
+name: Physical-Lock Picker
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>A one-time use device that fills a lock with polymers, maps it, and
+    releases it—works on locks up to RD 9. Activates instantly.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 70
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657777
+  modifiedTime: 1783959657777
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.jmsQtM0srDJlxgWr
+  exportSource: null
+_id: MIpJX1c6dhYzZuWh
+_key: '!items!MIpJX1c6dhYzZuWh'

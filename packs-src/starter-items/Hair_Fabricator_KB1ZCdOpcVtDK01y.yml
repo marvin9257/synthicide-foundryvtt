@@ -1,0 +1,36 @@
+folder: 9gPDhWN636hHES5e
+name: Hair Fabricator
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Prints long hair and beards to pair with a flex mask. Can produce 10 ft
+    of hair before needing a §50 refill.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 150
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657775
+  modifiedTime: 1783959657775
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.16wlEs8HDEJYeBy5
+  exportSource: null
+_id: KB1ZCdOpcVtDK01y
+_key: '!items!KB1ZCdOpcVtDK01y'

@@ -1,0 +1,37 @@
+folder: Ku9LRHfMXoTOWltf
+name: Trauma Kit
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>A field surgery kit for treating minor injuries. Fills half a backpack
+    and comes stocked with <span class="s1">§</span>32 worth of medical supplies
+    at maximum capacity.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 40
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657794
+  modifiedTime: 1783959657794
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.4EwZT7NknUBW09NN
+  exportSource: null
+_id: qaQGKbSertrADot0
+_key: '!items!qaQGKbSertrADot0'

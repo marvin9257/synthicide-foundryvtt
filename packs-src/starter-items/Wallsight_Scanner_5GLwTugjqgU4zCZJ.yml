@@ -1,0 +1,37 @@
+folder: kIltxFTsv5z6qE3C
+name: Wallsight Scanner
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>A handheld device that “sees” through 12 inches of steel or 5 feet of
+    concrete. It can see a normal line of sight up to 3 zones beyond the wall.
+    Detected objects are shown as monochrome volumetric images.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 200
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657785
+  modifiedTime: 1783959657785
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.M4BlAoYPpIU9E2Ou
+  exportSource: null
+_id: 5GLwTugjqgU4zCZJ
+_key: '!items!5GLwTugjqgU4zCZJ'

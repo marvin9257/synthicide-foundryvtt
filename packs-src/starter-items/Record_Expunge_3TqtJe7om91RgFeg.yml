@@ -1,0 +1,38 @@
+folder: ckMelika8pDUsXyF
+name: Record Expunge
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Rewrites an entire public file on a person or documented event.
+    Contradictory physical and private copies remain and are difficult to track
+    down. Purchasing or performing an expunge is illegal and typically results
+    in extended labor camp sentences.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 1000
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657774
+  modifiedTime: 1783959657774
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.FwmLhdz2prkAV4yI
+  exportSource: null
+_id: 3TqtJe7om91RgFeg
+_key: '!items!3TqtJe7om91RgFeg'

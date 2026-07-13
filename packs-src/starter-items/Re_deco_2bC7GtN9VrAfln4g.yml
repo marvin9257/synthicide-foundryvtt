@@ -1,0 +1,38 @@
+folder: ckMelika8pDUsXyF
+name: Re-deco
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>A new face is the most reliable way to avoid detection. Simple cosmetic
+    surgery is legal, but any obvious attempt to alter or obscure your identity
+    from the church is a severe offense. Conviction results in a §400 fine and
+    your altered appearance updated in your public file.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 200
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657775
+  modifiedTime: 1783959657775
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.3TqtJe7om91RgFeg
+  exportSource: null
+_id: 2bC7GtN9VrAfln4g
+_key: '!items!2bC7GtN9VrAfln4g'

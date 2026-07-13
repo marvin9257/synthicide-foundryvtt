@@ -1,0 +1,39 @@
+folder: kIltxFTsv5z6qE3C
+name: Drone Platform
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>A remote-controlled reconnaissance drone with infrared cameras. Can be
+    outfitted with any surveillance gear.</p><ul><li><p>Range: 100
+    miles</p></li><li><p class="p1">HP 15, AD 9</p></li><li><p
+    class="p1">Movement: 3 zones/turn, Vehicle Velocity 8</p></li><li><p
+    class="p1">Amplifies attached devices’ signals to its range</p></li></ul>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 220
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657788
+  modifiedTime: 1783959657788
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.Ret40kWJZndlcnuJ
+  exportSource: null
+_id: wDGva11FDi0Uzw04
+_key: '!items!wDGva11FDi0Uzw04'

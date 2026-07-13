@@ -1,0 +1,37 @@
+folder: 9gPDhWN636hHES5e
+name: Cyber Lenses
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Discreet contact lenses that display video feeds and offer up to 5×
+    magnification. When synced with a hack deck, they can run visual analysis
+    tools like facial scanning or object recognition.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 80
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657779
+  modifiedTime: 1783959657779
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.HWNACkAtj6aS67XM
+  exportSource: null
+_id: YAOvMPebaGzS5g4J
+_key: '!items!YAOvMPebaGzS5g4J'

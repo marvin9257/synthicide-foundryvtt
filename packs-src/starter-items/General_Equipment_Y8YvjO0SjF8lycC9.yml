@@ -1,0 +1,20 @@
+type: Item
+folder: Rz5IxPRFs7RGdvmv
+name: General Equipment
+color: null
+sorting: a
+_id: Y8YvjO0SjF8lycC9
+description: ''
+sort: 0
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657724
+  modifiedTime: 1783959657724
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+_key: '!folders!Y8YvjO0SjF8lycC9'

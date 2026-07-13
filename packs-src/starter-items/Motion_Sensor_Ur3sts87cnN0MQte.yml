@@ -1,0 +1,37 @@
+folder: kIltxFTsv5z6qE3C
+name: Motion Sensor
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>A simple device that detects movement within an area up to 3 × 3 squares.
+    It can be linked to trigger other devices, such as turrets, alarms, or
+    explosives.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 40
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657781
+  modifiedTime: 1783959657781
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.2EQAdLwVaPlzVYba
+  exportSource: null
+_id: Ur3sts87cnN0MQte
+_key: '!items!Ur3sts87cnN0MQte'

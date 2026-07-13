@@ -1,0 +1,37 @@
+folder: 9gPDhWN636hHES5e
+name: Digital-Lock Picker
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>Soldered onto a lock’s board to read its electronic interface and unlock
+    it (up to RD 9). Requires an operation RD 3 to use and recover; takes about
+    2 minutes each way.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 140
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657777
+  modifiedTime: 1783959657777
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.MIpJX1c6dhYzZuWh
+  exportSource: null
+_id: SQun8B6CayiJvsxx
+_key: '!items!SQun8B6CayiJvsxx'

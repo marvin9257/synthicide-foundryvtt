@@ -1,0 +1,37 @@
+folder: ckMelika8pDUsXyF
+name: Power Light
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>A syringe of concentrated super-drugs that allows psychics to push their
+    abilities beyond normal limits. Each dose absorbs up to 5 HP of damage that
+    would otherwise be lost to overcharging a psychic power.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 10
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657773
+  modifiedTime: 1783959657773
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.NX7PH2ze60GLAbsy
+  exportSource: null
+_id: 3JcJcBlRORcUhFKh
+_key: '!items!3JcJcBlRORcUhFKh'

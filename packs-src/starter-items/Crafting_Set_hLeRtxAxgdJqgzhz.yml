@@ -1,0 +1,36 @@
+folder: Ku9LRHfMXoTOWltf
+name: Crafting Set
+type: gear
+img: systems/synthicide/assets/icons/items/gear.svg
+system:
+  description: >-
+    <p>An elaborate assembly kit for constructing gear such as weapons and
+    armor. Occupies most of a small room.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 80
+  roll:
+    enabled: false
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.364'
+  systemId: synthicide
+  systemVersion: 1.1.6
+  createdTime: 1783959657791
+  modifiedTime: 1783959657791
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: Item.bCWwnzg6XxcqGLcB
+  exportSource: null
+_id: hLeRtxAxgdJqgzhz
+_key: '!items!hLeRtxAxgdJqgzhz'
