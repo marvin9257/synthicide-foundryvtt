@@ -1,7 +1,7 @@
 folder: Ku9LRHfMXoTOWltf
 name: Mobile Hack Deck
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/tablet.svg
 system:
   description: >-
     <p>A pocket-sized computer that accesses wireless networks and interfaces
@@ -23,11 +23,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.364'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657792
-  modifiedTime: 1783959657792
+  modifiedTime: 1784224063777
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.TuptA6AwMMQ4hg7d
