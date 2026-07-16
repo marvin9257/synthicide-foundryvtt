@@ -1,7 +1,7 @@
 folder: kIltxFTsv5z6qE3C
 name: Alarm
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/ringing-alarm.svg
 system:
   description: >-
     <p>While most sensors send alerts to a phone, audible on-site alarms can
@@ -27,7 +27,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657782
-  modifiedTime: 1783959657782
+  modifiedTime: 1784133986977
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.xIAUxxBIIJi6CM9m

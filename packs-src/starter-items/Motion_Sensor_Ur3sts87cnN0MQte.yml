@@ -1,7 +1,7 @@
 folder: kIltxFTsv5z6qE3C
 name: Motion Sensor
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/movement-sensor.svg
 system:
   description: >-
     <p>A simple device that detects movement within an area up to 3 × 3 squares.
@@ -28,7 +28,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657781
-  modifiedTime: 1783959657781
+  modifiedTime: 1784134032267
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.2EQAdLwVaPlzVYba

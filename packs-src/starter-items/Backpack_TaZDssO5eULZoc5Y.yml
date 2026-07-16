@@ -1,7 +1,7 @@
 folder: Y8YvjO0SjF8lycC9
 name: Backpack
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/knapsack.svg
 system:
   description: >-
     <p>Carries up to 7 hands of weapons and 3 small tool kits. Costs 1 AP to
@@ -27,7 +27,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657762
-  modifiedTime: 1783959657762
+  modifiedTime: 1784129864592
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.5hWJW6JTmtKdQPkq

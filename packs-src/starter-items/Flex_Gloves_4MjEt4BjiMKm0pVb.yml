@@ -1,7 +1,7 @@
 folder: 9gPDhWN636hHES5e
 name: Flex Gloves
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/gloves.svg
 system:
   description: >-
     <p>These gloves complete any disguise by altering or duplicating hands,
@@ -27,7 +27,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657776
-  modifiedTime: 1783959657776
+  modifiedTime: 1784133938277
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.KB1ZCdOpcVtDK01y
