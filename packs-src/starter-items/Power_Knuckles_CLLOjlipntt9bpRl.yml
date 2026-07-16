@@ -1,7 +1,7 @@
 folder: mpL3fM14Aclg5S1X
 name: Power Knuckles
 type: weapon
-img: systems/synthicide/assets/icons/items/martial.svg
+img: systems/synthicide/assets/icons/compendiums/brass-knuckles.svg
 system:
   description: ''
   quantity: 1
@@ -48,11 +48,11 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778172493309
-  modifiedTime: 1778947295963
+  modifiedTime: 1784225934705
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
