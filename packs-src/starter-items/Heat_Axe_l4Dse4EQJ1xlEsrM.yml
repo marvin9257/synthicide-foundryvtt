@@ -1,7 +1,7 @@
 folder: Fn6WI5sSciOUXSkU
 name: Heat Axe
 type: weapon
-img: systems/synthicide/assets/icons/compendiums/sharp-axe.svg
+img: systems/synthicide/assets/icons/compendiums/heat-axe.svg
 system:
   description: ''
   quantity: 1
@@ -53,7 +53,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778169531989
-  modifiedTime: 1784225476359
+  modifiedTime: 1784315346999
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

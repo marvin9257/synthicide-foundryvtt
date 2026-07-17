@@ -1,7 +1,7 @@
 folder: ybXCzCc0CtJXRYCF
 name: Hellfire Grenade
 type: weapon
-img: systems/synthicide/assets/icons/items/grenade.svg
+img: systems/synthicide/assets/icons/compendiums/hellfire-grenade.svg
 system:
   description: >-
     <p>Demolition weapons are explosives that are planted in place or thrown at
@@ -52,11 +52,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.0.30
   createdTime: 1778953013540
-  modifiedTime: 1778953013558
+  modifiedTime: 1784317369551
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null
