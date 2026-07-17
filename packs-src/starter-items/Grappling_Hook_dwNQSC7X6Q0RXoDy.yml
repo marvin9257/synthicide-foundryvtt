@@ -1,7 +1,7 @@
 folder: Y8YvjO0SjF8lycC9
 name: Grappling Hook
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/grapple.svg
 system:
   description: <p>Used to scale sheer surfaces.</p>
   quantity: 1
@@ -25,7 +25,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657763
-  modifiedTime: 1783959657763
+  modifiedTime: 1784129873841
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.KEE7evflTIPsMXYf

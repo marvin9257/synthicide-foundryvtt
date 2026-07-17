@@ -2,7 +2,7 @@ folder: Fn6WI5sSciOUXSkU
 name: Rip Axe
 type: weapon
 _id: ow5CD5V3g0sIKVA1
-img: systems/synthicide/assets/icons/items/axe.svg
+img: systems/synthicide/assets/icons/compendiums/rip-axe.svg
 system:
   description: ''
   quantity: 1
@@ -51,11 +51,11 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778169320132
-  modifiedTime: 1778947299310
+  modifiedTime: 1784316506707
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null

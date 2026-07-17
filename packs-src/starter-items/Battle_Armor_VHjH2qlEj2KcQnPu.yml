@@ -1,7 +1,7 @@
 folder: nVtAXR4IEfqe6Y9Y
 name: Battle Armor
 type: armor
-img: systems/synthicide/assets/icons/items/armor.svg
+img: systems/synthicide/assets/icons/compendiums/cape-armor.svg
 system:
   description: >-
     <p>Armor increases a character’s armor defense to help resist incoming
@@ -31,11 +31,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.363'
+  coreVersion: '14.364'
   systemId: synthicide
   systemVersion: 1.0.50
   createdTime: 1778954153578
-  modifiedTime: 1782480180173
+  modifiedTime: 1784122160884
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

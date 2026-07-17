@@ -1,7 +1,7 @@
 folder: ybXCzCc0CtJXRYCF
 name: IF Grenade
 type: weapon
-img: systems/synthicide/assets/icons/items/grenade.svg
+img: systems/synthicide/assets/icons/compendiums/if-grenade.svg
 system:
   description: >-
     <p>Demolition weapons are explosives that are planted in place or thrown at
@@ -52,11 +52,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.363'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.0.50
   createdTime: 1778952599982
-  modifiedTime: 1782488028502
+  modifiedTime: 1784317382052
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

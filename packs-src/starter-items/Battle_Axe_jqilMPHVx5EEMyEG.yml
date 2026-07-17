@@ -2,7 +2,7 @@ folder: Fn6WI5sSciOUXSkU
 name: Battle Axe
 type: weapon
 _id: jqilMPHVx5EEMyEG
-img: systems/synthicide/assets/icons/items/axe.svg
+img: systems/synthicide/assets/icons/compendiums/sharp-axe.svg
 system:
   description: ''
   quantity: 1
@@ -52,11 +52,11 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778169267156
-  modifiedTime: 1778947208201
+  modifiedTime: 1784225459320
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null

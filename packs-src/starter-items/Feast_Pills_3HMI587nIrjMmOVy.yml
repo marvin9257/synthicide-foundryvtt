@@ -1,7 +1,7 @@
 folder: ckMelika8pDUsXyF
 name: Feast Pills
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/pill.svg
 system:
   description: >-
     <p>Counteract the penalties for skipping meals but cause the body to reject
@@ -30,7 +30,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657773
-  modifiedTime: 1783959657773
+  modifiedTime: 1784133883095
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.3JcJcBlRORcUhFKh

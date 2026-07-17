@@ -1,7 +1,7 @@
 folder: Y8YvjO0SjF8lycC9
 name: Utility Belt
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/cowboy-holster.svg
 system:
   description: <p>Stores up to 4 hands of weapons plus a reasonable number of tools.</p>
   quantity: 1
@@ -25,7 +25,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657760
-  modifiedTime: 1783959657760
+  modifiedTime: 1784129930027
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.ACYvNi7tqTBZKorq

@@ -1,7 +1,7 @@
 folder: 9gPDhWN636hHES5e
 name: Plasma Door
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/magic-portal.svg
 system:
   description: >-
     <p>A bulky, single-use device that bores a man-sized hole through 3 ft of
@@ -23,11 +23,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.364'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657780
-  modifiedTime: 1783959657780
+  modifiedTime: 1784222816545
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.3dk9eVZ6DJ70AbLa

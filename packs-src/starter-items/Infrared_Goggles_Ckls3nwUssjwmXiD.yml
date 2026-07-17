@@ -1,7 +1,7 @@
 folder: kIltxFTsv5z6qE3C
 name: Infrared Goggles
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/spectacle-lenses.svg
 system:
   description: >-
     <p>Heat vision. +2 to awareness checks to detect body heat or comparable
@@ -27,7 +27,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657784
-  modifiedTime: 1783959657784
+  modifiedTime: 1784134013916
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.SC2pgi1SeuA3wvvX

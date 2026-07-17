@@ -1,7 +1,7 @@
 folder: Ku9LRHfMXoTOWltf
 name: Cooking Kit
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/saucepan.svg
 system:
   description: >-
     <p>A self-contained set of pots, pans, and a portable thermal stove. Only
@@ -27,7 +27,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657791
-  modifiedTime: 1783959657791
+  modifiedTime: 1784134435326
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.kj1Z3L2zzYZWnpiN

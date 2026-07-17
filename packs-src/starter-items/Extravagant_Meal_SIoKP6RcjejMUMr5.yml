@@ -1,7 +1,7 @@
 folder: GQBS2RFASYhHTilw
 name: Extravagant Meal
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/hot-meal.svg
 system:
   description: >-
     <p>A high-end restaurant worth dressing up for. Food may be off-world or
@@ -24,11 +24,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.364'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657767
-  modifiedTime: 1783959657767
+  modifiedTime: 1784222154956
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.dsUMQIxqz6AmrlgW
