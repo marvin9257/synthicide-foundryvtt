@@ -1,3 +1,17 @@
+## [1.1.8](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.7...1.1.8) (2026-07-27)
+
+
+### Bug Fixes
+
+* a few more icons ([e1154cc](https://github.com/marvin9257/synthicide-foundryvtt/commit/e1154cc5f15631985c4fd8a417727f24ae011432))
+* add better armor img's ([aa65e67](https://github.com/marvin9257/synthicide-foundryvtt/commit/aa65e67dc964adcebd9893e1d028db440c5a4ef8))
+* add more images ([8c940e8](https://github.com/marvin9257/synthicide-foundryvtt/commit/8c940e8c89b3be2ad5cecd0e9855610c5ec10601))
+* add some ranged weapon icons ([380c972](https://github.com/marvin9257/synthicide-foundryvtt/commit/380c9728b9124e58f3e13703666fac96a6876a30))
+* Merge pull request [#13](https://github.com/marvin9257/synthicide-foundryvtt/issues/13) from marvin9257/fix-add-more-icons ([edc5271](https://github.com/marvin9257/synthicide-foundryvtt/commit/edc5271f1845d72460b29fa62b1af1feacc33cb4))
+* more icons ([ae79679](https://github.com/marvin9257/synthicide-foundryvtt/commit/ae7967913cd89928478e194e204a6cd2eb3099ff))
+* package update ([a6a439f](https://github.com/marvin9257/synthicide-foundryvtt/commit/a6a439fb609d36f418ca61a7686ffdabb4676da7))
+* update melee and demolition weapon icons ([5862d37](https://github.com/marvin9257/synthicide-foundryvtt/commit/5862d3724844112dc4dddc81d4924f9372edf4a6))
+
 ## [1.1.7](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.6...1.1.7) (2026-07-13)
 
 
