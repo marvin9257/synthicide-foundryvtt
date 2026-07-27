@@ -1,7 +1,7 @@
 folder: Ku9LRHfMXoTOWltf
 name: Medical Supplies
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/first-aid-kit.svg
 system:
   description: >-
     <p>Modern medicine uses healing accelerant, wound sealant, and artificial
@@ -28,7 +28,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657794
-  modifiedTime: 1783959657794
+  modifiedTime: 1784134446660
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.qaQGKbSertrADot0

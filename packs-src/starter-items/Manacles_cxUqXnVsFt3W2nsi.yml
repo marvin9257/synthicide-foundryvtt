@@ -1,7 +1,7 @@
 folder: Y8YvjO0SjF8lycC9
 name: Manacles
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/handcuffs.svg
 system:
   description: "<p><span class=\"Apple-converted-space\">\_</span>Binds targets. Increases AD to escape bondage by +3.</p>"
   quantity: 1
@@ -25,7 +25,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657762
-  modifiedTime: 1783959657762
+  modifiedTime: 1784130645143
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.TaZDssO5eULZoc5Y

@@ -1,7 +1,7 @@
 folder: Fn6WI5sSciOUXSkU
 name: Power Axe
 type: weapon
-img: systems/synthicide/assets/icons/items/axe.svg
+img: systems/synthicide/assets/icons/compendiums/power-axe.svg
 system:
   description: ''
   quantity: 1
@@ -49,11 +49,11 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778169592201
-  modifiedTime: 1778947285984
+  modifiedTime: 1784315383519
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

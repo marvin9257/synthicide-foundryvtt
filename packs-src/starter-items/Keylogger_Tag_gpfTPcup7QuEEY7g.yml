@@ -1,7 +1,7 @@
 folder: kIltxFTsv5z6qE3C
 name: Keylogger Tag
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/keyboard.svg
 system:
   description: >-
     <p>A fingernail-sized, near-invisible tag that reads vibrations on a surface
@@ -24,11 +24,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.364'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657786
-  modifiedTime: 1783959657786
+  modifiedTime: 1784223154282
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.Z510jGhkJLvZyYiS

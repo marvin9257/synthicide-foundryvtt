@@ -1,7 +1,7 @@
 folder: 9gPDhWN636hHES5e
 name: Data Decrypter
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/digital-trace.svg
 system:
   description: >-
     <p>Decrypts low-level security (up to operation RD 9) at a rate of one day
@@ -27,7 +27,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657778
-  modifiedTime: 1783959657778
+  modifiedTime: 1784133921579
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.9SB8IXKTd1Q3ByZC

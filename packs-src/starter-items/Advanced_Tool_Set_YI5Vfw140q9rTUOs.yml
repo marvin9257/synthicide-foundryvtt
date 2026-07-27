@@ -1,7 +1,7 @@
 folder: Ku9LRHfMXoTOWltf
 name: Advanced Tool Set
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/gear-hammer.svg
 system:
   description: >-
     <p>Required alongside a Crafting Set for high-tech weapons such as hellfire
@@ -24,11 +24,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.364'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657791
-  modifiedTime: 1783959657791
+  modifiedTime: 1784224228103
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.hLeRtxAxgdJqgzhz

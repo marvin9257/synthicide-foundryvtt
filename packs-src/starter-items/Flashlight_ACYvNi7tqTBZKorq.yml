@@ -1,7 +1,7 @@
 folder: Y8YvjO0SjF8lycC9
 name: Flashlight
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/flashlight.svg
 system:
   description: <p>Illuminates up to 20 feet in a straight line.</p>
   quantity: 1
@@ -25,7 +25,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657759
-  modifiedTime: 1783959657759
+  modifiedTime: 1784130628975
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.Qf3WrzlA7uUAOYts

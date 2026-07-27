@@ -2,7 +2,7 @@ folder: Y8YvjO0SjF8lycC9
 name: Tape
 type: gear
 _id: Qf3WrzlA7uUAOYts
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/bandage-roll.svg
 system:
   description: <p>Industrial strength adhesive tape.</p>
   quantity: 1
@@ -26,7 +26,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657759
-  modifiedTime: 1783959657759
+  modifiedTime: 1784133778420
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: null

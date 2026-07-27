@@ -1,7 +1,7 @@
 folder: kIltxFTsv5z6qE3C
 name: Turret Platform
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/turret.svg
 system:
   description: >-
     <p>Outfitted with simple, non-sentient AI that can distinguish friend from
@@ -28,7 +28,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657789
-  modifiedTime: 1783959657789
+  modifiedTime: 1784134078728
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.wDGva11FDi0Uzw04

@@ -1,7 +1,7 @@
 folder: 5vjrGfZFe1r9ZbgD
 name: Beam Rifle
 type: weapon
-img: systems/synthicide/assets/icons/items/rifle.svg
+img: systems/synthicide/assets/icons/compendiums/rifle-beam.svg
 system:
   description: >-
     <p>Rifles are large projectile weapons designed to fire a single payload

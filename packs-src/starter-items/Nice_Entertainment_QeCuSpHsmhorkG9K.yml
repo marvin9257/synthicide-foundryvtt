@@ -1,7 +1,7 @@
 folder: GQBS2RFASYhHTilw
 name: Nice Entertainment
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/theater.svg
 system:
   description: <p>Concert tickets, gambling sessions, and club outings.</p>
   quantity: 1
@@ -21,11 +21,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.364'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657768
-  modifiedTime: 1783959657768
+  modifiedTime: 1784222192688
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.PsvAujnCkLbDESxT

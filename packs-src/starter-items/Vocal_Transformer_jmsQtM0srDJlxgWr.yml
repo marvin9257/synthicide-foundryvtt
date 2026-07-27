@@ -1,7 +1,7 @@
 folder: 9gPDhWN636hHES5e
 name: Vocal Transformer
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/sound-waves.svg
 system:
   description: >-
     <p>A throat-mounted device that modulates your voice to mimic others with a
@@ -27,7 +27,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657776
-  modifiedTime: 1783959657776
+  modifiedTime: 1784133975475
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.4MjEt4BjiMKm0pVb

@@ -2,7 +2,7 @@ folder: eQUhnd7ueMkkAGiK
 name: Club
 type: weapon
 _id: KEcC1E6kh0vMP9Y1
-img: systems/synthicide/assets/icons/items/hammer.svg
+img: systems/synthicide/assets/icons/compendiums/wood-club.svg
 system:
   description: ''
   quantity: 1
@@ -50,11 +50,11 @@ ownership:
   pdpraZTuP1qfHs08: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.0.27
   createdTime: 1778171452817
-  modifiedTime: 1778947223544
+  modifiedTime: 1784225537824
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

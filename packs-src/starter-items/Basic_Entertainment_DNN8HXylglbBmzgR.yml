@@ -1,7 +1,7 @@
 folder: GQBS2RFASYhHTilw
 name: Basic Entertainment
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/ticket.svg
 system:
   description: <p>A few drinks at a cheap bar or a ticket to a flick.</p>
   quantity: 1
@@ -21,11 +21,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.364'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657767
-  modifiedTime: 1783959657767
+  modifiedTime: 1784222098042
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.SIoKP6RcjejMUMr5

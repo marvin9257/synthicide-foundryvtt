@@ -1,7 +1,7 @@
 folder: Y8YvjO0SjF8lycC9
 name: Industrial Lubricant
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/oil-can.svg
 system:
   description: "<p><span class=\"Apple-converted-space\">\_</span>Mineral oil or similar slick substance, measured in gallons.</p>"
   quantity: 1
@@ -25,7 +25,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657763
-  modifiedTime: 1783959657763
+  modifiedTime: 1784130637258
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.cxUqXnVsFt3W2nsi

@@ -1,7 +1,7 @@
 name: Claws
 type: weapon
 _id: ezT778FzYAmbmf8y
-img: systems/synthicide/assets/icons/items/martial.svg
+img: systems/synthicide/assets/icons/compendiums/top-paw.svg
 system:
   description: ''
   quantity: 1
@@ -59,11 +59,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.0.33
   createdTime: 1779283469979
-  modifiedTime: 1779283469979
+  modifiedTime: 1784226225571
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

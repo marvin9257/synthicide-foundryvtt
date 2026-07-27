@@ -1,7 +1,7 @@
 folder: nVtAXR4IEfqe6Y9Y
 name: Podigravus Armor
 type: armor
-img: systems/synthicide/assets/icons/items/armor.svg
+img: systems/synthicide/assets/icons/compendiums/metal-scales.svg
 system:
   description: >-
     <p>Armor increases a character’s armor defense to help resist incoming
@@ -33,11 +33,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.364'
   systemId: synthicide
   systemVersion: 1.0.30
   createdTime: 1778954158754
-  modifiedTime: 1778954158773
+  modifiedTime: 1784122204824
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

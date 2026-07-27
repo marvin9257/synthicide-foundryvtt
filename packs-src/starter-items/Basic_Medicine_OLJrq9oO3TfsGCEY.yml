@@ -1,7 +1,7 @@
 folder: GQBS2RFASYhHTilw
 name: Basic Medicine
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/sticking-plaster.svg
 system:
   description: >-
     <p>Pricing scales with character level (§15/level). The more renowned the
@@ -29,7 +29,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657770
-  modifiedTime: 1783959657770
+  modifiedTime: 1784133839853
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.1akQGPi310cET1kO

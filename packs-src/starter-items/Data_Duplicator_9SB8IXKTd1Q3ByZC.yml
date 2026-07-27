@@ -1,7 +1,7 @@
 folder: 9gPDhWN636hHES5e
 name: Data Duplicator
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/database.svg
 system:
   description: >-
     <p>Copies all data from any drive within two feet, even secured ones, up to
@@ -27,7 +27,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657778
-  modifiedTime: 1783959657778
+  modifiedTime: 1784133927962
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.SQun8B6CayiJvsxx

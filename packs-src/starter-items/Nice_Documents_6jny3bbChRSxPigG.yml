@@ -1,7 +1,7 @@
 folder: ckMelika8pDUsXyF
 name: Nice Documents
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/id-card.svg
 system:
   description: >-
     <p>Cargo manifests, ship licenses, identity files – anything can be faked.
@@ -28,7 +28,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657774
-  modifiedTime: 1783959657774
+  modifiedTime: 1784133904037
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.BXaKAT4FNNYJo8W9

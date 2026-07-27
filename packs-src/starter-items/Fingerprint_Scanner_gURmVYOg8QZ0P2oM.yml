@@ -1,7 +1,7 @@
 folder: kIltxFTsv5z6qE3C
 name: Fingerprint Scanner
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/finger-print.svg
 system:
   description: >-
     <p>Hardware that lifts prints from surfaces or fingers. Comes with TTMC,
@@ -23,11 +23,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.364'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657787
-  modifiedTime: 1783959657787
+  modifiedTime: 1784223167169
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.7hldkFbZxCDM052H

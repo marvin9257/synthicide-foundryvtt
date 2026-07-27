@@ -1,7 +1,7 @@
 folder: Y8YvjO0SjF8lycC9
 name: Phone
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/smartphone.svg
 system:
   description: >-
     <p>Affordable communication devices. Includes walkie-talkies, basic personal
@@ -27,7 +27,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657761
-  modifiedTime: 1783959657761
+  modifiedTime: 1784129887075
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.uj0urZ9YXGIQZ02A

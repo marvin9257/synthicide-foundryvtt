@@ -1,7 +1,7 @@
 folder: GQBS2RFASYhHTilw
 name: Moderate Medicine
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/hospital-cross.svg
 system:
   description: >-
     <p>Pricing scales with character level (§30/level). Restores all of a living
@@ -28,7 +28,7 @@ _stats:
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657770
-  modifiedTime: 1783959657770
+  modifiedTime: 1784133819699
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.OLJrq9oO3TfsGCEY

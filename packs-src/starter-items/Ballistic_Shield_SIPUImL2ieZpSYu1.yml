@@ -1,7 +1,7 @@
 folder: P81RRCGNgoD4Do2S
 name: Ballistic Shield
 type: shield
-img: systems/synthicide/assets/icons/items/shield.svg
+img: systems/synthicide/assets/icons/compendiums/riot-shield.svg
 system:
   description: >-
     <p>Shields offer valuable defensive options in close and ranged
@@ -26,11 +26,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.361'
+  coreVersion: '14.364'
   systemId: synthicide
   systemVersion: 1.0.30
   createdTime: 1778954381951
-  modifiedTime: 1778954381951
+  modifiedTime: 1784127272759
   lastModifiedBy: CyKka7cUoDSGKuCg
   exportSource: null
   compendiumSource: null

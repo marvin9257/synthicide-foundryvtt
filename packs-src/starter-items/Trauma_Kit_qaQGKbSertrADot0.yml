@@ -1,7 +1,7 @@
 folder: Ku9LRHfMXoTOWltf
 name: Trauma Kit
 type: gear
-img: systems/synthicide/assets/icons/items/gear.svg
+img: systems/synthicide/assets/icons/compendiums/medical-drip.svg
 system:
   description: >-
     <p>A field surgery kit for treating minor injuries. Fills half a backpack
@@ -24,11 +24,11 @@ ownership:
   CyKka7cUoDSGKuCg: 3
 flags: {}
 _stats:
-  coreVersion: '14.364'
+  coreVersion: '14.365'
   systemId: synthicide
   systemVersion: 1.1.6
   createdTime: 1783959657794
-  modifiedTime: 1783959657794
+  modifiedTime: 1784224173372
   lastModifiedBy: CyKka7cUoDSGKuCg
   compendiumSource: null
   duplicateSource: Item.4EwZT7NknUBW09NN
