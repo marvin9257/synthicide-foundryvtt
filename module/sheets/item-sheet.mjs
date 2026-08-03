@@ -27,6 +27,7 @@ const ITEM_BASE_PARTS_BY_TYPE = {
   aspect: ['abilitiesAspect', 'attributesAspect', 'traitsBioclass'],
   armor: ['general'],
   shield: ['general'],
+  artifact: ['general', 'rollGear'],
   weapon: ['general', 'rollGear', 'npcTiers'],
   cargo: ['general'],
   vehicleWeapon: ['general']
@@ -106,7 +107,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
                   'systems/synthicide/templates/item/parts/general-shield.hbs',
                   'systems/synthicide/templates/item/parts/general-implant.hbs',
                   'systems/synthicide/templates/item/parts/general-cargo.hbs',
-                  'systems/synthicide/templates/item/parts/general-vehicleWeapon.hbs'
+                  'systems/synthicide/templates/item/parts/general-vehicleWeapon.hbs',
+                  'systems/synthicide/templates/item/parts/general-artifact.hbs'
                 ],
       scrollable: [""]
     },

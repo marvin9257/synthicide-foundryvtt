@@ -224,6 +224,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   async _prepareItems(context) {
     // Initialize containers.
     const gear = this.actor.itemTypes.gear;
+    const artifacts = this.actor.itemTypes.artifact;
     const armor = this.actor.itemTypes.armor;
     const shield = this.actor.itemTypes.shield;
     const weapon = this.actor.itemTypes.weapon;
@@ -267,6 +268,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     // Sort then assign
     context.gear = gear?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    context.artifacts = artifacts?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.armor = armor?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.shield = shield?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
     context.weapon = weapon?.sort((a, b) => (a.sort || 0) - (b.sort || 0));

@@ -90,7 +90,7 @@
         "Attributes": "Attributes",
         "Biography": "Biography",
         "Features": "Features",
-        "Gear": "Gear",
+        "Gear": "Gear & Artifacts",
         "Spells": "Spells",
         "Cybernetics": "Cybernetics",
         "Traits": "Traits & Powers",
@@ -291,6 +291,9 @@
         "FIELDS": {
           "level.value": {"label": "Level"}
         }
+      },
+      "Gear": {
+        "Artifacts": "Artifacts"
       }
     },
     "Vehicle": {
@@ -621,6 +624,16 @@
           "Shocking": "Shocking",
           "Radiodynamic": "Radiodynamic",
           "Gravatic": "Gravatic"
+        }
+      },
+      "Artifact": {
+        "FIELDS": {
+          "Level": "Level",
+          "Uses": "Uses",
+          "Charges": "Charges",
+          "Max": "Max",
+          "Current": "Current",
+          "Rechargeable": "Rechargeable"
         }
       },
       "Trait": {
@@ -1091,7 +1104,8 @@
       "weapon" : "Weapon",
       "shield": "Shield",
       "cargo": "Cargo",
-      "vehicleWeapon": "Vehicle Weapon"
+      "vehicleWeapon": "Vehicle Weapon",
+      "artifact": "Artifact"
     }
   }
 }
