@@ -3,6 +3,7 @@ const SYNTHICIDE = {};
 // Centralized item type to icon mapping for default artwork
 SYNTHICIDE.ICON_TYPE_MAP = {
   armor: 'armor.svg',
+  artifact: 'artifact.svg',
   aspect: 'aspect.svg',
   bioclass: 'bioclass.svg',
   gear: 'gear.svg',
