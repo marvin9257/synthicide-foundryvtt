@@ -24,6 +24,7 @@ export default class SynthicideArtifact extends SynthicideGear {
 
     schema.level = new fields.NumberField({...requiredInteger, initial: 1});
     schema.uses = new fields.SchemaField({
+      unlimited: new fields.BooleanField({ required: true, nullable: false, initial: false }),
       rechargeable: new fields.BooleanField({ required: true, nullable: false, initial: false }),
       value: new fields.NumberField({ ...requiredInteger, initial: 1, min: 0 }),
       max: new fields.NumberField({ ...requiredInteger, initial: 1, min: 1 })

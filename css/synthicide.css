@@ -1082,8 +1082,14 @@ body.theme-dark .npc-compact .window-content {
 }
 
 .synthicide .trait-top-fields.trait-top-fields--artifact > .resource {
+  flex: 1 1 0;
   justify-content: flex-start;
   align-self: flex-start;
+}
+
+.synthicide .trait-top-fields.trait-top-fields--artifact > fieldset.artifact {
+  flex: 2 1 0;
+  min-width: 0;
 }
 
 .synthicide .trait-description-editor {

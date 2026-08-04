@@ -633,7 +633,8 @@
           "Charges": "Charges",
           "Max": "Max",
           "Current": "Current",
-          "Rechargeable": "Rechargeable"
+          "Rechargeable": "Rechargeable",
+          "Unlimited": "Unlimited"
         }
       },
       "Trait": {
