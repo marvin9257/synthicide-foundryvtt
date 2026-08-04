@@ -99,6 +99,13 @@ export class SynthicideItem extends foundry.documents.Item {
         }
       }
     }
+
+    // Clamp artifact uses from 0 to max
+    const artifactCurrentValueChanged = this.type === 'artifact' && update?.system?.uses?.value;
+    if (artifactCurrentValueChanged) {
+      const clampedUses = Math.clamp(update.system.uses.value, 0, this.system.uses.max);
+      foundry.utils.setProperty(update, 'system.uses.value', clampedUses);
+    }
     return allowed;
   }
 
