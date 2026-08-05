@@ -99,6 +99,7 @@ export class SynthicideItem extends foundry.documents.Item {
         }
       }
     }
+
     return allowed;
   }
 

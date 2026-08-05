@@ -1,0 +1,43 @@
+folder: vp3fvsSxJqnXCOeo
+name: Prime Rations
+type: artifact
+_id: come6cMguVhvnQLv
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: >-
+    <p>Super nutritious rations were common during the Millennial War and are
+    usually found in sets of 7. They never spoil. Consuming one restores 20% of
+    your HP and counts as sufficient food and water for 4 days.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: false
+    rechargeable: false
+    value: 7
+    max: 7
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944961018
+  modifiedTime: 1785944994742
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 400000
+_key: '!items!come6cMguVhvnQLv'

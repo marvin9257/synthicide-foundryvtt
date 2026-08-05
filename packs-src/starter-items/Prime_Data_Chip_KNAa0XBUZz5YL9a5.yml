@@ -1,0 +1,44 @@
+folder: vp3fvsSxJqnXCOeo
+name: Prime Data Chip
+type: artifact
+_id: KNAa0XBUZz5YL9a5
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: >-
+    <p>A small drive containing historical data from before the war. Prime data
+    chips are encrypted against digital duplication and impossible to decipher.
+    They can be traded to the Farstar Guild for artifacts. The number of chips
+    required equals the level of the desired artifact.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: true
+    rechargeable: false
+    value: 1
+    max: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944959320
+  modifiedTime: 1785944994742
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 200000
+_key: '!items!KNAa0XBUZz5YL9a5'

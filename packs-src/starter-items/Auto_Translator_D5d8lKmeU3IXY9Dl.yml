@@ -1,0 +1,43 @@
+folder: vp3fvsSxJqnXCOeo
+name: Auto-Translator
+type: artifact
+_id: D5d8lKmeU3IXY9Dl
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: >-
+    <p>This small box contains simple AI and millennia of linguistic recordings.
+    It interprets any spoken language into the user’s native tongue via speaker
+    or earpiece. It does not aid in reading written text.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: true
+    rechargeable: false
+    value: 1
+    max: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944930678
+  modifiedTime: 1785944994743
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 1500000
+_key: '!items!D5d8lKmeU3IXY9Dl'

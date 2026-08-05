@@ -1,0 +1,76 @@
+folder: vp3fvsSxJqnXCOeo
+name: Prod-Killer
+type: weapon
+_id: LZbeP7eVSdgzhIK8
+img: systems/synthicide/assets/icons/items/knife.svg
+system:
+  description: >-
+    <p>This bizarre blade functions as a knife or bayonet with +1 ATT and +1
+    DMG. Against mutants, it has +2 ATT and +6 DMG. Against full-blown
+    Prodigravus, it has +2 ATT and +12 DMG. NOTE: these bonuses must be
+    implemented manually.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  weaponClass: melee
+  weaponType: knife
+  rangeIncrement: 0
+  features:
+    - counter
+  modifications: []
+  specialAmmo: none
+  bonuses:
+    attack: 0
+    damage: 0
+    lethal: 0
+    battleAssistValue: 0
+    doubleShotBonus: 0
+  attackBonus: 1
+  damageBonus: 1
+  lethal: 0
+  tierBonuses:
+    '1':
+      attack: 0
+      damage: 0
+      lethal: 0
+      battleAssistValue: 0
+      doubleShotBonus: 0
+    '2':
+      attack: 0
+      damage: 0
+      lethal: 0
+      battleAssistValue: 0
+      doubleShotBonus: 0
+    '3':
+      attack: 0
+      damage: 0
+      lethal: 0
+      battleAssistValue: 0
+      doubleShotBonus: 0
+  weaponTier: 1
+  masteredWeapon: false
+  specialType: ''
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944964600
+  modifiedTime: 1785944994742
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 600000
+_key: '!items!LZbeP7eVSdgzhIK8'

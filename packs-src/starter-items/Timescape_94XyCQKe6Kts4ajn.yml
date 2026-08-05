@@ -1,0 +1,45 @@
+folder: vp3fvsSxJqnXCOeo
+name: Timescape
+type: artifact
+_id: 94XyCQKe6Kts4ajn
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: >-
+    <p>This 3D projector replays specific moments in ancient history.
+    Information gleaned from a timescape usually leads to a unique high-risk
+    mission to find ancient artifact caches. Players can also use it to learn
+    key details about the fall of the Allunan Empire during the Millennial
+    War.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: true
+    rechargeable: false
+    value: 1
+    max: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944994701
+  modifiedTime: 1785944994742
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 300000
+_key: '!items!94XyCQKe6Kts4ajn'

@@ -1076,6 +1076,22 @@ body.theme-dark .npc-compact .window-content {
   justify-content: flex-end;
 }
 
+/* Artifact general fields use mixed-height columns; keep the level block top-aligned. */
+.synthicide .trait-top-fields.trait-top-fields--artifact {
+  align-items: flex-start;
+}
+
+.synthicide .trait-top-fields.trait-top-fields--artifact > .resource {
+  flex: 1 1 0;
+  justify-content: flex-start;
+  align-self: flex-start;
+}
+
+.synthicide .trait-top-fields.trait-top-fields--artifact > fieldset.artifact {
+  flex: 2 1 0;
+  min-width: 0;
+}
+
 .synthicide .trait-description-editor {
   border: 1px solid var(--synthicide-c-border-subtle);
   padding: 4px;
@@ -2327,7 +2343,7 @@ body.theme-dark.synthicide-style-bold .synthicide h4 {
 }
 
 /* Bar labels using h4 is a full-width header bar */
-body.synthicide-style-bold .synthicide .tab:is(.aspect, .combat, .cybernetics, .info, .biography, .npcTiers, .description, .attributes, .capacity) h4 {
+body.synthicide-style-bold .synthicide .tab:is(.aspect, .combat, .cybernetics, .gear, .info, .biography, .npcTiers, .description, .attributes, .capacity) h4 {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
   border-left: 5px solid var(--rb-accent);
@@ -2335,6 +2351,12 @@ body.synthicide-style-bold .synthicide .tab:is(.aspect, .combat, .cybernetics, .
   margin: 0 0 4px;
   font-size: var(--reduced-font-size);
   border-radius: 0;
+}
+
+/* Add breathing room between section blocks (list -> next section header). */
+body.synthicide-style-bold .synthicide .tab.combat .items-list + h4,
+body.synthicide-style-bold .synthicide .tab.gear .items-list + h4 {
+  margin-top: 10px;
 }
 
 /* ============================================================ */

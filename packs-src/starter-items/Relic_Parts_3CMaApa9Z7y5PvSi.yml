@@ -1,0 +1,47 @@
+folder: vp3fvsSxJqnXCOeo
+name: Relic Parts
+type: artifact
+_id: 3CMaApa9Z7y5PvSi
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: >-
+    <p>Relic parts are the result of scrapping a level 4 artifact. With the
+    proper knowledge area, they can be installed into weapons, armor, or
+    cybernetics to improve performance. Level 1 parts require an operation RD 9
+    check to install and permanently increase any numerical item bonus of your
+    choice by +1. Benefits from multiple relic parts do not stack — only 1 bonus
+    per item applies. A failed crafting check breaks the item being upgraded,
+    not the relic parts.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: true
+    rechargeable: false
+    value: 1
+    max: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944966268
+  modifiedTime: 1785944994742
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 700000
+_key: '!items!3CMaApa9Z7y5PvSi'

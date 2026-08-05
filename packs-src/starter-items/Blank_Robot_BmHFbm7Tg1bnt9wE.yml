@@ -1,0 +1,45 @@
+folder: vp3fvsSxJqnXCOeo
+name: Blank Robot
+type: artifact
+_id: BmHFbm7Tg1bnt9wE
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: >-
+    <p>An ancient robot of limited use, blank bots are extremely compliant and
+    act as an extra set of hands for simple tasks. They may be programmed to
+    follow the commands of a specific person but will never knowingly harm a
+    human or other AI. They have the attributes of a level 1 robot professional
+    NPC with no mastered attacks or powers.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: true
+    rechargeable: false
+    value: 1
+    max: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944933773
+  modifiedTime: 1785944994743
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 1600000
+_key: '!items!BmHFbm7Tg1bnt9wE'

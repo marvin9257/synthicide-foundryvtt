@@ -1,0 +1,40 @@
+folder: vp3fvsSxJqnXCOeo
+name: Primefire Cell
+type: artifact
+_id: YqTUIfncdU7EfJzv
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: <p>This ancient battery restores an artifact to full charge.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 500
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: false
+    rechargeable: false
+    value: 1
+    max: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944962762
+  modifiedTime: 1785944994742
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 500000
+_key: '!items!YqTUIfncdU7EfJzv'

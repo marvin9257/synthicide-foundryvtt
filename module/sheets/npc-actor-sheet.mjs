@@ -142,6 +142,7 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
     // Gear items sorted by drag-order.
     const sortFn = (a, b) => (a.sort || 0) - (b.sort || 0);
     context.gear = this.actor.itemTypes.gear?.sort(sortFn) ?? [];
+    context.artifacts = this.actor.itemTypes.artifact?.sort(sortFn) ?? [];
     context.armor = this.actor.itemTypes.armor?.sort(sortFn) ?? [];
     context.shield = this.actor.itemTypes.shield?.sort(sortFn) ?? [];
     context.weapon = this.actor.itemTypes.weapon?.sort(sortFn) ?? [];
@@ -149,7 +150,8 @@ export class SynthicideNPCActorSheet extends api.HandlebarsApplicationMixin(
     context.npcInventory = [
       ...context.gear,
       ...context.armor,
-      ...context.shield
+      ...context.shield,
+      ...context.artifacts
     ].sort((a, b) => {
       const sortDelta = (a.sort || 0) - (b.sort || 0);
       if (sortDelta !== 0) return sortDelta;

@@ -17,6 +17,7 @@ export { default as SynthicideWeapon } from './item-weapon.mjs';
 export { default as SynthicideImplant } from './item-implant.mjs';
 export { default as SynthicideCargo } from './item-cargo.mjs';
 export { default as SynthicideVehicleWeapon } from './item-vehicleWeapon.mjs';
+export { default as SynthicideArtifact } from './item-artifact.mjs';
 
 // Export Card System DataModels
 export * from './card-system-models.mjs';

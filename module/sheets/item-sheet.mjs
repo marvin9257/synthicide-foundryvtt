@@ -27,6 +27,7 @@ const ITEM_BASE_PARTS_BY_TYPE = {
   aspect: ['abilitiesAspect', 'attributesAspect', 'traitsBioclass'],
   armor: ['general'],
   shield: ['general'],
+  artifact: ['general', 'rollGear'],
   weapon: ['general', 'rollGear', 'npcTiers'],
   cargo: ['general'],
   vehicleWeapon: ['general']
@@ -106,7 +107,8 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
                   'systems/synthicide/templates/item/parts/general-shield.hbs',
                   'systems/synthicide/templates/item/parts/general-implant.hbs',
                   'systems/synthicide/templates/item/parts/general-cargo.hbs',
-                  'systems/synthicide/templates/item/parts/general-vehicleWeapon.hbs'
+                  'systems/synthicide/templates/item/parts/general-vehicleWeapon.hbs',
+                  'systems/synthicide/templates/item/parts/general-artifact.hbs'
                 ],
       scrollable: [""]
     },
@@ -255,7 +257,26 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
 
   /** @override */
   async _processSubmitData(event, form, submitData) {
-    await this.document.update(submitData);
+    let didClampArtifactValue = false;
+
+    if (this.document.type === 'artifact') {
+      const incomingValue = Number(foundry.utils.getProperty(submitData, 'system.uses.value'));
+      const incomingMax = Number(foundry.utils.getProperty(submitData, 'system.uses.max'));
+      const max = Number.isFinite(incomingMax) ? incomingMax : Number(this.document.system?.uses?.max ?? 0);
+
+      if (Number.isFinite(incomingValue)) {
+        const clampedValue = Math.clamp(incomingValue, 0, max);
+        if (clampedValue !== incomingValue) {
+          foundry.utils.setProperty(submitData, 'system.uses.value', clampedValue);
+          didClampArtifactValue = true;
+        }
+      }
+    }
+
+    await this.document.update(submitData, { render: true });
+    if (didClampArtifactValue) {
+      await this.render({ force: true });
+    }
   }
 
   /**

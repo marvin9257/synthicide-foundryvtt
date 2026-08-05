@@ -100,6 +100,7 @@ Hooks.once('init', function () {
   CONFIG.Item.documentClass = SynthicideItem;
   CONFIG.Item.dataModels = {
     armor: models.SynthicideArmor,
+    artifact: models.SynthicideArtifact,
     aspect: models.SynthicideAspect,
     bioclass: models.SynthicideBioclass,
     implant: models.SynthicideImplant,

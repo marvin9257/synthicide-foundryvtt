@@ -3,6 +3,7 @@ const SYNTHICIDE = {};
 // Centralized item type to icon mapping for default artwork
 SYNTHICIDE.ICON_TYPE_MAP = {
   armor: 'armor.svg',
+  artifact: 'artifact.svg',
   aspect: 'aspect.svg',
   bioclass: 'bioclass.svg',
   gear: 'gear.svg',
@@ -424,7 +425,7 @@ SYNTHICIDE.motivations = {
 //Alowed Trait levels
 SYNTHICIDE.ALLOWED_TRAIT_LEVELS = [1, 4, 7];
 //items that have quantity, weight and could be equipped
-SYNTHICIDE.GEAR_TYPES = ["gear", "armor", "shield", "weapon", "implant", "drugs"];
+SYNTHICIDE.GEAR_TYPES = ["gear", "armor", "shield", "weapon", "implant", "drugs", "artifact"];
 SYNTHICIDE.EQUIPABLE = ["armor", "shield", "weapon", "implant"];
 SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES = ["armor", "shield"];
 
