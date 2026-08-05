@@ -1,3 +1,20 @@
+# [1.2.0](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.8...1.2.0) (2026-08-05)
+
+
+### Bug Fixes
+
+* add an unlimited uses ([a01f335](https://github.com/marvin9257/synthicide-foundryvtt/commit/a01f335c6daeeb83fa73eb4fa2af21b63ebc4f64))
+* add default artifact icon ([03f81b9](https://github.com/marvin9257/synthicide-foundryvtt/commit/03f81b9fb0bcb0e6c0707217cb6910015f6efc45))
+* add level 1 artifacts to compendium ([5262eb7](https://github.com/marvin9257/synthicide-foundryvtt/commit/5262eb7564c6d32f5fee9580c60e5c331737c179))
+* have clamp on item sheet and not item document ([03f9202](https://github.com/marvin9257/synthicide-foundryvtt/commit/03f9202b07d0b9ee193dd2a6911c71f71da50409))
+* Merge pull request [#14](https://github.com/marvin9257/synthicide-foundryvtt/issues/14) from marvin9257/feat-add-artifact-item ([ded67b8](https://github.com/marvin9257/synthicide-foundryvtt/commit/ded67b83e8cf896af4ec25d34c188c7faaa926d4))
+* try to clamp artifact.uses.value ([74a507f](https://github.com/marvin9257/synthicide-foundryvtt/commit/74a507f4195e19a591f0ecde9ad196f12ef96f91))
+
+
+### Features
+
+* Initial Artifact item code ([4c0a1fb](https://github.com/marvin9257/synthicide-foundryvtt/commit/4c0a1fbb14739ae2f36237803977a0e5dc3595ac))
+
 ## [1.1.8](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.7...1.1.8) (2026-07-27)
 
 
