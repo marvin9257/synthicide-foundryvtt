@@ -257,7 +257,26 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
 
   /** @override */
   async _processSubmitData(event, form, submitData) {
-    await this.document.update(submitData);
+    let didClampArtifactValue = false;
+
+    if (this.document.type === 'artifact') {
+      const incomingValue = Number(foundry.utils.getProperty(submitData, 'system.uses.value'));
+      const incomingMax = Number(foundry.utils.getProperty(submitData, 'system.uses.max'));
+      const max = Number.isFinite(incomingMax) ? incomingMax : Number(this.document.system?.uses?.max ?? 0);
+
+      if (Number.isFinite(incomingValue)) {
+        const clampedValue = Math.clamp(incomingValue, 0, max);
+        if (clampedValue !== incomingValue) {
+          foundry.utils.setProperty(submitData, 'system.uses.value', clampedValue);
+          didClampArtifactValue = true;
+        }
+      }
+    }
+
+    await this.document.update(submitData, { render: true });
+    if (didClampArtifactValue) {
+      await this.render({ force: true });
+    }
   }
 
   /**
