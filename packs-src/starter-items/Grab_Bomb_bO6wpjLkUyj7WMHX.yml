@@ -1,0 +1,76 @@
+folder: vp3fvsSxJqnXCOeo
+name: Grab-Bomb
+type: weapon
+_id: bO6wpjLkUyj7WMHX
+img: systems/synthicide/assets/icons/items/grenade.svg
+system:
+  description: >-
+    <p>This ancient law enforcement device freezes assailants in place. Use it
+    as a grenade with a range increment of 1 zone. When activated, it generates
+    a restraining field in a 3-unit blast template. Everyone inside must beat a
+    toughness RD 9 or be frozen helpless for 5 turns.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  weaponClass: demolition
+  weaponType: grenade
+  rangeIncrement: 1
+  features:
+    - blast3
+  modifications: []
+  specialAmmo: none
+  bonuses:
+    attack: 0
+    damage: 0
+    lethal: 0
+    battleAssistValue: 0
+    doubleShotBonus: 0
+  attackBonus: 0
+  damageBonus: 0
+  lethal: 0
+  tierBonuses:
+    '1':
+      attack: 0
+      damage: 0
+      lethal: 0
+      battleAssistValue: 0
+      doubleShotBonus: 0
+    '2':
+      attack: 0
+      damage: 0
+      lethal: 0
+      battleAssistValue: 0
+      doubleShotBonus: 0
+    '3':
+      attack: 0
+      damage: 0
+      lethal: 0
+      battleAssistValue: 0
+      doubleShotBonus: 0
+  weaponTier: 1
+  masteredWeapon: false
+  specialType: ''
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944939060
+  modifiedTime: 1785944994743
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 1800000
+_key: '!items!bO6wpjLkUyj7WMHX'

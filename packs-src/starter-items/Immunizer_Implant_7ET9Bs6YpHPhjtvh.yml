@@ -1,0 +1,44 @@
+folder: vp3fvsSxJqnXCOeo
+name: Immunizer Implant
+type: implant
+_id: 7ET9Bs6YpHPhjtvh
+img: systems/synthicide/assets/icons/items/implant.svg
+system:
+  description: >-
+    <p>A tiny body implant used by the wealthy during the Last Age. Immunizers
+    grant +10 to rolls made to resist disease. They are small and unobtrusive
+    and usable by all humans. They require no cybernetic slots to install.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  location: body
+  implantType: custom
+  modifications: []
+  customMods: |-
+    Immunizers grant +10 to rolls made to resist
+    disease.
+  slotSize: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944942794
+  modifiedTime: 1785944994742
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 900000
+_key: '!items!7ET9Bs6YpHPhjtvh'

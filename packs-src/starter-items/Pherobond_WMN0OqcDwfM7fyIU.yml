@@ -1,0 +1,43 @@
+name: Pherobond
+type: artifact
+_id: WMN0OqcDwfM7fyIU
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: >-
+    <p>This vial contains manipulative fumes that incite feelings of trust in
+    the inhaler. Crack it open to captivate targets engaged with you. It grants
+    +5 to a single influence roll made to negotiate or bluff.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 500
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: false
+    rechargeable: false
+    value: 1
+    max: 1
+effects: []
+folder: vp3fvsSxJqnXCOeo
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944956341
+  modifiedTime: 1785944994742
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 100000
+_key: '!items!WMN0OqcDwfM7fyIU'

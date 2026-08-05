@@ -1,0 +1,46 @@
+folder: vp3fvsSxJqnXCOeo
+name: P-virus Mutosample
+type: artifact
+_id: wDJwjgkx1tbdgAkS
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: >-
+    <p>A rare and ancient strain of the Prodigravus virus is contained within
+    this vial. When cracked, 1 target is mildly infected until their
+    GLD-enhanced immune system prevents full transformation. The target
+    permanently loses 1 nerve and gains 3 trait points that can only be spent on
+    mutations. The mutosample remains effective on Dying Breed humans despite
+    their usual resistance to mutations.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: false
+    rechargeable: false
+    value: 1
+    max: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944950446
+  modifiedTime: 1785944994743
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 1400000
+_key: '!items!wDJwjgkx1tbdgAkS'

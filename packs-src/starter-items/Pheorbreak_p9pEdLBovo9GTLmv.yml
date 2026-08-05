@@ -1,0 +1,43 @@
+folder: vp3fvsSxJqnXCOeo
+name: Pheorbreak
+type: artifact
+_id: p9pEdLBovo9GTLmv
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: >-
+    <p>This vial contains powerful fumes that intensify fear. Open it to
+    intimidate targets engaged with you. Gain +3 on a single nerve roll resisted
+    by the targets’ nerve roll. Foes that fail flee immediately.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 600
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: false
+    rechargeable: false
+    value: 1
+    max: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944952164
+  modifiedTime: 1785944994742
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 1100000
+_key: '!items!p9pEdLBovo9GTLmv'

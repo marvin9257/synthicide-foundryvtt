@@ -1,0 +1,46 @@
+folder: vp3fvsSxJqnXCOeo
+name: Mutant Dowser
+type: artifact
+_id: rsIHaEc3zHd1fGs6
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: >-
+    <p>The dowser was originally designed to detect p-virus infection. As a
+    handheld scanner, it pinpoints corrupt DNA out to two zones. Detectable
+    targets include both mutants and Prodigravus. It cannot reveal an exact
+    location, only proximity. When placed directly on human skin, it projects a
+    readout detailing the degree of DNA corruption. It does not need to be
+    recharged.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: true
+    rechargeable: false
+    value: 1
+    max: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944948913
+  modifiedTime: 1785944994743
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 1300000
+_key: '!items!rsIHaEc3zHd1fGs6'

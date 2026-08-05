@@ -1,0 +1,44 @@
+folder: vp3fvsSxJqnXCOeo
+name: Hollow Gel
+type: artifact
+_id: W7ssix2Tam6uLZGu
+img: systems/synthicide/assets/icons/items/artifact.svg
+system:
+  description: >-
+    <p>This single-dose autoneedle injects a lethal drug that kills any
+    organic/rigged target within 5 days. During the Millennial War, soldiers
+    consumed it before suicide missions to ensure they would never rise as
+    Prodigravus.</p>
+  quantity: 1
+  weight: 0
+  equipped: false
+  price: 0
+  roll:
+    enabled: true
+    diceNum: 1
+    diceSize: d10
+    diceBonus: + @attributes.combat.value
+  formula: ''
+  level: 1
+  uses:
+    unlimited: false
+    rechargeable: false
+    value: 1
+    max: 1
+effects: []
+ownership:
+  default: 0
+  CyKka7cUoDSGKuCg: 3
+flags: {}
+_stats:
+  coreVersion: '14.365'
+  systemId: synthicide
+  systemVersion: 1.1.8
+  createdTime: 1785944940713
+  modifiedTime: 1785944994743
+  lastModifiedBy: CyKka7cUoDSGKuCg
+  compendiumSource: null
+  duplicateSource: null
+  exportSource: null
+sort: 1700000
+_key: '!items!W7ssix2Tam6uLZGu'
