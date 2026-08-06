@@ -51,9 +51,10 @@ export default class SynthicideTrait extends SynthicideItemBase {
 
     schema.requirements = new fields.StringField({...requiredBlankString});
     schema.apCost = new fields.StringField({...requiredBlankString});
-    schema.range = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.usesLimit = new fields.NumberField({...requiredInteger, initial: 0}, {persisted: false});
-    schema.overchargeCost = new fields.NumberField({...requiredInteger, initial: 0}, {persisted: false});
+    schema.range = new fields.StringField({...requiredBlankString});
+    schema.usesLimit = new fields.StringField({...requiredBlankString});
+    schema.overchargeCost = new fields.NumberField({...requiredInteger, initial: 0});
+    schema.traitPoints = new fields.NumberField({...requiredInteger, initial: 0});
 
     return schema;
   }

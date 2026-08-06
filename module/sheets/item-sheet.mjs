@@ -71,7 +71,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     classes: ['synthicide', 'item'],
     position: {
       width: 520,
-      height: 450,
+      height: 'auto',
     },
     actions: {
       //onEditImage: this._onEditImage,
@@ -192,18 +192,25 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         tabs: this._getTabs(options.parts),
       },
     });
-    // Build traitTypeOptions and localized trait level options for select helpers
-    context.config = context.config || {};
-    // traitTypes is already a key->loc-key map; the template can localize it
-    context.config.traitTypeOptions = SYNTHICIDE.traitTypes;
-    context.config.weaponSpecializationOptions = SYNTHICIDE.WEAPON_SPECIALIZATIONS;
-    // Localized labels for allowed trait levels using a single format string
     
-    context.config.traitLevelOptions = Object.fromEntries(
-      SYNTHICIDE.ALLOWED_TRAIT_LEVELS.map(l => [String(l), game.i18n.format('SYNTHICIDE.Item.Trait.LevelLabel', { level: l })])
-    );
+    context.config = context.config || {};
+    
     context.isGear = SYNTHICIDE.GEAR_TYPES.includes(this.item.type);
     context.isEquipable = SYNTHICIDE.EQUIPABLE.includes(this.item.type);
+    
+    if (this.item.type === 'trait') {
+      // Build traitTypeOptions and localized trait level options for select helpers
+      // traitTypes is already a key->loc-key map; the template can localize it
+      context.config.traitTypeOptions = SYNTHICIDE.traitTypes;
+      context.config.weaponSpecializationOptions = SYNTHICIDE.WEAPON_SPECIALIZATIONS;
+      // Localized labels for allowed trait levels using a single format string
+      context.config.traitLevelOptions = Object.fromEntries(
+        SYNTHICIDE.ALLOWED_TRAIT_LEVELS.map(l => [String(l), game.i18n.format('SYNTHICIDE.Item.Trait.LevelLabel', { level: l })])
+      );
+      context.isPsychicOrTactical = ['psychicPower', 'tacticalPower'].includes(this.item.system.traitType);
+      context.isPsychic = this.item.system.traitType === 'psychicPower';
+    }
+
     if (this.item.type === 'implant') {
       const implantType = this.item.system.implantType ?? 'custom';
       const implantLocation = this.item.system.location ?? 'body';
@@ -218,6 +225,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
           ? implantModel.getAvailableModificationChoices(implantType)
           : (SYNTHICIDE.IMPLANT_MODIFICATIONS[implantType] ?? {});
     }
+
     if (this.item.type === "weapon") {
       context.weaponClasses = SYNTHICIDE.WEAPON_CLASSES;
       context.weaponTypes = SYNTHICIDE.WEAPON_TYPES[this.item.system.weaponClass];

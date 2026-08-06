@@ -653,7 +653,12 @@
           "level": {"label": "Trait Level"},
           "traitType": {"label": "Trait Type"},
           "specializationKey": {"label": "Weapon Specialization"},
-          "requirements": {"label": "Requirements"}
+          "requirements": {"label": "Requirements"},
+          "traitPoints": {"label": "Trait Points"},
+          "overchargeCost": {"label": "Overcharge Cost (HP)"},
+          "usesLimit": {"label": "Uses Limit"},
+          "apCost": {"label": "AP Cost"},
+          "range": {"label": "Range"}
         },
         "TypeLabel": "Trait/Power",
         "TraitLVL": "Level {level} Traits & Powers",
