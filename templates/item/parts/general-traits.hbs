@@ -6,6 +6,14 @@
       {{selectOptions @root.config.traitTypeOptions selected=system.traitType localize=true}}
     </select>
   </div>
+  {{#if (eq system.traitType 'weaponProficiency')}}
+    <div class='resource resource-pair'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.specializationKey.label'}}</label>
+      <select name='system.specializationKey'>
+        {{selectOptions @root.config.weaponSpecializationOptions selected=system.specializationKey localize=true}}
+      </select>
+    </div>
+  {{/if}}
 </div>
 <div class='trait-top-fields'>
   <div class='resource resource-pair'>
@@ -73,15 +81,6 @@
         name='system.overchargeCost'
         value='{{system.overchargeCost}}'
       />
-    </div>
-  {{/if}}
-
-  {{#if (eq system.traitType 'weaponProficiency')}}
-    <div class='resource resource-pair'>
-      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.specializationKey.label'}}</label>
-      <select name='system.specializationKey'>
-        {{selectOptions @root.config.weaponSpecializationOptions selected=system.specializationKey localize=true}}
-      </select>
     </div>
   {{/if}}
 </div>
