@@ -228,7 +228,7 @@
         "CreateAbility": "Add Ability",
         "Traits": "Traits",
         "EditAspect": "Edit Aspect",
-        "TraitsHelp": "These traits come from your assigned Aspect. Use Edit Aspect to change attribute bonuses / penalties. Use a trait's edit button to change that trait's text.",
+        "TraitsHelp": "These traits come from your assigned Aspect. Use Edit Aspect to change them.",
         "BonusSummary": "Aspect Bonuses Applied",
         "NoBonuses": "No active aspect bonuses."
       },

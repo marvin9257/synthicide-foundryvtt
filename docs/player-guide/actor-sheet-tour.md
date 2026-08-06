@@ -57,9 +57,7 @@ Know where to find things during play.
 | Remove button | Trash/X icon | Click to unassign the aspect |
 | Abilities list | Text | Reference only; shows aspect abilities |
 | Aspect Attribute Bonuses Applied | Bonus pills | Shows currently applied non-zero aspect bonuses |
-| Generated trait | Trait card | Reference plus per-trait controls |
-| Generated trait edit | Pencil icon | Click to edit one generated trait |
-| Generated trait delete | Trash icon | Click to remove one generated trait |
+| Generated trait | Trait card | Reference only; reflects source rows defined on the aspect item |
 
 ### Gear Tab (Rollable Items)
 

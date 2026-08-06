@@ -12,7 +12,7 @@ Assign and manage your aspect, its generated traits, and its applied attribute b
 4. Click the Aspect edit icon to open the aspect item.
 5. In the aspect item Attributes tab, set attribute bonuses and HP bonus fields as needed.
 6. In the aspect item Traits tab, add or remove trait source rows if needed.
-7. Back on the actor Aspect tab, use a trait edit button to adjust an individual generated trait's text.
+7. Back on the actor Aspect tab, review generated trait cards to confirm they match your Aspect item source rows.
 8. To replace an aspect, drag a new one onto the actor (old one is removed).
 9. Recheck the applied bonus row and generated traits after replacement.
 
@@ -29,13 +29,11 @@ When viewing the actor Aspect tab:
 | Abilities list | Text entries | Reference only; shows aspect abilities |
 | Aspect Attribute Bonuses Applied | Pill list | Shows non-zero bonuses currently applied |
 | Generated trait card | Card row | Shows generated trait name and description |
-| Trait edit button | Pencil icon | Opens that generated trait for editing |
-| Trait delete button | Trash icon | Removes that generated trait item |
 
 Helper text meaning:
 
 1. Use Edit Aspect to add or remove aspect trait source rows.
-2. Use a trait edit button to change that single generated trait's text/details.
+2. Generated trait cards on the actor tab are reference-only.
 
 ## Interactive Elements On Aspect Items
 
@@ -84,8 +82,7 @@ When you open an aspect item:
 
 1. Set aspect field values on the Attributes tab when your build requires non-default values.
 2. Add/remove source trait rows in the aspect item if your table's build needs adjustments.
-3. Edit individual generated trait text via the trait edit button on the actor Aspect tab.
-4. Track any table-specific narrative details for text-only abilities.
+3. Track any table-specific narrative details for text-only abilities.
 
 Example: If your aspect grants +2 Operation and -1 Awareness, set those directly in the aspect Attributes tab.
 
