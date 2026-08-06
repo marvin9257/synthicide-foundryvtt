@@ -226,7 +226,11 @@
         "NoAbilities": "No abilities found.",
         "TraitName": "Trait Name",
         "CreateAbility": "Add Ability",
-        "Traits": "Traits"
+        "Traits": "Traits",
+        "EditAspect": "Edit Aspect",
+        "TraitsHelp": "These traits come from your assigned Aspect. Use Edit Aspect to change attribute bonuses / penalties. Use a trait's edit button to change that trait's text.",
+        "BonusSummary": "Aspect Bonuses Applied",
+        "NoBonuses": "No active aspect bonuses."
       },
       "Attributes": {
         "Actions": "ACTIONS",
@@ -236,7 +240,8 @@
         "Current": "Current",
         "Raw": "Raw",
         "Aspect": "Aspect",
-        "ModifierTooltip": "Raw: {raw} | Aspect: {aspect}",
+        "ModifierBreakdown": "Modifier Breakdown",
+        "ModifierTooltip": "{breakdown}: {raw} + {aspect}",
         "label": "Attributes"
       },
       "Combat": {
@@ -711,6 +716,7 @@
       "Aspect": {
         "Label": "Aspect",
         "AttributeBonusesHeader": "Bonuses",
+        "AttributeBonusesHelp": "These values apply to the embedded actor as aspect bonuses.",
         "Abilities": "Abilities",
         "AddAbility": "Add Ability",
         "NoAbilities": "No abilities found.",

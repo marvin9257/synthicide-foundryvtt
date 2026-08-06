@@ -47,16 +47,19 @@ Know where to find things during play.
 | Generated trait edit | Pencil icon | Click to open and edit the generated trait |
 | Generated trait delete | Trash icon | Click to remove the generated trait |
 
-### Aspect Tab (Same as Bioclass Tab)
+### Aspect Tab
 
 | Element | Icon | Action |
 |---------|------|--------|
-| Aspect name | Text | Reference; click to open the aspect item sheet |
+| Aspect name | Text | Reference only; shows assigned aspect |
+| Info button | Info icon | Click to view aspect description |
 | Edit button | Pencil icon | Click to open the aspect item for editing |
 | Remove button | Trash/X icon | Click to unassign the aspect |
 | Abilities list | Text | Reference only; shows aspect abilities |
-| Generated trait | Trait entry | Click to open and finalize trait choices |
-| Generated trait edit | Pencil icon | Click to edit the generated trait |
+| Aspect Attribute Bonuses Applied | Bonus pills | Shows currently applied non-zero aspect bonuses |
+| Generated trait | Trait card | Reference plus per-trait controls |
+| Generated trait edit | Pencil icon | Click to edit one generated trait |
+| Generated trait delete | Trash icon | Click to remove one generated trait |
 
 ### Gear Tab (Rollable Items)
 

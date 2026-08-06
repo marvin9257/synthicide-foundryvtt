@@ -175,6 +175,58 @@ body.theme-dark .npc-compact .window-content {
   flex-shrink: 0;
 }
 
+.aspect-help-text {
+  margin: 0 0 8px;
+  color: var(--color-text-secondary);
+  font-size: var(--reduced-font-size);
+}
+
+.aspect-bonus-list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  padding: 0;
+  margin: 0 0 8px;
+  list-style: none;
+  align-items: stretch;
+}
+
+.aspect-bonus-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--synthicide-c-faint);
+  border-radius: 999px;
+  height: 4ch;
+  padding: 0 10px;
+  font-size: var(--reduced-font-size);
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.aspect-bonus-label,
+.aspect-bonus-value {
+  line-height: 1;
+}
+
+.aspect-bonus-label {
+  font-weight: 600;
+}
+
+.aspect-bonus-value {
+  font-weight: 700;
+}
+
+.trait-name-display {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--color-border-light-tertiary);
+  border-radius: 6px;
+  padding: 7px 10px;
+  background: color-mix(in srgb, var(--form-field-bg) 70%, transparent);
+  font-weight: 600;
+}
+
 /* ============================== */
 /* Modifiers table data cells     */
 /* ============================== */

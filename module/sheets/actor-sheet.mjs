@@ -238,6 +238,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     context.aspect = this.actor.itemTypes.aspect[0] ?? null;
     context.bioclass = this.actor.itemTypes.bioclass[0] ?? null;
+    context.aspectBonusSummary = this._buildAspectBonusSummary(context.aspect?.system);
     
     // Iterate through traits as they need special handling
     for (let i of this.actor.itemTypes.trait) {
@@ -278,6 +279,61 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     context.traitsByLevel = SYNTHICIDE.ALLOWED_TRAIT_LEVELS.map(l => ({ level: l, traits: traitsByLevel[l] }));
     context.allowedTraitLevels = SYNTHICIDE.ALLOWED_TRAIT_LEVELS;
     context.aspectTraits = aspectTraits?.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+  }
+
+  /**
+   * Build the list of aspect bonus pills shown on the actor aspect tab.
+   * Includes non-zero attribute bonuses plus any applied HP max bonus.
+   * @param {object} aspectSystem
+   * @returns {{labelKey: string, value: number}[]}
+   * @private
+   */
+  _buildAspectBonusSummary(aspectSystem) {
+    if (!aspectSystem) return [];
+
+    const summary = [];
+    const attributeBonuses = aspectSystem.attributeBonuses ?? {};
+
+    for (const [key, value] of Object.entries(attributeBonuses)) {
+      const numericValue = Number(value ?? 0);
+      if (!numericValue) continue;
+      summary.push({
+        labelKey: SYNTHICIDE.attributeAbbreviations?.[key] ?? SYNTHICIDE.attributes?.[key] ?? key,
+        value: numericValue,
+      });
+    }
+
+    const hpMaxBonus = this._getAspectHitPointMaxBonus(aspectSystem);
+    if (hpMaxBonus) {
+      summary.push({
+        labelKey: 'SYNTHICIDE.Item.Aspect.FIELDS.hitPointsMaxBonus.label',
+        value: hpMaxBonus,
+      });
+    }
+
+    return summary;
+  }
+
+  /**
+   * Compute total aspect-contributed HP max bonus for display and summaries.
+   * Mirrors sharper derived-data logic: base aspect HP bonus plus optional
+   * bioclass HP-per-level contribution.
+   * @param {object} aspectSystem
+   * @returns {number}
+   * @private
+   */
+  _getAspectHitPointMaxBonus(aspectSystem) {
+    const baseBonus = Number(aspectSystem?.hitPointsMaxBonus ?? 0);
+    const includeBioclassPerLevel = Boolean(aspectSystem?.useBioclassHpPerLevelAsMaxBonus);
+    if (!includeBioclassPerLevel) return baseBonus;
+
+    const bioclassHpPerLevel = Number(
+      this.actor.itemTypes?.bioclass?.[0]?.system?.startingAttributes?.hpPerLevel
+      ?? this.actor.system?.hitPoints?.perLevel
+      ?? 0
+    );
+
+    return baseBonus + bioclassHpPerLevel;
   }
 
   /**
