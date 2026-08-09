@@ -298,7 +298,7 @@ SYNTHICIDE.rolls = {
 SYNTHICIDE.traitTypes = {
   aspect: 'SYNTHICIDE.Item.Trait.Types.aspect',
   bioclass: 'SYNTHICIDE.Item.Trait.Types.bioclass',
-  attackSkill: 'SYNTHICIDE.Item.Trait.Types.attackSkill',
+  battlePowers: 'SYNTHICIDE.Item.Trait.Types.battlePowers',
   knowledgeFocus: 'SYNTHICIDE.Item.Trait.Types.knowledgeFocus',
   psychicPower: 'SYNTHICIDE.Item.Trait.Types.psychicPower',
   tacticalPower: 'SYNTHICIDE.Item.Trait.Types.tacticalPower',

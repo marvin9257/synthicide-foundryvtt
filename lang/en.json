@@ -668,6 +668,7 @@
           "bioclass": "Bioclass",
           "aspect": "Aspect",
           "attackSkill": "Attack Skill",
+          "battlePowers": "Battle Powers",
           "knowledgeFocus": "Knowledge Focus",
           "psychicPower": "Psychic Power",
           "tacticalPower": "Tactical Power",
