@@ -21,6 +21,7 @@ import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
 import { registerSynthicideChatContextHook, SynthicideChatPopout } from './documents/chatlog.mjs';
 import { registerCombatTrackerApHooks } from './hooks/combat-tracker-ap.mjs';
+import { registerProseMirrorFocusGuard } from './hooks/prosemirror-focus-guard.mjs';
 import { registerVirtualGridOverlay, safeRenderVirtualGrid } from './canvas/virtual-grid-overlay.mjs';
 import SynthicideVirtualRuler from './canvas/synthicide-virtual-ruler.mjs';
 import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler.mjs';
@@ -73,6 +74,8 @@ Hooks.once('init', function () {
 
   // Expose the synthicide namespace on `game` for macros and user scripts.
   if (typeof game !== 'undefined') game.synthicide = synthicide;
+
+  registerProseMirrorFocusGuard();
 
   // Add custom constants for configuration.
   CONFIG.SYNTHICIDE = SYNTHICIDE;
@@ -226,6 +229,9 @@ Handlebars.registerHelper('format', function (key, ...args) {
 
 Hooks.once('ready', async function () {
   await migrateWorld();
+
+  // Retry in case foundry.prosemirror wasn't populated yet at init.
+  registerProseMirrorFocusGuard();
 
   applySheetStyleMode(
     game.settings.get('synthicide', SYNTHICIDE.SHEET_STYLE_SETTING_KEY)
