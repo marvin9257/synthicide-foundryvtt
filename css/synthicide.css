@@ -909,6 +909,12 @@ body.theme-dark .npc-compact .window-content {
   text-align: center;
   white-space: normal;
 }
+.synthicide .header-resource .resource-label.resource-label-wrap {
+  display: inline-block;
+  width: min-content;
+  padding: 0 2ch;
+}
+
 .synthicide .header-resource .resource-content {
   width: 100%;
   margin-top: 2px;

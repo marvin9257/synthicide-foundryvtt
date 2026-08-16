@@ -68,6 +68,11 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       { initial: { starvationPenalty: 0 }}
     );
     
+    schema.knowledgePoints = new fields.SchemaField({
+      value: new fields.NumberField({required: true, integer: true, initial: 0}),
+      max: new fields.NumberField({required: true, integer: true, initial: 0}, {persisted: false})
+    });
+
     return schema;
   }
 
@@ -78,6 +83,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
    */
   prepareDerivedData() {
     super.prepareDerivedData();
+    // Calculate hitpoint derived values from aspect and bioclass
     const aspect = this.parent?.itemTypes?.aspect?.[0] ?? null;
     const aspectAttributeBonuses = aspect?.system?.attributeBonuses ?? {};
     const aspectHitPointsMaxBonusBase = Number(aspect?.system?.hitPointsMaxBonus ?? 0);
@@ -123,6 +129,9 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       this.foodDays.min = -(6 + (this.attributes.toughness.value ?? 0));
     }
     const level = this.level.value ?? 1;
+
+    // Calculate max knowledge points
+    this.knowledgePoints.max = getKnownKnowledgePoints(this.parent);
     
     //Derived data calculated a bit differently for player characters; include any modifiers
     this.hitPoints.max = (this.hitPoints.base ?? 32)
@@ -138,6 +147,12 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     this.shockThreshold.value = 10 + this.armorValues.stBonus + this.armorDefense.value + this.shockThreshold.modifier;
     this.nerveDefense.value = 5 + this.attributes.nerve.value + this.nerveDefense.modifier;
   }
+}
+
+function getKnownKnowledgePoints(actor) {
+  return (actor?.itemTypes?.trait ?? [])
+    .filter(trait => trait.system?.traitType === 'knowledgeArea')
+    .reduce((total, trait) => total + (trait.system?.knowledgePowers ?? 0), 0);
 }
 
 function getCurrentArmorValues(actor) {

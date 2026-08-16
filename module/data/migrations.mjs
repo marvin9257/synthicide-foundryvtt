@@ -1,5 +1,5 @@
 const MIGRATION_SETTING_KEY = 'migrationVersion';
-const CURRENT_MIGRATION_VERSION = '3.1.0';
+const CURRENT_MIGRATION_VERSION = '3.2.0';
 
 /**
  * NOTE:
@@ -135,6 +135,10 @@ export async function migrateWorld() {
     await migration_3_1_0_resetLegacyDerivedModifiers();
   }
 
+  if (foundry.utils.isNewerVersion('3.2.0', lastVersion)) {
+    await migration_3_2_0_battlePowers();
+  }
+
   await game.settings.set('synthicide', MIGRATION_SETTING_KEY, CURRENT_MIGRATION_VERSION);
 }
 
@@ -234,5 +238,46 @@ async function migration_3_1_0_resetLegacyDerivedModifiers() {
 
   if (changed) {
     ui.notifications.info('SYNTHICIDE migration complete: legacy derived modifiers reset to 0.');
+  }
+}
+
+/**
+ * Migrate legacy `battlePowers` items trait to `traitType: battlePower`.
+ */
+async function migration_3_2_0_battlePowers() {
+  const worldItemUpdates = game.items
+    .filter(item => item.type === 'trait' && item.system.traitType === 'battlePowers')
+    .map(item => {
+      const update = {
+        _id: item.id,
+        'system.traitType': 'battlePower',
+      };
+      return update;
+    });
+  let changed = worldItemUpdates.length > 0;
+
+  if (worldItemUpdates.length) {
+    await Item.updateDocuments(worldItemUpdates);
+  }
+
+  for (const actor of game.actors) {
+    const embeddedUpdates = actor.items
+      .filter(item => item.type === 'trait' && item.system.traitType === 'battlePowers')
+      .map(item => {
+        const update = {
+          _id: item.id,
+          'system.traitType': 'battlePower',
+        };
+        return update;
+      });
+
+    if (embeddedUpdates.length) {
+      await actor.updateEmbeddedDocuments('Item', embeddedUpdates);
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    ui.notifications.info('SYNTHICIDE migration complete: battle power items converted to singular.');
   }
 }

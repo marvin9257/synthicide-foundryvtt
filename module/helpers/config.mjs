@@ -298,8 +298,8 @@ SYNTHICIDE.rolls = {
 SYNTHICIDE.traitTypes = {
   aspect: 'SYNTHICIDE.Item.Trait.Types.aspect',
   bioclass: 'SYNTHICIDE.Item.Trait.Types.bioclass',
-  battlePowers: 'SYNTHICIDE.Item.Trait.Types.battlePowers',
-  knowledgeFocus: 'SYNTHICIDE.Item.Trait.Types.knowledgeFocus',
+  battlePower: 'SYNTHICIDE.Item.Trait.Types.battlePower',
+  knowledgeArea: 'SYNTHICIDE.Item.Trait.Types.knowledgeArea',
   psychicPower: 'SYNTHICIDE.Item.Trait.Types.psychicPower',
   tacticalPower: 'SYNTHICIDE.Item.Trait.Types.tacticalPower',
   mutation: 'SYNTHICIDE.Item.Trait.Types.mutation',
@@ -308,6 +308,9 @@ SYNTHICIDE.traitTypes = {
   weaponProficiency: 'SYNTHICIDE.Item.Trait.Types.weaponProficiency',
   spell: 'SYNTHICIDE.Item.Trait.Types.spell'
 };
+
+// Legacy values remain schema-valid long enough for world migrations to run.
+SYNTHICIDE.legacyTraitTypes = ['battlePowers', 'knowledgeAreas'];
 
 /**
  * Weapon specialization/proficiency keys for trait items.

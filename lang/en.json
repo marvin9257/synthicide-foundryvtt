@@ -284,6 +284,7 @@
             "without": "Days w/o Food"
           },
           "actionPoints": {"value": {"label": "Action Points"}},
+          "knowledgePoints": {"value": {"label": "Knowledge Points"}},
           "battleReflex": {"value": {"label": "Battle Reflex"}},
           "toughnessDefense": {"value": {"label": "Toughness Defense"}},
           "armorDefense": {"value": {"label": "Armor Defense"}},
@@ -658,7 +659,8 @@
           "overchargeCost": {"label": "Overcharge Cost (HP)"},
           "usesLimit": {"label": "Uses Limit"},
           "apCost": {"label": "AP Cost"},
-          "range": {"label": "Range"}
+          "range": {"label": "Range"},
+          "knowledgePowers": {"label": "Knowledge Powers"}
         },
         "TypeLabel": "Trait/Power",
         "TraitLVL": "Level {level} Traits & Powers",
@@ -668,8 +670,8 @@
           "bioclass": "Bioclass",
           "aspect": "Aspect",
           "attackSkill": "Attack Skill",
-          "battlePowers": "Battle Powers",
-          "knowledgeFocus": "Knowledge Focus",
+          "battlePower": "Battle Power",
+          "knowledgeArea": "Knowledge Area",
           "psychicPower": "Psychic Power",
           "tacticalPower": "Tactical Power",
           "mutation": "Mutation",

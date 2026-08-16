@@ -26,7 +26,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
     // Trait categories/types (bioclass, attack skill, knowledge focus, etc.)
     schema.traitType = new fields.StringField({
       required: true,
-      choices: Object.keys(SYNTHICIDE.traitTypes),
+      choices: [...Object.keys(SYNTHICIDE.traitTypes), ...SYNTHICIDE.legacyTraitTypes],
       initial: 'generalTalent',
     });
 
@@ -55,8 +55,26 @@ export default class SynthicideTrait extends SynthicideItemBase {
     schema.usesLimit = new fields.StringField({...requiredBlankString});
     schema.overchargeCost = new fields.StringField({...requiredBlankString});
     schema.traitPoints = new fields.NumberField({...requiredInteger, initial: 0});
+    schema.knowledgePowers = new fields.NumberField({...requiredInteger, initial: 2});
 
     return schema;
+  }
+
+  /**
+   * @param {object} source
+   * @returns {object}
+   */
+  static migrateData(source) {
+    if ("traitType" in source) {
+      if (source.traitType === "battlePowers") {
+        source.traitType = "battlePower";
+      }
+
+      if (source.traitType === "knowledgeAreas") {
+        source.traitType = "knowledgeArea";
+      }
+    }
+    return super.migrateData(source);
   }
 
   /**
