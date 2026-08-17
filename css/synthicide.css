@@ -3901,7 +3901,7 @@ body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item:not
   white-space: nowrap;
 }
 
-body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--is-missile i {
+body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item:not(.items-header) .item-prop--is-missile i {
   color: var(--rb-accent);
 }
 
