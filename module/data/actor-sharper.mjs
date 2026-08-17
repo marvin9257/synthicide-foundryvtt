@@ -15,6 +15,10 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     'SYNTHICIDE.Actor.Character',
   ];
 
+  /**
+   * Define the schema for sharper actor data.
+   * @returns {object} The sharper actor data schema.
+   */
   static defineSchema() {
     const schema = super.defineSchema();
 
@@ -149,12 +153,25 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
   }
 }
 
+/**
+ * Calculate the maximum knowledge points for an actor.
+ * @param {Actor|null|undefined} actor The actor whose knowledge points to calculate.
+ * @returns {number} The actor's maximum knowledge points.
+ */
 function getKnownKnowledgePoints(actor) {
-  return (actor?.itemTypes?.trait ?? [])
-    .filter(trait => trait.system?.traitType === 'knowledgeArea')
-    .reduce((total, trait) => total + (trait.system?.knowledgePowers ?? 0), 0);
+  const knowledgeAreas = (actor?.itemTypes?.trait ?? [])
+    .filter(trait => trait.system?.traitType === 'knowledgeArea');
+  if (knowledgeAreas.length === 0) return 0;
+
+  return (actor?.system?.attributes?.operation?.value ?? 0)
+    + knowledgeAreas.reduce((total, trait) => total + (trait.system?.knowledgePowers ?? 0), 0);
 }
 
+/**
+ * Get the derived values from the actor's equipped armor.
+ * @param {Actor|null|undefined} actor The actor whose equipped armor to inspect.
+ * @returns {{ armorBonus: number, stBonus: number, speedMax: number, endoPlatingGrade: number, forceBarrier: { max: number, recoveryRate: number } }} The current armor values.
+ */
 function getCurrentArmorValues(actor) {
   let returnValues = {
     armorBonus: 0,
@@ -191,18 +208,33 @@ function getCurrentArmorValues(actor) {
   return returnValues;
 }
 
+/**
+ * Normalize armor modifications to a set of modification keys.
+ * @param {Set<string>|string[]|undefined} modifications Armor modification keys.
+ * @returns {Set<string>} The normalized modification set.
+ */
 function getModificationSet(modifications) {
   if (modifications instanceof Set) return modifications;
   if (Array.isArray(modifications)) return new Set(modifications);
   return new Set();
 }
 
+/**
+ * Get the bonus granted by the highest superior crafting modification.
+ * @param {Set<string>} modifications Armor modification keys.
+ * @returns {number} The superior crafting bonus.
+ */
 function getSuperiorCraftingBonus(modifications) {
   if (modifications.has('superiorCrafting2')) return 2;
   if (modifications.has('superiorCrafting1')) return 1;
   return 0;
 }
 
+/**
+ * Get the grade granted by the highest endo-plating modification.
+ * @param {Set<string>} modifications Armor modification keys.
+ * @returns {number} The endo-plating grade.
+ */
 function getEndoPlatingGrade(modifications) {
   if (modifications.has('endoPlating3')) return 3;
   if (modifications.has('endoPlating2')) return 2;
