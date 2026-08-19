@@ -35,10 +35,12 @@
         >
           <div class='item-name flexrow'>
             <div class='item-image'>
-              <img
-                src='{{item.img}}'
-                data-tooltip='{{item.name}}'
-              />
+              <a class='rollable' data-roll-type='item' data-action='roll'>
+                <img
+                  src='{{item.img}}'
+                  data-tooltip='{{localize "SYNTHICIDE.Roll.Tooltip.DescribeItem" item=item.name}}'
+                />
+              </a>
             </div>
             <div class='item-label'>{{item.name}}</div>
           </div>

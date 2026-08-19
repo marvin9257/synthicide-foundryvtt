@@ -234,7 +234,7 @@ export class SynthicideItem extends foundry.documents.Item {
       showEffectOutcomeRow: false,
       showDamageButton: false,
       showOpposedButton: false,
-      flavor: sanitizedDescription,
+      flavor: '',
       metadataRows: [
         { label: 'Formula', valueHtml: `<code>${foundry.utils.escapeHTML(String(rollData.formula ?? ''))}</code>` },
       ],
@@ -261,7 +261,6 @@ export class SynthicideItem extends foundry.documents.Item {
       content: cardHtml,
       title: cardData.title,
       flags: { synthicide: cardData },
-      flavor: cardData.flavor,
     }, {
       messageMode: game.settings.get('core', 'messageMode'),
     });

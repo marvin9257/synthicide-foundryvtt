@@ -1055,6 +1055,7 @@
       "Tooltip": {
         "AttackWithItem": "Attack with {item}",
         "RollWithItem": "Roll with {item}",
+        "DescribeItem": "Send {item} description to chat",
         "RollVehicleWeaponDamage": "Roll automatic-hit vehicle weapon damage for {item}"
       },
       "Actions": {

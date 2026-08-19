@@ -79,10 +79,12 @@
       >
         <div class='item-name'>
           <div class='item-image'>
-            <img
-              src='{{item.img}}'
-              data-tooltip='{{item.name}}'
-            />
+            <a class='rollable' data-roll-type='item' data-action='roll'>
+              <img
+                src='{{item.img}}'
+                data-tooltip='{{#if item.system.roll.enabled}}{{localize "SYNTHICIDE.Roll.Tooltip.RollWithItem" item=item.name}}{{else}}{{localize "SYNTHICIDE.Roll.Tooltip.DescribeItem" item=item.name}}{{/if}}'
+              />
+            </a>
           </div>
           <div class='item-label'>{{item.name}}</div>
         </div>
