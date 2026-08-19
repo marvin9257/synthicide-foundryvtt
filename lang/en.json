@@ -930,6 +930,7 @@
         "SpreadFlavor": "{item}: collateral spread damage (no die) to {targets}",
         "SpreadNoCollateral": "{itemName}Spread attempted collateral against {count} target(s), but no secondary targets were hit.",
         "ItemRoll": "Item Roll for [{type}]:{name}",
+        "ItemDescription": "Item Description for [{type}]:{name}",
         "Equation": "Equation",
         "Total": "Total",
         "Effect": "Effect",
