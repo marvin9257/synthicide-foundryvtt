@@ -55,9 +55,20 @@ export default class SynthicideTrait extends SynthicideItemBase {
     schema.usesLimit = new fields.StringField({...requiredBlankString});
     schema.overchargeCost = new fields.StringField({...requiredBlankString});
     schema.traitPoints = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.knowledgePowers = new fields.NumberField({...requiredInteger, initial: 2});
+    // Which of the powers parsed from `description` (see commonSchemaUtils.parseKnowledgePowerOptions)
+    // the character has learned, keyed by slugified power name.
+    schema.knownPowerKeys = new fields.SetField(new fields.StringField({ required: true, blank: false }), { initial: [] });
 
     return schema;
+  }
+
+  /** @override */
+  prepareDerivedData() {
+    super.prepareDerivedData();
+
+    if (this.traitType === 'knowledgeArea') {
+      this.knownPowerCount = this.knownPowerKeys.size;
+    }
   }
 
   /**

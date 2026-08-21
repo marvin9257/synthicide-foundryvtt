@@ -660,7 +660,7 @@
           "usesLimit": {"label": "Uses Limit"},
           "apCost": {"label": "AP Cost"},
           "range": {"label": "Range"},
-          "knowledgePowers": {"label": "Knowledge Powers"}
+          "knownPowerKeys": {"label": "Known Powers"}
         },
         "TypeLabel": "Trait/Power",
         "TraitLVL": "Level {level} Traits & Powers",

@@ -4,6 +4,7 @@ import { FEATURE_TYPE } from '../helpers/feature-types.mjs';
 import { assignTabContext, buildBaseSheetContext, buildTabs, enrichSheetHtml } from './sheet-context.mjs';
 import { mutateSystemArray, removeSystemArrayIndex } from './sheet-utils.mjs';
 import { getItemIcon, ICON_MAP } from '../helpers/icons.mjs';
+import { parseKnowledgePowerOptions } from '../data/commonSchemaUtils.mjs';
 
 const { api, sheets } = foundry.applications;
 
@@ -209,6 +210,9 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       );
       context.isPsychicOrTactical = ['psychicPower', 'tacticalPower'].includes(this.item.system.traitType);
       context.isPsychic = this.item.system.traitType === 'psychicPower';
+      if (this.item.system.traitType === 'knowledgeArea') {
+        context.config.knowledgePowerOptions = parseKnowledgePowerOptions(this.item.system.description);
+      }
     }
 
     if (this.item.type === 'implant') {
