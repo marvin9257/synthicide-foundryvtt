@@ -19,12 +19,10 @@ When you open a trait to view or edit it:
 |---------|------|--------|
 | Trait name | Text input | Click to edit the trait name |
 | Trait level | Numeric input | Click to set the trait level |
-| Trait type dropdown | Dropdown | Reference; shows if trait is a milestone or generated trait |
+| Trait type dropdown | Dropdown | Reference; shows if trait is a milestone or generated trait. Different trate types show differnent fieldds on General tab. |
 | Weapon Specialization dropdown | Dropdown | Click to pick specialization when trait type is Weapon Proficiency |
 | Choice field (if applicable) | Dropdown or checkboxes | Click to make a required "choose one" selection |
 | Description/effect field | Text box | Click to add or edit the trait's mechanical/narrative effect |
-| Notes field | Text box | Click to add table-specific notes or conditions |
-| Save button | Button/action | Click to save all changes to the trait |
 
 ### Finalize Generated Traits
 
@@ -85,13 +83,16 @@ When you open a generated trait (from bioclass or aspect):
 2. Bioclass and aspect traits are created automatically when assigned.
 3. Weapon proficiency traits feed weapon-specialization bonuses into supported roll flows.
 4. Trait lists update when features are replaced.
+5. Knowledge Area powers know choose list are automatically determined from Description if power names begin with bullet and end with colon.
+6. Knowledge Points are automatically calculated based on the Kwowledge Powers kKnow that are selected.
 
 ## What You Must Set Manually
 
 1. Trait text and table-specific details.
 2. Required choices in generated traits (open and save to finalize).
 3. Weapon specialization selection and proficiency level on Weapon Proficiency traits.
-4. Manual follow-up trait effects require.
+4. Manual follow-up trait effects required.
+5. Knowledge Powers Known.
 
 ## Limitations and Not Implemented
 
