@@ -241,7 +241,7 @@
         "Raw": "Raw",
         "Aspect": "Aspect",
         "ModifierBreakdown": "Modifier Breakdown",
-        "ModifierTooltip": "{breakdown}: {raw} + {aspect}",
+        "ModifierTooltip": "{breakdown}: raw/AE:{raw}, aspect:{aspect}",
         "label": "Attributes"
       },
       "Combat": {
