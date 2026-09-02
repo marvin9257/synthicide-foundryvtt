@@ -22,8 +22,13 @@ Know where to find things during play.
 | Element | Icon | Action |
 |---------|------|--------|
 | Attribute icon (e.g., Awareness) | Circle with symbol | Click to open a challenge roll dialog for that attribute |
-| Attribute name | Text/field | Click to edit the base attribute value |
-| Attribute +/- buttons | Plus/Minus | Adjust increase pips (0-5); affects derived stats |
+| Attribute total | Numeric display | Read-only calculated value used for attribute rolls |
+| Attribute gear | Gear icon | Open the attribute inspector |
+| Base field | Numeric input in the inspector | Set the attribute's base value |
+| Increase controls | Plus/Minus in the inspector | Adjust increase pips from 0 to 5; derived stats update automatically |
+| Modifier field | Numeric display in the inspector | Read-only breakdown of applied modifiers and aspect bonuses |
+
+Enable **Use Legacy Sharper Attribute Layout** in your personal System Settings to use the prior compact grid list. In that view, Base, Modifier, Increase, and Current are shown directly in columns rather than in the attribute inspector.
 
 ### Combat Tab (Armor, Shields, Weapons)
 

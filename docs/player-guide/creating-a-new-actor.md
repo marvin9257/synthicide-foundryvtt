@@ -10,7 +10,7 @@ Set up the essential fields for a playable character.
 2. In the header, set name, level, motivation, and starting lurans.
 3. Set current HP, Force Barrier, Resolve, and Cynicism values.
 4. Open Attributes tab and verify all attributes are populated.
-5. Set attribute increase pips only when your table allows advancement.
+5. On the Attributes tab, select an attribute's gear icon to set its base value or adjust increase pips when your table allows advancement.
 6. Add character notes to the Biography tab.
 7. Save and close, then reopen to confirm values persist.
 

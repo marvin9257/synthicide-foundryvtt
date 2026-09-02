@@ -22,8 +22,13 @@
         "Hint": "Choose the visual style for Synthicide sheets.",
         "Choices": {
           "Classic": "Classic",
-          "RulebookBold": "Rulebook Bold"
+          "RulebookBold": "Rulebook Bold",
+          "Cyberpunk": "Cyberpunk"
         }
+      },
+      "SharperAttributesLayout": {
+        "Name": "Use Legacy Sharper Attribute Layout",
+        "Hint": "Display Sharper attributes in the previous compact grid list instead of the card layout."
       },
       "DefaultTargetArmor": { 
         "Name": "Default Target Armor",
@@ -241,7 +246,7 @@
         "Raw": "Raw",
         "Aspect": "Aspect",
         "ModifierBreakdown": "Modifier Breakdown",
-        "ModifierTooltip": "{breakdown}: raw/AE:{raw}, aspect:{aspect}",
+        "ModifierTooltip": "{breakdown}: base:{base}, raw/AE:{raw}, level:{increase}, aspect:{aspect}, total:{total}",
         "label": "Attributes"
       },
       "Combat": {

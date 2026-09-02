@@ -195,9 +195,11 @@ SYNTHICIDE.debug = {
 
 // Settings constants
 SYNTHICIDE.SHEET_STYLE_SETTING_KEY = 'sheetStyleMode';
+SYNTHICIDE.SHARPER_ATTRIBUTES_LAYOUT_KEY = 'sharperAttributesLayout';
 SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY = 'defaultTargetArmor';
 SYNTHICIDE.SHEET_STYLE_CLASSIC = 'classic';
 SYNTHICIDE.SHEET_STYLE_BOLD = 'rulebookBold';
+SYNTHICIDE.SHEET_STYLE_CYBERPUNK = 'cyberpunk';
 SYNTHICIDE.USE_SHOCKING_STRIKE_KEY = 'useShockingStrike';
 
 // Virtual Grid Movement Setting Key

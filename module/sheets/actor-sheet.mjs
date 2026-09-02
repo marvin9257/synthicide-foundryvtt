@@ -188,11 +188,30 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         context.effects = prepareActiveEffectCategories(this.actor.allApplicableEffects());
         break;
       case 'attributes':
+        context.useLegacyAttributesLayout = game.settings.get(
+          'synthicide',
+          SYNTHICIDE.SHARPER_ATTRIBUTES_LAYOUT_KEY
+        );
         // Add increaseSegments array (bottom-up) for each attribute for block meter rendering.
         if (context.system?.attributes) {
           for (const attribute of Object.values(context.system.attributes)) {
             const filled = Number(attribute.increase) || 0;
             attribute.increaseSegments = Array.from({length: 5}, (_, i) => i < filled).reverse();
+            const formatSignedNumber = (value) => {
+              const numericValue = Number(value) || 0;
+              return `${numericValue >= 0 ? '+' : ''}${numericValue}`;
+            };
+            attribute.modifierTooltip = game.i18n.format(
+              'SYNTHICIDE.Actor.Attributes.ModifierTooltip',
+              {
+                breakdown: game.i18n.localize('SYNTHICIDE.Actor.Attributes.ModifierBreakdown'),
+                base: formatSignedNumber(attribute.base),
+                raw: formatSignedNumber(attribute.modifier),
+                increase: formatSignedNumber(attribute.increase),
+                aspect: formatSignedNumber(attribute.aspectBonus),
+                total: formatSignedNumber(attribute.value),
+              }
+            );
           }
         }
         break;
@@ -347,9 +366,20 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   async _onRender(context, options) {
     await super._onRender(context, options);
     this.#disableOverrides();
-    // You may want to add other special handling here
-    // Foundry comes with a large number of utility classes, e.g. SearchFilter
-    // That you may want to implement yourself.
+    const inspectors = this.element.querySelectorAll('.math-inspector-dropdown');
+    for (const inspector of inspectors) {
+      if (inspector.dataset.attributeKey === this._openAttributeInspectorKey) {
+        inspector.open = true;
+      }
+
+      inspector.addEventListener('toggle', () => {
+        if (inspector.open) {
+          this._openAttributeInspectorKey = inspector.dataset.attributeKey;
+        } else if (this._openAttributeInspectorKey === inspector.dataset.attributeKey) {
+          this._openAttributeInspectorKey = null;
+        }
+      });
+    }
   }
 
   /**************

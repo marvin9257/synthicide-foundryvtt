@@ -10,6 +10,12 @@
   font-weight: 700;
   font-style: normal;
 }
+@font-face {
+  font-family: "Orbitron";
+  src: url("../assets/fonts/Orbitron/Orbitron[wght].ttf") format("truetype");
+  font-weight: 400 900;
+  font-style: normal;
+}
 
 /* Root theme variables */
 :root {
@@ -696,7 +702,7 @@ body.theme-dark .npc-compact .window-content {
   padding: 0.1rem 0;
 }
 
-.synthicide-style-bold .synthicide-action-roll-card {
+:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide-action-roll-card {
   border-width: 2px;
 }
 
@@ -1841,6 +1847,7 @@ body.synthicide-style-bold {
   --rb-on-accent:     #ffffff;
   --synthicide-c-style-accent: var(--rb-accent);
   --rb-line:          color-mix(in srgb, var(--synthicide-c-dark) 55%, transparent);
+  --rb-cell:          color-mix(in srgb, var(--form-field-bg) 88%, transparent);
   --rb-cell-alt:      rgba(25, 25, 25, 0.1);
 }
 
@@ -1852,6 +1859,7 @@ body.theme-dark.synthicide-style-bold {
   --rb-on-accent:     #ffffff;
   --synthicide-c-style-accent: var(--rb-accent);
   --rb-line:          color-mix(in srgb, var(--synthicide-c-black) 65%, transparent);
+  --rb-cell:          color-mix(in srgb, var(--form-field-bg) 88%, transparent);
   --rb-cell-alt:       rgba(251, 251, 251, 0.1);
 }
 
@@ -1859,19 +1867,19 @@ body.theme-dark.synthicide-style-bold {
 /* SHEET HEADER                                                 */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide .sheet-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .sheet-header {
   padding-bottom: 6px;
   margin-bottom: 0;
 }
 
 /* Profile image: accent border */
-body.synthicide-style-bold .synthicide .profile-img {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .profile-img {
   border: 2px solid var(--rb-strong);
   border-radius: 3px;
 }
 
 /* Header labels (CHARACTER NAME, BIOCLASS, etc.) */
-body.synthicide-style-bold .synthicide .header-info-label {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .header-info-label {
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1882,12 +1890,12 @@ body.synthicide-style-bold .synthicide .header-info-label {
 }
 
 /* Dark mode: labels a bit lighter */
-body.theme-dark.synthicide-style-bold .synthicide .header-info-label {
+body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .header-info-label {
   color: var(--rb-accent);
 }
 
 /* Header label underline divider */
-body.synthicide-style-bold .synthicide .header-info-label::after {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .header-info-label::after {
   content: "";
   display: block;
   width: 100%;
@@ -1898,14 +1906,14 @@ body.synthicide-style-bold .synthicide .header-info-label::after {
 }
 
 /* Bold text inputs in header */
-body.synthicide-style-bold .synthicide .header-info-input,
-body.synthicide-style-bold .synthicide .header-info-level-input,
-body.synthicide-style-bold .synthicide .header-info-lurans-input {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .header-info-input,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .header-info-level-input,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .header-info-lurans-input {
   font-weight: 700;
 }
 
-body.synthicide-style-bold .synthicide .header-info-level-input,
-body.synthicide-style-bold .synthicide .header-info-lurans-input {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .header-info-level-input,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .header-info-lurans-input {
   text-align: center;
 }
 
@@ -1915,7 +1923,7 @@ body.synthicide-style-bold .synthicide .header-info-lurans-input {
 /* ============================================================ */
 
 /* The tab row: top and bottom accent bars frame the tabs */
-body.synthicide-style-bold .synthicide .sheet-tabs {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .sheet-tabs {
   display: flex;
   /*flex-wrap: wrap;*/
   gap: 1ch;
@@ -1926,7 +1934,7 @@ body.synthicide-style-bold .synthicide .sheet-tabs {
 }
 
 /* Every tab pill */
-body.synthicide-style-bold .synthicide .sheet-tabs .item {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .sheet-tabs .item {
   min-height: 26px;
   padding: 4px 10px;
   font-size: 0.72rem;
@@ -1944,7 +1952,7 @@ body.synthicide-style-bold .synthicide .sheet-tabs .item {
 }
 
 /* Active tab: filled like a pressed panel */
-body.synthicide-style-bold .synthicide .sheet-tabs .item.active {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .sheet-tabs .item.active {
   background: var(--rb-strong) !important;
   border-color: var(--rb-strong) !important;
   border-bottom-color: var(--rb-strong) !important;
@@ -1959,11 +1967,11 @@ body.synthicide-style-bold .synthicide .sheet-tabs .item.active {
 /* ============================================================ */
 
 /* Universal header bar */
-body.synthicide-style-bold .synthicide .items-header,
-body.synthicide-style-bold .synthicide .effects-header,
-body.synthicide-style-bold .synthicide .attributes-header,
-body.synthicide-style-bold .synthicide .items-list .items-header,
-body.synthicide-style-bold .synthicide .effects-list .effects-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .attributes-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .items-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-list .effects-header {
   background: var(--rb-strong);
   border: none;
   border-left: 5px solid var(--rb-accent);
@@ -1976,12 +1984,12 @@ body.synthicide-style-bold .synthicide .effects-list .effects-header {
 }
 
 /* All direct children of any header bar: white, small, uppercase */
-body.synthicide-style-bold .synthicide .items-header > *,
-body.synthicide-style-bold .synthicide .effects-header > *,
-body.synthicide-style-bold .synthicide .items-list .items-header > *,
-body.synthicide-style-bold .synthicide .effects-list .effects-header > *,
-body.synthicide-style-bold .synthicide .items-header .item-name,
-body.synthicide-style-bold .synthicide .effects-header .effect-name {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-header > *,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-header > *,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .items-header > *,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-list .effects-header > *,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-header .item-name,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-header .effect-name {
   color: var(--rb-on-accent) !important;
   font-size: 0.72rem;
   font-weight: 700;
@@ -1991,106 +1999,106 @@ body.synthicide-style-bold .synthicide .effects-header .effect-name {
 }
 
 /* ---- Large section name bars (bioclass / aspect / cybernetics) ---- */
-body.synthicide-style-bold .synthicide .tab.bioclass .items-list > .items-header,
-body.synthicide-style-bold .synthicide .tab.aspect   .items-list > .items-header,
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-header,
-body.synthicide-style-bold .synthicide .tab.biography   .items-list > .items-header,
-body.synthicide-style-bold .synthicide .tab.notes .items-list > .items-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.bioclass .items-list > .items-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.aspect   .items-list > .items-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list > .items-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.biography   .items-list > .items-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.notes .items-list > .items-header {
   min-height: 42px;
   padding: 0 14px;
   border-left-width: 6px;
 }
 
-body.synthicide-style-bold .synthicide .tab.bioclass .items-list > .items-header .item-name,
-body.synthicide-style-bold .synthicide .tab.aspect   .items-list > .items-header .item-name,
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-header .item-name,
-body.synthicide-style-bold .synthicide .tab.biography .items-list > .items-header .item-name,
-body.synthicide-style-bold .synthicide .tab.notes .items-list > .items-header .item-name {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.bioclass .items-list > .items-header .item-name,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.aspect   .items-list > .items-header .item-name,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list > .items-header .item-name,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.biography .items-list > .items-header .item-name,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.notes .items-list > .items-header .item-name {
   font-size: 1.15rem;
   letter-spacing: 0.05em;
 }
 
-body.synthicide-style-bold .synthicide .tab.bioclass .items-list > .items-header .item-controls a,
-body.synthicide-style-bold .synthicide .tab.aspect   .items-list > .items-header .item-controls a,
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list > .items-header .item-controls a {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.bioclass .items-list > .items-header .item-controls a,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.aspect   .items-list > .items-header .item-controls a,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list > .items-header .item-controls a {
   font-size: 0.9rem;
   color: var(--rb-on-accent);
 }
 
 /* Implant list header should match the standard combat/gear row sizing. */
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list > .items-header {
   min-height: 30px;
   padding: 3px 6px;
   border-left: 5px solid var(--rb-accent);
 }
 
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header > *,
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-name {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list > .items-header > *,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-name {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
 }
 
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-name {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-name {
   padding-left: 0;
 }
 
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-controls a {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-controls a {
   font-size: 0.72rem;
 }
 
 /* Keep implant list header and rows on the same flex grid columns. */
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-name {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list .item-name {
   flex: 1 1 auto;
   min-width: 0;
 }
 
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-prop--location {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list .item-prop--location {
   flex: 0 0 16%;
 }
 
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-prop--type {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list .item-prop--type {
   flex: 0 0 18%;
 }
 
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-prop--equipped {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list .item-prop--equipped {
   flex: 0 0 12%;
 }
 
-body.synthicide-style-bold .synthicide .tab.cybernetics .items-list.implant-list .item-controls--implant {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list .item-controls--implant {
   flex: 0 0 16%;
 }
 
 /* Combat tab list headers should align with combat list rows. */
-body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.combat .items-list > .items-header {
   min-height: 32px;
   padding: 3px 6px;
   border-left-width: 5px;
 }
 
-body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header > *,
-body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header .item-name {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.combat .items-list > .items-header > *,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.combat .items-list > .items-header .item-name {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
 }
 
-body.synthicide-style-bold .synthicide .tab.combat .items-list > .items-header .item-controls a {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.combat .items-list > .items-header .item-controls a {
   font-size: 0.72rem;
 }
 
 /* Keep combat list headers and rows on a shared column grid. */
-body.synthicide-style-bold .synthicide .tab.combat .items-list .item-name {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.combat .items-list .item-name {
   flex: 0 0 34%;
   min-width: 0;
 }
 
-body.synthicide-style-bold .synthicide .tab.combat .items-list .item-prop {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.combat .items-list .item-prop {
   flex: 1 1 0;
   min-width: 0;
 }
 
-body.synthicide-style-bold .synthicide .tab.combat .items-list .item-controls {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.combat .items-list .item-controls {
   flex: 0 0 16%;
 }
 
@@ -2098,8 +2106,8 @@ body.synthicide-style-bold .synthicide .tab.combat .items-list .item-controls {
 /* ITEMS LIST & EFFECTS LIST                                    */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide .items-list .item:not(.items-header),
-body.synthicide-style-bold .synthicide .effects-list .effect:not(.items-header) {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .item:not(.items-header),
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-list .effect:not(.items-header) {
   border-left: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
   border-right: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
   border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
@@ -2110,8 +2118,8 @@ body.synthicide-style-bold .synthicide .effects-list .effect:not(.items-header) 
 }
 
 /* Individual list rows */
-/*body.synthicide-style-bold .synthicide .items-list .item:not(.items-header),
-body.synthicide-style-bold .synthicide .effects-list .effect {
+/*body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .item:not(.items-header),
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-list .effect {
   border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
   border-left: 5px solid transparent;
   min-height: 32px;
@@ -2119,32 +2127,32 @@ body.synthicide-style-bold .synthicide .effects-list .effect {
 }*/
 
 /* Alternating row stripe */
-body.synthicide-style-bold .synthicide .items-list .item:not(.items-header):nth-child(even),
-body.synthicide-style-bold .synthicide .effects-list .effect:nth-child(even) {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .item:not(.items-header):nth-child(even),
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-list .effect:nth-child(even) {
   background: var(--rb-cell-alt);
 }
 
 /* Row hover */
-body.synthicide-style-bold .synthicide .items-list .item:not(.items-header):hover,
-body.synthicide-style-bold .synthicide .effects-list .effect:hover {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .item:not(.items-header):hover,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-list .effect:hover {
   background: color-mix(in srgb, var(--rb-accent) 12%, transparent);
 }
 
 /* Item name + effect name text */
-body.synthicide-style-bold .synthicide .items-list .item-name,
-body.synthicide-style-bold .synthicide .effects-list .effect-name {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .item-name,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-list .effect-name {
   font-size: var(--reduced-font-size);
   font-weight: 600;
 }
 
-body.synthicide-style-bold .synthicide .items-list .item-name h3,
-body.synthicide-style-bold .synthicide .effects-list .effect-name h4 {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .item-name h3,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-list .effect-name h4 {
   font-weight: 700;
 }
 
 /* Control icons */
-body.synthicide-style-bold .synthicide .items-list .item-controls a,
-body.synthicide-style-bold .synthicide .effects-list .effect-controls a {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .item-controls a,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-list .effect-controls a {
   font-size: 0.82rem;
   margin: 0 4px;
 }
@@ -2231,7 +2239,7 @@ body.synthicide-style-bold .synthicide .effects-list .effect-controls a {
 }
 
 /* Bold-mode table equivalents for semantic markup */
-body.synthicide-style-bold .synthicide table.attributes-table {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide table.attributes-table {
   display: table;
   width: auto;
   max-width: 420px;
@@ -2241,8 +2249,8 @@ body.synthicide-style-bold .synthicide table.attributes-table {
   overflow: hidden;
 }
 
-body.synthicide-style-bold .synthicide table.attributes-table thead th.attributes-header,
-body.synthicide-style-bold .synthicide table.attributes-table thead th.attributes-col-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide table.attributes-table thead th.attributes-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide table.attributes-table thead th.attributes-col-header {
   background: transparent; /* use the row band as the visible background */
   color: var(--rb-on-accent);
   font-size: 0.75rem;
@@ -2255,14 +2263,14 @@ body.synthicide-style-bold .synthicide table.attributes-table thead th.attribute
 }
 
 /* Make the entire thead row act as a full-width header band */
-body.synthicide-style-bold .synthicide table.attributes-table thead tr {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide table.attributes-table thead tr {
   background: var(--rb-strong);
   z-index: 1;
 }
 
-body.synthicide-style-bold .synthicide table.attributes-table tbody td,
-body.synthicide-style-bold .synthicide table.attributes-table tbody td.attribute-label,
-body.synthicide-style-bold .synthicide table.attributes-table tbody th[scope="row"] {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide table.attributes-table tbody td,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide table.attributes-table tbody td.attribute-label,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide table.attributes-table tbody th[scope="row"] {
   box-sizing: border-box;
   border-right: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
   border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
@@ -2271,12 +2279,12 @@ body.synthicide-style-bold .synthicide table.attributes-table tbody th[scope="ro
   background: var(--rb-cell);
 }
 
-/*body.synthicide-style-bold .synthicide table.attributes-table tbody tr:nth-child(even) td {
+/*body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide table.attributes-table tbody tr:nth-child(even) td {
   background: var(--rb-cell-alt);
 }*/
 
 /* Attribute row label cell – bold overrides */
-body.synthicide-style-bold .synthicide .attribute-label {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .attribute-label {
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   gap: 6px;
@@ -2288,7 +2296,7 @@ body.synthicide-style-bold .synthicide .attribute-label {
   text-align: center;
 }
 
-body.synthicide-style-bold .synthicide .attribute-label img.actions-img {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .attribute-label img.actions-img {
   height: auto;
   width: 36px;
   display: inline-block;
@@ -2299,22 +2307,22 @@ body.synthicide-style-bold .synthicide .attribute-label img.actions-img {
    - Keep general attribute-inputs centered in non-attributes tabs
    - Ensure the attributes table has its own explicit alignment rules
 */
-body.synthicide-style-bold .synthicide .tab:not(.attributes) .attribute-input {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab:not(.attributes) .attribute-input {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 /* Table-scoped bold-mode alignment — ensures cells align as table layout */
-body.synthicide-style-bold .synthicide table.attributes-table tbody td .attribute-input {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide table.attributes-table tbody td .attribute-input {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 6px 8px;
 }
 
-body.synthicide-style-bold .synthicide .attribute-input input,
-body.synthicide-style-bold .synthicide .attribute-value input {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .attribute-input input,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .attribute-value input {
   font-weight: 700;
   text-align: center;
   width: 100%;
@@ -2324,15 +2332,15 @@ body.synthicide-style-bold .synthicide .attribute-value input {
 /* RESOURCE FIELDSETS (Hit Points, Power, etc.)                 */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide fieldset.resource,
-body.synthicide-style-bold .synthicide .trait-box {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide fieldset.resource,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .trait-box {
   border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
   border-left: 4px solid var(--rb-accent);
   border-radius: 2px;
   padding: 5px 8px;
 }
 
-body.synthicide-style-bold .synthicide fieldset.resource legend {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide fieldset.resource legend {
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -2341,12 +2349,12 @@ body.synthicide-style-bold .synthicide fieldset.resource legend {
   color: var(--rb-strong);
 }
 
-body.theme-dark.synthicide-style-bold .synthicide fieldset.resource legend {
+body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide fieldset.resource legend {
   color: var(--rb-accent);
 }
 
 /* Resource labels (inside non-fieldset resource divs) */
-body.synthicide-style-bold .synthicide .resource-label {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .resource-label {
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -2356,11 +2364,11 @@ body.synthicide-style-bold .synthicide .resource-label {
   margin-bottom: 3px;
 }
 
-body.theme-dark.synthicide-style-bold .synthicide .resource-label {
+body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .resource-label {
   color: var(--rb-accent);
 }
 
-body.synthicide-style-bold .synthicide .resource-label::after {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .resource-label::after {
   content: "";
   display: block;
   width: 100%;
@@ -2370,7 +2378,7 @@ body.synthicide-style-bold .synthicide .resource-label::after {
   background: color-mix(in srgb, var(--rb-strong) 35%, transparent);
 }
 
-body.synthicide-style-bold .synthicide .resource-stepper input {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .resource-stepper input {
   font-weight: 700;
 }
 
@@ -2379,8 +2387,8 @@ body.synthicide-style-bold .synthicide .resource-stepper input {
 /* h3 / h4 SECTION HEADINGS                                    */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide h3,
-body.synthicide-style-bold .synthicide h4 {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide h3,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide h4 {
   font-family: var(--synthicide-default-font);
   font-size: var(--font-h4-size);
   font-weight: 900;
@@ -2395,13 +2403,13 @@ body.synthicide-style-bold .synthicide h4 {
   border-radius: 0 2px 2px 0;
 }
 
-body.theme-dark.synthicide-style-bold .synthicide h3,
-body.theme-dark.synthicide-style-bold .synthicide h4 {
+body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide h3,
+body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide h4 {
   color: var(--synthicide-c-black);
 }
 
 /* Bar labels using h4 is a full-width header bar */
-body.synthicide-style-bold .synthicide .tab:is(.aspect, .combat, .cybernetics, .gear, .info, .biography, .npcTiers, .description, .attributes, .capacity) h4 {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab:is(.aspect, .combat, .cybernetics, .gear, .info, .biography, .npcTiers, .description, .attributes, .capacity) h4 {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
   border-left: 5px solid var(--rb-accent);
@@ -2412,8 +2420,8 @@ body.synthicide-style-bold .synthicide .tab:is(.aspect, .combat, .cybernetics, .
 }
 
 /* Add breathing room between section blocks (list -> next section header). */
-body.synthicide-style-bold .synthicide .tab.combat .items-list + h4,
-body.synthicide-style-bold .synthicide .tab.gear .items-list + h4 {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.combat .items-list + h4,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.gear .items-list + h4 {
   margin-top: 10px;
 }
 
@@ -2421,7 +2429,7 @@ body.synthicide-style-bold .synthicide .tab.gear .items-list + h4 {
 /* TRAIT DESCRIPTION                                            */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide .trait-description {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .trait-description {
   /*border-left: 4px solid var(--rb-accent);*/
   border-radius: 2px;
   padding: 8px 10px;
@@ -2433,13 +2441,13 @@ body.synthicide-style-bold .synthicide .trait-description {
 /* CYBERNETICS FIELDSET                                         */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide fieldset.cybernetics {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide fieldset.cybernetics {
   border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
   border-left: 4px solid var(--rb-accent);
   border-radius: 2px;
 }
 
-body.synthicide-style-bold .synthicide fieldset.cybernetics legend {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide fieldset.cybernetics legend {
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -2448,7 +2456,7 @@ body.synthicide-style-bold .synthicide fieldset.cybernetics legend {
   color: var(--rb-strong);
 }
 
-body.theme-dark.synthicide-style-bold .synthicide fieldset.cybernetics legend {
+body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide fieldset.cybernetics legend {
   color: var(--rb-accent);
 }
 
@@ -2456,7 +2464,7 @@ body.theme-dark.synthicide-style-bold .synthicide fieldset.cybernetics legend {
 /* GEAR TAB: formula display                                    */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide .tab.gear .item-formula.item-prop {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.gear .item-formula.item-prop {
   font-family: var(--synthicide-default-font);
   font-size: var(--reduced-font-size);
   font-weight: 500;
@@ -2476,7 +2484,7 @@ body.synthicide-style-bold .synthicide .tab.gear .item-formula.item-prop {
 /* COMBAT TAB                                    */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide .tab.combat .item-formula.item-prop {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.combat .item-formula.item-prop {
   font-family: var(--synthicide-default-font);
   font-size: var(--reduced-font-size);
   font-weight: 500;
@@ -2492,12 +2500,12 @@ body.synthicide-style-bold .synthicide .tab.combat .item-formula.item-prop {
 /* ITEM SHEET – HEADER                                          */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide .item-form .sheet-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .sheet-header {
   padding-bottom: 6px;
   margin-bottom: 0;
 }
 
-body.synthicide-style-bold .synthicide .item-form .sheet-header .document-name input {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .sheet-header .document-name input {
   font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -2509,7 +2517,7 @@ body.synthicide-style-bold .synthicide .item-form .sheet-header .document-name i
 /* ============================================================ */
 
 /* Trait field rows (type / level / requirements) */
-body.synthicide-style-bold .synthicide .item-form .trait-top-fields {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .trait-top-fields {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -2518,7 +2526,7 @@ body.synthicide-style-bold .synthicide .item-form .trait-top-fields {
 }
 
 /* "Properties" label bar above first trait-top-fields */
-body.synthicide-style-bold .synthicide .item-form .trait-top-fields:first-of-type::before {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .trait-top-fields:first-of-type::before {
   content: "Properties";
   flex: 0 0 100%;
   display: block;
@@ -2535,7 +2543,7 @@ body.synthicide-style-bold .synthicide .item-form .trait-top-fields:first-of-typ
 }
 
 /* Each property cell */
-body.synthicide-style-bold .synthicide .item-form .trait-top-fields .resource {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .trait-top-fields .resource {
   flex: 1 1 80px;
   border: 1px solid color-mix(in srgb, var(--rb-strong) 40%, transparent);
   border-left: 3px solid var(--rb-accent);
@@ -2545,7 +2553,7 @@ body.synthicide-style-bold .synthicide .item-form .trait-top-fields .resource {
 }
 
 /* Description header bar (all contexts, not just item-form) */
-body.synthicide-style-bold .synthicide .description-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .description-header {
   background: var(--rb-strong);
   color: var(--rb-on-accent) !important;
   font-size: 0.75rem;
@@ -2562,7 +2570,7 @@ body.synthicide-style-bold .synthicide .description-header {
 }
 
 /* Trait prose-mirror editor */
-body.synthicide-style-bold .synthicide .item-form .trait-description-editor {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .trait-description-editor {
   border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
   border-top: none;
   border-left: 4px solid var(--rb-accent);
@@ -2575,7 +2583,7 @@ body.synthicide-style-bold .synthicide .item-form .trait-description-editor {
 /* ITEM SHEET – RESOURCE FIELDS (header area + attributes tab) */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide .item-form .resource {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .resource {
   border: 1px solid color-mix(in srgb, var(--rb-strong) 40%, transparent);
   border-left: 3px solid var(--rb-accent);
   border-radius: 2px;
@@ -2583,7 +2591,7 @@ body.synthicide-style-bold .synthicide .item-form .resource {
   margin-bottom: 4px;
 }
 
-body.synthicide-style-bold .synthicide .item-form .resource .resource-label {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .resource .resource-label {
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -2592,7 +2600,7 @@ body.synthicide-style-bold .synthicide .item-form .resource .resource-label {
   margin-bottom: 3px;
 }
 
-body.theme-dark.synthicide-style-bold .synthicide .item-form .resource .resource-label {
+body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .resource .resource-label {
   color: var(--rb-accent);
 }
 
@@ -2600,18 +2608,18 @@ body.theme-dark.synthicide-style-bold .synthicide .item-form .resource .resource
 /* ITEM SHEET – ABILITY LIST (aspect item)                      */
 /* ============================================================ */
 
-body.synthicide-style-bold .synthicide .item-form .ability-list {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .ability-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-body.synthicide-style-bold .synthicide .item-form .ability-row {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .ability-row {
   border-bottom: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
   padding: 4px 2px;
 }
 
-body.synthicide-style-bold .synthicide .item-form .ability-row:last-child {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .ability-row:last-child {
   border-bottom: none;
 }
 
@@ -2623,15 +2631,15 @@ body.synthicide-style-bold .synthicide .item-form .ability-row:last-child {
 /* ============================================================ */
 
 /* Button-only action containers (Add Trait / Add Ability rows) */
-body.synthicide-style-bold .synthicide .item-form .ability-add,
-body.synthicide-style-bold .synthicide .item-form .trait-add-row {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .ability-add,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .trait-add-row {
   border: none;
   background: none;
   padding: 2px 0 6px;
 }
 
-body.synthicide-style-bold .synthicide .item-form .ability-add > button,
-body.synthicide-style-bold .synthicide .item-form .trait-add-row > button {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .ability-add > button,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .trait-add-row > button {
   background: color-mix(in srgb, var(--rb-strong) 10%, transparent);
   border: 1px solid color-mix(in srgb, var(--rb-strong) 40%, transparent);
   border-left: 3px solid var(--rb-accent);
@@ -2646,23 +2654,23 @@ body.synthicide-style-bold .synthicide .item-form .trait-add-row > button {
   width: 100%;
 }
 
-body.theme-dark.synthicide-style-bold .synthicide .item-form .ability-add > button,
-body.theme-dark.synthicide-style-bold .synthicide .item-form .trait-add-row > button {
+body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .ability-add > button,
+body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .trait-add-row > button {
   color: var(--rb-accent);
 }
 
 /* Bioclass traits fieldsets: add spacing between them */
-body.synthicide-style-bold .synthicide .item-form fieldset.resource {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form fieldset.resource {
   margin-bottom: 6px;
 }
 
 /* Resource divs inside item forms: add gap between siblings */
-body.synthicide-style-bold .synthicide .item-form .tab > .resource,
-body.synthicide-style-bold .synthicide .item-form .tab > .grid > .resource {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .tab > .resource,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .tab > .grid > .resource {
   margin-bottom: 6px;
 }
 
-body.synthicide-style-bold .synthicide .item-form .resource.bioclass-toggle-inline {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .resource.bioclass-toggle-inline {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -2670,17 +2678,17 @@ body.synthicide-style-bold .synthicide .item-form .resource.bioclass-toggle-inli
   gap: 10px;
 }
 
-body.synthicide-style-bold .synthicide .item-form .resource.bioclass-toggle-inline .resource-label {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .resource.bioclass-toggle-inline .resource-label {
   margin-bottom: 0;
   white-space: nowrap;
 }
 
-body.synthicide-style-bold .synthicide .item-form .resource.bioclass-toggle-inline input[type='checkbox'] {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .resource.bioclass-toggle-inline input[type='checkbox'] {
   margin: 0;
   flex: 0 0 auto;
 }
 
-body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .bioclass-traits-top-row {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -2689,16 +2697,16 @@ body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row {
   margin-bottom: 6px;
 }
 
-body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row .trait-add-row {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .bioclass-traits-top-row .trait-add-row {
   padding: 0;
   flex: 0 0 auto;
 }
 
-body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row .trait-add-row > button {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .bioclass-traits-top-row .trait-add-row > button {
   width: auto;
 }
 
-body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row .resource.bioclass-toggle-inline {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .bioclass-traits-top-row .resource.bioclass-toggle-inline {
   margin-bottom: 0;
   border: none;
   background: none;
@@ -2706,22 +2714,22 @@ body.synthicide-style-bold .synthicide .item-form .bioclass-traits-top-row .reso
 }
 
 /* Gear attributes: outer resource container top padding */
-body.synthicide-style-bold .synthicide .item-form .tab.attributes > .resource:first-child {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .tab.attributes > .resource:first-child {
   padding-top: 8px;
 }
 
 /* Item sheet effects tab: outer ol does not need a border – handled by effects-list */
-body.synthicide-style-bold .synthicide .item-form .tab.effects {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .tab.effects {
   padding: 4px 0 0;
 }
 
 /* Item sheet effects list rows: slightly tighter than actor sheet */
-body.synthicide-style-bold .synthicide .item-form .effects-list .effect:not(.effects-header) {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .effects-list .effect:not(.effects-header) {
   min-height: 24px;
 }
 
 /* Bioclass starting-attributes grid: add a section header bar via ::before */
-body.synthicide-style-bold .synthicide .item-form .tab.attributes .grid:first-of-type::before {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .tab.attributes .grid:first-of-type::before {
   content: attr(data-section-label);
   display: none; /* only shown when data-section-label attr is present via template; skip for now */
 }
@@ -2730,8 +2738,8 @@ body.synthicide-style-bold .synthicide .item-form .tab.attributes .grid:first-of
 /* The tab.traits .items-list .items-header already handles actor sheet. */
 /* Item-level traits list (bioclass-traits.hbs) is a raw grid, not an items-list. */
 /* Style fieldset labels inside those trait lists. */
-body.synthicide-style-bold .synthicide .item-form .tab.traits fieldset.resource > div:first-child .resource-label,
-body.synthicide-style-bold .synthicide .item-form .tab.traits fieldset.resource > label.resource-label:first-child {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .tab.traits fieldset.resource > div:first-child .resource-label,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .item-form .tab.traits fieldset.resource > label.resource-label:first-child {
   color: var(--rb-strong);
   font-size: 0.75rem;
   font-weight: 700;
@@ -2740,8 +2748,8 @@ body.synthicide-style-bold .synthicide .item-form .tab.traits fieldset.resource 
 }
 
 /* Rulebook Bold chat-title bar (match bioclass-style red header, minimal spacing). */
-body.synthicide-style-bold .synthicide-action-roll-card .card-header h4.item-header,
-body.synthicide-style-bold .synthicide-action-roll-card .card-title.item-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide-action-roll-card .card-header h4.item-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide-action-roll-card .card-title.item-header {
   display: block;
   width: 100%;
   box-sizing: border-box;
@@ -2948,7 +2956,7 @@ body.synthicide-style-bold .synthicide-action-roll-card .card-title.item-header 
 }
 
 .tab.npcStats .attributes-table tbody td.attribute-label img.actions-img,
-body.synthicide-style-bold .synthicide .tab.npcStats .attribute-label img.actions-img {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.npcStats .attribute-label img.actions-img {
   width: 30px;
   height: 30px;
   min-width: 30px;
@@ -3158,13 +3166,13 @@ body.synthicide-style-bold .synthicide .tab.npcStats .attribute-label img.action
   font-size: 0.82rem;
 }
 
-body.synthicide-style-bold .synthicide .tab.npcStats .npc-board-section,
-body.synthicide-style-bold .synthicide .tab.npcStats .npc-guidance-chip,
-body.synthicide-style-bold .synthicide .tab.biography .editor-content  {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.npcStats .npc-board-section,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.npcStats .npc-guidance-chip,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.biography .editor-content  {
   border-color: color-mix(in srgb, var(--rb-strong) 50%, transparent);
 }
 
-body.synthicide-style-bold .synthicide .tab.npcStats .attributes-table thead th.attributes-col-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.npcStats .attributes-table thead th.attributes-col-header {
   padding-top: 3px;
   padding-bottom: 3px;
 }
@@ -3415,62 +3423,62 @@ body:not(.synthicide-style-bold) .npc-compact-sheet .synthicide-window-icon img[
 }
 
 /* --- Rulebook Bold: custom colors, backgrounds, borders --- */
-body.synthicide-style-bold .npc-compact-sheet {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet {
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
   border: 2px solid var(--synthicide-c-beige);
 }
-body.synthicide-style-bold .npc-compact-sheet .sheet-header,
-body.synthicide-style-bold .npc-compact-sheet h1,
-body.synthicide-style-bold .npc-compact-sheet label {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .sheet-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet h1,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet label {
   color: var(--synthicide-c-beige);
 }
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-attack {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-attack {
   background: var(--synthicide-c-panel-bg);
   font-weight: 500;
   border-radius: 8px;
   padding: 0.5em 1em;
   margin-bottom: 12px;
 }
-body.synthicide-style-bold .npc-compact-sheet .bioclass-box {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .bioclass-box {
   background: var(--synthicide-c-panel-bg);
   border-radius: 6px;
   padding: 2px 8px;
   border: 1px solid var(--synthicide-c-faint);
 }
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-attributes {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-attributes {
   background: var(--synthicide-c-panel-bg);
   border-radius: 8px;
   padding: 0.5em 1em;
   margin-bottom: 12px;
 }
-body.synthicide-style-bold .npc-compact-sheet .npc-attr,
-body.synthicide-style-bold .npc-compact-sheet .npc-der {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-attr,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-der {
   border: 1px solid var(--synthicide-c-faint);
   border-radius: 6px;
   padding: 0.5em 1em;
   margin: 0 0.5em;
 }
-body.synthicide-style-bold .npc-compact-sheet .npc-attr label {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-attr label {
   font-size: 0.9em;
   color: var(--synthicide-c-tan);
   font-weight: bold;
   margin-bottom: 2px;
 }
-body.synthicide-style-bold .npc-compact-sheet .npc-attr input,
-body.synthicide-style-bold .npc-compact-sheet .npc-der input {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-attr input,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-der input {
   font-weight: bold;
   font-size: 1em;
   padding: 2px 0;
   margin-top: 2px;
 }
 
-body.synthicide-style-bold .npc-attr .synthicide-window-icon,
-body.synthicide-style-bold .npc-attack-action .synthicide-window-icon {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-attr .synthicide-window-icon,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-attack-action .synthicide-window-icon {
   background-color: var(--rb-strong);
 }
 
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-row {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-row {
   background: var(--synthicide-c-panel-bg);
   border-radius: 8px;
   padding: 0.5em 1em;
@@ -3478,25 +3486,25 @@ body.synthicide-style-bold .npc-compact-sheet .npc-compact-row {
   font-weight: 500;
 }
 
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-powers,
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-wealth,
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-loot,
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-powers,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-wealth,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-loot,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-notes {
   background: var(--synthicide-c-panel-bg);
   border-radius: 8px;
   padding: 0.5em 1em;
 }
 /*
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-powers label,
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-wealth label,
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-loot label,
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes label {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-powers label,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-wealth label,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-loot label,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-notes label {
   color: var(--synthicide-c-style-accent);
   font-weight: bold;
   font-size: 1em;
 }
   */
-body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes textarea {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-compact-sheet .npc-compact-notes textarea {
   width: 100%;
   min-height: 2.5em;
 }
@@ -3547,24 +3555,24 @@ body.synthicide-style-bold .npc-compact-sheet .npc-compact-notes textarea {
 
 /* Rulebook Bold mode overrides */
 
-body.synthicide-style-bold .npc-tiers-table th {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-tiers-table th {
   background: var(--rb-strong);
   color: var(--rb-on-accent);
   font-size: 0.92em;
 }
-body.synthicide-style-bold .npc-tiers-table td {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-tiers-table td {
   background: var(--rb-cell-alt);
 }
-body.synthicide-style-bold .npc-tiers-table input[type="number"] {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-tiers-table input[type="number"] {
   background: var(--rb-cell-alt);
   font-weight: 700;
 }
-body.synthicide-style-bold .npc-mastered-weapon label {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-mastered-weapon label {
   color: var(--rb-strong);
   font-weight: 700;
   font-size: 1.05em;
 }
-body.synthicide-style-bold .npc-mastered-weapon input[type="checkbox"] {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-mastered-weapon input[type="checkbox"] {
   accent-color: var(--rb-accent);
   width: 1.1em;
   height: 1.1em;
@@ -3658,25 +3666,25 @@ body.synthicide-style-bold .npc-mastered-weapon input[type="checkbox"] {
   white-space: nowrap;
 }
 
-body.synthicide-style-bold .synthicide .tab.cargo .items-list > .items-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list > .items-header {
   border-left: 5px solid var(--rb-accent);
   padding: 0 2px;
 }
 
-body.synthicide-style-bold .synthicide .tab.cargo .items-list .item:not(.items-header) {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list .item:not(.items-header) {
   border-left-width: 5px;
   border-left-style: solid;
   border-left-color: transparent;
   padding: 1px 2px;
 }
 
-body.synthicide-style-bold .synthicide .tab.cargo .items-list .item-prop--quantity,
-body.synthicide-style-bold .synthicide .tab.cargo .items-list .item-prop--unit-price,
-body.synthicide-style-bold .synthicide .tab.cargo .items-list .item-controls--cargo {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list .item-prop--quantity,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list .item-prop--unit-price,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list .item-controls--cargo {
   box-sizing: border-box;
 }
 
-body.synthicide-style-bold .synthicide .tab.cargo .items-list .item:not(.items-header) .item-prop {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list .item:not(.items-header) .item-prop {
   font-family: var(--synthicide-default-font);
   font-size: var(--reduced-font-size);
   font-weight: 500;
@@ -3756,31 +3764,31 @@ body.synthicide-style-bold .synthicide .tab.cargo .items-list .item:not(.items-h
   flex: 0 0 auto;
 }
 
-body.synthicide-style-bold .synthicide .tab.locker .items-list > .items-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.locker .items-list > .items-header {
   border-left: 5px solid var(--rb-accent);
   padding: 0 2px;
 }
 
-body.synthicide-style-bold .synthicide .tab.locker .items-list .item:not(.items-header) {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.locker .items-list .item:not(.items-header) {
   border-left-width: 5px;
   border-left-style: solid;
   border-left-color: transparent;
   padding: 1px 2px;
 }
 
-body.synthicide-style-bold .synthicide .tab.locker .items-list .item:not(.items-header):hover {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.locker .items-list .item:not(.items-header):hover {
   border-left-color: var(--rb-accent);
   background: color-mix(in srgb, var(--rb-accent) 10%, transparent);
 }
 
-body.synthicide-style-bold .synthicide .tab.locker .items-list .item-prop--type,
-body.synthicide-style-bold .synthicide .tab.locker .items-list .item-prop--quantity,
-body.synthicide-style-bold .synthicide .tab.locker .items-list .item-prop--unit-price,
-body.synthicide-style-bold .synthicide .tab.locker .items-list .item-controls--locker {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.locker .items-list .item-prop--type,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.locker .items-list .item-prop--quantity,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.locker .items-list .item-prop--unit-price,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.locker .items-list .item-controls--locker {
   box-sizing: border-box;
 }
 
-body.synthicide-style-bold .synthicide .tab.locker .items-list .item:not(.items-header) .item-prop {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.locker .items-list .item:not(.items-header) .item-prop {
   font-family: var(--synthicide-default-font);
   font-size: var(--reduced-font-size);
   font-weight: 500;
@@ -3791,7 +3799,7 @@ body.synthicide-style-bold .synthicide .tab.locker .items-list .item:not(.items-
   white-space: nowrap;
 }
 
-body.synthicide-style-bold .synthicide .tab.locker .locker-item-type-icon {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.locker .locker-item-type-icon {
   color: var(--rb-accent);
   border-color: color-mix(in srgb, var(--rb-accent) 35%, transparent);
   background: color-mix(in srgb, var(--rb-accent) 16%, transparent);
@@ -3869,28 +3877,28 @@ body.synthicide-style-bold .synthicide .tab.locker .locker-item-type-icon {
   white-space: nowrap;
 }
 
-body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list > .items-header {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.vehicleWeapons .items-list > .items-header {
   border-left: 5px solid var(--rb-accent);
   padding: 0 2px;
 }
 
-body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item:not(.items-header) {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.vehicleWeapons .items-list .item:not(.items-header) {
   border-left-width: 5px;
   border-left-style: solid;
   border-left-color: transparent;
   padding: 1px 2px;
 }
 
-body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--quantity,
-body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--range,
-body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--is-missile,
-body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--dmg-multiplier,
-body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-prop--item-cost,
-body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item-controls--ship-weapons {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.vehicleWeapons .items-list .item-prop--quantity,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.vehicleWeapons .items-list .item-prop--range,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.vehicleWeapons .items-list .item-prop--is-missile,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.vehicleWeapons .items-list .item-prop--dmg-multiplier,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.vehicleWeapons .items-list .item-prop--item-cost,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.vehicleWeapons .items-list .item-controls--ship-weapons {
   box-sizing: border-box;
 }
 
-body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item:not(.items-header) .item-prop {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.vehicleWeapons .items-list .item:not(.items-header) .item-prop {
   font-family: var(--synthicide-default-font);
   font-size: var(--reduced-font-size);
   font-weight: 500;
@@ -3901,11 +3909,403 @@ body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item:not
   white-space: nowrap;
 }
 
-body.synthicide-style-bold .synthicide .tab.vehicleWeapons .items-list .item:not(.items-header) .item-prop--is-missile i {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.vehicleWeapons .items-list .item:not(.items-header) .item-prop--is-missile i {
   color: var(--rb-accent);
 }
 
-body.synthicide-style-bold .vehicle .synthicide-window-icon, body.synthicide-style-bold .vehicle .synthicide-window-icon {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .vehicle .synthicide-window-icon, body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .vehicle .synthicide-window-icon {
   background-color: var(--rb-strong);
   border-radius: 8px;
+}
+
+/* ============================================================ */
+/* UNIFIED MODERN ATTRIBUTE HUD SYSTEM                          */
+/* High Specificity Structural Mappings - Zero Overrides Used   */
+/* ============================================================ */
+
+/* Main Split View Parent Containers Layout Framework */
+.synthicide .tab.attributes .attributes-layout-modern {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: flex-start;
+  padding: 4px 0;
+}
+
+.synthicide .tab.attributes .attributes-panel-modern {
+  flex: 0 1 34%;
+  max-width: 34%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.synthicide .tab.attributes .attributes-derived-modern {
+  flex: 1 1 0;
+  min-width: 0;
+  background-color: var(--synthicide-c-panel-bg);
+  border-radius: 4px;
+  padding: 15px;
+  border: 1px solid var(--synthicide-border-groove);
+  box-sizing: border-box;
+}
+
+.synthicide .tab.attributes .derived-section-title {
+  margin: 0 0 15px;
+  /*font-family: var(--synthicide-default-font);
+  color: var(--form-field-color);
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  font-weight: 700;*/
+}
+
+/* Individual HUD Card Component Blueprints */
+.synthicide .tab.attributes .attribute-card-hud {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--form-field-bg);
+  border: 1px solid var(--synthicide-border-groove);
+  border-radius: 4px;
+  min-height: 52px;
+  padding: 0 40px 0 12px;
+  box-shadow: var(--synthicide-shadow);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.synthicide .tab.attributes .attribute-card-hud:hover {
+  background: color-mix(in srgb, var(--synthicide-c-style-accent) 8%, transparent);
+}
+
+.synthicide .tab.attributes .attr-roll-zone {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  cursor: pointer;
+}
+
+.synthicide .tab.attributes .attr-identity-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.synthicide .tab.attributes .attr-abbr-tag {
+  font-size: 1.2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--synthicide-c-style-accent);
+  width: 2ch;
+  text-align: left;
+}
+
+.synthicide .tab.attributes .actions-hud-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+}
+
+.synthicide .tab.attributes .attr-grand-total {
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+}
+
+.synthicide .tab.attributes .attribute-score-display {
+  background: transparent;
+  border: none;
+  font-size: 1.45rem;
+  font-weight: bold;
+  color: var(--form-field-color);
+  text-align: right;
+  width: 52px;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+.synthicide .tab.attributes .math-inspector-dropdown {
+  position: absolute;
+  right: 12px;
+  top: 14px;
+  z-index: 100;
+  width: 24px;
+  height: 24px;
+}
+
+.synthicide .tab.attributes .gear-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--form-field-color);
+  width: 100%;
+  height: 100%;
+  line-height: 1;
+  opacity: 0.75;
+  user-select: none;
+  transition: opacity 0.2s;
+}
+
+body:not(.theme-dark) .synthicide .tab.attributes .attr-abbr-tag {
+  color: var(--form-field-color);
+}
+
+body.theme-dark .synthicide .tab.attributes .gear-toggle-btn {
+  color: var(--synthicide-c-white);
+}
+
+/* Dropdown visibility configuration triggers */
+.synthicide .tab.attributes .math-inspector-dropdown .inspector-popup-panel {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 28px;
+  width: 210px;
+  border-radius: 4px;
+  padding: 12px;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 200;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* FIXED: Keeps panel open during value changes by monitoring focused active elements */
+.synthicide .tab.attributes .math-inspector-dropdown[open] .inspector-popup-panel {
+  display: flex;
+  background-color: var(--form-field-bg);
+  border: 1px solid var(--synthicide-border-groove);
+}
+
+.synthicide .tab.attributes .popup-panel-header {
+  margin: 0 0 5px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--synthicide-border-groove);
+  padding-bottom: 5px;
+  font-weight: 700;
+  color: var(--form-field-color);
+}
+
+.synthicide .tab.attributes .inspector-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.synthicide .tab.attributes .inspector-field-row label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--form-field-color);
+}
+
+.synthicide .tab.attributes .attribute-popup-input {
+  width: 55px;
+  background-color: var(--synthicide-c-panel-bg);
+  border: 1px solid var(--synthicide-border-groove);
+  color: var(--form-field-color);
+  text-align: center;
+  border-radius: 3px;
+  height: 24px;
+}
+
+.synthicide .tab.attributes .attribute-popup-input:disabled {
+  opacity: 0.5;
+}
+
+.synthicide .tab.attributes .level-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.synthicide .tab.attributes .attribute-stepper-modern {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.synthicide .tab.attributes .hidden-stepper-value {
+  display: none;
+}
+
+.synthicide .tab.attributes .attribute-step-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+/* Right Column Grid Layout */
+.synthicide .tab.attributes .derived-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.synthicide .tab.attributes .derived-resource-card {
+  min-width: 0;
+  background: var(--form-field-bg);
+  border: 1px solid var(--synthicide-border-groove);
+  border-radius: 4px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.synthicide .tab.attributes .derived-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 600;
+  color: var(--form-field-color);
+}
+
+.synthicide .tab.attributes .derived-resource-card input {
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: var(--form-field-color);
+  text-align: center;
+  width: 100%;
+  height: auto;
+}
+
+/* ============================================================ */
+/* RULEBOOK BOLD SYSTEM OVERRIDES ADJUSTMENTS CONFIGURATIONS    */
+/* ============================================================ */
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .attributes-panel-modern {
+  flex-basis: 34%;
+  max-width: 34%;
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .attributes-derived-modern {
+  background-color: var(--rb-cell-alt);
+  border-color: color-mix(in srgb, var(--rb-strong) 45%, transparent);
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .derived-section-title {
+  color: var(--rb-on-accent);
+  text-transform: uppercase;
+  border-left-color: var(--rb-accent);
+  border-left-style: solid;
+  border-left-width: 4px;
+  padding-left: 8px;
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .attribute-card-hud {
+  border-left: 5px solid var(--rb-accent);
+  border-right-color: color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  border-top-color: color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  background: var(--rb-cell);
+}
+
+body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .attribute-score-display {
+  color: var(--rb-on-accent);
+}
+
+body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .derived-resource-card input {
+  color: var(--rb-on-accent);
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .derived-label {
+  color: var(--rb-accent);
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .math-inspector-dropdown[open] .inspector-popup-panel {
+  border-color: var(--rb-accent);
+  background-color: var(--rb-strong);
+}
+
+@media (max-width: 560px) {
+  .synthicide .tab.attributes .attributes-layout-modern {
+    flex-direction: column;
+  }
+
+  .synthicide .tab.attributes .attributes-panel-modern,
+  body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .attributes-panel-modern {
+    flex-basis: auto;
+    max-width: none;
+    width: 100%;
+  }
+
+  .synthicide .tab.attributes .attributes-derived-modern {
+    width: 100%;
+  }
+
+  .synthicide .tab.attributes .derived-grid-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================ */
+/* Cyberpunk Mode                                                */
+/* Shares Rulebook Bold component structure with distinct tokens. */
+/* ============================================================ */
+
+body.synthicide-style-cyberpunk {
+  --cp-accent: #00aee8;
+  --cp-strong: #063c5a;
+  --cp-alt: #f6c344;
+  --cp-on-accent: #f5fbff;
+  --cp-line: color-mix(in srgb, #006f9d 52%, transparent);
+  --cp-cell: color-mix(in srgb, #eaf5f9 90%, transparent);
+  --cp-cell-alt: rgba(0, 126, 173, 0.1);
+  --cp-display-font: "Orbitron", sans-serif;
+  --rb-accent: var(--cp-accent);
+  --rb-strong: var(--cp-strong);
+  --rb-alt: var(--cp-alt);
+  --rb-on-accent: var(--cp-on-accent);
+  --rb-line: var(--cp-line);
+  --rb-cell: var(--cp-cell);
+  --rb-cell-alt: var(--cp-cell-alt);
+  --synthicide-c-style-accent: var(--cp-accent);
+}
+
+body.theme-dark.synthicide-style-cyberpunk {
+  --cp-accent: #41d7ff;
+  --cp-strong: #08283d;
+  --cp-alt: #ffd35a;
+  --cp-on-accent: #f5fbff;
+  --cp-line: color-mix(in srgb, #41d7ff 46%, transparent);
+  --cp-cell: color-mix(in srgb, #0b1c28 90%, transparent);
+  --cp-cell-alt: rgba(65, 215, 255, 0.12);
+}
+
+body.synthicide-style-cyberpunk .synthicide .header-info-label,
+body.synthicide-style-cyberpunk .synthicide .items-header .item-name,
+body.synthicide-style-cyberpunk .synthicide .effects-header .effect-name,
+body.synthicide-style-cyberpunk .synthicide h3,
+body.synthicide-style-cyberpunk .synthicide h4 {
+  font-family: var(--cp-display-font);
+  letter-spacing: 0.04em;
+}
+
+body.synthicide-style-cyberpunk .synthicide .sheet-tabs .item.active,
+body.synthicide-style-cyberpunk .synthicide .items-list .item:hover,
+body.synthicide-style-cyberpunk .synthicide .effects-list .effect:hover {
+  box-shadow: inset 3px 0 var(--cp-alt);
+}
+
+body.synthicide-style-cyberpunk .synthicide input:focus,
+body.synthicide-style-cyberpunk .synthicide select:focus,
+body.synthicide-style-cyberpunk .synthicide textarea:focus {
+  border-color: var(--cp-accent);
+  box-shadow: 0 0 0 1px var(--cp-accent);
 }

@@ -11,7 +11,7 @@ The CSS file is split into two logical halves:
 | Lines (approx) | Contents |
 |---|---|
 | 1 – 1,170 | **Classic / base styles** — applies to both modes. Never style-mode-specific. |
-| 1,171 – end | **Rulebook Bold block** — all rules prefixed with `body.synthicide-style-bold`. |
+| 1,171 – end | **Rulebook Bold / Cyberpunk shared block** — component rules use `body:is(.synthicide-style-bold, .synthicide-style-cyberpunk)`, followed by Cyberpunk-specific tokens and visual details. |
 
 ### Classic block sections (in order)
 
@@ -24,7 +24,7 @@ The CSS file is split into two logical halves:
 - Resolve / Cynicism counters
 - Item sheet base styles
 
-### Bold block sections (in order)
+### Bold / Cyberpunk block sections (in order)
 
 ```
 COLOR TOKENS
@@ -55,7 +55,7 @@ ITEM SHEET – DEEPER STYLING  ← add-buttons, fieldsets, effects, misc
 
 ## CSS Token Variables
 
-Defined only inside `body.synthicide-style-bold .synthicide { … }` and its dark-mode override. Use these everywhere in the bold block — never hardcode colours.
+Rulebook Bold tokens are defined on `body.synthicide-style-bold`; shared component rules consume the `--rb-*` names. Cyberpunk maps its `--cp-*` tokens to these shared names on `body.synthicide-style-cyberpunk`, so it receives the same component coverage with its own visual language.
 
 | Token | Purpose |
 |---|---|
@@ -73,6 +73,21 @@ border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
 ```
 Use `35%` for light borders (table cells, rows), `45–50%` for heavier container borders.
 
+### Cyberpunk tokens
+
+Cyberpunk uses a corporate-future palette: electric blue for primary interactions and safety yellow for secondary/status emphasis. Define new Cyberpunk-specific values with `--cp-*`, then map the shared `--rb-*` names to them; this prevents duplicate component rules.
+
+| Token | Purpose |
+|---|---|
+| `--cp-accent` | Electric blue — interaction, borders, focus treatment |
+| `--cp-strong` | Technical navy — header and bar backgrounds |
+| `--cp-alt` | Safety yellow — secondary/status emphasis |
+| `--cp-on-accent` | High-contrast text on strong surfaces |
+| `--cp-line`, `--cp-cell`, `--cp-cell-alt` | Dividers, panel fills, and alternate-row fills |
+| `--cp-display-font` | Display face for structural labels and headings only |
+
+Include both `body.synthicide-style-cyberpunk` and `body.theme-dark.synthicide-style-cyberpunk` token definitions. Keep long-form content and form values on Roboto for legibility.
+
 ---
 
 ## Pattern Catalogue
@@ -84,8 +99,8 @@ Use these patterns as building blocks. Each maps to an existing section in the b
 Use for top-level group dividers within a tab (e.g. "ABILITIES", "TRAITS", "LEVEL 0 TRAITS").
 
 ```css
-/* Bold override — place in SECTION HEADER BARS section */
-body.synthicide-style-bold .synthicide .tab.mytab .items-list > .items-header {
+/* Shared Bold / Cyberpunk override — place in SECTION HEADER BARS section */
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.mytab .items-list > .items-header {
   min-height: 42px;
   padding: 0 14px;
   border-left-width: 6px; /* accent stripe */
