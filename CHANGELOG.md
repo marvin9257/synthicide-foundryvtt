@@ -1,3 +1,31 @@
+# [1.3.0](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.2.0...1.3.0) (2026-09-02)
+
+
+### Bug Fixes
+
+* Add dedicated item description chat card ([ac261d5](https://github.com/marvin9257/synthicide-foundryvtt/commit/ac261d50ec16ee2dbd76b72d6994fb46e28d0b8f))
+* attempt to make Knowledge Area powers derive from description.  Also refactor to select specific powers ([d3d6275](https://github.com/marvin9257/synthicide-foundryvtt/commit/d3d6275e8f3a8cf31bf604b5661089fdd6de78c2))
+* deepscan issues and cleanup unused code ([86f5f58](https://github.com/marvin9257/synthicide-foundryvtt/commit/86f5f5821d1956f5bac1c60d34be9cfe5df7d4b7))
+* improve modifier tooltips for attributes ([47033f9](https://github.com/marvin9257/synthicide-foundryvtt/commit/47033f927ca1d7c26fa3d9b89e6c2faba5eb8b3e))
+* improvement to trait item sheets and fields ([f096e0d](https://github.com/marvin9257/synthicide-foundryvtt/commit/f096e0d61b1f4276d32d40132eb8c81c2f4dfc1a))
+* isMissile header color back to white ([d67273c](https://github.com/marvin9257/synthicide-foundryvtt/commit/d67273c7621d2843d413d6962053d844a391918c))
+* make vehicle weapon general data two lines and not one ([68a97ef](https://github.com/marvin9257/synthicide-foundryvtt/commit/68a97ef5b2d6a1bf452f596fc8a1b19761e9d79e))
+* Merge pull request [#15](https://github.com/marvin9257/synthicide-foundryvtt/issues/15) from marvin9257/fix-improve-aspect-attribute-modifier-presentation ([a998f7f](https://github.com/marvin9257/synthicide-foundryvtt/commit/a998f7f02648b316fc89466772424a095ea4c806))
+* move weapon proficiency filed ([4d30008](https://github.com/marvin9257/synthicide-foundryvtt/commit/4d3000869201ea9b040ff8875147f04761a63f11))
+* refactor how aspect bonuses are displayed and edited ([28177aa](https://github.com/marvin9257/synthicide-foundryvtt/commit/28177aa15baa3cd0ec6c59e5d6b4a91a2f53dcea))
+* refactor trait fields to strings ([34ed1e5](https://github.com/marvin9257/synthicide-foundryvtt/commit/34ed1e553506ee950e25d30e90bfb5cf7bf9baaa))
+* remove aspect trait editing directly on sharper sheet.  Must edit aspect directly. ([04b9233](https://github.com/marvin9257/synthicide-foundryvtt/commit/04b923319e6457c465b23fa2cf2989b563aa06cb))
+* Show item descriptions in chat cards ([5da1b92](https://github.com/marvin9257/synthicide-foundryvtt/commit/5da1b9218e1b2264740e08b41e3e738045074172))
+* update documentation for Knowledge Area changes ([dcbf733](https://github.com/marvin9257/synthicide-foundryvtt/commit/dcbf733ace5e3ffa1b32c3469647ad1140e94245))
+* update knowledgePoints calc to RAW and add some JSDoc info ([004bf3e](https://github.com/marvin9257/synthicide-foundryvtt/commit/004bf3ebd806f710aa9a2146145a5208f4a0c474))
+* update verified to current version ([ab3b423](https://github.com/marvin9257/synthicide-foundryvtt/commit/ab3b42340356ccb1617eb4ee624bf0e57de69a72))
+* update verified version for fvtt ([ab3ad27](https://github.com/marvin9257/synthicide-foundryvtt/commit/ab3ad279db12d9ce2aa7be01aca8601a4093a297))
+
+
+### Features
+
+* Add Cyberpunk style and modern attribute HUD ([eca23c2](https://github.com/marvin9257/synthicide-foundryvtt/commit/eca23c23ea64322a809810208baea1e519cadd7e))
+
 # [1.2.0](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.1.8...1.2.0) (2026-08-05)
 
 
