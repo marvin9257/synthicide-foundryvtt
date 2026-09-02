@@ -128,18 +128,81 @@ export function getImplantSlotSummary(actor) {
 }
 
 /**
+ * Parse a Knowledge Area trait's HTML description into a set of selectable powers.
+ * Uses a lightweight template parser, simple string splitting, and Foundry's native slugify.
+ * Guarantees a minimum of 3 powers by filling in generic fallbacks if needed.
+ * 
+ * @param {string} html The item's `system.description` HTML.
+ * @returns {Object<string, string>} Map of slug key -> power name, in document order.
+ */
+export function parseKnowledgePowerOptions(html) {
+  const options = {};
+  
+  // 1. If HTML is completely empty, skip straight to filling the 3 fallbacks
+  if (html?.trim()) {
+    // Convert string to elements using a lightweight template
+    const template = globalThis.document.createElement("template");
+    template.innerHTML = html;
+    
+    // Gather all list items, fallback to paragraphs if none exist
+    let nodes = template.content.querySelectorAll("ul li");
+    if (!nodes.length) nodes = template.content.querySelectorAll("p");
+
+    const usedKeys = new Set();
+
+    nodes.forEach((node, index) => {
+      const text = node.textContent.trim().replace(/\s+/g, " ");
+      if (!text) return;
+
+      // Simple Split: Break text at the first colon (:), dash (—), or hyphen (-)
+      const parts = text.split(/[:—-]/);
+      let name = parts[0] ? parts[0].trim().slice(0, 60) : "";
+
+      // Fallback if the line did not contain a separator
+      if (!name || parts.length === 1) name = `Power ${index + 1}`;
+
+      // Generate a clean unique key using Foundry VTT's native slugify helper
+      let key = name.slugify() || `power-${index + 1}`;
+      let suffix = 2;
+      while (usedKeys.has(key)) {
+        key = `${key}-${suffix++}`;
+      }
+      usedKeys.add(key);
+
+      options[key] = name;
+    });
+  }
+
+  // 2. FALLBACK GUARANTEE: Ensure at least 3 powers always exist in the map
+  let fallbackIndex = 1;
+  while (Object.keys(options).length < 3) {
+    const fallbackName = `Power ${fallbackIndex}`;
+    const fallbackKey = `power-${fallbackIndex}`;
+    
+    // Only add if this specific key doesn't clash with an already parsed power
+    if (!options[fallbackKey]) {
+      options[fallbackKey] = fallbackName;
+    }
+    fallbackIndex++;
+  }
+
+  return options;
+}
+
+/**
  * Convert field from string to number respecting local number format, if necessary.
  * @param {any} source data source (document.system)
  * @param {string} field  system field to convert.
  * @returns {void}
  */
 export function migrateStringToNumber(source, field) {
-  if ( Object.hasOwn(source, field)) {
-    if ( typeof source[field] !== 'number') {
+  if (Object.hasOwn(source, field)) {
+    if (typeof source[field] !== "number") {
       source[field] = parseLocaleNumber(source[field]) || 0;
     }
   }
 }
+
 
 /**
  * Convert field from number to string.

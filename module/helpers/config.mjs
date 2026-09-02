@@ -195,9 +195,11 @@ SYNTHICIDE.debug = {
 
 // Settings constants
 SYNTHICIDE.SHEET_STYLE_SETTING_KEY = 'sheetStyleMode';
+SYNTHICIDE.SHARPER_ATTRIBUTES_LAYOUT_KEY = 'sharperAttributesLayout';
 SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY = 'defaultTargetArmor';
 SYNTHICIDE.SHEET_STYLE_CLASSIC = 'classic';
 SYNTHICIDE.SHEET_STYLE_BOLD = 'rulebookBold';
+SYNTHICIDE.SHEET_STYLE_CYBERPUNK = 'cyberpunk';
 SYNTHICIDE.USE_SHOCKING_STRIKE_KEY = 'useShockingStrike';
 
 // Virtual Grid Movement Setting Key
@@ -298,8 +300,8 @@ SYNTHICIDE.rolls = {
 SYNTHICIDE.traitTypes = {
   aspect: 'SYNTHICIDE.Item.Trait.Types.aspect',
   bioclass: 'SYNTHICIDE.Item.Trait.Types.bioclass',
-  attackSkill: 'SYNTHICIDE.Item.Trait.Types.attackSkill',
-  knowledgeFocus: 'SYNTHICIDE.Item.Trait.Types.knowledgeFocus',
+  battlePower: 'SYNTHICIDE.Item.Trait.Types.battlePower',
+  knowledgeArea: 'SYNTHICIDE.Item.Trait.Types.knowledgeArea',
   psychicPower: 'SYNTHICIDE.Item.Trait.Types.psychicPower',
   tacticalPower: 'SYNTHICIDE.Item.Trait.Types.tacticalPower',
   mutation: 'SYNTHICIDE.Item.Trait.Types.mutation',
@@ -308,6 +310,9 @@ SYNTHICIDE.traitTypes = {
   weaponProficiency: 'SYNTHICIDE.Item.Trait.Types.weaponProficiency',
   spell: 'SYNTHICIDE.Item.Trait.Types.spell'
 };
+
+// Legacy values remain schema-valid long enough for world migrations to run.
+SYNTHICIDE.legacyTraitTypes = ['battlePowers', 'knowledgeAreas'];
 
 /**
  * Weapon specialization/proficiency keys for trait items.

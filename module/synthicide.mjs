@@ -21,6 +21,7 @@ import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
 import { registerSynthicideChatContextHook, SynthicideChatPopout } from './documents/chatlog.mjs';
 import { registerCombatTrackerApHooks } from './hooks/combat-tracker-ap.mjs';
+import { registerProseMirrorFocusGuard } from './hooks/prosemirror-focus-guard.mjs';
 import { registerVirtualGridOverlay, safeRenderVirtualGrid } from './canvas/virtual-grid-overlay.mjs';
 import SynthicideVirtualRuler from './canvas/synthicide-virtual-ruler.mjs';
 import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler.mjs';
@@ -73,6 +74,8 @@ Hooks.once('init', function () {
 
   // Expose the synthicide namespace on `game` for macros and user scripts.
   if (typeof game !== 'undefined') game.synthicide = synthicide;
+
+  registerProseMirrorFocusGuard();
 
   // Add custom constants for configuration.
   CONFIG.SYNTHICIDE = SYNTHICIDE;
@@ -179,6 +182,12 @@ Hooks.once('init', function () {
       { urls: ["systems/synthicide/assets/fonts/Roboto/Roboto-Bold.ttf"], weight: 700 }
     ]
   };
+  CONFIG.fontDefinitions["Orbitron"] = {
+    editor: true,
+    fonts: [
+      { urls: ["systems/synthicide/assets/fonts/Orbitron/Orbitron[wght].ttf"], weight: "400 900" }
+    ]
+  };
   registerVirtualGridOverlay();
   // Use custom ruler for virtual grid measurement
   CONFIG.Canvas.rulerClass = SynthicideVirtualRuler;
@@ -226,6 +235,9 @@ Handlebars.registerHelper('format', function (key, ...args) {
 
 Hooks.once('ready', async function () {
   await migrateWorld();
+
+  // Retry in case foundry.prosemirror wasn't populated yet at init.
+  registerProseMirrorFocusGuard();
 
   applySheetStyleMode(
     game.settings.get('synthicide', SYNTHICIDE.SHEET_STYLE_SETTING_KEY)
@@ -324,12 +336,16 @@ function applySheetStyleMode(mode) {
 
   const roots = [doc.body, doc.documentElement].filter(Boolean);
   for (const root of roots) {
-    root.classList.remove('synthicide-style-classic', 'synthicide-style-bold');
-    root.classList.add(
-      mode === SYNTHICIDE.SHEET_STYLE_BOLD
-        ? 'synthicide-style-bold'
-        : 'synthicide-style-classic'
+    root.classList.remove(
+      'synthicide-style-classic',
+      'synthicide-style-bold',
+      'synthicide-style-cyberpunk'
     );
+    const styleClass = {
+      [SYNTHICIDE.SHEET_STYLE_BOLD]: 'synthicide-style-bold',
+      [SYNTHICIDE.SHEET_STYLE_CYBERPUNK]: 'synthicide-style-cyberpunk',
+    }[mode] ?? 'synthicide-style-classic';
+    root.classList.add(styleClass);
   }
 }
 
@@ -347,9 +363,24 @@ function registerSettings() {
     choices: {
       [SYNTHICIDE.SHEET_STYLE_CLASSIC]: 'SYNTHICIDE.Settings.SheetStyleMode.Choices.Classic',
       [SYNTHICIDE.SHEET_STYLE_BOLD]: 'SYNTHICIDE.Settings.SheetStyleMode.Choices.RulebookBold',
+      [SYNTHICIDE.SHEET_STYLE_CYBERPUNK]: 'SYNTHICIDE.Settings.SheetStyleMode.Choices.Cyberpunk',
     },
     default: SYNTHICIDE.SHEET_STYLE_CLASSIC,
     onChange: (value) => applySheetStyleMode(value),
+  });
+
+  game.settings.register('synthicide', SYNTHICIDE.SHARPER_ATTRIBUTES_LAYOUT_KEY, {
+    name: 'SYNTHICIDE.Settings.SharperAttributesLayout.Name',
+    hint: 'SYNTHICIDE.Settings.SharperAttributesLayout.Hint',
+    scope: 'client',
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: () => {
+      for (const actor of game.actors ?? []) {
+        actor.apps?.forEach?.(app => app.render());
+      }
+    },
   });
 
   game.settings.register('synthicide', SYNTHICIDE.DEFAULT_TARGET_ARMOR_KEY, {

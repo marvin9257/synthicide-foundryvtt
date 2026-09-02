@@ -22,8 +22,13 @@
         "Hint": "Choose the visual style for Synthicide sheets.",
         "Choices": {
           "Classic": "Classic",
-          "RulebookBold": "Rulebook Bold"
+          "RulebookBold": "Rulebook Bold",
+          "Cyberpunk": "Cyberpunk"
         }
+      },
+      "SharperAttributesLayout": {
+        "Name": "Use Legacy Sharper Attribute Layout",
+        "Hint": "Display Sharper attributes in the previous compact grid list instead of the card layout."
       },
       "DefaultTargetArmor": { 
         "Name": "Default Target Armor",
@@ -226,7 +231,11 @@
         "NoAbilities": "No abilities found.",
         "TraitName": "Trait Name",
         "CreateAbility": "Add Ability",
-        "Traits": "Traits"
+        "Traits": "Traits",
+        "EditAspect": "Edit Aspect",
+        "TraitsHelp": "These traits come from your assigned Aspect. Use Edit Aspect to change them.",
+        "BonusSummary": "Aspect Bonuses Applied",
+        "NoBonuses": "No active aspect bonuses."
       },
       "Attributes": {
         "Actions": "ACTIONS",
@@ -236,7 +245,8 @@
         "Current": "Current",
         "Raw": "Raw",
         "Aspect": "Aspect",
-        "ModifierTooltip": "Raw: {raw} | Aspect: {aspect}",
+        "ModifierBreakdown": "Modifier Breakdown",
+        "ModifierTooltip": "{breakdown}: base:{base}, raw/AE:{raw}, level:{increase}, aspect:{aspect}, total:{total}",
         "label": "Attributes"
       },
       "Combat": {
@@ -279,6 +289,7 @@
             "without": "Days w/o Food"
           },
           "actionPoints": {"value": {"label": "Action Points"}},
+          "knowledgePoints": {"value": {"label": "Knowledge Points"}},
           "battleReflex": {"value": {"label": "Battle Reflex"}},
           "toughnessDefense": {"value": {"label": "Toughness Defense"}},
           "armorDefense": {"value": {"label": "Armor Defense"}},
@@ -648,7 +659,13 @@
           "level": {"label": "Trait Level"},
           "traitType": {"label": "Trait Type"},
           "specializationKey": {"label": "Weapon Specialization"},
-          "requirements": {"label": "Requirements"}
+          "requirements": {"label": "Requirements"},
+          "traitPoints": {"label": "Trait Points"},
+          "overchargeCost": {"label": "Overcharge Cost (HP)"},
+          "usesLimit": {"label": "Uses Limit"},
+          "apCost": {"label": "AP Cost"},
+          "range": {"label": "Range"},
+          "knownPowerKeys": {"label": "Known Powers"}
         },
         "TypeLabel": "Trait/Power",
         "TraitLVL": "Level {level} Traits & Powers",
@@ -658,7 +675,8 @@
           "bioclass": "Bioclass",
           "aspect": "Aspect",
           "attackSkill": "Attack Skill",
-          "knowledgeFocus": "Knowledge Focus",
+          "battlePower": "Battle Power",
+          "knowledgeArea": "Knowledge Area",
           "psychicPower": "Psychic Power",
           "tacticalPower": "Tactical Power",
           "mutation": "Mutation",
@@ -711,6 +729,7 @@
       "Aspect": {
         "Label": "Aspect",
         "AttributeBonusesHeader": "Bonuses",
+        "AttributeBonusesHelp": "These values apply to the embedded actor as aspect bonuses.",
         "Abilities": "Abilities",
         "AddAbility": "Add Ability",
         "NoAbilities": "No abilities found.",
@@ -916,6 +935,7 @@
         "SpreadFlavor": "{item}: collateral spread damage (no die) to {targets}",
         "SpreadNoCollateral": "{itemName}Spread attempted collateral against {count} target(s), but no secondary targets were hit.",
         "ItemRoll": "Item Roll for [{type}]:{name}",
+        "ItemDescription": "Item Description for [{type}]:{name}",
         "Equation": "Equation",
         "Total": "Total",
         "Effect": "Effect",
@@ -1040,6 +1060,7 @@
       "Tooltip": {
         "AttackWithItem": "Attack with {item}",
         "RollWithItem": "Roll with {item}",
+        "DescribeItem": "Send {item} description to chat",
         "RollVehicleWeaponDamage": "Roll automatic-hit vehicle weapon damage for {item}"
       },
       "Actions": {

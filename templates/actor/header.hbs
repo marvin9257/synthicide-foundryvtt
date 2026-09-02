@@ -85,7 +85,7 @@
         center all of its child elements content and text. }}
       <!-- Hit Points Resource -->
       <div class='resource flex-group-center header-resource'>
-        <label for='system.hitPoints.value' class='resource-label'>
+        <label for='system.hitPoints.value' class='resource-label resource-label-wrap'>
           {{localize 'SYNTHICIDE.Actor.base.FIELDS.hitPoints.value.label'}}
         </label>
         <div class='resource-content flexrow flex-center flex-between resource-pair'>
@@ -120,7 +120,7 @@
       </div>
       <!-- Force Barrier Resource -->
       <div class='resource flex-group-center header-resource'>
-        <label for='system.armorValues.forceBarrier.value' class='resource-label'>
+        <label for='system.armorValues.forceBarrier.value' class='resource-label resource-label-wrap'>
           {{localize 'SYNTHICIDE.Actor.Combat.armorValues.ForceBarrier'}}
         </label>
         <div class='resource-content flexrow flex-center flex-between resource-pair'>
@@ -262,6 +262,32 @@
               >+</button>
             {{/if}}
           </div>
+        </div>
+        <div class='resource-track resource-track-empty'></div>
+      </div>
+      <!-- Knowledge Points Resource -->
+      <div class='resource flex-group-center header-resource'>
+        <label for='system.armorValues.knowledegPoints.value' class='resource-label resource-label-wrap'>
+          {{localize 'SYNTHICIDE.Actor.base.FIELDS.knowledgePoints.value.label'}}
+        </label>
+        <div class='resource-content flexrow flex-center flex-between resource-pair'>
+          <input
+            type='number'
+            name='system.knowledgePoints.value'
+            value='{{system.knowledgePoints.value}}'
+            data-dtype='Number'
+            min='0'
+            max='{{system.knowledgePoints.max}}'
+          />
+          <span> / </span>
+          <input
+            type='number'
+            name='system.knowledgePoints.max'
+            value='{{system.knowledgePoints.max}}'
+            data-dtype='Number'
+            min='0'
+            disabled
+          />
         </div>
         <div class='resource-track resource-track-empty'></div>
       </div>

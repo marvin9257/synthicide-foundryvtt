@@ -26,7 +26,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
     // Trait categories/types (bioclass, attack skill, knowledge focus, etc.)
     schema.traitType = new fields.StringField({
       required: true,
-      choices: Object.keys(SYNTHICIDE.traitTypes),
+      choices: [...Object.keys(SYNTHICIDE.traitTypes), ...SYNTHICIDE.legacyTraitTypes],
       initial: 'generalTalent',
     });
 
@@ -51,11 +51,41 @@ export default class SynthicideTrait extends SynthicideItemBase {
 
     schema.requirements = new fields.StringField({...requiredBlankString});
     schema.apCost = new fields.StringField({...requiredBlankString});
-    schema.range = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.usesLimit = new fields.NumberField({...requiredInteger, initial: 0}, {persisted: false});
-    schema.overchargeCost = new fields.NumberField({...requiredInteger, initial: 0}, {persisted: false});
+    schema.range = new fields.StringField({...requiredBlankString});
+    schema.usesLimit = new fields.StringField({...requiredBlankString});
+    schema.overchargeCost = new fields.StringField({...requiredBlankString});
+    schema.traitPoints = new fields.NumberField({...requiredInteger, initial: 0});
+    // Which of the powers parsed from `description` (see commonSchemaUtils.parseKnowledgePowerOptions)
+    // the character has learned, keyed by slugified power name.
+    schema.knownPowerKeys = new fields.SetField(new fields.StringField({ required: true, blank: false }), { initial: [] });
 
     return schema;
+  }
+
+  /** @override */
+  prepareDerivedData() {
+    super.prepareDerivedData();
+
+    if (this.traitType === 'knowledgeArea') {
+      this.knownPowerCount = this.knownPowerKeys.size;
+    }
+  }
+
+  /**
+   * @param {object} source
+   * @returns {object}
+   */
+  static migrateData(source) {
+    if ("traitType" in source) {
+      if (source.traitType === "battlePowers") {
+        source.traitType = "battlePower";
+      }
+
+      if (source.traitType === "knowledgeAreas") {
+        source.traitType = "knowledgeArea";
+      }
+    }
+    return super.migrateData(source);
   }
 
   /**

@@ -1,6 +1,7 @@
 
 
 import { openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
+import { createActionMessage } from '../rolls/cards.mjs';
 import { getRollResultSummary } from '../rolls/roll-utils.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
 
@@ -201,16 +202,20 @@ export class SynthicideItem extends foundry.documents.Item {
   async _rollFormulaItem() {
     const item = this;
     const speaker = ChatMessage.getSpeaker({ actor: item.actor });
-    const label = game.i18n.format('SYNTHICIDE.Roll.Card.ItemRoll', { type: item.type, name: item.name });
     const description = String(item.system.description ?? '');
     const sanitizedDescription = foundry.utils?.sanitizeHTML ? foundry.utils.sanitizeHTML(description) : description;
 
     if (!item.system.roll?.enabled || !item.system.formula || (item.system.roll.diceSize === "" && item.system.roll.diceBonus === "")) {
-      return ChatMessage.create({
-        speaker,
-        flavor: label,
-        content: sanitizedDescription,
-      }, {
+      const cardData = {
+        title: game.i18n.format('SYNTHICIDE.Roll.Card.ItemDescription', { type: item.type, name: item.name }),
+        subtype: 'itemDescription',
+        flavor: sanitizedDescription,
+      };
+      return createActionMessage({
+        actor: item.actor,
+        roll: null,
+        cardData,
+        template: 'systems/synthicide/templates/chat/item-description-card.hbs',
         messageMode: game.settings.get('core', 'messageMode'),
       });
     }
@@ -219,7 +224,7 @@ export class SynthicideItem extends foundry.documents.Item {
     const evaluatedRoll = await new Roll(rollData.formula, rollData.actor).evaluate();
     const { total, d10, equation, dieClass } = getRollResultSummary(evaluatedRoll);
     const cardData = {
-      title: label,
+      title: game.i18n.format('SYNTHICIDE.Roll.Card.ItemRoll', { type: item.type, name: item.name }),
       subtype: 'item',
       equation,
       total,
@@ -229,7 +234,7 @@ export class SynthicideItem extends foundry.documents.Item {
       showEffectOutcomeRow: false,
       showDamageButton: false,
       showOpposedButton: false,
-      flavor: sanitizedDescription,
+      flavor: '',
       metadataRows: [
         { label: 'Formula', valueHtml: `<code>${foundry.utils.escapeHTML(String(rollData.formula ?? ''))}</code>` },
       ],
@@ -256,7 +261,6 @@ export class SynthicideItem extends foundry.documents.Item {
       content: cardHtml,
       title: cardData.title,
       flags: { synthicide: cardData },
-      flavor: cardData.flavor,
     }, {
       messageMode: game.settings.get('core', 'messageMode'),
     });

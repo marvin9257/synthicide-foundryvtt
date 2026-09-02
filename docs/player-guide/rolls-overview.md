@@ -88,7 +88,7 @@ For weapon attacks with the Spread feature, additional per-target damage cards m
 1. **Zero Damage Floor**: Damage rolls cannot produce less than 0 damage, even if target defenses or penalties reduce the total below zero.
 2. **Modification Bonuses**: Only implemented automatic modification mechanics are included in chat card calculations. These include Battle Assist's Combat floor, Expert Crafting damage, Enhanced Alloy attack, Bane Tune bonus damage, and Arc attack bonus. All other modification effects must be applied manually.
 3. **Special Ammo**: Ammo is partially automated. Some ammo applies automatic statuses or direct numeric changes, but complex rule handling still requires table resolution.
-4. **Weapon Specialization**: Weapon Proficiency traits apply implemented numeric specialization bonuses by tier when specialization matches the weapon family. Not all specialization rider text is automated.
+4. **Weapon Specialization**: Weapon Proficiency traits apply implemented numeric specialization bonuses by tier when specialization matches the weapon family. Not all specialization text is automated.
 
 ## Applying Damage or Healing From Chat Cards
 

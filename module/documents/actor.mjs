@@ -12,6 +12,8 @@ const DAMAGEABLE_ACTOR_TYPES = new Set(['sharper', 'npc', 'vehicle']);
  */
 export class SynthicideActor extends foundry.documents.Actor {
 
+  
+
   /** @override */
   async _preUpdate(changed, options, user) {
     const allowed = await super._preUpdate(changed, options, user);
@@ -27,31 +29,38 @@ export class SynthicideActor extends foundry.documents.Actor {
       foundry.utils.setProperty(changed, 'system.hitPoints.previous', this.system.hitPoints.value);
     }
 
-    // 2. Clamp and normalize Force Barrier values
+    // 2. Clamp and normalize Force Barrier values and Knowledge Points
     if (['sharper', 'npc'].includes(this.type)) {
-      const valuePath = 'system.armorValues.forceBarrier.value';
-      const maxPath = 'system.armorValues.forceBarrier.max';
-      const hasBarrierValue = foundry.utils.hasProperty(changed, valuePath);
-      const hasBarrierMax = foundry.utils.hasProperty(changed, maxPath);
-      if (hasBarrierValue || hasBarrierMax) {
-        // Normalize max and persist the normalized max into the change payload
-        let maxBarrier = Number(foundry.utils.getProperty(changed, maxPath));
-        if (!Number.isFinite(maxBarrier)) maxBarrier = Number(this.system.armorValues?.forceBarrier?.max ?? 0);
-        maxBarrier = Math.max(0, maxBarrier);
-        if (hasBarrierMax) foundry.utils.setProperty(changed, maxPath, maxBarrier);
-
-        // Resolve the current/next barrier value (prefer explicit changed value)
-        const rawNext = foundry.utils.getProperty(changed, valuePath);
-        const nextBarrier = Number(rawNext ?? this.system.armorValues?.forceBarrier?.value ?? 0);
-        const clampedBarrier = Math.clamp(Number.isFinite(nextBarrier) ? nextBarrier : 0, 0, maxBarrier);
-
-        // Always write the clamped value into the change payload so reductions to max
-        // (for example unequipping armor) force the stored value to be clamped.
-        foundry.utils.setProperty(changed, valuePath, clampedBarrier);
-      }
+      this._clampResourceInUpdate(changed, 'system.armorValues.forceBarrier.value', 'system.armorValues.forceBarrier.max');
+      this._clampResourceInUpdate(changed, 'system.knowledgePoints.value', 'system.knowledgePoints.max');
     }
     
     return allowed;
+  }
+
+  /**
+   * Clamp a resource value against its effective max while preserving the update payload.
+   *
+   * @param {object} changed The partial update payload being applied to the actor.
+   * @param {string} valuePath Full system path to the current resource value, e.g. `system.knowledgePoints.value`.
+   * @param {string} maxPath Full system path to the resource max, e.g. `system.knowledgePoints.max`.
+   * @returns {void}
+   */
+  _clampResourceInUpdate(changed, valuePath, maxPath) {
+    const hasValue = foundry.utils.hasProperty(changed, valuePath);
+    const hasMax = foundry.utils.hasProperty(changed, maxPath);
+    if (!hasValue && !hasMax) return;
+
+    const currentMax = Number(foundry.utils.getProperty(this, maxPath) ?? 0);
+    const resolvedMax = Number(foundry.utils.getProperty(changed, maxPath) ?? currentMax);
+    const max = Math.max(0, Number.isFinite(resolvedMax) ? resolvedMax : 0);
+    if (hasMax) foundry.utils.setProperty(changed, maxPath, max);
+
+    const currentValue = Number(foundry.utils.getProperty(this, valuePath) ?? 0);
+    const next = Number(foundry.utils.getProperty(changed, valuePath) ?? currentValue);
+    const clamped = Math.clamp(Number.isFinite(next) ? next : 0, 0, max);
+
+    foundry.utils.setProperty(changed, valuePath, clamped);
   }
 
   /** @override */
@@ -209,58 +218,6 @@ export class SynthicideActor extends foundry.documents.Actor {
     
     return data;
   }
-
-  /*async damageActor(damage, options = {}) {
-    if (!damage || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return;
-    const updates = {};
-    if (['sharper', 'npc'].includes(this.type)) {
-      const normalizedOptions = {
-        ...options,
-        specialAmmoUsed: String(options?.specialAmmoUsed ?? 'none'),
-      };
-      const isFlashAmmo = normalizedOptions.specialAmmoUsed === 'flash';
-      
-      let damageRemaining = damage;
-      // Apply force barrier first.
-      let barrierAbsorbed = 0;
-      if (!isFlashAmmo && this.system.armorValues?.forceBarrier.value > 0) {
-        barrierAbsorbed = Math.min(this.system.armorValues.forceBarrier.value, damageRemaining);
-        if (barrierAbsorbed > 0) {
-          damageRemaining -= barrierAbsorbed;
-          updates['system.armorValues.forceBarrier.value'] = Math.max(this.system.armorValues.forceBarrier.value - barrierAbsorbed, 0);
-        }
-      }
-
-      // Compute outcomes if not dead.
-      const preHP = Number(this.system.hitPoints.value ?? 0);
-
-      if (!isFlashAmmo && damageRemaining > 0 && !this.statuses?.has("dead")) {
-        updates['system.hitPoints.value'] = preHP - damageRemaining;
-
-        if (game.settings.get('synthicide', SYNTHICIDE.USE_SHOCKING_STRIKE_KEY)) {
-          const outcome = await this._handleShockingStrike(damageRemaining, preHP, updates, { ...normalizedOptions, barrierAbsorbed });
-          if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL || outcome === SYNTHICIDE.SHOCK_OUTCOMES.DEATH) {
-            if (!this.statuses?.has("dead")) {
-              await this.toggleStatusEffect("dead", { active: true });
-            }
-          }
-        }
-      }
-
-      await this.update(updates);
-
-      if (damageRemaining > 0 || isFlashAmmo) {
-        await this._applySpecialAmmoOnHitEffects(normalizedOptions);
-      }
-    } else if (['vehicle'].includes(this.type)) {
-      const preHP = Number(this.system.hitPoints.value ?? 0);
-      if (damage > this.system.damageThreshold) {
-        updates['system.hitPoints.value'] = Math.clamp(preHP - damage, 0, this.system.hitPoints.max);
-      }
-
-      await this.update(updates);
-    }
-  }*/
 
   async damageActor(damage, options = {}) {
     // 1. Guard clause: Exit early if invalid damage or un-damageable actor type

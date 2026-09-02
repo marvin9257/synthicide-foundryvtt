@@ -15,6 +15,10 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
     'SYNTHICIDE.Actor.Character',
   ];
 
+  /**
+   * Define the schema for sharper actor data.
+   * @returns {object} The sharper actor data schema.
+   */
   static defineSchema() {
     const schema = super.defineSchema();
 
@@ -68,6 +72,11 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       { initial: { starvationPenalty: 0 }}
     );
     
+    schema.knowledgePoints = new fields.SchemaField({
+      value: new fields.NumberField({required: true, integer: true, initial: 0}),
+      max: new fields.NumberField({required: true, integer: true, initial: 0}, {persisted: false})
+    });
+
     return schema;
   }
 
@@ -78,6 +87,7 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
    */
   prepareDerivedData() {
     super.prepareDerivedData();
+    // Calculate hitpoint derived values from aspect and bioclass
     const aspect = this.parent?.itemTypes?.aspect?.[0] ?? null;
     const aspectAttributeBonuses = aspect?.system?.attributeBonuses ?? {};
     const aspectHitPointsMaxBonusBase = Number(aspect?.system?.hitPointsMaxBonus ?? 0);
@@ -123,6 +133,9 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
       this.foodDays.min = -(6 + (this.attributes.toughness.value ?? 0));
     }
     const level = this.level.value ?? 1;
+
+    // Calculate max knowledge points
+    this.knowledgePoints.max = getKnownKnowledgePoints(this.parent);
     
     //Derived data calculated a bit differently for player characters; include any modifiers
     this.hitPoints.max = (this.hitPoints.base ?? 32)
@@ -140,6 +153,25 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
   }
 }
 
+/**
+ * Calculate the maximum knowledge points for an actor.
+ * @param {Actor|null|undefined} actor The actor whose knowledge points to calculate.
+ * @returns {number} The actor's maximum knowledge points.
+ */
+function getKnownKnowledgePoints(actor) {
+  const knowledgeAreas = (actor?.itemTypes?.trait ?? [])
+    .filter(trait => trait.system?.traitType === 'knowledgeArea');
+  if (knowledgeAreas.length === 0) return 0;
+
+  return (actor?.system?.attributes?.operation?.value ?? 0)
+    + knowledgeAreas.reduce((total, trait) => total + (trait.system?.knownPowerCount ?? 0), 0);
+}
+
+/**
+ * Get the derived values from the actor's equipped armor.
+ * @param {Actor|null|undefined} actor The actor whose equipped armor to inspect.
+ * @returns {{ armorBonus: number, stBonus: number, speedMax: number, endoPlatingGrade: number, forceBarrier: { max: number, recoveryRate: number } }} The current armor values.
+ */
 function getCurrentArmorValues(actor) {
   let returnValues = {
     armorBonus: 0,
@@ -176,18 +208,33 @@ function getCurrentArmorValues(actor) {
   return returnValues;
 }
 
+/**
+ * Normalize armor modifications to a set of modification keys.
+ * @param {Set<string>|string[]|undefined} modifications Armor modification keys.
+ * @returns {Set<string>} The normalized modification set.
+ */
 function getModificationSet(modifications) {
   if (modifications instanceof Set) return modifications;
   if (Array.isArray(modifications)) return new Set(modifications);
   return new Set();
 }
 
+/**
+ * Get the bonus granted by the highest superior crafting modification.
+ * @param {Set<string>} modifications Armor modification keys.
+ * @returns {number} The superior crafting bonus.
+ */
 function getSuperiorCraftingBonus(modifications) {
   if (modifications.has('superiorCrafting2')) return 2;
   if (modifications.has('superiorCrafting1')) return 1;
   return 0;
 }
 
+/**
+ * Get the grade granted by the highest endo-plating modification.
+ * @param {Set<string>} modifications Armor modification keys.
+ * @returns {number} The endo-plating grade.
+ */
 function getEndoPlatingGrade(modifications) {
   if (modifications.has('endoPlating3')) return 3;
   if (modifications.has('endoPlating2')) return 2;

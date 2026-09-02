@@ -27,8 +27,9 @@ These settings affect the whole world and are usually configured by the GM.
 
 These settings are per-user and can be adjusted individually.
 
-1. **Sheet Style**: Choose the visual presentation for Synthicide sheets.
-2. **Virtual Grid Color**: Changes the color of the virtual grid overlay on your client only.
+1. **Sheet Style**: Choose Classic, Rulebook Bold, or Cyberpunk visual presentation for Synthicide sheets.
+2. **Use Legacy Sharper Attribute Layout**: Displays the Sharper Attributes tab as the previous compact grid list instead of cards. This only changes presentation.
+3. **Virtual Grid Color**: Changes the color of the virtual grid overlay on your client only.
 
 ### Related core Foundry setting
 

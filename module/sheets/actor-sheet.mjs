@@ -188,11 +188,30 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         context.effects = prepareActiveEffectCategories(this.actor.allApplicableEffects());
         break;
       case 'attributes':
+        context.useLegacyAttributesLayout = game.settings.get(
+          'synthicide',
+          SYNTHICIDE.SHARPER_ATTRIBUTES_LAYOUT_KEY
+        );
         // Add increaseSegments array (bottom-up) for each attribute for block meter rendering.
         if (context.system?.attributes) {
           for (const attribute of Object.values(context.system.attributes)) {
             const filled = Number(attribute.increase) || 0;
             attribute.increaseSegments = Array.from({length: 5}, (_, i) => i < filled).reverse();
+            const formatSignedNumber = (value) => {
+              const numericValue = Number(value) || 0;
+              return `${numericValue >= 0 ? '+' : ''}${numericValue}`;
+            };
+            attribute.modifierTooltip = game.i18n.format(
+              'SYNTHICIDE.Actor.Attributes.ModifierTooltip',
+              {
+                breakdown: game.i18n.localize('SYNTHICIDE.Actor.Attributes.ModifierBreakdown'),
+                base: formatSignedNumber(attribute.base),
+                raw: formatSignedNumber(attribute.modifier),
+                increase: formatSignedNumber(attribute.increase),
+                aspect: formatSignedNumber(attribute.aspectBonus),
+                total: formatSignedNumber(attribute.value),
+              }
+            );
           }
         }
         break;
@@ -238,6 +257,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     context.aspect = this.actor.itemTypes.aspect[0] ?? null;
     context.bioclass = this.actor.itemTypes.bioclass[0] ?? null;
+    context.aspectBonusSummary = this._buildAspectBonusSummary(context.aspect?.system);
     
     // Iterate through traits as they need special handling
     for (let i of this.actor.itemTypes.trait) {
@@ -281,6 +301,61 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   }
 
   /**
+   * Build the list of aspect bonus pills shown on the actor aspect tab.
+   * Includes non-zero attribute bonuses plus any applied HP max bonus.
+   * @param {object} aspectSystem
+   * @returns {{labelKey: string, value: number}[]}
+   * @private
+   */
+  _buildAspectBonusSummary(aspectSystem) {
+    if (!aspectSystem) return [];
+
+    const summary = [];
+    const attributeBonuses = aspectSystem.attributeBonuses ?? {};
+
+    for (const [key, value] of Object.entries(attributeBonuses)) {
+      const numericValue = Number(value ?? 0);
+      if (!numericValue) continue;
+      summary.push({
+        labelKey: SYNTHICIDE.attributeAbbreviations?.[key] ?? SYNTHICIDE.attributes?.[key] ?? key,
+        value: numericValue,
+      });
+    }
+
+    const hpMaxBonus = this._getAspectHitPointMaxBonus(aspectSystem);
+    if (hpMaxBonus) {
+      summary.push({
+        labelKey: 'SYNTHICIDE.Item.Aspect.FIELDS.hitPointsMaxBonus.label',
+        value: hpMaxBonus,
+      });
+    }
+
+    return summary;
+  }
+
+  /**
+   * Compute total aspect-contributed HP max bonus for display and summaries.
+   * Mirrors sharper derived-data logic: base aspect HP bonus plus optional
+   * bioclass HP-per-level contribution.
+   * @param {object} aspectSystem
+   * @returns {number}
+   * @private
+   */
+  _getAspectHitPointMaxBonus(aspectSystem) {
+    const baseBonus = Number(aspectSystem?.hitPointsMaxBonus ?? 0);
+    const includeBioclassPerLevel = Boolean(aspectSystem?.useBioclassHpPerLevelAsMaxBonus);
+    if (!includeBioclassPerLevel) return baseBonus;
+
+    const bioclassHpPerLevel = Number(
+      this.actor.itemTypes?.bioclass?.[0]?.system?.startingAttributes?.hpPerLevel
+      ?? this.actor.system?.hitPoints?.perLevel
+      ?? 0
+    );
+
+    return baseBonus + bioclassHpPerLevel;
+  }
+
+  /**
    * Actions performed after any render of the Application.
    * Post-render steps are not awaited by the render process.
    * @param {ApplicationRenderContext} context      Prepared context data
@@ -291,9 +366,20 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
   async _onRender(context, options) {
     await super._onRender(context, options);
     this.#disableOverrides();
-    // You may want to add other special handling here
-    // Foundry comes with a large number of utility classes, e.g. SearchFilter
-    // That you may want to implement yourself.
+    const inspectors = this.element.querySelectorAll('.math-inspector-dropdown');
+    for (const inspector of inspectors) {
+      if (inspector.dataset.attributeKey === this._openAttributeInspectorKey) {
+        inspector.open = true;
+      }
+
+      inspector.addEventListener('toggle', () => {
+        if (inspector.open) {
+          this._openAttributeInspectorKey = inspector.dataset.attributeKey;
+        } else if (this._openAttributeInspectorKey === inspector.dataset.attributeKey) {
+          this._openAttributeInspectorKey = null;
+        }
+      });
+    }
   }
 
   /**************

@@ -46,7 +46,7 @@ export class SynthicideChatMessage extends ChatMessage {
     chatData.system = foundry?.utils?.deepClone ? foundry.utils.deepClone(cardData?.system ?? {}) : (cardData?.system ?? {});
     // Prefer `cardData.type` for the ChatMessage `type` (used to select the DataModel),
     // but prefer `cardData.subtype` for the system-level `subtype` used by templates and logic.
-    const messageType = cardData?.type ?? cardData?.subtype ?? CONST.BASE_DOCUMENT_TYPE;
+    const messageType = cardData?.type ?? CONST.BASE_DOCUMENT_TYPE;
     chatData.type = String(messageType);
     const systemSubtype = cardData?.subtype ?? cardData?.type ?? '';
     if (systemSubtype) chatData.system.subtype = String(systemSubtype);
