@@ -697,12 +697,16 @@ body.theme-dark .npc-compact .window-content {
 
 .synthicide-action-roll-form .form-group > label.shield-bonus-label,
 .dialog-form.standard-form .form-group > label.shield-bonus-label {
-  flex: 1;
   align-self: flex-start;
   line-height: 1.2;
   white-space: normal;
   text-wrap: balance;
   overflow-wrap: break-word;
+}
+
+/* flex-basis only applies where the .form-group ancestor is a flex container (not the grid-based synthicide-action-roll-form) */
+.dialog-form.standard-form .form-group > label.shield-bonus-label {
+  flex: 1;
 }
 
 :is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide-action-roll-card {
@@ -1004,13 +1008,17 @@ body.theme-dark .npc-compact .window-content {
   opacity: 0.9;
 }
 @media (max-width: 840px) {
-  .synthicide .header-resource-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .synthicide .header-resource-flex {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  .synthicide .header-resource-flex .header-resource {
+    flex: 1 1 calc(33.333% - 6px);
   }
 }
 @media (max-width: 620px) {
-  .synthicide .header-resource-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .synthicide .header-resource-flex .header-resource {
+    flex: 1 1 calc(50% - 6px);
   }
 }
 
