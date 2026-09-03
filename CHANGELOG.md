@@ -1,3 +1,12 @@
+## [1.3.1](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.0...1.3.1) (2026-09-03)
+
+
+### Bug Fixes
+
+* change popup style to match sheet style setting ([2e501ce](https://github.com/marvin9257/synthicide-foundryvtt/commit/2e501cef1c792bd695f7197962e6a03ef9430e4c))
+* Merge pull request [#16](https://github.com/marvin9257/synthicide-foundryvtt/issues/16) from marvin9257/fix-cascade-css ([969f916](https://github.com/marvin9257/synthicide-foundryvtt/commit/969f91621276f868422d1615597e1630901e4d38))
+* minor stuff ([9b1137f](https://github.com/marvin9257/synthicide-foundryvtt/commit/9b1137f673d4df849388b1fa5f7bc3dbb040cf75))
+
 # [1.3.0](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.2.0...1.3.0) (2026-09-02)
 
 
