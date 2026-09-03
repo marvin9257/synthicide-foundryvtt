@@ -25,10 +25,13 @@
   --synthicide-c-beige: #b5b3a4;
   --synthicide-c-tan: #c9c7b8;
   --synthicide-c-ltgrey: #444444;
+  --synthicide-c-faint: var(--synthicide-c-beige);
+  --synthicide-c-muted: #666666;
   --synthicide-c-white: #ffffff;
   --synthicide-c-black: #000000;
   --synthicide-c-groove: #eeede0;
   --synthicide-c-danger: #b42318;
+  --synthicide-c-orange: #c76d00;
   --synthicide-c-warning: yellow;
   --synthicide-c-success: #2f9e44;
   --synthicide-c-panel-bg: rgba(0, 0, 0, 0.04);
@@ -387,240 +390,241 @@ body.theme-dark .npc-compact .window-content {
   padding: 0.5rem;
   display: grid;
   gap: 0.4rem;
-}
+  & .card-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
 
-.synthicide-action-roll-card .card-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
+  & .card-title {
+    margin: 0;
+    font-size: 1.7rem;
+    line-height: 1.05;
+  }
 
-.synthicide-action-roll-card .card-title {
-  margin: 0;
-  font-size: 1.7rem;
-  line-height: 1.05;
-}
+  & .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.35rem;
+    justify-content: space-evenly;
+  }
 
-.synthicide-action-roll-card .card-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: 0.35rem;
-  justify-content: space-evenly;
-}
+  & .card-header {
+    display: block;
+    margin: 0;
 
-.synthicide-action-roll-card .card-header {
-  display: block;
-  margin: 0;
-}
+    & h4 {
+      margin: 0;
+    }
+  }
 
-.synthicide-action-roll-card .card-header h4 {
-  margin: 0;
-}
+  /* Utility: item-header can be applied to titles to opt into item-header styling */
+  & .card-title:not(.item-header) {
+    font-size: 2.05rem;
+    line-height: 1.05;
+  }
 
-/* Utility: item-header can be applied to titles to opt into item-header styling */
-.synthicide-action-roll-card .card-title:not(.item-header) {
-  font-size: 2.05rem;
-  line-height: 1.05;
-}
+  & .tag {
+    border-radius: 999px;
+    padding: 0.18rem 0.62rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    border: 1px solid var(--synthicide-c-border-subtle);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+  }
 
-.synthicide-action-roll-card .tag {
-  border-radius: 999px;
-  padding: 0.18rem 0.62rem;
-  font-weight: 700;
-  font-size: 0.75rem;
-  border: 1px solid var(--synthicide-c-border-subtle);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  white-space: nowrap;
-}
+  & .tag-label {
+    opacity: 0.85;
+  }
 
-.synthicide-action-roll-card .tag-label {
-  opacity: 0.85;
-}
+  & .tag-subtitle {
+    opacity: 0.85;
+    border-color: var(--synthicide-c-dark);
+  }
 
-.synthicide-action-roll-card .tag-subtitle {
-  opacity: 0.85;
-  border-color: var(--synthicide-c-dark);
-}
+  & .notes {
+    margin: 0;
+    font-style: italic;
+    opacity: 0.9;
+  }
 
-.synthicide-action-roll-card .notes {
-  margin: 0;
-  font-style: italic;
-  opacity: 0.9;
-}
+  & .total-row {
+    display: flex;
+    gap: 0.4rem;
+    align-items: baseline;
+  }
 
-.synthicide-action-roll-card .total-row {
-  display: flex;
-  gap: 0.4rem;
-  align-items: baseline;
-}
+  & .formula-row {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: 0.4rem;
+    row-gap: 0.1rem;
+    align-items: baseline;
 
-.synthicide-action-roll-card .formula-row {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  column-gap: 0.4rem;
-  row-gap: 0.1rem;
-  align-items: baseline;
-}
+    & > strong {
+      white-space: nowrap;
+    }
 
-.synthicide-action-roll-card .formula-row > strong {
-  white-space: nowrap;
-}
+    & > span {
+      min-width: 0;
+      white-space: normal;
+      overflow-wrap: break-word;
+    }
+  }
 
-.synthicide-action-roll-card .formula-row > span {
-  min-width: 0;
-  white-space: normal;
-  overflow-wrap: break-word;
-}
+  & .result-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 
-.synthicide-action-roll-card .result-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
+    & .tag {
+      flex: 0 0 auto;
+      justify-content: flex-start;
+      margin: 0;
+    }
+  }
 
-.synthicide-action-roll-card .result-row .tag {
-  flex: 0 0 auto;
-  justify-content: flex-start;
-  margin: 0;
-}
+  & .tag-effect {
+    border-color: var(--synthicide-c-border-subtle);
+  }
 
-.synthicide-action-roll-card .tag-effect {
-  border-color: var(--synthicide-c-border-subtle);
-}
+  /* Indented equation terms: show equation terms in their own indented block */
+  & .equation-terms {
+    margin: 0.35rem 0 0 0.35rem;
+    padding-left: 0.4rem;
+    list-style: none;
+    border-left: 2px solid color-mix(in srgb, var(--synthicide-c-style-accent) 50%, transparent);
 
-/* Indented equation terms: show equation terms in their own indented block */
-.synthicide-action-roll-card .equation-terms {
-  margin: 0.35rem 0 0 0.35rem;
-  padding-left: 0.4rem;
-  list-style: none;
-  border-left: 2px solid color-mix(in srgb, var(--synthicide-c-style-accent) 50%, transparent);
-}
-.synthicide-action-roll-card .equation-terms li {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0.1rem 0;
-}
-.synthicide-action-roll-card .metadata-list {
-  margin: 0.35rem 0 0 0;
-  padding-left: 0;
-  list-style: none;
-}
+    & li {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      padding: 0.1rem 0;
+    }
+  }
 
-.synthicide-action-roll-card .metadata-list li {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  column-gap: 0.5rem;
-  row-gap: 0.1rem;
-  align-items: baseline;
-  padding: 0.1rem 0;
-}
+  & .metadata-list {
+    margin: 0.35rem 0 0 0;
+    padding-left: 0;
+    list-style: none;
 
-/* Prevent metadata labels from wrapping one character per line */
-.synthicide-action-roll-card .metadata-list li strong {
-  white-space: nowrap;
-}
+    & li {
+      display: grid;
+      grid-template-columns: max-content minmax(0, 1fr);
+      column-gap: 0.5rem;
+      row-gap: 0.1rem;
+      align-items: baseline;
+      padding: 0.1rem 0;
 
-/* Allow metadata values to take remaining space and wrap cleanly */
-.synthicide-action-roll-card .metadata-list li .metadata-value,
-.synthicide-action-roll-card .metadata-list li code {
-  min-width: 0;
-  display: inline-block;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
+      /* Prevent metadata labels from wrapping one character per line */
+      & strong {
+        white-space: nowrap;
+      }
 
-.synthicide-action-roll-card .card-footer {
-  margin-top: 0.2rem;
-}
+      /* Allow metadata values to take remaining space and wrap cleanly */
+      & .metadata-value,
+      & code {
+        min-width: 0;
+        display: inline-block;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
 
-.synthicide-action-roll-card .card-details {
-  border-top: 1px solid var(--synthicide-c-border-subtle);
-  padding-top: 0.35rem;
-}
+  & .card-footer {
+    margin-top: 0.2rem;
+  }
 
-.synthicide-action-roll-card .card-details summary {
-  cursor: pointer;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
-}
+  & .card-details {
+    border-top: 1px solid var(--synthicide-c-border-subtle);
+    padding-top: 0.35rem;
 
-.synthicide-action-roll-card .result-banner {
-  border-radius: 6px;
-  padding: 0.25rem 0.5rem;
-  font-weight: 700;
-  text-align: center;
-  border: 1px solid var(--synthicide-c-border-subtle);
-}
+    & summary {
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+  }
 
-.synthicide-action-roll-card .outcome-failure {
-  color: var(--synthicide-c-danger);
-  border-color: var(--synthicide-c-danger);
-  background: var(--synthicide-c-panel-bg);
-}
+  & .result-banner {
+    border-radius: 6px;
+    padding: 0.25rem 0.5rem;
+    font-weight: 700;
+    text-align: center;
+    border: 1px solid var(--synthicide-c-border-subtle);
+  }
 
-.synthicide-action-roll-card .outcome-standard {
-  color: var(--synthicide-c-tan);
-  border-color: var(--synthicide-c-tan);
-  background: var(--synthicide-c-groove);
-}
+  & .outcome-failure {
+    color: var(--synthicide-c-danger);
+    border-color: var(--synthicide-c-danger);
+    background: var(--synthicide-c-panel-bg);
+  }
 
-.synthicide-action-roll-card .outcome-excellent {
-  color: var(--synthicide-c-dark);
-  border-color: var(--synthicide-c-warning);
-  background: var(--synthicide-c-warning);
-}
+  & .outcome-standard {
+    color: var(--synthicide-c-tan);
+    border-color: var(--synthicide-c-tan);
+    background: var(--synthicide-c-groove);
+  }
 
-.synthicide-action-roll-card .outcome-superb,
-.synthicide-action-roll-card .outcome-success {
-  color: var(--synthicide-c-success);
-  border-color: var(--synthicide-c-success);
-  background: var(--synthicide-c-panel-bg);
-}
+  & .outcome-excellent {
+    color: var(--synthicide-c-dark);
+    border-color: var(--synthicide-c-warning);
+    background: var(--synthicide-c-warning);
+  }
 
-.synthicide-action-roll-card .inline-die-wrap .inline-dice {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
+  & .outcome-superb,
+  & .outcome-success {
+    color: var(--synthicide-c-success);
+    border-color: var(--synthicide-c-success);
+    background: var(--synthicide-c-panel-bg);
+  }
 
-.synthicide-action-roll-card .inline-die-wrap .inline-dice .roll {
-  margin: 0;
-}
+  & .inline-die-wrap .inline-dice {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 
-.synthicide-action-roll-card .inline-die-wrap .inline-dice .roll.d10 {
-  width: 28px;
-  height: 28px;
-  line-height: 28px;
-  text-align: center;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--color-text-primary);
-  background-size: 28px 28px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url('/icons/svg/d10-grey.svg');
-  box-shadow: none;
-}
+    & .roll {
+      margin: 0;
 
-.synthicide-action-roll-card .inline-die-wrap .inline-dice .roll.d10.min {
-  color: #aa0200;
-  filter: sepia(0.5) hue-rotate(-60deg);
-}
+      &.d10 {
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--color-text-primary);
+        background-size: 28px 28px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: url('/icons/svg/d10-grey.svg');
+        box-shadow: none;
 
-.synthicide-action-roll-card .inline-die-wrap .inline-dice .roll.d10.max {
-  color: #18520b;
-  filter: sepia(0.5) hue-rotate(60deg);
-}
+        &.min {
+          color: #aa0200;
+          filter: sepia(0.5) hue-rotate(-60deg);
+        }
 
-.synthicide-action-roll-card .dice-render .dice-roll {
-  margin: 0;
+        &.max {
+          color: #18520b;
+          filter: sepia(0.5) hue-rotate(60deg);
+        }
+      }
+    }
+  }
+
+  & .dice-render .dice-roll {
+    margin: 0;
+  }
 }
 
 .synthicide-attr-pill {
@@ -649,29 +653,50 @@ body.theme-dark .npc-compact .window-content {
 .synthicide-action-roll-form {
   display: grid;
   gap: 0.4rem;
-}
+  & .form-group {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    align-items: center;
+    gap: 0.5rem;
 
-.synthicide-action-roll-form .form-group {
-  display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
-  align-items: center;
-  gap: 0.5rem;
-}
+    & .field-stack {
+      display: grid;
+      gap: 0.25rem;
 
-.synthicide-action-roll-form .form-group .field-stack {
-  display: grid;
-  gap: 0.25rem;
-}
+      & .notes {
+        margin: 0;
+        font-size: 0.85em;
+        opacity: 0.9;
+      }
+    }
+  }
 
-.synthicide-action-roll-form .form-group .field-stack .notes {
-  margin: 0;
-  font-size: 0.85em;
-  opacity: 0.9;
+  & hr,
+  & p {
+    grid-column: 1 / -1;
+  }
+
+  & .roll-modifier-list {
+    grid-column: 1 / -1;
+    margin-top: 0.1rem;
+
+    & ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    & li {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.1rem 0;
+    }
+  }
 }
 
 .synthicide-action-roll-form .form-group > label.shield-bonus-label,
 .dialog-form.standard-form .form-group > label.shield-bonus-label {
-  flex: 1;
   align-self: flex-start;
   line-height: 1.2;
   white-space: normal;
@@ -679,27 +704,9 @@ body.theme-dark .npc-compact .window-content {
   overflow-wrap: break-word;
 }
 
-.synthicide-action-roll-form hr,
-.synthicide-action-roll-form p {
-  grid-column: 1 / -1;
-}
-
-.synthicide-action-roll-form .roll-modifier-list {
-  grid-column: 1 / -1;
-  margin-top: 0.1rem;
-}
-
-.synthicide-action-roll-form .roll-modifier-list ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.synthicide-action-roll-form .roll-modifier-list li {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.1rem 0;
+/* flex-basis only applies where the .form-group ancestor is a flex container (not the grid-based synthicide-action-roll-form) */
+.dialog-form.standard-form .form-group > label.shield-bonus-label {
+  flex: 1;
 }
 
 :is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide-action-roll-card {
@@ -865,26 +872,29 @@ body.theme-dark .npc-compact .window-content {
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-bottom: 10px;
-}
-.synthicide .sheet-header .profile-img {
-  flex: 0 0 120px;
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  object-position: center;
-  background: var(--synthicide-c-faint);
-  margin-right: 10px;
-}
-.synthicide .sheet-header .header-fields {
-  flex: 1;
-  min-width: 0;
-}
-.synthicide .sheet-header .document-name {
-  margin-bottom: 6px;
-}
-.synthicide .sheet-header .document-name input {
-  font-size: 1.25rem;
-  font-weight: 700;
+  & .profile-img {
+    flex: 0 0 120px;
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    object-position: center;
+    background: var(--synthicide-c-faint);
+    margin-right: 10px;
+  }
+
+  & .header-fields {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .document-name {
+    margin-bottom: 6px;
+
+    & input {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+  }
 }
 .synthicide .header-resource-flex {
   display: flex;
@@ -906,54 +916,56 @@ body.theme-dark .npc-compact .window-content {
   flex-direction: column;
   align-items: center;
   /*justify-content: flex-start;*/
-}
+  & .resource-label {
+    font-size: 0.95rem;
+    line-height: 1.1;
+    /*width: 100%;*/
+    text-align: center;
+    white-space: normal;
 
-.synthicide .header-resource .resource-label {
-  font-size: 0.95rem;
-  line-height: 1.1;
-  /*width: 100%;*/
-  text-align: center;
-  white-space: normal;
-}
-.synthicide .header-resource .resource-label.resource-label-wrap {
-  display: inline-block;
-  width: min-content;
-  padding: 0 2ch;
-}
+    &.resource-label-wrap {
+      display: inline-block;
+      width: min-content;
+      padding: 0 2ch;
+    }
+  }
 
-.synthicide .header-resource .resource-content {
-  width: 100%;
-  margin-top: 2px;
-}
-.synthicide .header-resource .resource-content.resource-pair {
-  justify-content: center;
-  gap: 4px;
-}
-.synthicide .header-resource .resource-content.resource-single {
-  justify-content: center;
-}
+  & .resource-content {
+    width: 100%;
+    margin-top: 2px;
 
-.synthicide .header-resource input[type="text"],
-.synthicide .header-resource input[type="number"] {
-  min-width: 3.5ch;
-  width: 3.5ch;
-  max-width: 4ch;
-  text-align: center;
-  padding: 0 2px;
-  margin: 0 auto;
-  box-sizing: border-box;
-  font-size: 1rem;
-}
+    &.resource-pair {
+      justify-content: center;
+      gap: 4px;
+    }
 
-.synthicide .header-resource input[type="number"].capacity-crates-over-max,
-.synthicide .header-resource input[type="number"].capacity-crates-over-max:disabled {
-  color: var(--synthicide-c-danger);
-  opacity: 1;
-}
+    &.resource-single {
+      justify-content: center;
+    }
+  }
 
-.synthicide .header-resource select {
-  width: 100%;
-  min-width: 0;
+  & input[type="text"],
+  & input[type="number"] {
+    min-width: 3.5ch;
+    width: 3.5ch;
+    max-width: 4ch;
+    text-align: center;
+    padding: 0 2px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    font-size: 1rem;
+  }
+
+  & input[type="number"].capacity-crates-over-max,
+  & input[type="number"].capacity-crates-over-max:disabled {
+    color: var(--synthicide-c-danger);
+    opacity: 1;
+  }
+
+  & select {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 .synthicide .header-resource-wealth {
@@ -996,13 +1008,17 @@ body.theme-dark .npc-compact .window-content {
   opacity: 0.9;
 }
 @media (max-width: 840px) {
-  .synthicide .header-resource-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .synthicide .header-resource-flex {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  .synthicide .header-resource-flex .header-resource {
+    flex: 1 1 calc(33.333% - 6px);
   }
 }
 @media (max-width: 620px) {
-  .synthicide .header-resource-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .synthicide .header-resource-flex .header-resource {
+    flex: 1 1 calc(50% - 6px);
   }
 }
 
@@ -3241,36 +3257,36 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.np
 }
 
 /* --- Classic mode: subtle section borders for both light and dark --- */
-body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-header,
-body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attributes,
-body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-row,
-body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attack,
-body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-powers,
-body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-wealth,
-body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-loot,
-body:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-notes {
+body:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-header,
+body:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-attributes,
+body:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-row,
+body:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-attack,
+body:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-powers,
+body:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-wealth,
+body:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-loot,
+body:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-notes {
   border-bottom: 1.5px solid var(--color-border-light-tertiary);
   margin-bottom: 10px;
   padding-bottom: 5px;
 }
 
-body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-header,
-body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attributes,
-body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-row,
-body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-attack,
-body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-powers,
-body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-wealth,
-body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-loot,
-body.theme-dark:not(.synthicide-style-bold) .npc-compact-sheet .npc-compact-notes {
+body.theme-dark:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-header,
+body.theme-dark:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-attributes,
+body.theme-dark:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-row,
+body.theme-dark:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-attack,
+body.theme-dark:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-powers,
+body.theme-dark:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-wealth,
+body.theme-dark:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-loot,
+body.theme-dark:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .npc-compact-notes {
   border-bottom: 1.5px solid var(--color-border-dark-tertiary);
 }
 
 /* --- d10 icon contrast for classic mode --- */
-body:not(.synthicide-style-bold) .npc-compact-sheet .synthicide-window-icon {
+body:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .synthicide-window-icon {
   border-radius: 3px;
   padding: 2px;
 }
-body:not(.synthicide-style-bold) .npc-compact-sheet .synthicide-window-icon img[src$="synthicidePause.svg"] {
+body:not(:is(.synthicide-style-bold, .synthicide-style-cyberpunk)) .npc-compact-sheet .synthicide-window-icon img[src$="synthicidePause.svg"] {
   background: var(--synthicide-c-icon-bg);
 }
 
@@ -3342,6 +3358,13 @@ body:not(.synthicide-style-bold) .npc-compact-sheet .synthicide-window-icon img[
   display: flex;
   flex-direction: column;
 }
+
+.synthicide .header-resource.npc-hp-align input[type="number"] {
+  min-width: 5ch;
+  width: 5ch;
+  max-width: 5ch;
+}
+
 .one-word-per-line {
   width: min-content;
   display: block;
@@ -3607,19 +3630,18 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-mastered-weapo
   align-items: flex-start;
   gap: 12px;
   padding-bottom: 16px;
-}
+  & .capacity-list {
+    flex: 1 1 0;
+    min-width: 0;
 
-.tab.capacity .capacity-list {
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-.tab.capacity .capacity-list .element-list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 2ch;
-  justify-content: space-evenly;
+    & .element-list {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 2ch;
+      justify-content: space-evenly;
+    }
+  }
 }
 
 .synthicide .header-resource input.weapon-capacity {
@@ -3641,58 +3663,64 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .npc-mastered-weapo
 /* Cargo Panel                 */
 /* ============================== */
 
-.synthicide .tab.cargo .items-list .item-name {
-  flex: 1 1 auto;
-  min-width: 0;
+.synthicide .tab.cargo .items-list {
+  & .item-name {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  & .item-prop--quantity {
+    flex: 0 0 22%;
+    min-width: 0;
+  }
+
+  & .item-prop--unit-price {
+    flex: 0 0 20%;
+    min-width: 0;
+  }
+
+  & .item-controls--cargo {
+    flex: 0 0 20%;
+    min-width: 0;
+  }
+
+  & > .items-header .item-controls--cargo a {
+    margin: 0;
+    white-space: nowrap;
+  }
 }
 
-.synthicide .tab.cargo .items-list .item-prop--quantity {
-  flex: 0 0 22%;
-  min-width: 0;
-}
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) {
+  & .synthicide .tab.cargo .items-list {
+    & > .items-header {
+      border-left: 5px solid var(--rb-accent);
+      padding: 0 2px;
+    }
 
-.synthicide .tab.cargo .items-list .item-prop--unit-price {
-  flex: 0 0 20%;
-  min-width: 0;
-}
+    & .item:not(.items-header) {
+      border-left-width: 5px;
+      border-left-style: solid;
+      border-left-color: transparent;
+      padding: 1px 2px;
 
-.synthicide .tab.cargo .items-list .item-controls--cargo {
-  flex: 0 0 20%;
-  min-width: 0;
-}
+      & .item-prop {
+        font-family: var(--synthicide-default-font);
+        font-size: var(--reduced-font-size);
+        font-weight: 500;
+        background: var(--rb-cell);
+        border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
+        border-radius: 3px;
+        padding: 2px 6px;
+        white-space: nowrap;
+      }
+    }
 
-.synthicide .tab.cargo .items-list > .items-header .item-controls--cargo a {
-  margin: 0;
-  white-space: nowrap;
-}
-
-body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list > .items-header {
-  border-left: 5px solid var(--rb-accent);
-  padding: 0 2px;
-}
-
-body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list .item:not(.items-header) {
-  border-left-width: 5px;
-  border-left-style: solid;
-  border-left-color: transparent;
-  padding: 1px 2px;
-}
-
-body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list .item-prop--quantity,
-body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list .item-prop--unit-price,
-body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list .item-controls--cargo {
-  box-sizing: border-box;
-}
-
-body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cargo .items-list .item:not(.items-header) .item-prop {
-  font-family: var(--synthicide-default-font);
-  font-size: var(--reduced-font-size);
-  font-weight: 500;
-  background: var(--rb-cell);
-  border: 1px solid color-mix(in srgb, var(--rb-strong) 35%, transparent);
-  border-radius: 3px;
-  padding: 2px 6px;
-  white-space: nowrap;
+    & .item-prop--quantity,
+    & .item-prop--unit-price,
+    & .item-controls--cargo {
+      box-sizing: border-box;
+    }
+  }
 }
 
 /* ============================== */
@@ -3913,7 +3941,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.ve
   color: var(--rb-accent);
 }
 
-body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .vehicle .synthicide-window-icon, body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .vehicle .synthicide-window-icon {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .vehicle .synthicide-window-icon {
   background-color: var(--rb-strong);
   border-radius: 8px;
 }
@@ -4037,7 +4065,6 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .vehicle .synthicid
   position: absolute;
   right: 12px;
   top: 14px;
-  z-index: 100;
   width: 24px;
   height: 24px;
 }
@@ -4308,4 +4335,60 @@ body.synthicide-style-cyberpunk .synthicide select:focus,
 body.synthicide-style-cyberpunk .synthicide textarea:focus {
   border-color: var(--cp-accent);
   box-shadow: 0 0 0 1px var(--cp-accent);
+}
+
+/* Some popup fixes */
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab:is(.aspect, .combat, .cybernetics, .gear, .info, .biography, .npcTiers, .description, .attributes, .capacity) h4:not(.popup-panel-header) {
+  background: var(--rb-strong);
+  color: var(--rb-on-accent);
+  border-left: 5px solid var(--rb-accent);
+  padding: 6px 14px;
+  margin: 0 0 4px;
+  font-size: var(--reduced-font-size);
+  border-radius: 0;
+}
+
+.synthicide .tab.attributes .attribute-step-btn {
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+  border-radius: 3px;
+  border: 1px solid var(--synthicide-border-groove);
+  background: var(--form-field-bg);
+  color: var(--form-field-color);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.synthicide .tab.attributes .attribute-step-btn:hover {
+  background: color-mix(in srgb, var(--synthicide-c-style-accent) 22%, var(--form-field-bg));
+  border-color: var(--synthicide-c-style-accent);
+  cursor: pointer;
+}
+
+.synthicide .tab.attributes .attribute-step-btn:active {
+  background: color-mix(in srgb, var(--synthicide-c-style-accent) 40%, var(--form-field-bg));
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .popup-panel-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .inspector-field-row label {
+  color: var(--rb-on-accent);
+  border-color: color-mix(in srgb, var(--rb-accent) 45%, transparent);
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .attribute-popup-input {
+  background-color: color-mix(in srgb, var(--rb-strong) 60%, black);
+  border-color: color-mix(in srgb, var(--rb-accent) 55%, transparent);
+  color: var(--rb-on-accent);
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .attribute-step-btn {
+  background-color: color-mix(in srgb, var(--rb-strong) 60%, black);
+  border-color: color-mix(in srgb, var(--rb-accent) 55%, transparent);
+  color: var(--rb-on-accent);
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .attribute-step-btn:hover {
+  background-color: var(--rb-accent);
+  border-color: var(--rb-accent);
+  color: var(--rb-on-accent);
 }
