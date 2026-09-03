@@ -4065,7 +4065,6 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .vehicle .synthicid
   position: absolute;
   right: 12px;
   top: 14px;
-  z-index: 100;
   width: 24px;
   height: 24px;
 }
@@ -4336,4 +4335,60 @@ body.synthicide-style-cyberpunk .synthicide select:focus,
 body.synthicide-style-cyberpunk .synthicide textarea:focus {
   border-color: var(--cp-accent);
   box-shadow: 0 0 0 1px var(--cp-accent);
+}
+
+/* Some popup fixes */
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab:is(.aspect, .combat, .cybernetics, .gear, .info, .biography, .npcTiers, .description, .attributes, .capacity) h4:not(.popup-panel-header) {
+  background: var(--rb-strong);
+  color: var(--rb-on-accent);
+  border-left: 5px solid var(--rb-accent);
+  padding: 6px 14px;
+  margin: 0 0 4px;
+  font-size: var(--reduced-font-size);
+  border-radius: 0;
+}
+
+.synthicide .tab.attributes .attribute-step-btn {
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+  border-radius: 3px;
+  border: 1px solid var(--synthicide-border-groove);
+  background: var(--form-field-bg);
+  color: var(--form-field-color);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.synthicide .tab.attributes .attribute-step-btn:hover {
+  background: color-mix(in srgb, var(--synthicide-c-style-accent) 22%, var(--form-field-bg));
+  border-color: var(--synthicide-c-style-accent);
+  cursor: pointer;
+}
+
+.synthicide .tab.attributes .attribute-step-btn:active {
+  background: color-mix(in srgb, var(--synthicide-c-style-accent) 40%, var(--form-field-bg));
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .popup-panel-header,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .inspector-field-row label {
+  color: var(--rb-on-accent);
+  border-color: color-mix(in srgb, var(--rb-accent) 45%, transparent);
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .attribute-popup-input {
+  background-color: color-mix(in srgb, var(--rb-strong) 60%, black);
+  border-color: color-mix(in srgb, var(--rb-accent) 55%, transparent);
+  color: var(--rb-on-accent);
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .attribute-step-btn {
+  background-color: color-mix(in srgb, var(--rb-strong) 60%, black);
+  border-color: color-mix(in srgb, var(--rb-accent) 55%, transparent);
+  color: var(--rb-on-accent);
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .attribute-step-btn:hover {
+  background-color: var(--rb-accent);
+  border-color: var(--rb-accent);
+  color: var(--rb-on-accent);
 }
