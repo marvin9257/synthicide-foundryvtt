@@ -4117,7 +4117,7 @@ body.theme-dark .synthicide .tab.attributes .gear-toggle-btn {
 
 .synthicide .tab.attributes .popup-panel-header {
   margin: 0 0 5px;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   text-transform: uppercase;
   border-bottom: 1px solid var(--synthicide-border-groove);
   padding-bottom: 5px;
@@ -4153,7 +4153,7 @@ body.theme-dark .synthicide .tab.attributes .gear-toggle-btn {
 }
 
 .synthicide .tab.attributes .level-row {
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
   gap: 6px;
 }
@@ -4163,6 +4163,7 @@ body.theme-dark .synthicide .tab.attributes .gear-toggle-btn {
   align-items: center;
   gap: 8px;
   width: 100%;
+  justify-content: flex-end;
 }
 
 .synthicide .tab.attributes .hidden-stepper-value {
@@ -4172,6 +4173,7 @@ body.theme-dark .synthicide .tab.attributes .gear-toggle-btn {
 .synthicide .tab.attributes .attribute-step-buttons {
   display: flex;
   gap: 4px;
+  flex-direction: column;
 }
 
 /* Right Column Grid Layout */
@@ -4259,7 +4261,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.at
 
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .math-inspector-dropdown[open] .inspector-popup-panel {
   border-color: var(--rb-accent);
-  background-color: var(--rb-strong);
+  background-color: color-mix(in srgb, black 50%, var(--rb-strong));
 }
 
 @media (max-width: 560px) {
@@ -4359,7 +4361,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab:is
   border-radius: 0;
 }
 
-.synthicide .tab.attributes .attribute-step-btn {
+/*.synthicide .tab.attributes .attribute-step-btn {
   width: 22px;
   height: 22px;
   min-height: 22px;
@@ -4368,7 +4370,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab:is
   background: var(--form-field-bg);
   color: var(--form-field-color);
   transition: background-color 0.15s ease, border-color 0.15s ease;
-}
+}*/
 
 .synthicide .tab.attributes .attribute-step-btn:hover {
   background: color-mix(in srgb, var(--synthicide-c-style-accent) 22%, var(--form-field-bg));
