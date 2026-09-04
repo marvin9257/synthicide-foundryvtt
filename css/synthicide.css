@@ -4261,7 +4261,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.at
 
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .math-inspector-dropdown[open] .inspector-popup-panel {
   border-color: var(--rb-accent);
-  background-color: color-mix(in srgb, black 50%, var(--rb-strong));
+  /*background-color: color-mix(in srgb, black 50%, var(--rb-strong));*/
 }
 
 @media (max-width: 560px) {
@@ -4337,6 +4337,10 @@ body.synthicide-style-cyberpunk .synthicide .sheet-tabs {
   font-weight: bold;
 }
 
+body.synthicide-style-cyberpunk .synthicide .sheet-tabs i {
+  font-size: larger;
+}
+
 body.synthicide-style-cyberpunk .synthicide .sheet-tabs .item.active,
 body.synthicide-style-cyberpunk .synthicide .items-list .item:hover,
 body.synthicide-style-cyberpunk .synthicide .effects-list .effect:hover {
@@ -4384,7 +4388,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab:is
 
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .popup-panel-header,
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .inspector-field-row label {
-  color: var(--rb-on-accent);
+  /*color: var(--rb-on-accent);*/
   border-color: color-mix(in srgb, var(--rb-accent) 45%, transparent);
 }
 
