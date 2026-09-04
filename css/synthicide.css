@@ -2052,7 +2052,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cy
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-name {
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  /*letter-spacing: 0.06em;*/
 }
 
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list > .items-header .item-name {
@@ -2074,7 +2074,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cy
 }
 
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list .item-prop--type {
-  flex: 0 0 18%;
+  flex: 0 0 20%;
 }
 
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.cybernetics .items-list.implant-list .item-prop--equipped {
@@ -2169,7 +2169,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effect
 /* Control icons */
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .item-controls a,
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .effects-list .effect-controls a {
-  font-size: 0.82rem;
+  /*font-size: 0.82rem;*/
   margin: 0 4px;
 }
 
@@ -2378,6 +2378,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .resour
   color: var(--rb-strong);
   line-height: 1;
   margin-bottom: 3px;
+  font-family: var(--cp-display-font);
 }
 
 body.theme-dark:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .resource-label {
@@ -2464,7 +2465,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide fieldse
 }
 
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide fieldset.cybernetics legend {
-  font-size: 0.72rem;
+  /*font-size: 0.72rem;*/
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -4030,7 +4031,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .vehicle .synthicid
   text-transform: uppercase;
   color: var(--synthicide-c-style-accent);
   width: 2ch;
-  text-align: left;
+  text-align: center;
 }
 
 .synthicide .tab.attributes .actions-hud-img {
@@ -4116,7 +4117,7 @@ body.theme-dark .synthicide .tab.attributes .gear-toggle-btn {
 
 .synthicide .tab.attributes .popup-panel-header {
   margin: 0 0 5px;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   text-transform: uppercase;
   border-bottom: 1px solid var(--synthicide-border-groove);
   padding-bottom: 5px;
@@ -4152,7 +4153,7 @@ body.theme-dark .synthicide .tab.attributes .gear-toggle-btn {
 }
 
 .synthicide .tab.attributes .level-row {
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
   gap: 6px;
 }
@@ -4162,6 +4163,7 @@ body.theme-dark .synthicide .tab.attributes .gear-toggle-btn {
   align-items: center;
   gap: 8px;
   width: 100%;
+  justify-content: flex-end;
 }
 
 .synthicide .tab.attributes .hidden-stepper-value {
@@ -4171,6 +4173,7 @@ body.theme-dark .synthicide .tab.attributes .gear-toggle-btn {
 .synthicide .tab.attributes .attribute-step-buttons {
   display: flex;
   gap: 4px;
+  flex-direction: column;
 }
 
 /* Right Column Grid Layout */
@@ -4191,6 +4194,7 @@ body.theme-dark .synthicide .tab.attributes .gear-toggle-btn {
   gap: 4px;
   align-items: center;
   box-sizing: border-box;
+  justify-content: space-around;
 }
 
 .synthicide .tab.attributes .derived-label {
@@ -4257,7 +4261,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.at
 
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .math-inspector-dropdown[open] .inspector-popup-panel {
   border-color: var(--rb-accent);
-  background-color: var(--rb-strong);
+  /*background-color: color-mix(in srgb, black 50%, var(--rb-strong));*/
 }
 
 @media (max-width: 560px) {
@@ -4316,12 +4320,25 @@ body.theme-dark.synthicide-style-cyberpunk {
 }
 
 body.synthicide-style-cyberpunk .synthicide .header-info-label,
-body.synthicide-style-cyberpunk .synthicide .items-header .item-name,
-body.synthicide-style-cyberpunk .synthicide .effects-header .effect-name,
+body.synthicide-style-cyberpunk .synthicide .items-header > *,
+body.synthicide-style-cyberpunk .synthicide .effects-header > *,
+body.synthicide-style-cyberpunk .synthicide .resource-label,
+body.synthicide-style-cyberpunk .synthicide .tab.attributes .derived-label,
+body.synthicide-style-cyberpunk .synthicide .tab.attributes .attr-abbr-tag,
 body.synthicide-style-cyberpunk .synthicide h3,
-body.synthicide-style-cyberpunk .synthicide h4 {
+body.synthicide-style-cyberpunk .synthicide h4,
+body.synthicide-style-cyberpunk .synthicide .sheet-tabs {
   font-family: var(--cp-display-font);
   letter-spacing: 0.04em;
+}
+
+body.synthicide-style-cyberpunk .synthicide .sheet-tabs {
+  font-size: smaller;
+  font-weight: bold;
+}
+
+body.synthicide-style-cyberpunk .synthicide .sheet-tabs i {
+  font-size: larger;
 }
 
 body.synthicide-style-cyberpunk .synthicide .sheet-tabs .item.active,
@@ -4348,7 +4365,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab:is
   border-radius: 0;
 }
 
-.synthicide .tab.attributes .attribute-step-btn {
+/*.synthicide .tab.attributes .attribute-step-btn {
   width: 22px;
   height: 22px;
   min-height: 22px;
@@ -4357,7 +4374,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab:is
   background: var(--form-field-bg);
   color: var(--form-field-color);
   transition: background-color 0.15s ease, border-color 0.15s ease;
-}
+}*/
 
 .synthicide .tab.attributes .attribute-step-btn:hover {
   background: color-mix(in srgb, var(--synthicide-c-style-accent) 22%, var(--form-field-bg));
@@ -4371,7 +4388,7 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab:is
 
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .popup-panel-header,
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.attributes .inspector-field-row label {
-  color: var(--rb-on-accent);
+  /*color: var(--rb-on-accent);*/
   border-color: color-mix(in srgb, var(--rb-accent) 45%, transparent);
 }
 
@@ -4391,4 +4408,8 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.at
   background-color: var(--rb-accent);
   border-color: var(--rb-accent);
   color: var(--rb-on-accent);
+}
+
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .item:not(.items-header) {
+  padding: 1px 5px 1px 9px; /* even tighter vertical spacing */
 }
