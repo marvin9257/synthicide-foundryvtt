@@ -1,3 +1,13 @@
+## [1.3.2](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.1...1.3.2) (2026-09-04)
+
+
+### Bug Fixes
+
+* improve level modifier controls and layout on attribute popup ([e9926b2](https://github.com/marvin9257/synthicide-foundryvtt/commit/e9926b28d2cd073f73f903207d99c9907178915f))
+* Merge pull request [#17](https://github.com/marvin9257/synthicide-foundryvtt/issues/17) from marvin9257/fix-font-specs ([84f96ce](https://github.com/marvin9257/synthicide-foundryvtt/commit/84f96ce12e6dfed7147dc074f1525a5c7cd1a327))
+* more improvements for cyberpunk style ([a688ee6](https://github.com/marvin9257/synthicide-foundryvtt/commit/a688ee60f0f452d4117c7fbc060833403fc59072))
+* use default background color for attribute popup ([783513b](https://github.com/marvin9257/synthicide-foundryvtt/commit/783513b0cf76c074df638eae11b057aa8d314fdc))
+
 ## [1.3.1](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.0...1.3.1) (2026-09-03)
 
 
