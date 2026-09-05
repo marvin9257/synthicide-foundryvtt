@@ -1,3 +1,15 @@
+## [1.3.3](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.2...1.3.3) (2026-09-05)
+
+
+### Bug Fixes
+
+* dont default notes text for chat to italics ([9e52ef5](https://github.com/marvin9257/synthicide-foundryvtt/commit/9e52ef551c8c364b58ac0eb80fccb0c294fcb19b))
+* editor box and margins ([3539974](https://github.com/marvin9257/synthicide-foundryvtt/commit/353997433922be385397a2327430475bce4c72c6))
+* item sheet general tab too narrow for cyberpunk style ([e4fe4c2](https://github.com/marvin9257/synthicide-foundryvtt/commit/e4fe4c284f62c2ae6a2fef7c45346c283855d0ec))
+* Merge pull request [#18](https://github.com/marvin9257/synthicide-foundryvtt/issues/18) from marvin9257/fix-resource-content-width ([2e55d3e](https://github.com/marvin9257/synthicide-foundryvtt/commit/2e55d3e3d3913395811e3a3c639286bfb728fa56))
+* remove duplicate border on trait desscription ([bc4b687](https://github.com/marvin9257/synthicide-foundryvtt/commit/bc4b6877e99eeb90eff930b809893a46efe75257))
+* resource content width ([14e2ac7](https://github.com/marvin9257/synthicide-foundryvtt/commit/14e2ac7788e9dff9fd93e44ed0a37f72a18dd803))
+
 ## [1.3.2](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.1...1.3.2) (2026-09-04)
 
 
