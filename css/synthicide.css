@@ -1177,11 +1177,11 @@ body.theme-dark .npc-compact .window-content {
   min-width: 0;
 }
 
-.synthicide .trait-description-editor {
+/*.synthicide .trait-description-editor {
   border: 1px solid var(--synthicide-c-border-subtle);
   padding: 4px;
   border-radius: 4px;
-}
+}*/
 .synthicide .description-header {
   font-weight: bold;
   margin-bottom: 0.25rem;
