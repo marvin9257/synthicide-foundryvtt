@@ -71,7 +71,7 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
   static DEFAULT_OPTIONS = {
     classes: ['synthicide', 'item'],
     position: {
-      width: 520,
+      width: 575,
       height: 'auto',
     },
     actions: {
