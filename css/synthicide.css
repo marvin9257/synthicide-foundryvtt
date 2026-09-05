@@ -449,7 +449,7 @@ body.theme-dark .npc-compact .window-content {
 
   & .notes {
     margin: 0;
-    font-style: italic;
+    /*font-style: italic;*/
     opacity: 0.9;
   }
 
@@ -931,7 +931,7 @@ body.theme-dark .npc-compact .window-content {
   }
 
   & .resource-content {
-    width: 100%;
+    /*width: 100%;*/
     margin-top: 2px;
 
     &.resource-pair {
@@ -1062,9 +1062,14 @@ body.theme-dark .npc-compact .window-content {
 .synthicide .tab.biography {
   flex: 1;
 }
-.synthicide .tab.biography .editor {
+.synthicide .tab.biography .editor,
+.synthicide .tab.description .editor {
   height: 100%;
   border: 1px solid var(--synthicide-c-border-subtle);
+}
+
+.synthicide .prosemirror .editor-content {
+    padding-left: 0.25rem;
 }
 
 /* ============================== */
@@ -1172,11 +1177,11 @@ body.theme-dark .npc-compact .window-content {
   min-width: 0;
 }
 
-.synthicide .trait-description-editor {
+/*.synthicide .trait-description-editor {
   border: 1px solid var(--synthicide-c-border-subtle);
   padding: 4px;
   border-radius: 4px;
-}
+}*/
 .synthicide .description-header {
   font-weight: bold;
   margin-bottom: 0.25rem;
@@ -3185,7 +3190,8 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.np
 
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.npcStats .npc-board-section,
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.npcStats .npc-guidance-chip,
-body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.biography .editor-content  {
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.biography .editor-content,
+body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.description .editor-content  {
   border-color: color-mix(in srgb, var(--rb-strong) 50%, transparent);
 }
 
