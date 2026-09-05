@@ -449,7 +449,7 @@ body.theme-dark .npc-compact .window-content {
 
   & .notes {
     margin: 0;
-    font-style: italic;
+    /*font-style: italic;*/
     opacity: 0.9;
   }
 
