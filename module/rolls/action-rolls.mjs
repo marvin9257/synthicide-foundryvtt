@@ -189,10 +189,20 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
     specialAmmoUsed: messageRollData.specialAmmoUsed ?? 'none',
     messageMode,
     userId: game.user.id,
+    rollModifiers: messageRollData.rollModifiers
   } });
 
   // attach rollData snapshot to context for completeness
-  ctx.rollData = { attribute: damageAttributeValue, d10: messageRollData.d10, damageBonus: messageRollData.damageBonus };
+  ctx.rollData.attribute = damageAttributeValue;
+  ctx.rollData.d10 = messageRollData.d10;
+  ctx.rollData.damageBonus = messageRollData.damageBonus;
+  ctx.prepareRoll({ includeSpecialization: true }); //needed?
+  
+  // Inject any calculated actor totals dynamically into the damage total calculation
+  const actorModifierTotal = Number(ctx.rollData.actorModifierTotal ?? 0);
+  const correctedDamageTotal = damageTotal + actorModifierTotal;
+  ctx.input.total = correctedDamageTotal;
+  ctx.rollData.total = correctedDamageTotal;
 
   // Propagate special ammo choice into card input
   ctx.input.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
@@ -367,7 +377,7 @@ async function executeDriverVelocityActionRoll({ ctx } = {}) {
     ]);
     cardData.metadataRows = cardData.metadataRows.filter((row) => !labelsToHide.has(row?.label));
   }
-  
+
   if (Array.isArray(cardData.equationTerms)) {
     const attrLabel = localize('SYNTHICIDE.Roll.Card.Attribute');
     const attrValueLabel = localize('SYNTHICIDE.Roll.Card.AttributeValue');

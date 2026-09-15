@@ -1,7 +1,7 @@
 // module/rolls/damage-card-data.js
 // Modular function to prepare card data for derived damage rolls
 
-import { localize, buildEquationTerms, buildBaseActionCardData, extractCardContext } from './roll-utils.mjs';
+import { localize, buildEquationTerms, buildBaseActionCardData, extractCardContext, formatRollModifiers, formatSignedNumber } from './roll-utils.mjs';
 import { SpecializationData } from './specialization-data.mjs';
 import { buildWeaponSpecializationMetadataRows } from './weapon-proficiency-rules.mjs';
 /**
@@ -61,11 +61,14 @@ export function prepareDamageCardData({
 
   if (!item && sourceItemUuid) item = foundry.utils.fromUuidSync(sourceItemUuid);
 
-  const equationFormula = item?.type === 'vehicleWeapon' //item may be null if from attack card
-  ? `${d10} x ${dmgMultiplier}` 
-  : extraDamageDice > 0 
-    ? `${d10} + ${attributeValue} + ${damageBonus} + ${extraDamageDice}d10` 
-    : `${d10} + ${attributeValue} + ${damageBonus}`;
+  const actorModTotal = Number(rollData.actorModifierTotal ?? 0);
+  const visualMod = actorModTotal !== 0 ? ` ${formatSignedNumber(actorModTotal)}` : '';
+
+  const equationFormula = item?.type === 'vehicleWeapon' 
+    ? `${d10} x ${dmgMultiplier}` 
+    : extraDamageDice > 0 
+      ? `${d10} + ${attributeValue} + ${damageBonus}${visualMod} + ${extraDamageDice}d10` 
+      : `${d10} + ${attributeValue} + ${damageBonus}${visualMod}`;
 
   const subtype = item?.type === 'vehicleWeapon' ? 'vehicleDamage' : 'damage'; 
   
@@ -85,6 +88,7 @@ export function prepareDamageCardData({
       slugShotActive,
       item,
       baseDamageBonus,
+      rollData
     }),
     showEffectOutcomeRow: false,
     showDamageButton: false,
@@ -105,7 +109,7 @@ export function prepareDamageCardData({
   };
 }
 
-function buildDamageMetadataRows({ source, lethal, baneDamageBonus = 0, doubleShotBonus = 0, slugShotActive = false, input = {}, baseDamageBonus = 0 }) {
+function buildDamageMetadataRows({ source, lethal, baneDamageBonus = 0, doubleShotBonus = 0, slugShotActive = false, input = {}, baseDamageBonus = 0, rollData = {} }) {
   const damageBonus = Number(input.damageBonus ?? 0);
   const showBaseDamageBonus = baseDamageBonus !== 0 && damageBonus === baseDamageBonus;
   const rows = [
@@ -127,6 +131,17 @@ function buildDamageMetadataRows({ source, lethal, baneDamageBonus = 0, doubleSh
 
   if (showBaseDamageBonus) {
     rows.push({ label: localize('SYNTHICIDE.Roll.Card.BaseDamageBonus'), value: baseDamageBonus });
+  }
+
+  if (Array.isArray(rollData.modifierDetails) && rollData.modifierDetails.length > 0) {
+    const formattedMods = formatRollModifiers(rollData.modifierDetails);
+    
+    for (const mod of formattedMods) {
+      rows.push({
+        label: mod.label, 
+        value: `${formatSignedNumber(mod.value)} DMG`
+      });
+    }
   }
 
   rows.push(
