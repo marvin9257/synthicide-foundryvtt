@@ -991,6 +991,10 @@
         "RollOpposed": "Opposed Roll",
         "ClampedNote": "Clamped to 0 (calculated {raw})",
         "Source": "Source Item",
+        "ArmorDefense": "Armor Defense (AD)",
+        "LethalRating": "Weapon Lethal Rating",
+        "LethalShort": "Lethal",
+        "InstantDeath": "Instant Death",
         "LethalValue": "Lethal Value"
       },
       "Degree": {

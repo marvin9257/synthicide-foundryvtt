@@ -108,9 +108,12 @@ export class SynthicideChatMessage extends ChatMessage {
   static async createActionMessage({ actor, roll, cardData, template, messageMode, whisper } = {}) {
     const normalizedMode = this.normalizeMessageMode(messageMode);
 
+    // SAFETY FALLBACK: Use your primary action roll layout card path if template is missing/undefined
+    const activeTemplate = template ?? "systems/synthicide/templates/chat/action-roll-card.hbs";
+
     if (roll) {
       const rollHtml = await roll.render();
-      const cardHtml = await foundry.applications.handlebars.renderTemplate(template, { ...cardData, rollHtml });
+      const cardHtml = await foundry.applications.handlebars.renderTemplate(activeTemplate, { ...cardData, rollHtml });
       return roll.toMessage(this.prepareData({ actor, content: cardHtml, cardData, whisper }), {
         messageMode: normalizedMode,
         create: true,

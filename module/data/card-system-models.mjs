@@ -113,6 +113,7 @@ export class ShockCardSystemData extends BaseCardSystemData {
     schema.lethal = new fields.NumberField({...requiredInteger, initial: 0});
     schema.rollTotal = new fields.NumberField({ required: false, initial: 0 });
     schema.d10 = new fields.NumberField({ required: false, initial: 0 });
+    schema.armorDefense = new fields.NumberField({ required: false, nullable: true, integer: true, initial: 0 });
     return schema;
   }
 }

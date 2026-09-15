@@ -326,17 +326,17 @@ export class SynthicideActor extends foundry.documents.Actor {
     //armor - target's armor value (AD - attack difficulty)
     //barrier abosorbed - amount damange barrier absorbed
     //lethal - the lethality rating of weapon making the attack
-    const { armor, barrierAbsorbed, lethal, shockRdBonus } = this._resolveShockContext(options);
+    const { armorDefense, barrierAbsorbed, lethal, shockRdBonus } = this._resolveShockContext(options);
 
     // Barrier-absorbed attacks only trigger shocking strike at 2x AD.
-    if (barrierAbsorbed > 0 && !(damageRemaining >= 2 * armor)) return;
+    if (barrierAbsorbed > 0 && !(damageRemaining >= 2 * armorDefense)) return;
 
     //If damage remaining does not exceed shock threshold for actor, no shocking strike
     if (!(shockThreshold > 0 && damageRemaining > shockThreshold)) return;
 
     const shockRollDifficulty = Math.floor(damageRemaining / 5) + shockRdBonus;
     const wouldDropBelowZero = damageRemaining > preHitPoints;
-    const isLethal = Number.isFinite(lethal) && lethal > 0 && armor <= lethal;
+    const isLethal = Number.isFinite(lethal) && lethal > 0 && armorDefense <= lethal;
 
     const toughnessValue = Number(this.system.attributes?.toughness?.value ?? 0);
     let roll = null;
@@ -363,13 +363,15 @@ export class SynthicideActor extends foundry.documents.Actor {
         toughnessValue,
         outcome,
         lethal,
-        armor,
+        armorDefense,
         barrierAbsorbed,
       }
     });
 
     const { preferredMode, whisper } = this._resolveShockMessageOptions({ options, cardData });
-    await createActionMessage({ actor: this, roll, cardData, messageMode: preferredMode, whisper });
+    const SHOCK_CARD_TEMPLATE = "systems/synthicide/templates/chat/action-roll-card.hbs";
+    await createActionMessage({ actor: this, roll, cardData, messageMode: preferredMode, whisper, template: SHOCK_CARD_TEMPLATE });
+    
 
     this._applyShockOutcomeUpdates({ updates, outcome });
 
@@ -384,19 +386,25 @@ export class SynthicideActor extends foundry.documents.Actor {
    * @private
    */
   _resolveShockContext(options = {}) {
-    const messageArmor = Number(options?.attack?.armor ?? options?.armor ?? NaN);
-    const actorArmor = Number(this.system.armorDefense?.value ?? NaN);
-    const armor = Number.isFinite(messageArmor)
-      ? messageArmor
-      : (Number.isFinite(actorArmor) ? actorArmor : 0);
+    // Keep fallbacks active for backward compatibility with legacy attack/damage cards
+    const incomingArmor = options?.attack?.armorDefense ?? options?.armorDefense 
+                       ?? options?.attack?.armor        ?? options?.armor;
+                       
+    const actorArmorFallback = this.system.armorDefense?.value ?? 0;
+
+    // Use a clean ternary to select our single, definitive armorDefense number
+    const armorDefense = Number.isFinite(Number(incomingArmor)) 
+      ? Number(incomingArmor) 
+      : Number(actorArmorFallback);
 
     const barrierAbsorbed = Number(options?.barrierAbsorbed ?? 0);
-    let lethal = Number( options?.attack?.lethal ?? options?.lethal ?? 0);
+    
+    let lethal = Number(options?.attack?.lethal ?? options?.lethal ?? 0);
     if (barrierAbsorbed > 0) lethal = 0;
 
     const shockRdBonus = Number(options?.attack?.shockRdBonus ?? options?.shockRdBonus ?? 0);
 
-    return { armor, barrierAbsorbed, lethal, shockRdBonus };
+    return { armorDefense, barrierAbsorbed, lethal, shockRdBonus };
   }
 
   /**

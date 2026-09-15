@@ -27,6 +27,7 @@ export function resolveShockOutcome({ isLethal, success, wouldDropBelowZero } = 
  *   @param {number} options.toughnessValue - Actor's toughness value.
  *   @param {string} options.outcome - Outcome key (from resolveShockOutcome).
  *   @param {number} options.lethal - Lethality rating of the attack.
+ *   @param {number} options.armorDefense - The AD for the target.
  * @returns {object} Card data for chat message flags and rendering.
  */
 export function buildShockCardData({ actor, options }) {
@@ -39,10 +40,11 @@ export function buildShockCardData({ actor, options }) {
     toughnessValue,
     outcome,
     lethal,
+    armorDefense
   } = options;
   const { messageMode, sourceItemUuid, sourceMessageId } = extractCardContext({ input: options });
   const isLethal = outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL;
-  const isSuccess = outcome === SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS;
+  //const isSuccess = outcome === SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS;
   const d10 = Number(roll?.dice?.[0]?.results?.[0]?.result ?? 0);
   const baseFlavor = game.i18n.format("SYNTHICIDE.Chat.Shock.Base", {
     actor: actor.name,
@@ -64,25 +66,41 @@ export function buildShockCardData({ actor, options }) {
     actorUuid: actor.uuid ?? null,
     sourceItemUuid,
     sourceMessageId,
+    armorDefense: Number(armorDefense ?? 0)
   };
 
   return {
     type: 'shock',
     system,
     messageMode,
-    equation: roll?.result ?? '',
-    dieValue: d10,
-    dieClass: '',
-    equationTerms: [
-      { label: game.i18n.localize(SYNTHICIDE.attributes.toughness), value: toughnessValue },
-      { label: game.i18n.localize("SYNTHICIDE.Roll.Card.Difficulty"), value: rd },
-      { label: game.i18n.localize("SYNTHICIDE.Roll.Card.DamageResultApplied"), value: damageRemaining },
+    // VISUAL FEEDBACK: Tells the players exactly why there is no dice equation
+    equation: isLethal 
+      ? `${game.i18n.localize("SYNTHICIDE.Roll.Card.InstantDeath")} (${game.i18n.localize("SYNTHICIDE.Roll.Card.LethalShort")}: ${lethal} >= AD: ${armorDefense ?? 'n/a'})` 
+      : (roll?.result ?? ''),
+    dieValue: isLethal ? 0 : d10,
+    dieClass: isLethal ? 'min' : '', 
+    
+    // Show standard Toughness modifiers only if they actually got to roll
+    equationTerms: isLethal ? [] : [
+      { label: game.i18n.localize(SYNTHICIDE.attributes.toughness), value: toughnessValue }
     ],
+    
     metadataRows: [
+      // If it was an auto-kill, pin Toughness and Armor Defense here as informational data points
+      ...(isLethal ? [
+        { label: game.i18n.localize(SYNTHICIDE.attributes.toughness), value: toughnessValue },
+        { label: game.i18n.localize("SYNTHICIDE.Roll.Card.ArmorDefense"), value: armorDefense ?? 'n/a' },
+        { label: game.i18n.localize("SYNTHICIDE.Roll.Card.LethalRating"), value: lethal }
+      ] : []),
       { label: game.i18n.localize("SYNTHICIDE.Chat.Shock.Threshold"), value: shockThreshold },
+      { label: game.i18n.localize("SYNTHICIDE.Roll.Card.Difficulty"), value: rd },
+      { label: game.i18n.localize("SYNTHICIDE.Roll.Card.DamageResultApplied"), value: damageRemaining }
     ],
     showEffectOutcomeRow: false,
-    showTotalRow: isSuccess,
+    
+    // Always render the total row so the layout template loads the numbers cleanly
+    showTotalRow: true, 
+    total: isLethal ? damageRemaining : (rollTotal ?? 0),
     title: game.i18n.localize("SYNTHICIDE.Roll.Card.TitleShock"),
     flavor: `${baseFlavor} ${outcomeFlavor}`,
   };
