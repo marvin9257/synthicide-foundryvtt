@@ -320,7 +320,7 @@ function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = nu
 
   const resolvedModifiers = computeRollModifiers(actor, input?.rollModifiers);
   rollData.modifierDetails = Array.isArray(resolvedModifiers.modifiers) ? resolvedModifiers.modifiers.slice() : [];
-  rollData.actorModifierTotal = rollData.modifierDetails.reduce((sum, mod) => sum + parseNumeric(mod.value, 0), 0);
+  rollData.actorModifierTotal = resolvedModifiers.total ?? 0;;
 
   const finalInput = {
     ...input,
@@ -341,7 +341,7 @@ function applyModifiersToRollData({ actor, rollData, input = {}, sourceItem = nu
   rollData.damageBonus = parseNumeric(finalInput.damageBonus, rollData.damageBonus ?? 0);
   rollData.misc = parseNumeric(finalInput.misc, rollData.misc ?? 0);
   rollData.rangeModifier = rangeModifier;
-  rollData.modifiers = Number(rollData.actorModifierTotal ?? 0) + Number(rangeModifier);
+  rollData.modifiers = rollData.actorModifierTotal + rangeModifier;
 
   // Specialization may be applied by the higher-level helper
   // `RollContext.applyRollAdjustments()`, so low-level callers can opt
