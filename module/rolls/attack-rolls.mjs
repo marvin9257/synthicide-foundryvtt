@@ -59,7 +59,8 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
       specializationContext,
       messageMode,
       template,
-      attackMessage
+      attackMessage,
+      rollData: ctx.rollData
     });
   }
 
@@ -226,7 +227,7 @@ function buildResolvedAttackInput({ input, rollData, attackRangeContext, baneDam
   };
 }
 
-async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, specializationContext = {}, messageMode, template, attackMessage }) {
+async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, specializationContext = {}, messageMode, template, attackMessage, rollData = {} }) {
   const attackerToken = getActorToken(actor);
   const targetToken = getSingleTargetToken({ notify: false });
   if (!attackerToken || !targetToken) return;
@@ -266,7 +267,8 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
   for (const collateralToken of hitTokens) {
     const baneDamageBonus = getBaneDamageBonus({ sourceItem, targetActor: collateralToken.actor });
     const damageBonus = baseDamageBonus + doubleShotBonus + baneDamageBonus;
-    const flatDamage = attributeValue + damageBonus;
+    const actorModifierTotal = Number(rollData.actorModifierTotal ?? 0);
+    const flatDamage = attributeValue + damageBonus + actorModifierTotal;
 
     const cardData = prepareDamageCardData({
       input: {
@@ -284,6 +286,7 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
       actor,
       item: sourceItem,
       attributeValue,
+      rollData,
       overrides: {
         title: localize('SYNTHICIDE.Roll.Card.TitleSpreadDamage'),
         flavor: localize('SYNTHICIDE.Roll.Card.SpreadFlavor', {
