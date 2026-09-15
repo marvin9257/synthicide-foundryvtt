@@ -335,8 +335,9 @@ async function executeDriverVelocityActionRoll({ ctx } = {}) {
   const messageMode = normalizeMessageMode(ctx.input.messageMode);
   const difficulty = Number(ctx.input.difficulty ?? 6);
   const velocity = Number(foundry.utils.getProperty(actorObj, 'system.velocity') ?? 0);
-
+  
   ctx.rollData.velocity = velocity;
+  ctx.rollData.attributeValue = velocity; 
   const evaluatedRoll = await new Roll('1d10 + @velocity + @misc + @modifiers', ctx.rollData).evaluate();
 
   const cardData = prepareChallengeCardData({
@@ -366,14 +367,19 @@ async function executeDriverVelocityActionRoll({ ctx } = {}) {
     ]);
     cardData.metadataRows = cardData.metadataRows.filter((row) => !labelsToHide.has(row?.label));
   }
-  if (Array.isArray(cardData.equationTerms) && cardData.equationTerms.length >= 2) {
-    cardData.equationTerms[0] = {
-      label: localize('SYNTHICIDE.Vehicle.Velocity'),
-      value: velocity,
-    };
-    cardData.equationTerms = cardData.equationTerms.filter((term, index) => (
-      index !== 1 && term?.label !== localize('SYNTHICIDE.Roll.Card.AttributeValue')
-    ));
+  
+  if (Array.isArray(cardData.equationTerms)) {
+    const attrLabel = localize('SYNTHICIDE.Roll.Card.Attribute');
+    const attrValueLabel = localize('SYNTHICIDE.Roll.Card.AttributeValue');
+    
+    cardData.equationTerms = cardData.equationTerms
+      .map(term => {
+        if (term?.label === attrLabel) {
+          return { ...term, label: localize('SYNTHICIDE.Vehicle.Velocity'), valueHtml: undefined, value: velocity };
+        }
+        return term;
+      })
+      .filter(term => term?.label !== attrValueLabel);
   }
 
   return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, cardData, template: CARD_TEMPLATE });
