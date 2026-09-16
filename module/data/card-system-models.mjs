@@ -1,4 +1,5 @@
 import { getDegreeLabel } from "../rolls/roll-utils.mjs";
+import { BaseCardSystemData } from "./cards/base-card.mjs";
 
 // DataModels for Synthicide ChatMessage card types (v14+)
 const fields = foundry.data.fields;
@@ -19,16 +20,7 @@ function createSpecializationSchema() {
   });
 }
 
-export class BaseCardSystemData extends foundry.abstract.TypeDataModel {
-  static defineSchema() {
-    const schema = {};
-    schema.actorUuid = new fields.StringField({ required: false, nullable: true, blank: true, initial: '' });
-    schema.sourceItemUuid = new fields.StringField({ required: false, blank: true, initial: '' });
-    schema.sourceMessageId = new fields.StringField({ required: false, blank: true, initial: '' });
-    schema.subtype = new fields.StringField({ required: false, blank: true, initial: '' });
-    return schema;
-  }
-}
+
 
 export class CombatCardSystemData extends BaseCardSystemData {
   static defineSchema() {
@@ -102,18 +94,4 @@ export class DemolitionCardSystemData extends CombatCardSystemData {
   }
 }
 
-export class ShockCardSystemData extends BaseCardSystemData {
-  static defineSchema() {
-    const schema = super.defineSchema();
-    schema.damageRemaining = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.shockThreshold = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.rd = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.toughnessValue = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.outcome = new fields.StringField({...requiredBlankString});
-    schema.lethal = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.rollTotal = new fields.NumberField({ required: false, initial: 0 });
-    schema.d10 = new fields.NumberField({ required: false, initial: 0 });
-    schema.armorDefense = new fields.NumberField({ required: false, nullable: true, integer: true, initial: 0 });
-    return schema;
-  }
-}
+

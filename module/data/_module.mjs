@@ -21,3 +21,5 @@ export { default as SynthicideArtifact } from './item-artifact.mjs';
 
 // Export Card System DataModels
 export * from './card-system-models.mjs';
+export { BaseCardSystemData } from "./cards/base-card.mjs";
+export { ShockCardSystemData }  from "./cards/shock-card.mjs";

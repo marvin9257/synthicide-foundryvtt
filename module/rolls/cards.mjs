@@ -14,7 +14,14 @@ export async function createBlastSummaryMessage({ actor, summaryRows, messageMod
     <div class="synthicide-blast-summary">
       <strong>${localize('SYNTHICIDE.Roll.BlastSummary.Title')}</strong>
       <table>
-        <thead><tr><th>${localize('SYNTHICIDE.Roll.BlastSummary.Target')}</th><th>${localize('SYNTHICIDE.Roll.BlastSummary.AD')}</th><th>${localize('SYNTHICIDE.Roll.BlastSummary.Roll')}</th><th>${localize('SYNTHICIDE.Roll.BlastSummary.Result')}</th></tr></thead>
+        <thead>
+          <tr>
+            <th>${localize('SYNTHICIDE.Roll.BlastSummary.Target')}</th>
+            <th>${localize('SYNTHICIDE.Roll.BlastSummary.AD')}</th><
+            th>${localize('SYNTHICIDE.Roll.BlastSummary.Roll')}</th>
+            <th>${localize('SYNTHICIDE.Roll.BlastSummary.Result')}</th>
+          </tr>
+        </thead>
         <tbody>${summaryRows.join('')}</tbody>
       </table>
     </div>
@@ -22,6 +29,7 @@ export async function createBlastSummaryMessage({ actor, summaryRows, messageMod
   const chatData = {
     content: summaryTable,
     speaker: ChatMessage.getSpeaker({ actor }),
+    type: CONST.BASE_DOCUMENT_TYPE
   };
   if (companionMessageId) {
     chatData.flags = {
@@ -30,5 +38,5 @@ export async function createBlastSummaryMessage({ actor, summaryRows, messageMod
       }
     };
   }
-  await ChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
+  await ChatMessage.implementation.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
 }

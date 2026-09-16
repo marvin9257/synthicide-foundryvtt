@@ -101,27 +101,67 @@ export class SynthicideChatMessage extends ChatMessage {
     };
   }
 
-  /**
-   * High-level helper to render card HTML (when needed), prepare chat data,
-   * and create the chat message (via `roll.toMessage` when a Roll is provided).
+    /**
+   * Universal Document-Driven Action Message Creator.
+   * Compiles template HTML upfront to eliminate reactive validation leaks,
+   * guaranteeing exactly one clean, fully animated chat card pass.
+   * @param {object} params
+   * @param {Actor} params.actor
+   * @param {Roll|null} params.roll
+   * @param {object} params.systemData
+   * @param {string} params.messageMode
+   * @param {string[]} params.whisper
+   * @param {string} params.template
    */
-  static async createActionMessage({ actor, roll, cardData, template, messageMode, whisper } = {}) {
+  static async createActionMessage({ actor, roll, systemData, messageMode, whisper, template } = {}) {
     const normalizedMode = this.normalizeMessageMode(messageMode);
-
-    // SAFETY FALLBACK: Use your primary action roll layout card path if template is missing/undefined
     const activeTemplate = template ?? "systems/synthicide/templates/chat/action-roll-card.hbs";
 
-    if (roll) {
-      const rollHtml = await roll.render();
-      const cardHtml = await foundry.applications.handlebars.renderTemplate(activeTemplate, { ...cardData, rollHtml });
-      return roll.toMessage(this.prepareData({ actor, content: cardHtml, cardData, whisper }), {
-        messageMode: normalizedMode,
-        create: true,
-      });
+    // 1. DYNAMIC TYPE LOOKUP: Sourced directly from your system data models configuration layer
+    const cardSubtype = systemData.subtype ?? systemData.type ?? CONST.BASE_DOCUMENT_TYPE;
+    const ModelClass = CONFIG.ChatMessage.dataModels?.[cardSubtype];
+
+    // Build a temporary, local model schema instance wrapper to securely calculate class getters
+    let systemInstance = systemData;
+    if (ModelClass) {
+      systemInstance = new ModelClass(systemData, { parent: null });
     }
 
-    const cardHtml = await foundry.applications.handlebars.renderTemplate(template, cardData);
-    const chatData = this.prepareData({ actor, content: cardHtml, cardData, whisper });
-    return this.create(chatData, { messageMode: normalizedMode });
+    // 2. IMMEDIATE COMPILATION: Prepare the card HTML layout upfront before hitting any document pipelines!
+    const templateData = {
+      type: cardSubtype,
+      speaker: ChatMessage.getSpeaker({ actor }),
+      system: systemInstance,
+      title: systemInstance.title ?? "",
+      flavor: systemInstance.flavor ?? "",
+      equation: systemInstance.equation ?? "",
+      equationTerms: systemInstance.equationTerms ?? [],
+      metadataRows: systemInstance.metadataRows ?? [],
+      showTotalRow: systemInstance.showTotalRow ?? true,
+      total: systemInstance.total ?? 0,
+      actorName: systemInstance.actorName ?? "",
+      dieValue: systemInstance.d10 ?? 0
+    };
+
+    const renderedContent = await foundry.applications.handlebars.renderTemplate(activeTemplate, templateData);
+
+    // 3. CONSOLIDATED DATA PAYLOAD: Package a fully complete document context configuration
+    const chatData = {
+      speaker: ChatMessage.getSpeaker({ actor }),
+      type: cardSubtype,
+      system: systemData,
+      content: renderedContent, // The card frame body text is fully prepared and provided upfront!
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      whisper: Array.isArray(whisper) && whisper.length ? whisper : undefined
+    };
+
+    // 4. DATABASE COMMIT: Consumes the roll natively to fire 3D dice while printing exactly ONE card
+    if (roll) {
+      return await roll.toMessage(chatData, { 
+        messageMode: normalizedMode, 
+        create: true 
+      });
+    }
+    return await ChatMessage.implementation.create(chatData, { messageMode: normalizedMode });
   }
 }

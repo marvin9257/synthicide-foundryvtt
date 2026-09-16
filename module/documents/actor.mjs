@@ -1,7 +1,6 @@
 import SYNTHICIDE from "../helpers/config.mjs";
-import { createActionMessage } from "../rolls/action-rolls.mjs";
-import { buildShockCardData, resolveShockOutcome } from "../rolls/shock-card-data.mjs";
 import { resolveAmmoOnHitEffects } from "../rolls/ammo-effects.mjs";
+import { SynthicideChatMessage } from "./synthicide-chat-message.mjs";
 
 const DAMAGEABLE_ACTOR_TYPES = new Set(['sharper', 'npc', 'vehicle']);
 
@@ -318,20 +317,26 @@ export class SynthicideActor extends foundry.documents.Actor {
    * @param {number} preHitPoints - HP value before applying this damage
    * @param {Object} updates - the update payload being built by damageActor
    */
+    /**
+   * Handle shocking-strike resolution using unified Document-Driven DataModels.
+   * Calculates RD, evaluates auto-lethal thresholds, performs toughness checks,
+   * and maps data straight into the schema pipeline.
+   * @param {number} damageRemaining - damage reaching HP after barriers
+   * @param {number} preHitPoints - HP value before applying this damage
+   * @param {Object} updates - the update payload being built by damageActor
+   * @param {Object} options - live incoming action context adjustments
+   */
   async _handleShockingStrike(damageRemaining, preHitPoints, updates, options = {}) {
     if (!(damageRemaining > 0)) return;
     const shockThreshold = Number(this.system.shockThreshold?.value ?? 0);
 
-    //Get attack context variables:
-    //armor - target's armor value (AD - attack difficulty)
-    //barrier abosorbed - amount damange barrier absorbed
-    //lethal - the lethality rating of weapon making the attack
+    // 1. Resolve attack context variables safely using your clean fallbacks helper
     const { armorDefense, barrierAbsorbed, lethal, shockRdBonus } = this._resolveShockContext(options);
 
     // Barrier-absorbed attacks only trigger shocking strike at 2x AD.
     if (barrierAbsorbed > 0 && !(damageRemaining >= 2 * armorDefense)) return;
 
-    //If damage remaining does not exceed shock threshold for actor, no shocking strike
+    // If damage remaining does not exceed shock threshold for actor, no shocking strike
     if (!(shockThreshold > 0 && damageRemaining > shockThreshold)) return;
 
     const shockRollDifficulty = Math.floor(damageRemaining / 5) + shockRdBonus;
@@ -342,42 +347,57 @@ export class SynthicideActor extends foundry.documents.Actor {
     let roll = null;
     let rollTotal = null;
     let success = false;
+    let d10Value = 0;
 
+    // 2. Perform the localized dice roll evaluation if the attack wasn't an auto-bypass
     if (!isLethal) {
       roll = await new Roll('1d10 + @attribute', { attribute: toughnessValue }).evaluate();
       rollTotal = Number(roll.total ?? 0);
       success = rollTotal > shockRollDifficulty;
+      d10Value = Number(roll?.dice?.[0]?.results?.[0]?.result ?? 0);
     }
 
-    const outcome = resolveShockOutcome({ isLethal, success, wouldDropBelowZero });
+    // FIXED: Calculate the outcome variable FIRST before attempting to build your data model payload!
+    const shockModelClass = CONFIG.ChatMessage.dataModels.shock;
+    const outcome = shockModelClass.resolveShockOutcome({ isLethal, success, wouldDropBelowZero });
 
-    // Use modular builder for shock card data
-    const cardData = buildShockCardData({
-      actor: this,
-      options: {
-        roll,
-        rollTotal,
-        damageRemaining,
-        shockThreshold,
-        rd: shockRollDifficulty,
-        toughnessValue,
-        outcome,
-        lethal,
-        armorDefense,
-        barrierAbsorbed,
-      }
-    });
+    // 3. Pack up raw database fields to match your new strict schema model layout
+    const systemData = {
+      subtype: "shock", // Direct map to register subclass context type selection
+      damageRemaining,
+      shockThreshold,
+      rd: shockRollDifficulty,
+      toughnessValue,
+      outcome, // Safely defined and evaluated
+      lethal,
+      armorDefense,
+      d10: d10Value,
+      rollTotal: isLethal ? damageRemaining : rollTotal,
+      actorUuid: this.uuid,
+      actorName: this.name,
+      total: isLethal ? damageRemaining : rollTotal,
+      sourceItemUuid: options?.sourceItemUuid ?? options?.attack?.sourceItemUuid ?? "",
+      sourceMessageId: options?.sourceMessageId ?? options?.attack?.sourceMessageId ?? ""
+    };
 
-    const { preferredMode, whisper } = this._resolveShockMessageOptions({ options, cardData });
-    const SHOCK_CARD_TEMPLATE = "systems/synthicide/templates/chat/action-roll-card.hbs";
-    await createActionMessage({ actor: this, roll, cardData, messageMode: preferredMode, whisper, template: SHOCK_CARD_TEMPLATE });
+    const { preferredMode, whisper } = this._resolveShockMessageOptions({ options });
     
-
+    // 4. Fire off the updated messaging engine cleanly passing our structured schema bundle
+    await SynthicideChatMessage.createActionMessage({ 
+      actor: this, 
+      roll, 
+      systemData, 
+      messageMode: preferredMode, 
+      whisper 
+    });
+    
+    // Apply health state overrides to updates object literal
     this._applyShockOutcomeUpdates({ updates, outcome });
 
     // Return the computed outcome so callers can apply client-only visuals.
     return outcome;
   }
+
 
   /**
    * Resolve shock-processing context from message options and actor fallback.
@@ -432,15 +452,4 @@ export class SynthicideActor extends foundry.documents.Actor {
     };
   }
 
-  /**
-   * Build localized outcome flavor text for shocking strike cards.
-   * @private
-   */
-  _buildShockOutcomeFlavor({ outcome, lethal, rollTotal, rd } = {}) {
-    const key = SYNTHICIDE.SHOCK_FLAVOR_KEYS[outcome] ?? SYNTHICIDE.SHOCK_FLAVOR_KEYS[SYNTHICIDE.SHOCK_OUTCOMES.MINUS_ONE];
-    if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL) {
-      return game.i18n.format(key, { lethal });
-    }
-    return game.i18n.format(key, { roll: rollTotal, rd });
-  }
 }
