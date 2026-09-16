@@ -326,7 +326,7 @@ async function executeChallengeActionRoll({ ctx } = {}) {
   
   // 1. Evaluate the authentic dice check natively on the client
   const evaluatedRoll = await new Roll('1d10 + @attribute + @misc + @modifiers', ctx.rollData).evaluate();
-  const d10Value = Number(evaluatedRoll?.dice?.[0]?.results?.[0]?.result ?? 0);
+  const d10Value = Number(evaluatedRoll.dice[0].results[0].result ?? 0);
   const finalTotal = Number(evaluatedRoll.total ?? 0);
 
   // 2. Package data fields matching our strict DataModel configuration
@@ -358,7 +358,7 @@ async function executeDriverVelocityActionRoll({ ctx } = {}) {
   
   // 1. Evaluate the velocity roll formula
   const evaluatedRoll = await new Roll('1d10 + @velocity + @misc + @modifiers', ctx.rollData).evaluate();
-  const d10Value = Number(evaluatedRoll?.dice?.[0]?.results?.[0]?.result ?? 0);
+  const d10Value = Number(evaluatedRoll.dice[0]?.results?.[0]?.result ?? 0);
   const finalTotal = Number(evaluatedRoll.total ?? 0);
 
   // 2. Map snapshot payload straight to your centralized Challenge schema structure!

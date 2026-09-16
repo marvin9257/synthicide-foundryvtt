@@ -187,12 +187,12 @@ export default class SynthicideCombat extends foundry.documents.Combat {
       attribute: "toughness",
       difficulty,
       total: Number(flashRoll.total ?? 0),
-      d10: Number(flashRoll?.dice?.[0]?.results?.[0]?.result ?? 0),
+      d10: Number(flashRoll.dice[0].results[0].result ?? 0),
       misc: 0,
       modifiers: 0,
       attributeValue: toughnessValue,
-      actorUuid: actor?.uuid ?? null,
-      actorName: actor?.name ?? ""
+      actorUuid: actor.uuid ?? null,
+      actorName: actor.name ?? ""
     };
 
     systemData.flavor = flashSucceeded

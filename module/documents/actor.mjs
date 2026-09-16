@@ -354,7 +354,7 @@ export class SynthicideActor extends foundry.documents.Actor {
       roll = await new Roll('1d10 + @attribute', { attribute: toughnessValue }).evaluate();
       rollTotal = Number(roll.total ?? 0);
       success = rollTotal > shockRollDifficulty;
-      d10Value = Number(roll?.dice?.[0]?.results?.[0]?.result ?? 0);
+      d10Value = Number(roll.dice[0]?.results?.[0]?.result ?? 0);
     }
 
     // FIXED: Calculate the outcome variable FIRST before attempting to build your data model payload!
