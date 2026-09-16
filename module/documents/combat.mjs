@@ -1,5 +1,4 @@
 import { createActionMessage } from "../rolls/action-rolls.mjs";
-import { prepareChallengeCardData } from "../rolls/challenge-card-data.mjs";
 import { safeRenderVirtualGrid } from "../canvas/virtual-grid-overlay.mjs";
 
 export default class SynthicideCombat extends foundry.documents.Combat {
@@ -183,28 +182,27 @@ export default class SynthicideCombat extends foundry.documents.Combat {
     const toughnessValue = Number(actor.system.attributes?.toughness?.value ?? 0);
     const flashRoll = await new Roll('1d10 + @attribute', { attribute: toughnessValue }).evaluate();
     const flashSucceeded = Number(flashRoll.total ?? 0) >= difficulty;
-    const cardData = prepareChallengeCardData({
-      input: {
-        attribute: 'toughness',
-        difficulty,
-        misc: 0,
-        modifiers: 0,
-        messageMode,
-      },
-      actor,
-      rollResult: flashRoll,
-      attributeValue: toughnessValue,
+    const systemData = {
+      subtype: "challenge",
+      attribute: "toughness",
       difficulty,
-    });
+      total: Number(flashRoll.total ?? 0),
+      d10: Number(flashRoll?.dice?.[0]?.results?.[0]?.result ?? 0),
+      misc: 0,
+      modifiers: 0,
+      attributeValue: toughnessValue,
+      actorUuid: actor?.uuid ?? null,
+      actorName: actor?.name ?? ""
+    };
 
-    cardData.flavor = flashSucceeded
+    systemData.flavor = flashSucceeded
       ? `Flash: ${actor.name} beats RD ${difficulty}; blind is removed.`
       : `Flash: ${actor.name} fails RD ${difficulty} and loses their turn.`;
 
     await createActionMessage({
       actor,
       roll: flashRoll,
-      cardData,
+      systemData,
       messageMode,
     });
 

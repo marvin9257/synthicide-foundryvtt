@@ -1,3 +1,5 @@
+import { getDieClass } from "../../rolls/roll-utils.mjs";
+
 // DataModels for Synthicide ChatMessage card types (v14+)
 const fields = foundry.data.fields;
 
@@ -16,5 +18,26 @@ export class BaseCardSystemData extends foundry.abstract.TypeDataModel {
 
   get templatePath() {
     return "systems/synthicide/templates/chat/action-roll-card.hbs";
+  }
+
+  /**
+   * Assembles the base baseline visual properties shared by ALL card templates.
+   * Subclasses will override and extend this method.
+   * @returns {object}
+   */
+  get templateContext() {
+    return {
+      type: this.subtype ?? this.type,
+      title: this.title ?? "",
+      flavor: this.flavor ?? "",
+      equation: this.equation ?? "",
+      equationTerms: this.equationTerms ?? [],
+      metadataRows: this.metadataRows ?? [],
+      showTotalRow: this.showTotalRow ?? true,
+      total: this.total ?? 0,
+      actorName: this.actorName ?? "",
+      dieValue: this.d10 ?? 0,
+      dieClass: getDieClass(this.d10, 10)
+    };
   }
 }

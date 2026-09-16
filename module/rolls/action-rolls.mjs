@@ -1,5 +1,4 @@
 import { localize } from './roll-utils.mjs';
-import { prepareChallengeCardData } from './challenge-card-data.mjs';
 import { prepareDamageCardData } from './damage-card-data.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { renderActionRollDialog, buildDialogDefaults } from './dialogs.mjs';
@@ -197,7 +196,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   ctx.rollData.d10 = messageRollData.d10;
   ctx.rollData.damageBonus = messageRollData.damageBonus;
   ctx.prepareRoll({ includeSpecialization: true }); //needed?
-  
+
   // Inject any calculated actor totals dynamically into the damage total calculation
   const actorModifierTotal = Number(ctx.rollData.actorModifierTotal ?? 0);
   const correctedDamageTotal = damageTotal + actorModifierTotal;
@@ -324,19 +323,27 @@ async function executeChallengeActionRoll({ ctx } = {}) {
   const actorObj = ctx.actor ?? null;
   const messageMode = normalizeMessageMode(ctx.input.messageMode);
   const difficulty = Number(ctx.input.difficulty ?? 6);
+  
+  // 1. Evaluate the authentic dice check natively on the client
   const evaluatedRoll = await new Roll('1d10 + @attribute + @misc + @modifiers', ctx.rollData).evaluate();
+  const d10Value = Number(evaluatedRoll?.dice?.[0]?.results?.[0]?.result ?? 0);
+  const finalTotal = Number(evaluatedRoll.total ?? 0);
 
-  // Propagate special ammo choice into card input
-  ctx.input.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
-  const cardData = prepareChallengeCardData({
-    input: ctx.input,
-    actor: actorObj,
-    rollResult: evaluatedRoll,
-    attributeValue: ctx.rollData.attribute,
+  // 2. Package data fields matching our strict DataModel configuration
+  const systemData = {
+    subtype: "challenge",
+    attribute: ctx.attributeKey || "combat",
     difficulty,
-    rollData: ctx.rollData,
-  });
-  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, cardData, template: CARD_TEMPLATE });
+    total: finalTotal,
+    d10: d10Value,
+    misc: Number(ctx.rollData.misc ?? 0),
+    modifiers: Number(ctx.rollData.modifiers ?? 0),
+    attributeValue: Number(ctx.rollData.attribute ?? 0),
+    actorUuid: actorObj?.uuid ?? null,
+    actorName: actorObj?.name ?? ""
+  };
+
+  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData });
 }
 
 async function executeDriverVelocityActionRoll({ ctx } = {}) {
@@ -348,52 +355,29 @@ async function executeDriverVelocityActionRoll({ ctx } = {}) {
   
   ctx.rollData.velocity = velocity;
   ctx.rollData.attributeValue = velocity; 
+  
+  // 1. Evaluate the velocity roll formula
   const evaluatedRoll = await new Roll('1d10 + @velocity + @misc + @modifiers', ctx.rollData).evaluate();
+  const d10Value = Number(evaluatedRoll?.dice?.[0]?.results?.[0]?.result ?? 0);
+  const finalTotal = Number(evaluatedRoll.total ?? 0);
 
-  const cardData = prepareChallengeCardData({
-    input: ctx.input,
-    actor: actorObj,
-    rollResult: evaluatedRoll,
-    attributeValue: velocity,
+  // 2. Map snapshot payload straight to your centralized Challenge schema structure!
+  const systemData = {
+    subtype: "challenge", // Map to challenge schema class natively
+    attribute: "velocity", // Overrides attribute name so our model triggers velocity row translations
     difficulty,
-    rollData: {
-      ...ctx.rollData,
-      attributeValue: velocity,
-    },
-  });
+    total: finalTotal,
+    d10: d10Value,
+    misc: Number(ctx.rollData.misc ?? 0),
+    modifiers: Number(ctx.rollData.modifiers ?? 0),
+    attributeValue: velocity,
+    actorUuid: actorObj?.uuid ?? null,
+    actorName: actorObj?.name ?? ""
+  };
 
-  cardData.title = localize('SYNTHICIDE.Roll.Card.TitleDriverVelocity');
-  cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorDriverVelocity');
-  cardData.showEffectOutcomeRow = false;
-  cardData.showTotalRow = true;
-  delete cardData.effectText;
-  delete cardData.outcomeLabel;
-  delete cardData.outcomeClass;
-  cardData.showOpposedButton = false;
-  if (Array.isArray(cardData.metadataRows)) {
-    const labelsToHide = new Set([
-      localize('SYNTHICIDE.Roll.Card.Effect'),
-      localize('SYNTHICIDE.Roll.Card.Difficulty'),
-    ]);
-    cardData.metadataRows = cardData.metadataRows.filter((row) => !labelsToHide.has(row?.label));
-  }
-
-  if (Array.isArray(cardData.equationTerms)) {
-    const attrLabel = localize('SYNTHICIDE.Roll.Card.Attribute');
-    const attrValueLabel = localize('SYNTHICIDE.Roll.Card.AttributeValue');
-    
-    cardData.equationTerms = cardData.equationTerms
-      .map(term => {
-        if (term?.label === attrLabel) {
-          return { ...term, label: localize('SYNTHICIDE.Vehicle.Velocity'), valueHtml: undefined, value: velocity };
-        }
-        return term;
-      })
-      .filter(term => term?.label !== attrValueLabel);
-  }
-
-  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, cardData, template: CARD_TEMPLATE });
+  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData });
 }
+
 
 async function handleOtherRoll({ _actor, _input, _sourceItem, subtype }) {
   ui.notifications?.warn(`Roll type '${subtype}' is not implemented yet.`);

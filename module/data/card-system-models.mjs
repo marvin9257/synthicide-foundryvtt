@@ -1,4 +1,3 @@
-import { getDegreeLabel } from "../rolls/roll-utils.mjs";
 import { BaseCardSystemData } from "./cards/base-card.mjs";
 
 // DataModels for Synthicide ChatMessage card types (v14+)
@@ -48,23 +47,6 @@ export class AttackCardSystemData extends CombatCardSystemData {
     schema.slugShotActive = new fields.BooleanField({ required: false, initial: false });
     schema.specialAmmoUsed = new fields.StringField({ required: false, blank: true, initial: '' });
     return schema;
-  }
-}
-
-export class ChallengeCardSystemData extends BaseCardSystemData {
-  static defineSchema() {
-    const schema = super.defineSchema();
-    schema.attribute = new fields.StringField({...requiredBlankString});
-    schema.difficulty = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.total = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.effectValue = new fields.NumberField({...requiredInteger, initial: 0}, {persisted: false});
-    schema.effectDegree = new fields.StringField({...requiredBlankString}, {persisted: false});
-    return schema;
-  }
-
-  prepareDerivedData() {
-    this.effectValue = this.total - this.difficulty;
-    this.effectDegree = getDegreeLabel(this.effectValue) || "";
   }
 }
 

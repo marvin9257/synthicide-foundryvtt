@@ -124,24 +124,15 @@ export class SynthicideChatMessage extends ChatMessage {
     // Build a temporary, local model schema instance wrapper to securely calculate class getters
     let systemInstance = systemData;
     if (ModelClass) {
-      systemInstance = new ModelClass(systemData, { parent: null });
+      systemInstance = new ModelClass(systemData, { parent: null});
     }
 
-    // 2. IMMEDIATE COMPILATION: Prepare the card HTML layout upfront before hitting any document pipelines!
-    const templateData = {
-      type: cardSubtype,
-      speaker: ChatMessage.getSpeaker({ actor }),
-      system: systemInstance,
-      title: systemInstance.title ?? "",
-      flavor: systemInstance.flavor ?? "",
-      equation: systemInstance.equation ?? "",
-      equationTerms: systemInstance.equationTerms ?? [],
-      metadataRows: systemInstance.metadataRows ?? [],
-      showTotalRow: systemInstance.showTotalRow ?? true,
-      total: systemInstance.total ?? 0,
-      actorName: systemInstance.actorName ?? "",
-      dieValue: systemInstance.d10 ?? 0
-    };
+    // 2. Invoke the data model's self-contained contract wrapper
+    const templateData = systemInstance.templateContext ?? { system: systemInstance };
+    
+    // Natively merge parent message structures for Handlebars speaker template compatibility
+    templateData.speaker = ChatMessage.getSpeaker({ actor });
+    templateData.system = systemInstance;
 
     const renderedContent = await foundry.applications.handlebars.renderTemplate(activeTemplate, templateData);
 

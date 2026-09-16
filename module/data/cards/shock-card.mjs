@@ -33,6 +33,14 @@ export class ShockCardSystemData extends BaseCardSystemData {
     return wouldDropBelowZero ? SYNTHICIDE.SHOCK_OUTCOMES.DEATH : SYNTHICIDE.SHOCK_OUTCOMES.MINUS_ONE;
   }
 
+  /** @override */
+  get templateContext() {
+    return {
+      ...super.templateContext,
+      // Shock cards only use baseline properties, so we just return the parent payload!
+    };
+  }
+
    get isLethal() {
     return this.outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL; // Matches your global system configuration key string
   }
