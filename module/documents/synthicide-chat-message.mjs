@@ -113,13 +113,14 @@ export class SynthicideChatMessage extends ChatMessage {
    * @param {string[]} params.whisper
    * @param {string} params.template
    */
-  static async createActionMessage({ actor, roll, systemData, messageMode, whisper, template } = {}) {
+  static async createActionMessage({ actor, roll, systemData, messageMode, whisper, template, type } = {}) {
     const normalizedMode = this.normalizeMessageMode(messageMode);
     const activeTemplate = template ?? "systems/synthicide/templates/chat/action-roll-card.hbs";
 
     // 1. DYNAMIC TYPE LOOKUP: Sourced directly from your system data models configuration layer
-    const cardSubtype = systemData.subtype ?? systemData.type ?? CONST.BASE_DOCUMENT_TYPE;
-    const ModelClass = CONFIG.ChatMessage.dataModels?.[cardSubtype];
+    const documentType = type ?? systemData.subtype ?? CONST.BASE_DOCUMENT_TYPE;
+    
+    const ModelClass = CONFIG.ChatMessage.dataModels?.[documentType];
 
     // Build a temporary, local model schema instance wrapper to securely calculate class getters
     let systemInstance = systemData;
@@ -134,12 +135,19 @@ export class SynthicideChatMessage extends ChatMessage {
     templateData.speaker = ChatMessage.getSpeaker({ actor });
     templateData.system = systemInstance;
 
+    // If an active roll object exists, compile its visual HTML skin string natively 
+    if (roll) {
+      templateData.rollHtml = await roll.render();
+    } else {
+      templateData.rollHtml = templateData.rollHtml ?? "";
+    }
+
     const renderedContent = await foundry.applications.handlebars.renderTemplate(activeTemplate, templateData);
 
     // 3. CONSOLIDATED DATA PAYLOAD: Package a fully complete document context configuration
     const chatData = {
       speaker: ChatMessage.getSpeaker({ actor }),
-      type: cardSubtype,
+      type: documentType,
       system: systemData,
       content: renderedContent, // The card frame body text is fully prepared and provided upfront!
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,

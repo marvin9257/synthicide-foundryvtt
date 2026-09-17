@@ -3,11 +3,11 @@ import { hasWeaponFeature } from './weapon-proficiency-rules.mjs';
 import { SpecializationData } from './specialization-data.mjs';
 import { FORMULA_ATTACK, hasWeaponModification } from './modifiers.mjs';
 import { prepareAttackCardData } from './attack-card-data.mjs';
-import { prepareDamageCardData } from './damage-card-data.mjs';
 import { createActionMessage, normalizeMessageMode } from './cards.mjs';
 // RollContext constructed at the action entrypoint; flows accept `ctx`.
 import { getSpreadCollateralTokens, calculateVirtualDistanceBetweenTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
 import { localize } from './roll-utils.mjs';
+import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
 
 export async function executeAttackActionRoll({ ctx, rollData = null, template }) {
   const actor = ctx.actor;
@@ -58,7 +58,6 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
       attributeValue: ctx.rollData.attribute,
       specializationContext,
       messageMode,
-      template,
       attackMessage,
       rollData: ctx.rollData
     });
@@ -227,7 +226,7 @@ function buildResolvedAttackInput({ input, rollData, attackRangeContext, baneDam
   };
 }
 
-async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, specializationContext = {}, messageMode, template, attackMessage, rollData = {} }) {
+async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, attributeValue, specializationContext = {}, messageMode, attackMessage, rollData = {} }) {
   const attackerToken = getActorToken(actor);
   const targetToken = getSingleTargetToken({ notify: false });
   if (!attackerToken || !targetToken) return;
@@ -270,38 +269,52 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
     const actorModifierTotal = Number(rollData.actorModifierTotal ?? 0);
     const flatDamage = attributeValue + damageBonus + actorModifierTotal;
 
-    const cardData = prepareDamageCardData({
-      input: {
-        d10: 0,
-        damageBonus,
-        baseDamageBonus,
-        doubleShotBonus,
-        baneDamageBonus,
-        total: flatDamage,
-        source: sourceItem?.name ?? '',
-        lethal,
-        messageMode,
-        userId: game.user.id,
-      },
-      actor,
-      item: sourceItem,
-      attributeValue,
-      rollData,
-      overrides: {
-        title: localize('SYNTHICIDE.Roll.Card.TitleSpreadDamage'),
-        flavor: localize('SYNTHICIDE.Roll.Card.SpreadFlavor', {
-          item: sourceItem?.name ?? '',
-          targets: collateralToken.name,
-        }),
-      },
-    });
+    const systemData = {
+      subtype: 'damage',
+      userId: game.user.id,
+      messageMode: messageMode,
+      
+      d10: 0,
+      total: flatDamage,
+      extraDamageDice: 0,
+      attributeValue: attributeValue,
+      specialAmmoUsed: String(sourceItem?.system?.specialAmmo ?? 'none'),
+      
+      damageBonus: damageBonus,
+      lethal: lethal,
+      shockRdBonus: 0,
+      baneDamageBonus: baneDamageBonus,
+      doubleShotBonus: doubleShotBonus,
+      slugShotActive: false,
+      baseDamageBonus: baseDamageBonus,
+      hideAttributeRow: false,
+      dmgMultiplier: 0,
+      
+      source: sourceItem?.name ?? '',
+      actorUuid: actor.uuid,
+      sourceItemUuid: sourceItem?.uuid ?? null,
+      sourceMessageId: attackMessage?.id || null,
+      
+      clamped: false,
+      rawTotal: flatDamage,
+      
+      actorModifierTotal: actorModifierTotal,
+      modifierDetails: Array.isArray(rollData.modifierDetails) ? rollData.modifierDetails : [],
+      specialization: SpecializationData.fromObject(specializationContext).toCardPayload()
+    };
 
+    // Prepare custom companion references for Dice So Nice integrations safely
+    const customFlags = {};
     if (attackMessage?.id) {
-      // Preserve existing flags and attach Dice So Nice companion link when a primary exists.
-      cardData.flags = cardData.flags ?? {};
-      cardData.flags['dice-so-nice'] = { linkedTo: attackMessage.id };
+      customFlags['dice-so-nice'] = { linkedTo: attackMessage.id };
     }
 
-    await createActionMessage({ actor, roll: null, messageMode, cardData, template });
+    await SynthicideChatMessage.createActionMessage({ 
+      actor, 
+      roll: null,
+      messageMode,
+      systemData,
+      flags: customFlags 
+    });
   }
 }

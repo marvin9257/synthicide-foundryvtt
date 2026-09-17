@@ -1,5 +1,4 @@
 import { localize } from './roll-utils.mjs';
-import { prepareDamageCardData } from './damage-card-data.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { renderActionRollDialog, buildDialogDefaults } from './dialogs.mjs';
 import { executeAttackActionRoll, getActorToken } from './attack-rolls.mjs';
@@ -9,6 +8,7 @@ export { createActionMessage };
 import { getActionAttributeKey, getActorAttributeValue } from './modifiers.mjs';
 import { buildRollContext } from './roll-context.mjs';
 import { SpecializationData } from './specialization-data.mjs';
+import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
 
 const CARD_TEMPLATE = 'systems/synthicide/templates/chat/action-roll-card.hbs';
 const SUBTYPES = {
@@ -71,41 +71,49 @@ export async function rollVehicleWeaponDamageCard({ actor, sourceItem, messageMo
   const bonusDamage = dieValue * (dmgMultiplier - 1);
   const totalDamage = dieValue + bonusDamage;
 
-  const cardData = prepareDamageCardData({
-    input: {
-      d10: dieValue,
-      damageBonus: bonusDamage,
-      baseDamageBonus: 0,
-      total: totalDamage,
-      source: sourceItem.name ?? '',
-      lethal: 0,
-      hideAttributeRow: true,
-      sourceItemUuid: sourceItem.uuid,
-      messageMode: normalizedMode,
-      userId: game.user.id,
-      dmgMultiplier
-    },
-    actor,
-    item: sourceItem,
+  // Pack the variables straight into a systemData footprint matching vehicle configurations
+  const systemData = {
+    subtype: 'vehicleDamage',
+    userId: game.user.id,
+    messageMode: normalizedMode,
+    
+    d10: dieValue,
+    total: totalDamage,
+    extraDamageDice: 0,
     attributeValue: 0,
-    rollData: {
-      attributeValue: 0,
-      damageBonus: bonusDamage,
-      hideAttributeRow: true,
-    },
-    overrides: {
-      title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
-      flavor: localize('SYNTHICIDE.Roll.Card.VehicleWeaponAutoHitFlavor', {
-        item: sourceItem.name ?? '',
-      }),
-      metadataRows: [
-        { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: sourceItem.name ?? '' },
-        { label: localize('SYNTHICIDE.Roll.Card.VehicleWeaponMultiplier'), value: `x${dmgMultiplier}` },
-      ],
-    },
-  });
+    specialAmmoUsed: 'none',
+    
+    damageBonus: bonusDamage,
+    lethal: 0,
+    shockRdBonus: 0,
+    baneDamageBonus: 0,
+    doubleShotBonus: 0,
+    slugShotActive: false,
+    baseDamageBonus: 0,
+    hideAttributeRow: true,
+    dmgMultiplier: dmgMultiplier,
+    
+    source: sourceItem.name ?? '',
+    actorUuid: actor.uuid,
+    sourceItemUuid: sourceItem.uuid,
+    sourceMessageId: null,
+    
+    clamped: false,
+    rawTotal: totalDamage,
+    
+    actorModifierTotal: 0,
+    modifierDetails: [],
+    specialization: {}
+  };
 
-  return createActionMessage({ actor, roll: dieRoll, messageMode: normalizedMode, cardData, template: CARD_TEMPLATE });
+  // Dispatch straight to the universal document-driven message router
+  return SynthicideChatMessage.createActionMessage({ 
+    actor, 
+    roll: dieRoll,
+    messageMode: normalizedMode,
+    systemData,
+    type: 'damage'
+  });
 }
 
 export function registerActionRollHooks() {
@@ -205,9 +213,54 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
 
   // Propagate special ammo choice into card input
   ctx.input.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
-  const cardData = prepareDamageCardData({ input: ctx.input, actor, item: null, rollResult: extraDamageDice > 0 ? extraDamageRoll : null, attributeValue: damageAttributeValue, rollData: ctx.rollData, baseDamageBonus: Number(ctx.input.baseDamageBonus ?? 0) });
 
-  return createActionMessage({ actor, roll: extraDamageDice > 0 ? extraDamageRoll : null, messageMode, cardData, template: CARD_TEMPLATE });
+  // 1. ASSEMBLE SYSTEM DATA: Map your variables straight to the modern DataModel fields
+  const systemData = {
+    subtype: 'damage',
+    userId: game.user.id,
+    messageMode: messageMode,
+    
+    // Core dice values & math bases
+    d10: Number(messageRollData.d10 ?? 0),
+    total: correctedDamageTotal,
+    extraDamageDice: extraDamageDice,
+    attributeValue: damageAttributeValue,
+    specialAmmoUsed: ctx.input.specialAmmoUsed,
+    
+    // Layout presentation modifiers
+    damageBonus: Number(messageRollData.damageBonus ?? 0),
+    lethal: effectiveLethal,
+    shockRdBonus: Number(messageRollData.shockRdBonus ?? 0),
+    baneDamageBonus: Number(messageRollData.baneDamageBonus ?? 0),
+    doubleShotBonus: Number(messageRollData.doubleShotBonus ?? 0),
+    slugShotActive: Boolean(messageRollData.slugShotActive),
+    baseDamageBonus: Number(ctx.input.baseDamageBonus ?? 0),
+    hideAttributeRow: messageIsPlanted,
+    dmgMultiplier: 0, 
+    
+    // Core structural identity tracking pointers
+    source: sourceMessage?.getSpeakerAlias?.() ?? sourceMessage.speaker?.alias ?? sourceMessage.id,
+    actorUuid: actor.uuid,
+    sourceItemUuid: messageRollData.sourceItemUuid ?? null,
+    sourceMessageId: sourceMessage.id,
+    
+    // Capping fields for template context states
+    clamped: false, 
+    rawTotal: damageTotal + actorModifierTotal,
+    
+    // Subsystem evaluation structures
+    actorModifierTotal: actorModifierTotal,
+    modifierDetails: Array.isArray(ctx.rollData.modifierDetails) ? ctx.rollData.modifierDetails : [],
+    specialization: specializationSource
+   };
+
+  // 2. DISPATCH TO ROUTER: Hand the plain object block straight to your modern Document Creator
+  return SynthicideChatMessage.createActionMessage({ 
+    actor, 
+    roll: extraDamageDice > 0 ? extraDamageRoll : null,
+    messageMode,
+    systemData // This triggers modern local RAM validation inside DamageCardSystemData flawlessly!
+  });
 }
 
 async function executeOpposedChallengeRoll({ sourceMessage }) {
@@ -375,7 +428,7 @@ async function executeDriverVelocityActionRoll({ ctx } = {}) {
     actorName: actorObj?.name ?? ""
   };
 
-  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData });
+  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData, type: 'challenge' });
 }
 
 
