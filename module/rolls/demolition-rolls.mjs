@@ -2,7 +2,6 @@ import SYNTHICIDE from '../helpers/config.mjs';
 import ItemTemplate from '../documents/ItemTemplate.mjs';
 import { calculateVirtualZoneDistanceBetweenPoints, getRandomScatterCorner } from '../canvas/demolition-scatter-utils.mjs';
 import { prepareDemolitionCardData } from './demolition-card-data.mjs';
-import { prepareAttackCardData } from './attack-card-data.mjs';
 import { createActionMessage, createBlastSummaryMessage, normalizeMessageMode } from './cards.mjs';
 import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
 import { parseNumeric, FORMULA_CHALLENGE, FORMULA_ATTACK } from './modifiers.mjs';
@@ -155,11 +154,6 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
 
   let attackRollData;
   if (isPlantedDemolition(sourceItem)) {
-    // For planted demolition the device is static and should not use the
-    // actor's modifiers or any special ammo effects per RAW. Build a
-    // RollContext with no actor and no sourceItem so modifier and ammo
-    // application are effectively disabled, but still normalize the
-    // provided inputs (attackBonus, misc).
     const freshCtx = buildRollContext({
       actor: null,
       actorToken: null,
@@ -174,13 +168,9 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
       attribute: Number(freshCtx.rollData.attribute ?? 0),
       misc: Number(freshCtx.rollData.misc ?? 0),
       attackBonus: Number(freshCtx.rollData.attackBonus ?? 0),
-      // No actor modifiers for planted devices; only include placement rangeModifier.
       modifiers: Number(freshCtx.rollData.actorModifierTotal ?? 0) + Number(rollData?.rangeModifier ?? 0),
     };
   } else {
-    // Build a fresh RollContext so modifier application (modes, ammo,
-    // specialization) is consistent with other flows. We provide the
-    // computed attack/damage inputs so the context can adjust them.
     const freshCtx = buildRollContext({
       actor,
       input: { attackBonus: baseAttackBonus + inputAttackBonus, misc },
@@ -194,61 +184,80 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
       attribute: freshCtx.rollData.attribute,
       misc: freshCtx.rollData.misc,
       attackBonus: freshCtx.rollData.attackBonus,
-      // Keep range modifier from the original rollData (placement range),
-      // but use the canonical actor modifier total from the fresh context.
       modifiers: Number(freshCtx.rollData.actorModifierTotal) + Number(rollData?.rangeModifier ?? 0),
     };
   }
 
   const attackRoll = await new Roll(FORMULA_ATTACK, attackRollData).evaluate();
-  attackRoll.options.rollOrder = 2; ///Dice so nice integration
+  attackRoll.options.rollOrder = 2; // Dice So Nice integration
   const attackTotal = Number(attackRoll.total ?? 0);
-  const rollHtml = await attackRoll.render();
   let firstAttackMessageId = "";
 
   for (const token of blastTargets) {
     const targetActor = token.actor;
     if (!targetActor) continue;
-    const targetAD = Number(targetActor.system.armorDefense?.value ?? 0);
+    const targetAD = Number(targetActor.system.armorDefense?.value ?? targetActor.system.armorDefense ?? 0);
     const hit = attackTotal >= targetAD;
 
-    const attackCardData = prepareAttackCardData({
-      input: {
-        ...input,
-        armor: targetAD,
-        isPlantedDemolitionAttack: isPlantedDemolition(sourceItem),
-        specialization,
-        damageBonus: baseDamageBonus,
-        baseDamageBonus: baseDamageBonus,
-        attackBonus: Number(attackRollData.attackBonus ?? 0),
-        baseAttackBonus: baseAttackBonus,
-        actorModifierTotal: Number(attackRollData.actorModifierTotal ?? 0),
-        rangeModifier: Number(rollData.rangeModifier ?? 0),
-        rangeDistance: null,
-        rangeIncrement: null,
-      },
+    // Construct the standardized database system schema footprint directly
+    const cardSystemData = {
+      lethal: Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(specialization?.lethalBonus ?? 0),
+      shockRdBonus: Number(sourceItem?.system?.shockRdBonus ?? 0),
+      hideAttributeRow: isPlantedDemolition(sourceItem),
+      specialization: specialization ?? {},
+
+      armor: targetAD,
+      shieldBonus: 0,
+      damageBonus: baseDamageBonus,
+      baseAttackBonus: baseAttackBonus,
+      baseDamageBonus: baseDamageBonus,
+      attribute: 'combat',
+      attributeValue: Number(attackRollData.attribute ?? 0),
+      
+      battleAssistValue: Number(sourceItem?.system?.bonuses?.battleAssistValue ?? 0),
+      actorCombatValue: Number(actor?.system?.attributes?.combat?.value ?? 0),
+      
+      isPlantedDemolitionAttack: isPlantedDemolition(sourceItem),
+      extraDamageDice: Number(input?.extraDamageDice ?? 0),
+      baneDamageBonus: 0,
+      slugShotActive: false,
+      weaponModifications: Array.isArray(sourceItem?.system?.modifications) 
+        ? sourceItem.system.modifications 
+        : sourceItem?.system?.modifications instanceof Set 
+          ? Array.from(sourceItem.system.modifications) 
+          : [],
+      
+      actorUuid: actor?.uuid ?? null,
+      sourceItemUuid: sourceItem?.uuid ?? null,
+      weaponName: sourceItem?.name ?? localize('SYNTHICIDE.Roll.Subtype.Attack'),
+      specialAmmoUsed: String(input?.specialAmmoUsed ?? 'none')
+    };
+
+    // Use createActionMessage infrastructure to trigger native local validation context
+    let tempMessage = await SynthicideChatMessage.createActionMessage({
       actor,
-      sourceItem,
-      rollResult: attackRoll,
-      attributeValue: attackRollData.attribute,
-      rollData: attackRollData,
+      roll: attackRoll,
+      messageMode,
+      systemData: cardSystemData,
+      template,
+      type: "attack"
     });
-    const cardHtml = await foundry.applications.handlebars.renderTemplate(template, { ...attackCardData, rollHtml });
-    const chatData = SynthicideChatMessage.prepareData({ actor, content: cardHtml, cardData: attackCardData });
-    let tempMessage;
+
     if (!firstAttackMessageId) {
-      tempMessage = await attackRoll.toMessage(chatData, { messageMode: normalizeMessageMode(messageMode) });
       firstAttackMessageId = tempMessage.id;
-    } else {
-      chatData.flags = chatData.flags ?? {};
-      chatData.flags['dice-so-nice'] = { linkedTo: firstAttackMessageId };
-      await SynthicideChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
+    } else if (tempMessage?.id) {
+      // Connect sequential dice sets safely to preserve companion animations
+      await tempMessage.update({
+        "flags.dice-so-nice.linkedTo": firstAttackMessageId
+      });
     }
+
     summaryRows.push(`<tr><td>${token.name}</td><td>${targetAD}</td><td>${attackTotal}</td><td>${hit ? localize('SYNTHICIDE.Roll.Outcome.Hit') : localize('SYNTHICIDE.Roll.Outcome.Miss')}</td></tr>`);
   }
 
-  return {summaryRows, firstAttackMessageId};
+  return { summaryRows, firstAttackMessageId };
 }
+
 
 async function createDemolitionPlacementContext({ input, sourceItem, requirePoint = true }) {
   const targetData = buildDemolitionTargetData(sourceItem);

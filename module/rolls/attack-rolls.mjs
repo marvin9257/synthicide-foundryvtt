@@ -2,9 +2,7 @@ import SYNTHICIDE from '../helpers/config.mjs';
 import { hasWeaponFeature } from './weapon-proficiency-rules.mjs';
 import { SpecializationData } from './specialization-data.mjs';
 import { FORMULA_ATTACK, hasWeaponModification } from './modifiers.mjs';
-import { prepareAttackCardData } from './attack-card-data.mjs';
 import { createActionMessage, normalizeMessageMode } from './cards.mjs';
-// RollContext constructed at the action entrypoint; flows accept `ctx`.
 import { getSpreadCollateralTokens, calculateVirtualDistanceBetweenTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
 import { localize } from './roll-utils.mjs';
 import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
@@ -13,7 +11,6 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
   const actor = ctx.actor;
   const sourceItem = ctx.sourceItem;
   const messageMode = normalizeMessageMode(ctx.input.messageMode);
-
   const attackRangeContext = ctx.attackRangeContext;
   const specializationContext = ctx.specialization || {};
 
@@ -22,34 +19,93 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
     return null;
   }
 
-  // Respect any externally provided rollData override, otherwise use ctx.rollData
+  // 1. Evaluate the Roll
   const effectiveRollData = rollData ?? ctx.rollData;
   const evaluatedRoll = await new Roll(FORMULA_ATTACK, effectiveRollData).evaluate();
   const attackTotal = Number(evaluatedRoll.total ?? 0);
 
+  // 2. Fetch Target and Shield Details dynamically
+  const targetDefenseContext = getTargetDefense({ notify: false });
+  const targetToken = getSingleTargetToken({ notify: false });
+
+  // 3. Assemble inputs safely
   const resolvedInput = buildResolvedAttackInput({
     input: ctx.input,
     rollData: ctx.rollData,
     attackRangeContext,
-    baneDamageBonus: getBaneDamageBonus({ sourceItem, targetActor: getSingleTargetToken({ notify: false })?.actor }),
+    baneDamageBonus: getBaneDamageBonus({ sourceItem, targetActor: targetToken?.actor }),
     specializationContext,
   });
 
-  // Ensure the attack card metadata uses the fully adjusted attack and damage values.
   resolvedInput.attackBonus = Number(ctx.rollData.attackBonus ?? resolvedInput.attackBonus);
   resolvedInput.damageBonus = Number(ctx.rollData.damageBonus ?? resolvedInput.damageBonus);
   resolvedInput.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
 
-  const cardData = prepareAttackCardData({ input: resolvedInput, actor, sourceItem, rollResult: evaluatedRoll, attributeValue: ctx.rollData.attribute, rollData: ctx.rollData });
+  // 4. Construct the clean DataModel structural schema
+  const cardSystemData = {
+    // Shared Foundation Properties
+    subtype: "attack",
+    lethal: Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(resolvedInput.specialization?.lethalBonus ?? 0),
+    shockRdBonus: Number(sourceItem?.system?.shockRdBonus ?? 0),
+    hideAttributeRow: Boolean(resolvedInput.isPlantedDemolitionAttack),
+    specialization: resolvedInput.specialization ?? {},
 
+    // Core Base Card Schema Parameters - Pulling values from the live evaluated Roll document
+    total: Number(attackTotal),
+    attackTotal: Number(attackTotal),
+    // Extract the raw single d10 dice result safely from the roll terms collection
+    d10: Number(evaluatedRoll.terms?.[0]?.results?.[0]?.result ?? evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? 0),
+    
+    // Explicitly compute hit status during orchestration execution so it commits permanently to disk
+    hit: Number(attackTotal) >= (Number(resolvedInput.armor ?? targetDefenseContext.armor ?? 0) + Number(resolvedInput.shieldBonus ?? targetDefenseContext.shieldBonus ?? 0)),
+
+    // Core Metrics
+    armor: Number(resolvedInput.armor ?? targetDefenseContext.armor ?? 0),
+    shieldBonus: Number(resolvedInput.shieldBonus ?? targetDefenseContext.shieldBonus ?? 0),
+    damageBonus: Number(resolvedInput.damageBonus ?? 0),
+    baseAttackBonus: Number(resolvedInput.attackBonus ?? 0),
+    baseDamageBonus: Number(resolvedInput.damageBonus ?? 0),
+    
+    attribute: String(ctx.attributeKey ?? 'combat'), 
+    attributeValue: Number(ctx.rollData.attribute ?? resolvedInput.attributeValue ?? 0),
+    
+    // Automation Capture
+    battleAssistValue: Number(sourceItem?.system?.bonuses?.battleAssistValue ?? 0),
+    actorCombatValue: Number(actor?.system?.attributes?.combat?.value ?? 0),
+    
+    // Physical Tracking Dimensions
+    rangeDistance: attackRangeContext?.distance ?? null,
+    rangeIncrement: attackRangeContext?.rangeIncrement ?? null,
+    
+    // Weapon/Modification Context
+    isPlantedDemolitionAttack: Boolean(resolvedInput.isPlantedDemolitionAttack),
+    extraDamageDice: Number(resolvedInput.extraDamageDice ?? 0),
+    baneDamageBonus: Number(resolvedInput.baneDamageBonus ?? 0),
+    slugShotActive: !!(resolvedInput.slugShotActive),
+    weaponModifications: Array.isArray(sourceItem?.system?.modifications) 
+      ? sourceItem.system.modifications 
+      : sourceItem?.system?.modifications instanceof Set 
+        ? Array.from(sourceItem.system.modifications) 
+        : [],
+    
+    // Identity Tracking
+    actorUuid: actor?.uuid ?? null,
+    sourceItemUuid: sourceItem?.uuid ?? null,
+    weaponName: String(sourceItem?.name || localize('SYNTHICIDE.Roll.Subtype.Attack')),
+    specialAmmoUsed: resolvedInput.specialAmmoUsed
+  };
+
+  // 5. Instantiation & Validation via Message Router Override
   const attackMessage = await createActionMessage({
     actor,
     template,
     roll: evaluatedRoll,
     messageMode,
-    cardData,
+    type: "attack",
+    systemData: cardSystemData,
   });
 
+  // Spread collateral trigger checks follow...
   if (hasWeaponFeature(sourceItem, 'spread')) {
     await executeSpreadCollateralCard({
       actor,
@@ -65,6 +121,7 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
 
   return attackMessage;
 }
+
 
 export function buildAttackRangeContext({ actor, sourceItem, actorToken = null, targetToken = null, notify = true } = {}) {
   const weaponClass = String(sourceItem?.system?.weaponClass ?? '');
@@ -289,6 +346,8 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
       baseDamageBonus: baseDamageBonus,
       hideAttributeRow: false,
       dmgMultiplier: 0,
+
+      targetName: String(collateralToken.name || localize('SYNTHICIDE.Roll.Card.UnknownTarget')),
       
       source: sourceItem?.name ?? '',
       actorUuid: actor.uuid,
@@ -313,6 +372,7 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
       actor, 
       roll: null,
       messageMode,
+      type: 'damage',
       systemData,
       flags: customFlags 
     });

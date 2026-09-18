@@ -995,7 +995,8 @@
         "LethalRating": "Weapon Lethal Rating",
         "LethalShort": "Lethal",
         "InstantDeath": "Instant Death",
-        "LethalValue": "Lethal Value"
+        "LethalValue": "Lethal Value",
+        "UnknownTarget": "Unknown Target"
       },
       "Degree": {
         "Failure": "Failure",

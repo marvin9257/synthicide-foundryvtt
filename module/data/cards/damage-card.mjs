@@ -24,6 +24,7 @@ export class DamageCardSystemData extends CombatCardSystemData {
     // 2. Context Menu & Chat State Routing Persistence properties
     schema.userId = new fields.StringField({ required: false, nullable: true, initial: null });
     schema.messageMode = new fields.StringField({ required: false, initial: 'public' });
+    schema.targetName = new fields.StringField({ required: false, blank: true, initial: '' });
     
     // 3. Specialized Damage-only math schema properties
     schema.extraDamageDice = new fields.NumberField({ required: false, nullable: false, integer: true, initial: 0 });
@@ -66,12 +67,25 @@ export class DamageCardSystemData extends CombatCardSystemData {
     return localize('SYNTHICIDE.Roll.Card.TitleDamage');
   }
 
-  get flavor() {
-    if (this.isVehicleDamage) {
-      return localize('SYNTHICIDE.Roll.Card.VehicleWeaponAutoHitFlavor', { item: this.source || 'Vehicle Weapon' });
-    }
-    return localize('SYNTHICIDE.Roll.Card.DerivedFromAttack');
+  // module/data/cards/damage-card.mjs
+
+get flavor() {
+  // 1. Preserve your vehicle weapon automation loop overrides
+  if (this.isVehicleDamage) {
+    return localize('SYNTHICIDE.Roll.Card.VehicleWeaponAutoHitFlavor', { item: this.source || 'Vehicle Weapon' });
   }
+
+  // 2. Safely evaluate string contents
+  // If targetName is populated ("Cultist B"), this evaluates to TRUE.
+  // If targetName is initial or blank (""), this evaluates to FALSE.
+  if (this.targetName && this.targetName.trim() !== "") {
+    return `${this.source || localize('SYNTHICIDE.Roll.Subtype.Attack')}: Collateral spread damage against ${this.targetName}`;
+  }
+
+  // 3. Smoothly fall back to your default static string key for standard primary damage clicks
+  return localize('SYNTHICIDE.Roll.Card.DerivedFromAttack');
+}
+
 
   get showTotalRow() {
     return true;
