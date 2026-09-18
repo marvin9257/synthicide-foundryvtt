@@ -182,6 +182,11 @@ export default class SynthicideCombat extends foundry.documents.Combat {
     const toughnessValue = Number(actor.system.attributes?.toughness?.value ?? 0);
     const flashRoll = await new Roll('1d10 + @attribute', { attribute: toughnessValue }).evaluate();
     const flashSucceeded = Number(flashRoll.total ?? 0) >= difficulty;
+
+    const flavorText = flashSucceeded
+    ? `Flash: ${actor.name} beats RD ${difficulty}; blind is removed.`
+    : `Flash: ${actor.name} fails RD ${difficulty} and loses their turn.`;
+    
     const systemData = {
       subtype: "challenge",
       attribute: "toughness",
@@ -192,12 +197,9 @@ export default class SynthicideCombat extends foundry.documents.Combat {
       modifiers: 0,
       attributeValue: toughnessValue,
       actorUuid: actor.uuid ?? null,
-      actorName: actor.name ?? ""
+      actorName: actor.name ?? "",
+      flavorOverride: flavorText
     };
-
-    systemData.flavor = flashSucceeded
-      ? `Flash: ${actor.name} beats RD ${difficulty}; blind is removed.`
-      : `Flash: ${actor.name} fails RD ${difficulty} and loses their turn.`;
 
     await createActionMessage({
       actor,

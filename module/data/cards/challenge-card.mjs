@@ -29,6 +29,7 @@ export class ChallengeCardSystemData extends BaseCardSystemData {
     schema.misc = new fields.NumberField({ required: false, integer: true, initial: 0 });
     schema.modifiers = new fields.NumberField({ required: false, integer: true, initial: 0 });
     schema.attributeValue = new fields.NumberField({ required: false, integer: true, initial: 0 });
+    schema.flavorOverride = new fields.StringField({ required: false, nullable: true, initial: null });
     return schema;
   }
 
@@ -104,6 +105,8 @@ export class ChallengeCardSystemData extends BaseCardSystemData {
   }
 
   get flavor() {
+    if (this.flavorOverride) return this.flavorOverride;
+    
     if (this.isDriverVelocity) {
       return game.i18n.localize("SYNTHICIDE.Roll.Card.DefaultFlavorDriverVelocity");
     }
