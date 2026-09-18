@@ -84,4 +84,8 @@ export function registerVirtualGridOverlay() {
   Hooks.on('resize', () => {
     safeRenderVirtualGrid();
   });
+
+  Hooks.on('canvasReady', () => {
+    safeRenderVirtualGrid();
+  });
 }
