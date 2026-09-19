@@ -1,9 +1,7 @@
-
-
 import { openSynthicideActionRollDialog } from '../rolls/action-rolls.mjs';
-import { createActionMessage } from '../rolls/cards.mjs';
 import { getRollResultSummary } from '../rolls/roll-utils.mjs';
 import SYNTHICIDE from '../helpers/config.mjs';
+import { SynthicideChatMessage } from './synthicide-chat-message.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -211,7 +209,7 @@ export class SynthicideItem extends foundry.documents.Item {
         subtype: 'itemDescription',
         flavor: sanitizedDescription,
       };
-      return createActionMessage({
+      return SynthicideChatMessage.createActionMessage({
         actor: item.actor,
         roll: null,
         cardData,

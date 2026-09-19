@@ -28,6 +28,7 @@ import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler
 import { SynthicideChatMessage } from './documents/synthicide-chat-message.mjs';
 import {itemPilesIntegration} from './hooks/itemPilesIntegration.js'
 import SynthicideCombatant from './documents/combatant.mjs';
+import { executeAttackActionRoll } from './rolls/attack-rolls.mjs';
 
 const collections = foundry.documents.collections;
 
@@ -51,6 +52,7 @@ const synthicide = {
   utils: {
     rollItemMacro,
     openSynthicideActionRollDialog,
+    executeAttackActionRoll
   },
   models,
 };

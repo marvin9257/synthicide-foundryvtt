@@ -20,4 +20,10 @@ export { default as SynthicideVehicleWeapon } from './item-vehicleWeapon.mjs';
 export { default as SynthicideArtifact } from './item-artifact.mjs';
 
 // Export Card System DataModels
-export * from './card-system-models.mjs';
+export { BaseCardSystemData } from "./cards/base-card.mjs";
+export { ShockCardSystemData }  from "./cards/shock-card.mjs";
+export { ChallengeCardSystemData } from './cards/challenge-card.mjs'; 
+export { CombatCardSystemData } from './cards/combat-card.mjs';
+export { DamageCardSystemData } from './cards/damage-card.mjs'; 
+export { AttackCardSystemData } from './cards/attack-card.mjs'; 
+export { DemolitionCardSystemData } from './cards/demolition-card.mjs'; 

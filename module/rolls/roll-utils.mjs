@@ -81,6 +81,13 @@ export function buildEquationTerms({ subtype, attributeKey, rollData }) {
 
   if (isDamage) {
     terms.push({ label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: rollData.damageBonus ?? 0 });
+    const actorModTotal = Number(rollData.actorModifierTotal ?? 0);
+    if (actorModTotal !== 0) {
+      terms.push({ 
+        label: localize('SYNTHICIDE.Roll.Dialog.RollModifiers'), 
+        value: actorModTotal 
+      });
+    }
     return terms;
   }
 
