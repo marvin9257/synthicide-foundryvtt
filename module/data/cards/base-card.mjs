@@ -4,6 +4,15 @@ import { getDieClass } from "../../rolls/roll-utils.mjs";
 const fields = foundry.data.fields;
 
 export class BaseCardSystemData extends foundry.abstract.TypeDataModel {
+  constructor(data, options) {
+    super(data, options);
+    this._initializeCalculations();
+  }
+
+  _initializeCalculations() {
+    // Left completely blank because base-card requires no custom calculations.
+  }
+
   static defineSchema() {
     const schema = {};
     schema.actorUuid = new fields.StringField({ required: false, nullable: true, blank: true, initial: '' });

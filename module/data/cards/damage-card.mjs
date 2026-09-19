@@ -10,13 +10,6 @@ const requiredInteger = { required: true, nullable: false, integer: true };
  * Correctly inherits from CombatCardSystemData to absorb shared combat schemas safely.
  */
 export class DamageCardSystemData extends CombatCardSystemData {
-  
-  constructor(data, options) {
-    super(data, options); // Correctly invokes CombatCard -> BaseCard bindings
-    // Layout Contract Pattern: Forces the object to natively calculate its math upon creation in RAM
-    this.prepareDerivedData();
-  }
-
   static defineSchema() {
     // 1. DYNAMICALLY INHERIT: Pulls the specialization schema, lethal, and shockRdBonus from CombatCardSystemData!
     const schema = super.defineSchema(); 
@@ -52,8 +45,8 @@ export class DamageCardSystemData extends CombatCardSystemData {
   }
 
   /** @override */
-  prepareDerivedData() {
-    super.prepareDerivedData();
+  _initializeCalculations() {
+    super._initializeCalculations();
     if (!this.rawTotal) {
       this.rawTotal = this.total;
     }

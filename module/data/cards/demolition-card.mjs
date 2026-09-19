@@ -12,12 +12,6 @@ const requiredBlankString = { required: true, blank: true, initial: '' };
  * Aligns strictly with core tactical planting and detonation rules.
  */
 export class DemolitionCardSystemData extends CombatCardSystemData {
-  
-  constructor(data, options) {
-    super(data, options);
-    this.prepareDerivedData();
-  }
-
   static defineSchema() {
     const schema = super.defineSchema();
     
@@ -50,9 +44,8 @@ export class DemolitionCardSystemData extends CombatCardSystemData {
     return schema;
   }
 
-  /** @override */
-  prepareDerivedData() {
-    super.prepareDerivedData();
+  _initializeCalculations() {
+    super._initializeCalculations();
     const currentMode = String(this.mode).toLowerCase();
     this.isPlantedMode = currentMode === 'planted';
     this.isThrowMode = currentMode === 'throw';

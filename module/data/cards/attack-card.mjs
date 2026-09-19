@@ -8,13 +8,6 @@ const requiredInteger = { required: true, nullable: false, integer: true };
 //const requiredBlankString = { required: true, blank: true, initial: '' };
 
 export class AttackCardSystemData extends CombatCardSystemData {
-  
-  constructor(data, options) {
-    super(data, options); // Natively binds schema fields safely
-    // Unified layout pattern requirement: Forces immediate calculation in RAM
-    this.prepareDerivedData();
-  }
-
   static defineSchema() {
     const schema = super.defineSchema();
     
@@ -53,15 +46,14 @@ export class AttackCardSystemData extends CombatCardSystemData {
   }
 
   /** @override */
-  prepareDerivedData() {
-    super.prepareDerivedData();
+  _initializeCalculations() {
+    super._initializeCalculations();
     
     // 1. Calculate effective composite defense thresholds
     this.effectiveArmor = this.armor + this.shieldBonus;
     
     // 2. Evaluate hits using our explicit schema parameter
-    const totalScore = this.attackTotal || Number(this.parent?.roll?.total ?? 0);
-    this.hit = totalScore >= this.effectiveArmor;
+    this.hit = Number(this.attackTotal ?? 0) >= this.effectiveArmor;
     
     // 3. Resolve weapon modification string tags or object keys safely
     const mods = this.weaponModifications || [];

@@ -10,12 +10,6 @@ const requiredBlankString = { required: true, blank: true, initial: '' };
  * Dynamically re-configures layout formulas and UI labels based on the active attribute key.
  */
 export class ChallengeCardSystemData extends BaseCardSystemData {
-  constructor(data, options) {
-    super(data, options); // Natively binds schema fields
-    // FIX: Forces the object to natively calculate its math upon creation in RAM!
-    this.prepareDerivedData();
-  }
-
   static defineSchema() {
     const schema = super.defineSchema(); // Inherits actorUuid, actorName, total, subtype, AND d10!
     schema.attribute = new fields.StringField({...requiredBlankString});
@@ -34,8 +28,8 @@ export class ChallengeCardSystemData extends BaseCardSystemData {
   }
 
   /** @override */
-  prepareDerivedData() {
-    super.prepareDerivedData();
+  _initializeCalculations() {
+    super._initializeCalculations();
     this.effectValue = this.total - this.difficulty;
     this.effectDegree = getDegreeLabel(this.effectValue) || "";
   }
