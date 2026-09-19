@@ -94,7 +94,7 @@ async function executeThrownDemolitionActionRoll({ ctx, template }) {
     lethal: finalLethalValue,
     shockRdBonus: finalShockRdBonus,
     hideAttributeRow: false,
-    specialization: specialization ?? {},
+    specialization: specialization,
     
     weaponModifications: Array.isArray(sourceItem?.system?.modifications) 
       ? sourceItem.system.modifications 
@@ -178,7 +178,7 @@ async function executePlantedDemolitionActionRoll({ ctx, plantNumber, template }
     lethal: finalLethalValue,
     shockRdBonus: finalShockRdBonus,
     hideAttributeRow: true, // Natively evaluated by DataModel RAM pass to format row layouts
-    specialization: specialization ?? {},
+    specialization: specialization,
     
     weaponModifications: Array.isArray(sourceItem?.system?.modifications) 
       ? sourceItem.system.modifications 
@@ -288,12 +288,12 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
       misc: Number(input?.misc ?? 0),
       modifiers: Number(input?.rollModifiers ?? 0),
       rangeModifier: Number(rollData?.rangeModifier ?? 0),
-      attackBonus: Number(baseAttackBonus ?? 0),
+      attackBonus: Number(baseAttackBonus),
 
       lethal: Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(specialization?.lethalBonus ?? 0),
       shockRdBonus: Number(sourceItem?.system?.shockRdBonus ?? 0),
       hideAttributeRow: isPlanted, // Planted explosives cleanly hide the combat line from layout views
-      specialization: specialization ?? {},
+      specialization: specialization,
 
       armor: targetAD,
       shieldBonus: 0,
