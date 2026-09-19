@@ -5,7 +5,7 @@ import { buildWeaponSpecializationMetadataRows } from "../../rolls/weapon-profic
 
 const fields = foundry.data.fields;
 const requiredInteger = { required: true, nullable: false, integer: true };
-const requiredBlankString = { required: true, blank: true, initial: '' };
+//const requiredBlankString = { required: true, blank: true, initial: '' };
 
 export class AttackCardSystemData extends CombatCardSystemData {
   
@@ -25,8 +25,6 @@ export class AttackCardSystemData extends CombatCardSystemData {
     schema.damageBonus = new fields.NumberField({...requiredInteger, initial: 0});
     schema.baseAttackBonus = new fields.NumberField({...requiredInteger, initial: 0});
     schema.baseDamageBonus = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.attribute = new fields.StringField({...requiredBlankString});
-    schema.attributeValue = new fields.NumberField({...requiredInteger, initial: 0});
     schema.lethalOverride = new fields.NumberField({ required: false, nullable: true, initial: null });
     schema.baseLethalValue = new fields.NumberField({...requiredInteger, initial: 0});
     schema.hit = new fields.BooleanField({ required: true, initial: false });

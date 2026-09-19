@@ -1,5 +1,5 @@
-import { createActionMessage } from "../rolls/action-rolls.mjs";
 import { safeRenderVirtualGrid } from "../canvas/virtual-grid-overlay.mjs";
+import { SynthicideChatMessage } from "./synthicide-chat-message.mjs";
 
 export default class SynthicideCombat extends foundry.documents.Combat {
   /** @override */
@@ -201,7 +201,7 @@ export default class SynthicideCombat extends foundry.documents.Combat {
       flavorOverride: flavorText
     };
 
-    await createActionMessage({
+    await SynthicideChatMessage.createActionMessage({
       actor,
       roll: flashRoll,
       systemData,

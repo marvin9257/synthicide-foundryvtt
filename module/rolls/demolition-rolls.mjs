@@ -1,8 +1,6 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import ItemTemplate from '../documents/ItemTemplate.mjs';
 import { calculateVirtualZoneDistanceBetweenPoints, getRandomScatterCorner } from '../canvas/demolition-scatter-utils.mjs';
-import { prepareDemolitionCardData } from './demolition-card-data.mjs';
-import { createActionMessage, createBlastSummaryMessage, normalizeMessageMode } from './cards.mjs';
 import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
 import { parseNumeric, FORMULA_CHALLENGE, FORMULA_ATTACK } from './modifiers.mjs';
 import { buildRollContext } from './roll-context.mjs';
@@ -40,14 +38,15 @@ async function executeThrownDemolitionActionRoll({ ctx, template }) {
 
   const specializationContext = ctx.specialization || {};
 
-  // Evaluate the challenge roll using ctx.rollData (modifiers applied by caller)
+  // Evaluate the challenge roll natively using ctx.rollData
   const rangeDistance = calculateVirtualZoneDistanceBetweenPoints(actorToken.center, placedPoint);
   const rangeBands = rangeDistance > 0 ? Math.ceil(rangeDistance / rangeIncrement) : 0;
   const difficulty = rangeBands * 3;
 
   const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, ctx.rollData).evaluate();
-  evaluatedRoll.options.rollOrder = 1; //Dice so nice integration
-  const success = Number(evaluatedRoll.total ?? 0) >= difficulty;
+  evaluatedRoll.options.rollOrder = 1; // Dice So Nice integration
+  const totalScore = Number(evaluatedRoll.total ?? 0);
+  const success = totalScore >= difficulty;
   const autoScatterEnabled = Boolean(game.settings.get('synthicide', SYNTHICIDE.DEMOLITION_AUTO_SCATTER_KEY));
 
   let scatterApplied = false;
@@ -62,33 +61,71 @@ async function executeThrownDemolitionActionRoll({ ctx, template }) {
   const blastTargets = ItemTemplate.targetTokensForPlacedRegion(placedRegion) || [];
   const specialization = buildDemolitionSpecialization(specializationContext);
 
-  const damageCardData = prepareDemolitionCardData({
-    input: {
-      ...ctx.input,
-      damageBonus: Number(ctx.input.damageBonus ?? sourceItem?.system?.bonuses?.damage ?? 0),
-      baseDamageBonus: Number(sourceItem?.system?.bonuses?.damage ?? 0),
-      actorModifierTotal: Number(ctx.rollData.actorModifierTotal ?? 0),
-      difficulty,
-      rangeDistance: Number(rangeDistance),
-      rangeIncrement,
-      rangeBands,
-      mode: 'throw',
-      blastDiameter,
-      success,
-      scatterApplied,
-      specialization,
-    },
+  // Structural Overrides Priority Rule: dialog fields override base item properties
+  const finalDamageBonus = Number(ctx.input.damageBonus ?? sourceItem?.system?.bonuses?.damage ?? 0);
+  const finalBaseDamageBonus = Number(sourceItem?.system?.bonuses?.damage ?? 0);
+  const finalLethalValue = Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(specialization?.lethalBonus ?? 0);
+  const finalShockRdBonus = Number(sourceItem?.system?.shockRdBonus ?? 0);
+
+  // Pack variables directly into the document structure to honor the Explicit Total Persistence Rule
+  const cardSystemData = {
+    subtype: 'demolition',
+    d10: Number(evaluatedRoll.dice[0]?.results[0]?.result ?? 0),
+    total: totalScore,
+    difficulty,
+    attribute: ctx.attributeKey || 'combat',
+    attributeValue: Number(ctx.rollData.attribute ?? 0),
+    damageBonus: finalDamageBonus,
+    baseDamageBonus: finalBaseDamageBonus,
+    actorModifierTotal: Number(ctx.rollData.actorModifierTotal ?? 0),
+    
+    blastDiameter,
+    placedTemplateUuid: placedRegion?.uuid ?? '',
+    mode: 'throw',
+    success,
+    scatterApplied,
+    detonated: false,
+    plantNumber: null,
+    
+    rangeDistance: Number(rangeDistance),
+    rangeIncrement,
+    rangeBands,
+
+    lethal: finalLethalValue,
+    shockRdBonus: finalShockRdBonus,
+    hideAttributeRow: false,
+    specialization: specialization ?? {},
+    
+    weaponModifications: Array.isArray(sourceItem?.system?.modifications) 
+      ? sourceItem.system.modifications 
+      : sourceItem?.system?.modifications instanceof Set 
+        ? Array.from(sourceItem.system.modifications) 
+        : [],
+    weaponName: sourceItem?.name || localize('SYNTHICIDE.Roll.Subtype.Demolition'),
+    specialAmmoUsed: String(ctx.input.specialAmmoUsed || 'none'),
+
+    actorUuid: actor?.uuid ?? null,
+    sourceItemUuid: sourceItem?.uuid ?? null,
+    actorName: actor?.name ?? "",
+
+    misc: Number(ctx.input.misc ?? 0),
+    modifiers: Number(ctx.input.rollModifiers ?? 0),
+    rangeModifier: Number(ctx.rollData.rangeModifier ?? 0),
+    attackBonus: Number(ctx.rollData.attackBonus ?? 0)
+  };
+
+  // Dispatch straight to the universal document-driven message creator
+  await SynthicideChatMessage.createActionMessage({
     actor,
-    sourceItem,
-    rollResult: evaluatedRoll,
-    attributeValue: ctx.rollData.attribute,
+    roll: evaluatedRoll,
+    messageMode,
+    systemData: cardSystemData,
+    template,
+    type: "demolition"
   });
 
-  foundry.utils.setProperty(damageCardData, 'system.placedTemplateUuid', placedRegion?.uuid);
-  await createActionMessage({ actor, roll: evaluatedRoll, messageMode, cardData: damageCardData, template });
-
   if (blastTargets.length > 0) {
-    const {summaryRows, firstAttackMessageId} = await resolveBlastTargetAttacks({ ctx, specialization, blastTargets, messageMode, template });
+    const { summaryRows, firstAttackMessageId } = await resolveBlastTargetAttacks({ ctx, specialization, blastTargets, messageMode, template });
     if (summaryRows.length > 0) {
       await createBlastSummaryMessage({ actor, summaryRows, messageMode, companionMessageId: firstAttackMessageId });
     }
@@ -108,33 +145,69 @@ async function executePlantedDemolitionActionRoll({ ctx, plantNumber, template }
   const specialization = buildDemolitionSpecialization(specializationContext);
 
   const evaluatedRoll = await new Roll(FORMULA_CHALLENGE, ctx.rollData).evaluate();
-  const success = Number(evaluatedRoll.total ?? 0) >= plantNumber;
-  const detonated = !success;
+  const totalScore = Number(evaluatedRoll.total ?? 0);
+  const success = totalScore >= plantNumber;
+  const detonated = !success; // Flags true so the data contract renders the manual damage click button
 
-  const cardData = prepareDemolitionCardData({
-    input: {
-      ...ctx.input,
-      damageBonus: Number(ctx.input.damageBonus ?? sourceItem?.system?.bonuses?.damage ?? 0),
-      baseDamageBonus: Number(sourceItem?.system?.bonuses?.damage ?? 0),
-      attribute: 'operation',
-      actorModifierTotal: Number(ctx.rollData.actorModifierTotal ?? 0),
-      difficulty: plantNumber,
-      mode: 'planted',
-      plantNumber,
-      blastDiameter,
-      success,
-      detonated,
-      scatterApplied: false,
-      specialization,
-    },
+  // Structural Overrides Priority Rule: user dialog inputs take precedence over static attributes
+  const finalDamageBonus = Number(ctx.input.damageBonus ?? sourceItem?.system?.bonuses?.damage ?? 0);
+  const finalBaseDamageBonus = Number(sourceItem?.system?.bonuses?.damage ?? 0);
+  const finalLethalValue = Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(specialization?.lethalBonus ?? 0);
+  const finalShockRdBonus = Number(sourceItem?.system?.shockRdBonus ?? 0);
+
+  // Map snapshot properties cleanly to your standalone document schema definition
+  const cardSystemData = {
+    subtype: 'demolition',
+    d10: Number(evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? evaluatedRoll.terms?.[0]?.results?.[0]?.result ?? 0),
+    total: totalScore,
+    difficulty: plantNumber,
+    attribute: 'operation',
+    attributeValue: Number(ctx.rollData.attribute ?? 0),
+    damageBonus: finalDamageBonus,
+    baseDamageBonus: finalBaseDamageBonus,
+    actorModifierTotal: Number(ctx.rollData.actorModifierTotal ?? 0),
+    
+    blastDiameter,
+    placedTemplateUuid: placedRegion?.uuid ?? '',
+    mode: 'planted',
+    success,
+    scatterApplied: false,
+    detonated,
+    plantNumber,
+
+    lethal: finalLethalValue,
+    shockRdBonus: finalShockRdBonus,
+    hideAttributeRow: true, // Natively evaluated by DataModel RAM pass to format row layouts
+    specialization: specialization ?? {},
+    
+    weaponModifications: Array.isArray(sourceItem?.system?.modifications) 
+      ? sourceItem.system.modifications 
+      : sourceItem?.system?.modifications instanceof Set 
+        ? Array.from(sourceItem.system.modifications) 
+        : [],
+    weaponName: sourceItem?.name || localize('SYNTHICIDE.Roll.Subtype.Demolition'),
+    specialAmmoUsed: String(ctx.input.specialAmmoUsed || 'none'),
+
+    actorUuid: actor?.uuid ?? null,
+    sourceItemUuid: sourceItem?.uuid ?? null,
+    actorName: actor?.name ?? "",
+
+    misc: Number(ctx.input.misc ?? 0),
+    modifiers: Number(ctx.input.rollModifiers ?? 0),
+    rangeModifier: Number(ctx.rollData.rangeModifier ?? 0),
+    attackBonus: Number(ctx.rollData.attackBonus ?? 0),
+  };
+
+  // Dispatch straight to the universal creation router to render exactly ONE card pass
+  await SynthicideChatMessage.createActionMessage({
     actor,
-    sourceItem,
-    rollResult: evaluatedRoll,
-    attributeValue: ctx.rollData.attribute,
+    roll: evaluatedRoll,
+    messageMode,
+    systemData: cardSystemData,
+    template,
+    type: "demolition"
   });
 
-  foundry.utils.setProperty(cardData, 'system.placedTemplateUuid', placedRegion?.uuid);
-  await createActionMessage({ actor, roll: evaluatedRoll, messageMode, cardData, template });
   return null;
 }
 
@@ -152,10 +225,12 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
   const inputAttackBonus = Number(input?.attackBonus ?? 0);
   const misc = parseNumeric(input?.misc, 0);
 
+  const isPlanted = isPlantedDemolition(sourceItem);
+
   let attackRollData;
-  if (isPlantedDemolition(sourceItem)) {
+  if (isPlanted) {
     const freshCtx = buildRollContext({
-      actor: null,
+      actor: null, // Forces actor attribute lookups to isolate completely to 0
       actorToken: null,
       sourceItem: null,
       input: { attackBonus: baseAttackBonus + inputAttackBonus, misc },
@@ -193,17 +268,31 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
   const attackTotal = Number(attackRoll.total ?? 0);
   let firstAttackMessageId = "";
 
+  // Securely find the target roll's face value independently of the parent roll formula
+  const computedD10 = Number(attackRoll.dice?.[0]?.results?.[0]?.result ?? attackRoll.terms?.[0]?.results?.[0]?.result ?? 0);
+
   for (const token of blastTargets) {
     const targetActor = token.actor;
     if (!targetActor) continue;
     const targetAD = Number(targetActor.system.armorDefense?.value ?? targetActor.system.armorDefense ?? 0);
     const hit = attackTotal >= targetAD;
 
-    // Construct the standardized database system schema footprint directly
+    // Construct the standardized database system schema footprint directly with explicit totals
     const cardSystemData = {
+      subtype: "attack",
+      // Explicit Persistence Rule: Explicitly bind the flat totals to bypass parent message overrides
+      total: attackTotal,
+      attackTotal: attackTotal,
+      d10: computedD10, // FIX: RESTORED missing parameter required by executeDerivedDamageRoll!
+
+      misc: Number(input?.misc ?? 0),
+      modifiers: Number(input?.rollModifiers ?? 0),
+      rangeModifier: Number(rollData?.rangeModifier ?? 0),
+      attackBonus: Number(baseAttackBonus ?? 0),
+
       lethal: Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(specialization?.lethalBonus ?? 0),
       shockRdBonus: Number(sourceItem?.system?.shockRdBonus ?? 0),
-      hideAttributeRow: isPlantedDemolition(sourceItem),
+      hideAttributeRow: isPlanted, // Planted explosives cleanly hide the combat line from layout views
       specialization: specialization ?? {},
 
       armor: targetAD,
@@ -212,12 +301,13 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
       baseAttackBonus: baseAttackBonus,
       baseDamageBonus: baseDamageBonus,
       attribute: 'combat',
-      attributeValue: Number(attackRollData.attribute ?? 0),
+      // Rule Parity check: Planted device damage loops must treat the user's attribute contributions as 0
+      attributeValue: isPlanted ? 0 : Number(attackRollData.attribute ?? 0),
       
       battleAssistValue: Number(sourceItem?.system?.bonuses?.battleAssistValue ?? 0),
       actorCombatValue: Number(actor?.system?.attributes?.combat?.value ?? 0),
       
-      isPlantedDemolitionAttack: isPlantedDemolition(sourceItem),
+      isPlantedDemolitionAttack: isPlanted,
       extraDamageDice: Number(input?.extraDamageDice ?? 0),
       baneDamageBonus: 0,
       slugShotActive: false,
@@ -258,7 +348,6 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
   return { summaryRows, firstAttackMessageId };
 }
 
-
 async function createDemolitionPlacementContext({ input, sourceItem, requirePoint = true }) {
   const targetData = buildDemolitionTargetData(sourceItem);
   if (!targetData) {
@@ -267,7 +356,7 @@ async function createDemolitionPlacementContext({ input, sourceItem, requirePoin
   }
   const { target, blastDiameter } = targetData;
 
-  const messageMode = normalizeMessageMode(input.messageMode);
+  const messageMode = SynthicideChatMessage.normalizeMessageMode(input.messageMode);
   const template = await ItemTemplate.fromItem(sourceItem, {
     name: sourceItem?.name ?? localize('SYNTHICIDE.Roll.Subtype.Demolition'),
     target,
@@ -338,4 +427,36 @@ function buildDemolitionTargetData(sourceItem) {
       value: radiusInDistanceUnits,
     },
   };
+}
+
+export async function createBlastSummaryMessage({ actor, summaryRows, messageMode, companionMessageId }) {
+  const summaryTable = `
+    <div class="synthicide-blast-summary">
+      <strong>${localize('SYNTHICIDE.Roll.BlastSummary.Title')}</strong>
+      <table>
+        <thead>
+          <tr>
+            <th>${localize('SYNTHICIDE.Roll.BlastSummary.Target')}</th>
+            <th>${localize('SYNTHICIDE.Roll.BlastSummary.AD')}</th>
+            <th>${localize('SYNTHICIDE.Roll.BlastSummary.Roll')}</th>
+            <th>${localize('SYNTHICIDE.Roll.BlastSummary.Result')}</th>
+          </tr>
+        </thead>
+        <tbody>${summaryRows.join('')}</tbody>
+      </table>
+    </div>
+  `;
+  const chatData = {
+    content: summaryTable,
+    speaker: ChatMessage.getSpeaker({ actor }),
+    type: CONST.BASE_DOCUMENT_TYPE
+  };
+  if (companionMessageId) {
+    chatData.flags = {
+      'dice-so-nice': {
+        linkedTo: companionMessageId
+      }
+    };
+  }
+  await ChatMessage.implementation.create(chatData, { messageMode: SynthicideChatMessage.normalizeMessageMode(messageMode) });
 }

@@ -3,8 +3,6 @@ import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { renderActionRollDialog, buildDialogDefaults } from './dialogs.mjs';
 import { executeAttackActionRoll, getActorToken } from './attack-rolls.mjs';
 import { executeDemolitionActionRoll, getDemolitionRollAttributeKey } from './demolition-rolls.mjs';
-import { createActionMessage, normalizeMessageMode } from './cards.mjs';
-export { createActionMessage };
 import { getActionAttributeKey, getActorAttributeValue } from './modifiers.mjs';
 import { buildRollContext } from './roll-context.mjs';
 import { SpecializationData } from './specialization-data.mjs';
@@ -64,7 +62,7 @@ export async function rollVehicleWeaponDamageCard({ actor, sourceItem, messageMo
     return null;
   }
 
-  const normalizedMode = normalizeMessageMode(messageMode ?? game.settings.get('core', 'messageMode'));
+  const normalizedMode = SynthicideChatMessage.normalizeMessageMode(messageMode ?? game.settings.get('core', 'messageMode'));
   const dieRoll = await new Roll('1d10').evaluate();
   const dieValue = Number(dieRoll.total ?? 0);
   const dmgMultiplier = Math.max(1, Number(sourceItem.system?.dmgMultiplier ?? 1));
@@ -155,7 +153,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   const damageAttributeValue = sourceSubtype === SUBTYPES.ATTACK
     ? Number(messageRollData.attributeValue ?? (isPlantedDemolitionAttack ? 0 : actorCombatValue))
     : Number(messageRollData.damageAttributeValue ?? (messageIsPlanted ? 0 : actorCombatValue));
-  const messageMode = normalizeMessageMode(userMessageMode ?? messageRollData.messageMode ?? 'public');
+  const messageMode = SynthicideChatMessage.normalizeMessageMode(userMessageMode ?? messageRollData.messageMode ?? 'public');
   const extraDamageDice = Number(messageRollData.extraDamageDice ?? 0);
   let extraDamageRoll = null;
   let extraDamageTotal = 0;
@@ -280,7 +278,7 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
   const actor = getControlledActor();
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
-  const sourceMode = normalizeMessageMode(sourceRollData.messageMode ?? 'public');
+  const sourceMode = SynthicideChatMessage.normalizeMessageMode(sourceRollData.messageMode ?? 'public');
   const dialogResult = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.OpposedTitle'),
     defaults: {
@@ -374,7 +372,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
 async function executeChallengeActionRoll({ ctx } = {}) {
   if (!ctx) return null;
   const actorObj = ctx.actor ?? null;
-  const messageMode = normalizeMessageMode(ctx.input.messageMode);
+  const messageMode = SynthicideChatMessage.normalizeMessageMode(ctx.input.messageMode);
   const difficulty = Number(ctx.input.difficulty ?? 6);
   
   // 1. Evaluate the authentic dice check natively on the client
@@ -396,13 +394,13 @@ async function executeChallengeActionRoll({ ctx } = {}) {
     actorName: actorObj?.name ?? ""
   };
 
-  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData });
+  return SynthicideChatMessage.createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData });
 }
 
 async function executeDriverVelocityActionRoll({ ctx } = {}) {
   if (!ctx) return null;
   const actorObj = ctx.actor ?? null;
-  const messageMode = normalizeMessageMode(ctx.input.messageMode);
+  const messageMode = SynthicideChatMessage.normalizeMessageMode(ctx.input.messageMode);
   const difficulty = Number(ctx.input.difficulty ?? 6);
   const velocity = Number(foundry.utils.getProperty(actorObj, 'system.velocity') ?? 0);
   
@@ -428,7 +426,7 @@ async function executeDriverVelocityActionRoll({ ctx } = {}) {
     actorName: actorObj?.name ?? ""
   };
 
-  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData, type: 'challenge' });
+  return SynthicideChatMessage.createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData, type: 'challenge' });
 }
 
 

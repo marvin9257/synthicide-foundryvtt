@@ -29,13 +29,22 @@ function createSpecializationSchema() {
  */
 export class CombatCardSystemData extends BaseCardSystemData {
   static defineSchema() {
-    const schema = super.defineSchema(); // Inherits actorUuid, actorName, total, subtype, d10, sourceItemUuid, sourceMessageId
+    const schema = super.defineSchema(); // Inherits actorUuid, actorName, total, subtype, d10, etc.
     
     schema.lethal = new fields.NumberField({...requiredInteger, initial: 0});
     schema.shockRdBonus = new fields.NumberField({ required: false, nullable: false, integer: true, initial: 0 });
     schema.hideAttributeRow = new fields.BooleanField({ required: false, initial: false });
-    schema.specialization = createSpecializationSchema();
+    schema.specialization = createSpecializationSchema(); // Keep your existing sub-schema layout
+    
+    // Core shared transient parameters inherited safely by Attack and Demolition
+    schema.misc = new fields.NumberField({ required: false, integer: true, initial: 0 });
+    schema.modifiers = new fields.NumberField({ required: false, integer: true, initial: 0 });
+    schema.rangeModifier = new fields.NumberField({ required: false, integer: true, initial: 0 });
+    schema.attackBonus = new fields.NumberField({ required: false, integer: true, initial: 0 });
+    schema.attribute = new fields.StringField({ required: false, blank: true, initial: 'combat' });
+    schema.attributeValue = new fields.NumberField({ required: false, integer: true, initial: 0 });
     
     return schema;
   }
+
 }

@@ -2,7 +2,6 @@ import SYNTHICIDE from '../helpers/config.mjs';
 import { hasWeaponFeature } from './weapon-proficiency-rules.mjs';
 import { SpecializationData } from './specialization-data.mjs';
 import { FORMULA_ATTACK, hasWeaponModification } from './modifiers.mjs';
-import { createActionMessage, normalizeMessageMode } from './cards.mjs';
 import { getSpreadCollateralTokens, calculateVirtualDistanceBetweenTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
 import { localize } from './roll-utils.mjs';
 import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
@@ -10,7 +9,7 @@ import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs'
 export async function executeAttackActionRoll({ ctx, rollData = null, template }) {
   const actor = ctx.actor;
   const sourceItem = ctx.sourceItem;
-  const messageMode = normalizeMessageMode(ctx.input.messageMode);
+  const messageMode = SynthicideChatMessage.normalizeMessageMode(ctx.input.messageMode);
   const attackRangeContext = ctx.attackRangeContext;
   const specializationContext = ctx.specialization || {};
 
@@ -42,42 +41,43 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
   resolvedInput.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
 
   // 4. Construct the clean DataModel structural schema
+    // 4. Construct the clean DataModel structural schema
   const cardSystemData = {
-    // Shared Foundation Properties
     subtype: "attack",
     lethal: Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(resolvedInput.specialization?.lethalBonus ?? 0),
     shockRdBonus: Number(sourceItem?.system?.shockRdBonus ?? 0),
     hideAttributeRow: Boolean(resolvedInput.isPlantedDemolitionAttack),
     specialization: resolvedInput.specialization ?? {},
 
-    // Core Base Card Schema Parameters - Pulling values from the live evaluated Roll document
     total: Number(attackTotal),
     attackTotal: Number(attackTotal),
-    // Extract the raw single d10 dice result safely from the roll terms collection
-    d10: Number(evaluatedRoll.terms?.[0]?.results?.[0]?.result ?? evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? 0),
+    d10: Number(evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? 0),
     
-    // Explicitly compute hit status during orchestration execution so it commits permanently to disk
     hit: Number(attackTotal) >= (Number(resolvedInput.armor ?? targetDefenseContext.armor ?? 0) + Number(resolvedInput.shieldBonus ?? targetDefenseContext.shieldBonus ?? 0)),
 
-    // Core Metrics
     armor: Number(resolvedInput.armor ?? targetDefenseContext.armor ?? 0),
     shieldBonus: Number(resolvedInput.shieldBonus ?? targetDefenseContext.shieldBonus ?? 0),
+    
+
+    attackBonus: Number(resolvedInput.attackBonus ?? 0),
     damageBonus: Number(resolvedInput.damageBonus ?? 0),
-    baseAttackBonus: Number(resolvedInput.attackBonus ?? 0),
-    baseDamageBonus: Number(resolvedInput.damageBonus ?? 0),
+    baseAttackBonus: Number(sourceItem?.system?.bonuses?.attack ?? 0),
+    baseDamageBonus: Number(sourceItem?.system?.bonuses?.damage ?? 0),
+    
+    misc: Number(ctx.input.misc ?? 0),
+    modifiers: Number(ctx.rollData.modifiers ?? 0),
+    actorModifierTotal: Number(ctx.rollData.actorModifierTotal ?? 0),
+    rangeModifier: Number(ctx.rollData.rangeModifier ?? 0),
     
     attribute: String(ctx.attributeKey ?? 'combat'), 
     attributeValue: Number(ctx.rollData.attribute ?? resolvedInput.attributeValue ?? 0),
     
-    // Automation Capture
     battleAssistValue: Number(sourceItem?.system?.bonuses?.battleAssistValue ?? 0),
     actorCombatValue: Number(actor?.system?.attributes?.combat?.value ?? 0),
     
-    // Physical Tracking Dimensions
     rangeDistance: attackRangeContext?.distance ?? null,
     rangeIncrement: attackRangeContext?.rangeIncrement ?? null,
     
-    // Weapon/Modification Context
     isPlantedDemolitionAttack: Boolean(resolvedInput.isPlantedDemolitionAttack),
     extraDamageDice: Number(resolvedInput.extraDamageDice ?? 0),
     baneDamageBonus: Number(resolvedInput.baneDamageBonus ?? 0),
@@ -88,15 +88,15 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
         ? Array.from(sourceItem.system.modifications) 
         : [],
     
-    // Identity Tracking
     actorUuid: actor?.uuid ?? null,
     sourceItemUuid: sourceItem?.uuid ?? null,
     weaponName: String(sourceItem?.name || localize('SYNTHICIDE.Roll.Subtype.Attack')),
     specialAmmoUsed: resolvedInput.specialAmmoUsed
   };
 
+
   // 5. Instantiation & Validation via Message Router Override
-  const attackMessage = await createActionMessage({
+  const attackMessage = await SynthicideChatMessage.createActionMessage({
     actor,
     template,
     roll: evaluatedRoll,
@@ -316,7 +316,7 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
         }
       };
     }
-    await ChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
+    await ChatMessage.create(chatData, { messageMode: SynthicideChatMessage.normalizeMessageMode(messageMode) });
     return;
   }
 
