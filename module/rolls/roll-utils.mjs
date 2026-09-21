@@ -156,7 +156,7 @@ export function getRollResultSummary(rollResult) {
   };
 }
 
-export function buildBaseActionCardData({
+/*export function buildBaseActionCardData({
   subtype,
   rollResult,
   total,
@@ -191,4 +191,13 @@ export function buildBaseActionCardData({
     outcomeClass,
     metadataRows,
   };
+}*/
+
+/**
+ * Validates and normalizes chat message visibility modes.
+ * @param {string} mode - The requested roll mode
+ * @returns {string} The verified mode or a fallback to 'public'
+ */
+export function normalizeMessageMode(mode) {
+  return CONFIG.ChatMessage?.modes?.[mode] ? mode : "public";
 }

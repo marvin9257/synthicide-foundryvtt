@@ -20,6 +20,11 @@ export class ShockCardSystemData extends BaseCardSystemData {
     return schema;
   }
 
+  /** @override */
+  prepareDerivedData() {
+    super.prepareDerivedData();
+  }
+
   /**
    * Resolves the final shock outcome category string from calculation states.
    * @param {boolean} isLethal
@@ -41,7 +46,7 @@ export class ShockCardSystemData extends BaseCardSystemData {
     };
   }
 
-   get isLethal() {
+  get isLethal() {
     return this.outcome === SYNTHICIDE.SHOCK_OUTCOMES.LETHAL; // Matches your global system configuration key string
   }
 

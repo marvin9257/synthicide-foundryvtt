@@ -45,11 +45,17 @@ export class DamageCardSystemData extends CombatCardSystemData {
   }
 
   /** @override */
-  _initializeCalculations() {
-    super._initializeCalculations();
+  prepareDerivedData() {
+    super.prepareDerivedData();
     if (!this.rawTotal) {
       this.rawTotal = this.total;
     }
+  }
+
+  /** @override */
+  async getHTML(html, options = {}) {
+    await super.getHTML(html, options);
+    // Add unique damage card interaction bindings here if needed
   }
 
   get isVehicleDamage() {

@@ -1,10 +1,9 @@
 import SYNTHICIDE from '../helpers/config.mjs';
-import { localize, formatSignedNumber, formatRollModifiers } from './roll-utils.mjs';
+import { localize, formatSignedNumber, formatRollModifiers, normalizeMessageMode } from './roll-utils.mjs';
 import { computeRollModifiers, parseNumeric, getActionAttributeKey, ATTRIBUTE_COMBAT, hasWeaponModification } from './modifiers.mjs';
 import { resolveWeaponAttackContext, getTargetDefense, getActorToken } from './attack-rolls.mjs';
 import { buildRollContext } from './roll-context.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
-import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
 
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
 const ACTION_ROLL_DIALOG_ICON = 'systems/synthicide/assets/synthicidePause.svg';
@@ -63,7 +62,7 @@ export function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, 
     shieldBonus: isMeleeAttack ? targetDefense.shieldBonus : 0,
     weaponClass: String(sourceItem?.system?.weaponClass ?? ''),
     sourceItem,
-    messageMode: SynthicideChatMessage.normalizeMessageMode(game.settings.get('core', 'messageMode')),
+    messageMode: normalizeMessageMode(game.settings.get('core', 'messageMode')),
     allowSubtypeChange,
     rollModifiers,
   };
@@ -140,7 +139,7 @@ function buildDialogContext(defaults) {
       { value: 'demolition', label: 'SYNTHICIDE.Roll.Subtype.Demolition', selected: subtype === 'demolition' },
     ],
     messageModeOptions: CONFIG.ChatMessage.modes,
-    messageModeSelected: SynthicideChatMessage.normalizeMessageMode(defaults.messageMode),
+    messageModeSelected: normalizeMessageMode(defaults.messageMode),
     attributeOptions: SYNTHICIDE.attributes,
     attributeSelected: attributeKey,
     difficultyOptions: difficultyList,
@@ -163,7 +162,7 @@ export function extractDialogData(formElement) {
   const formData = new globalThis.FormData(formElement);
   return {
     subtype: String(formData.get('subtype') ?? 'challenge'),
-    messageMode: SynthicideChatMessage.normalizeMessageMode(String(formData.get('messageMode') ?? 'public')),
+    messageMode: normalizeMessageMode(String(formData.get('messageMode') ?? 'public')),
     attribute: String(formData.get('attribute') ?? ATTRIBUTE_COMBAT),
     difficulty: parseNumeric(formData.get('difficulty'), 6),
     misc: parseNumeric(formData.get('misc'), 0),

@@ -44,8 +44,8 @@ export class DemolitionCardSystemData extends CombatCardSystemData {
     return schema;
   }
 
-  _initializeCalculations() {
-    super._initializeCalculations();
+  prepareDerivedData() {
+    super.prepareDerivedData();
     const currentMode = String(this.mode).toLowerCase();
     this.isPlantedMode = currentMode === 'planted';
     this.isThrowMode = currentMode === 'throw';

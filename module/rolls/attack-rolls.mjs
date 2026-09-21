@@ -3,13 +3,13 @@ import { hasWeaponFeature } from './weapon-proficiency-rules.mjs';
 import { SpecializationData } from './specialization-data.mjs';
 import { FORMULA_ATTACK, hasWeaponModification } from './modifiers.mjs';
 import { getSpreadCollateralTokens, calculateVirtualDistanceBetweenTokens } from '../canvas/synthicide-virtual-ruler-utils.mjs';
-import { localize } from './roll-utils.mjs';
+import { localize, normalizeMessageMode } from './roll-utils.mjs';
 import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
 
 export async function executeAttackActionRoll({ ctx, rollData = null, template }) {
   const actor = ctx.actor;
   const sourceItem = ctx.sourceItem;
-  const messageMode = SynthicideChatMessage.normalizeMessageMode(ctx.input.messageMode);
+  const messageMode = normalizeMessageMode(ctx.input.messageMode);
   const attackRangeContext = ctx.attackRangeContext;
   const specializationContext = ctx.specialization || {};
 
@@ -41,7 +41,6 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
   resolvedInput.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
 
   // 4. Construct the clean DataModel structural schema
-    // 4. Construct the clean DataModel structural schema
   const cardSystemData = {
     subtype: "attack",
     lethal: Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(resolvedInput.specialization?.lethalBonus ?? 0),
@@ -52,12 +51,9 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
     total: Number(attackTotal),
     attackTotal: Number(attackTotal),
     d10: Number(evaluatedRoll.dice?.[0]?.results?.[0]?.result ?? 0),
-    
-    hit: Number(attackTotal) >= (Number(resolvedInput.armor ?? targetDefenseContext.armor ?? 0) + Number(resolvedInput.shieldBonus ?? targetDefenseContext.shieldBonus ?? 0)),
 
     armor: Number(resolvedInput.armor ?? targetDefenseContext.armor ?? 0),
     shieldBonus: Number(resolvedInput.shieldBonus ?? targetDefenseContext.shieldBonus ?? 0),
-    
 
     attackBonus: Number(resolvedInput.attackBonus ?? 0),
     damageBonus: Number(resolvedInput.damageBonus ?? 0),
@@ -316,7 +312,7 @@ async function executeSpreadCollateralCard({ actor, sourceItem, attackTotal, att
         }
       };
     }
-    await ChatMessage.create(chatData, { messageMode: SynthicideChatMessage.normalizeMessageMode(messageMode) });
+    await ChatMessage.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
     return;
   }
 

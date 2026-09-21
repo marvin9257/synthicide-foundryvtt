@@ -18,7 +18,7 @@ import  SynthicideCombat from './documents/combat.mjs';
 // Misc Imports
 import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
-import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
+import { openSynthicideActionRollDialog } from './rolls/action-rolls.mjs';
 import { registerSynthicideChatContextHook, SynthicideChatPopout } from './documents/chatlog.mjs';
 import { registerCombatTrackerApHooks } from './hooks/combat-tracker-ap.mjs';
 import { registerProseMirrorFocusGuard } from './hooks/prosemirror-focus-guard.mjs';
@@ -135,7 +135,6 @@ Hooks.once('init', function () {
 
   // Register application/document hooks
   registerSynthicideChatContextHook();
-  registerActionRollHooks();
   registerCombatTrackerApHooks();
   itemPilesIntegration();
 

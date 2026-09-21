@@ -1,4 +1,4 @@
-import { localize } from './roll-utils.mjs';
+import { localize, normalizeMessageMode } from './roll-utils.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { renderActionRollDialog, buildDialogDefaults } from './dialogs.mjs';
 import { executeAttackActionRoll, getActorToken } from './attack-rolls.mjs';
@@ -62,7 +62,7 @@ export async function rollVehicleWeaponDamageCard({ actor, sourceItem, messageMo
     return null;
   }
 
-  const normalizedMode = SynthicideChatMessage.normalizeMessageMode(messageMode ?? game.settings.get('core', 'messageMode'));
+  const normalizedMode = normalizeMessageMode(messageMode ?? game.settings.get('core', 'messageMode'));
   const dieRoll = await new Roll('1d10').evaluate();
   const dieValue = Number(dieRoll.total ?? 0);
   const dmgMultiplier = Math.max(1, Number(sourceItem.system?.dmgMultiplier ?? 1));
@@ -114,13 +114,7 @@ export async function rollVehicleWeaponDamageCard({ actor, sourceItem, messageMo
   });
 }
 
-export function registerActionRollHooks() {
-  Hooks.on('renderChatMessageHTML', activateActionRollChatListeners);
-}
-
-
-
-async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
+export async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   if (!sourceMessage) {
     console.warn('executeDerivedDamageRoll called without sourceMessage');
     return null;
@@ -153,7 +147,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   const damageAttributeValue = sourceSubtype === SUBTYPES.ATTACK
     ? Number(messageRollData.attributeValue ?? (isPlantedDemolitionAttack ? 0 : actorCombatValue))
     : Number(messageRollData.damageAttributeValue ?? (messageIsPlanted ? 0 : actorCombatValue));
-  const messageMode = SynthicideChatMessage.normalizeMessageMode(userMessageMode ?? messageRollData.messageMode ?? 'public');
+  const messageMode = normalizeMessageMode(userMessageMode ?? messageRollData.messageMode ?? 'public');
   const extraDamageDice = Number(messageRollData.extraDamageDice ?? 0);
   let extraDamageRoll = null;
   let extraDamageTotal = 0;
@@ -261,7 +255,7 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   });
 }
 
-async function executeOpposedChallengeRoll({ sourceMessage }) {
+export async function executeOpposedChallengeRoll({ sourceMessage }) {
   if (!sourceMessage) {
     console.warn('executeOpposedChallengeRoll called without sourceMessage');
     return null;
@@ -278,7 +272,7 @@ async function executeOpposedChallengeRoll({ sourceMessage }) {
   const actor = getControlledActor();
   if (!actor) return ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.ActorMissing'));
 
-  const sourceMode = SynthicideChatMessage.normalizeMessageMode(sourceRollData.messageMode ?? 'public');
+  const sourceMode = normalizeMessageMode(sourceRollData.messageMode ?? 'public');
   const dialogResult = await renderActionRollDialog({
     title: localize('SYNTHICIDE.Roll.Dialog.OpposedTitle'),
     defaults: {
@@ -372,7 +366,7 @@ async function executeActionRoll({ actor, input, sourceItem, subtype }) {
 async function executeChallengeActionRoll({ ctx } = {}) {
   if (!ctx) return null;
   const actorObj = ctx.actor ?? null;
-  const messageMode = SynthicideChatMessage.normalizeMessageMode(ctx.input.messageMode);
+  const messageMode = normalizeMessageMode(ctx.input.messageMode);
   const difficulty = Number(ctx.input.difficulty ?? 6);
   
   // 1. Evaluate the authentic dice check natively on the client
@@ -394,13 +388,13 @@ async function executeChallengeActionRoll({ ctx } = {}) {
     actorName: actorObj?.name ?? ""
   };
 
-  return SynthicideChatMessage.createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData });
+  return SynthicideChatMessage.createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData, type: "challenge"  });
 }
 
 async function executeDriverVelocityActionRoll({ ctx } = {}) {
   if (!ctx) return null;
   const actorObj = ctx.actor ?? null;
-  const messageMode = SynthicideChatMessage.normalizeMessageMode(ctx.input.messageMode);
+  const messageMode = normalizeMessageMode(ctx.input.messageMode);
   const difficulty = Number(ctx.input.difficulty ?? 6);
   const velocity = Number(foundry.utils.getProperty(actorObj, 'system.velocity') ?? 0);
   
@@ -429,75 +423,12 @@ async function executeDriverVelocityActionRoll({ ctx } = {}) {
   return SynthicideChatMessage.createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData, type: 'challenge' });
 }
 
-
 async function handleOtherRoll({ _actor, _input, _sourceItem, subtype }) {
   ui.notifications?.warn(`Roll type '${subtype}' is not implemented yet.`);
   return null;
 }
 
-function activateActionRollChatListeners(message, htmlElement) {
-  if (!htmlElement || typeof htmlElement.querySelectorAll !== 'function' || typeof htmlElement.addEventListener !== 'function') return;
-  if (!message) {
-    console.warn('activateActionRollChatListeners called without message', { htmlElement });
-    return;
-  }
-  const messageRollData = message.getCardPayload?.();
-  if (!messageRollData || (messageRollData.subtype !== SUBTYPES.ATTACK
-    && messageRollData.subtype !== SUBTYPES.CHALLENGE
-    && messageRollData.subtype !== SUBTYPES.DEMOLITION)) return;
-
-  const followupAllowed = canExecuteFollowup(message);
-  if (htmlElement.dataset.synthicideActionBound === 'true') return;
-  htmlElement.dataset.synthicideActionBound = 'true';
-
-  htmlElement.addEventListener('click', (event) => {
-    const button = event.target?.closest?.('[data-action]');
-    if (!button) return;
-
-    const action = button.dataset.action;
-    if (action !== 'rollDamage' && action !== 'rollOpposed') return;
-
-    if (action === 'rollDamage' && !followupAllowed) {
-      event.preventDefault();
-      ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NotPermitted'));
-      return;
-    }
-
-    onActionRollCardClick(event, message);
-  });
-}
-
-async function onActionRollCardClick(event, message) {
-  const button = event.target?.closest?.('[data-action]');
-  if (!button || button.disabled) return;
-
-  if (!message) {
-    console.warn('onActionRollCardClick called without message');
-    return;
-  }
-
-  const action = button.dataset.action;
-  if (action !== 'rollDamage' && action !== 'rollOpposed') return;
-
-  event.preventDefault();
-  if (action === 'rollDamage' && !canExecuteFollowup(message)) {
-    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NotPermitted'));
-    return;
-  }
-
-  button.disabled = true;
-  try {
-    if (action === 'rollDamage') {
-      await executeDerivedDamageRoll({ sourceMessage: message });
-    } else {
-      await executeOpposedChallengeRoll({ sourceMessage: message });
-    }
-  } finally {
-    button.disabled = false;
-  }
-}
-
-function canExecuteFollowup(message, user = game.user) {
+export function canExecuteFollowup(message, user = game.user) {
   if (!message) {
     console.warn('canExecuteFollowup called without message');
     return false;

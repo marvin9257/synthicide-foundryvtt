@@ -20,7 +20,7 @@ export class AttackCardSystemData extends CombatCardSystemData {
     schema.baseDamageBonus = new fields.NumberField({...requiredInteger, initial: 0});
     schema.lethalOverride = new fields.NumberField({ required: false, nullable: true, initial: null });
     schema.baseLethalValue = new fields.NumberField({...requiredInteger, initial: 0});
-    schema.hit = new fields.BooleanField({ required: true, initial: false });
+    schema.hit = new fields.BooleanField({ required: false, initial: false }, {persisted: false});
 
     // Battle Assist properties
     schema.battleAssistValue = new fields.NumberField({...requiredInteger, initial: 0});
@@ -46,8 +46,8 @@ export class AttackCardSystemData extends CombatCardSystemData {
   }
 
   /** @override */
-  _initializeCalculations() {
-    super._initializeCalculations();
+  prepareDerivedData() {
+    super.prepareDerivedData();
     
     // 1. Calculate effective composite defense thresholds
     this.effectiveArmor = this.armor + this.shieldBonus;

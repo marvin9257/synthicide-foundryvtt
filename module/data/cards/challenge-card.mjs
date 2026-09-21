@@ -28,8 +28,8 @@ export class ChallengeCardSystemData extends BaseCardSystemData {
   }
 
   /** @override */
-  _initializeCalculations() {
-    super._initializeCalculations();
+  prepareDerivedData() {
+    super.prepareDerivedData();
     this.effectValue = this.total - this.difficulty;
     this.effectDegree = getDegreeLabel(this.effectValue) || "";
   }

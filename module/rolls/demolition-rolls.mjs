@@ -7,7 +7,7 @@ import { buildRollContext } from './roll-context.mjs';
 import { getActorToken } from './attack-rolls.mjs';
 import { hasWeaponFeature } from './weapon-proficiency-rules.mjs';
 import { SpecializationData } from './specialization-data.mjs';
-import { localize } from './roll-utils.mjs';
+import { localize, normalizeMessageMode } from './roll-utils.mjs';
 
 export async function executeDemolitionActionRoll({ ctx, template }) {
   const plantNumber = getDemolitionPlantNumber(ctx.sourceItem);
@@ -356,7 +356,7 @@ async function createDemolitionPlacementContext({ input, sourceItem, requirePoin
   }
   const { target, blastDiameter } = targetData;
 
-  const messageMode = SynthicideChatMessage.normalizeMessageMode(input.messageMode);
+  const messageMode = normalizeMessageMode(input.messageMode);
   const template = await ItemTemplate.fromItem(sourceItem, {
     name: sourceItem?.name ?? localize('SYNTHICIDE.Roll.Subtype.Demolition'),
     target,
@@ -431,20 +431,24 @@ function buildDemolitionTargetData(sourceItem) {
 
 export async function createBlastSummaryMessage({ actor, summaryRows, messageMode, companionMessageId }) {
   const summaryTable = `
-    <div class="synthicide-blast-summary">
-      <strong>${localize('SYNTHICIDE.Roll.BlastSummary.Title')}</strong>
-      <table>
-        <thead>
-          <tr>
-            <th>${localize('SYNTHICIDE.Roll.BlastSummary.Target')}</th>
-            <th>${localize('SYNTHICIDE.Roll.BlastSummary.AD')}</th>
-            <th>${localize('SYNTHICIDE.Roll.BlastSummary.Roll')}</th>
-            <th>${localize('SYNTHICIDE.Roll.BlastSummary.Result')}</th>
-          </tr>
-        </thead>
-        <tbody>${summaryRows.join('')}</tbody>
-      </table>
-    </div>
+    <section class="synthicide-action-roll-card">
+      <header class="card-header">
+        <h4 class="card-title item-header">${localize('SYNTHICIDE.Roll.BlastSummary.Title')}</h4>
+      </header>
+      <div class="synthicide-blast-summary">
+        <table>
+          <thead>
+            <tr>
+              <th>${localize('SYNTHICIDE.Roll.BlastSummary.Target')}</th>
+              <th>${localize('SYNTHICIDE.Roll.BlastSummary.AD')}</th>
+              <th>${localize('SYNTHICIDE.Roll.BlastSummary.Roll')}</th>
+              <th>${localize('SYNTHICIDE.Roll.BlastSummary.Result')}</th>
+            </tr>
+          </thead>
+          <tbody>${summaryRows.join('')}</tbody>
+        </table>
+      </div>
+    </section>
   `;
   const chatData = {
     content: summaryTable,
@@ -458,5 +462,5 @@ export async function createBlastSummaryMessage({ actor, summaryRows, messageMod
       }
     };
   }
-  await ChatMessage.implementation.create(chatData, { messageMode: SynthicideChatMessage.normalizeMessageMode(messageMode) });
+  await ChatMessage.implementation.create(chatData, { messageMode: normalizeMessageMode(messageMode) });
 }
