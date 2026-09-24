@@ -92,18 +92,7 @@ export class SynthicideActor extends foundry.documents.Actor {
     }
 
     // =========================================================================
-    // MANUAL TOKEN INPUT RULE B: IMMEDIATE DEATH (Subsequent Damage While Down)
-    // Evaluates true if health numbers dropped, OR if our option packet verifies
-    // a manual canvas execution shot occurred.
-    // =========================================================================
-    //if ( prevHP <= 0 && currHP < prevHP && !actorIsDead) {
-    //  if (actorIsBleeding) await this.toggleStatusEffect("bleeding", { active: false });
-    //  await this.toggleStatusEffect("dead", { active: true });
-    //  return;
-    //}
-
-    // =========================================================================
-    // MANUAL TOKEN INPUT RULE C: FIRST-TIME NATURAL INCAPACITATION
+    // MANUAL TOKEN INPUT RULE B: FIRST-TIME NATURAL INCAPACITATION
     // =========================================================================
     if (currHP <= 0 && !actorIsBleeding && !actorIsDead) {
       await this.toggleStatusEffect("bleeding", { active: true });
@@ -142,10 +131,8 @@ export class SynthicideActor extends foundry.documents.Actor {
           updates = {[`system.${attribute}.value`]: -1};
           await this.update(updates);
 
-          // Instantly clear out bleeding tracking and apply death status icons
-          if (this.statuses?.has("bleeding")) {
-            await this.toggleStatusEffect("bleeding", { active: false });
-          }
+          await this._clearAllStatusesExceptDead();
+
           if (!this.statuses?.has("dead")) {
             await this.toggleStatusEffect("dead", { active: true });
           }
@@ -266,15 +253,25 @@ export class SynthicideActor extends foundry.documents.Actor {
   async damageActor(damage, options = {}) {
     if (!damage || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return this;
 
+    // A. CALCULATE CUMULATIVE DAMAGE FIRST (Before any state transitions or database locks)
+    let totalDamage = damage;
+    const specialAmmo = String(options?.specialAmmoUsed ?? 'none');
+    const onHitEffects = resolveAmmoOnHitEffects({ ammoKey: specialAmmo });
+
+    // Extract the extra ammo dice roll out of the inner loop and evaluate it upfront
+    if (onHitEffects?.immediateDamageDice > 0) {
+      const roll = await new Roll(`${onHitEffects.immediateDamageDice}d10`).evaluate();
+      totalDamage += Number(roll.total ?? 0);
+    }
+
     const updates = {};
     const isVehicle = this.type === 'vehicle';
     const isNpcOrSharper = ['sharper', 'npc'].includes(this.type);
-    const specialAmmo = String(options?.specialAmmoUsed ?? 'none');
     const isFlashAmmo = specialAmmo === 'flash';
     const forceBarrier = Number(this.system.armorValues?.forceBarrier?.value ?? 0);
 
     // 1. Process Force Barrier Absorption
-    let damageRemaining = damage;
+    let damageRemaining = totalDamage;
     if (!isFlashAmmo && forceBarrier > 0) {
       const absorbed = Math.min(forceBarrier, damageRemaining);
       damageRemaining -= absorbed;
@@ -303,6 +300,7 @@ export class SynthicideActor extends foundry.documents.Actor {
     // =========================================================================
     if (isNpcOrSharper) {
       const isDead = this.statuses?.has("dead");
+      const isBleeding = this.statuses?.has("bleeding");
       let statusToApply = null;
 
       if (!isFlashAmmo && damageRemaining > 0 && !isDead) {
@@ -345,14 +343,19 @@ export class SynthicideActor extends foundry.documents.Actor {
       await this.update(updates, { fromDamageActor: true });
 
       // Step 2: Use your standard toggleStatusEffect methods sequentially
-      if (statusToApply === "dead" && !this.statuses?.has("dead")) {
-        if (this.statuses?.has("bleeding")) await this.toggleStatusEffect("bleeding", { active: false });
+      if (statusToApply === "dead" && !isDead) {
+        await this._clearAllStatusesExceptDead();
         await this.toggleStatusEffect("dead", { active: true });
+        return this;
       } 
-      else if (statusToApply === "bleeding" && !this.statuses?.has("bleeding") && !this.statuses?.has("dead")) {
+      else if (statusToApply === "bleeding" && !isBleeding && !isDead) {
         await this.toggleStatusEffect("bleeding", { active: true });
+       
       }
-
+      //if (this.statuses?.has("dead") || statusToApply === "dead") {
+      //  return this;
+      //}
+       
       if (damageRemaining > 0 || isFlashAmmo) {
         await this._applySpecialAmmoOnHitEffects({ ...options, specialAmmoUsed: specialAmmo });
       }
@@ -368,19 +371,12 @@ export class SynthicideActor extends foundry.documents.Actor {
   }
 
   async _applySpecialAmmoOnHitEffects(options = {}) {
-    const onHit = resolveAmmoOnHitEffects({ ammoKey: options?.specialAmmoUsed });
-    if (!(onHit.immediateDamageDice > 0) && !onHit.statusToggles.length) return;
+    if (this.statuses?.has("dead")) return;
 
-    if (onHit.immediateDamageDice > 0) {
-      const roll = await new Roll(`${onHit.immediateDamageDice}d10`).evaluate();
-      const immediateDamage = Number(roll.total ?? 0);
-      if (immediateDamage > 0) {
-        await this.damageActor(immediateDamage, {
-          ...options,
-          specialAmmoUsed: 'none',
-        });
-      }
-    }
+    const onHit = resolveAmmoOnHitEffects({ ammoKey: options?.specialAmmoUsed });
+    if (!onHit.statusToggles.length) return;
+
+    //if (this.statuses?.has("dead") || this.system.hitPoints.value <= -1) return;
 
     for (const effect of onHit.statusToggles) {
       const active = effect.active !== false;
@@ -509,21 +505,6 @@ export class SynthicideActor extends foundry.documents.Actor {
   }
 
   /**
-   * Apply post-roll/non-roll shocking-strike outcomes to the pending update payload.
-   * @private
-   */
-  //_applyShockOutcomeUpdates({ updates, outcome, preHitPoints, damageRemaining } = {}) {
-  //  // If the toughness check succeeds, the character takes normal damage without dropping beneath zero
-  //  if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS) {
-  //    updates['system.hitPoints.value'] = Math.max(0, preHitPoints - damageRemaining);
-  //    return;
-  //  }
-  //
-  //  // Any failed shocking strike outcome (MINUS_ONE, DEATH, LETHAL) clamps HP explicitly to -1
-  //  updates['system.hitPoints.value'] = -1;
-  //}
-
-  /**
    * Resolve chat visibility options for shocking-strike messages.
    * @private
    */
@@ -532,6 +513,27 @@ export class SynthicideActor extends foundry.documents.Actor {
       preferredMode: options?.messageMode ?? cardData?.messageMode ?? cardData?.flags?.messageMode ?? game.settings.get('core', 'messageMode'),
       whisper: options?.whisper ?? cardData?.whisper ?? cardData?.flags?.whisper ?? undefined,
     };
+  }
+
+  /**
+   * Disables all active combat condition overlays on the actor document
+   * except for the definitive "dead" status icon in a single batch delete.
+   * @private
+   */
+  async _clearAllStatusesExceptDead() {
+    // Find the unique IDs of all ActiveEffect sub-documents driving conditions
+    const idsToDelete = this.effects
+      .filter(e => {
+        // Collect any effects linked to combat tracking statuses, skipping "dead"
+        const statuses = Array.from(e.statuses ?? []);
+        return statuses.length > 0 && !statuses.includes("dead");
+      })
+      .map(e => e.id);
+
+    // Delete every single active hazard effect in one atomic database operation
+    if (idsToDelete.length) {
+      await this.deleteEmbeddedDocuments("ActiveEffect", idsToDelete);
+    }
   }
 
 }
