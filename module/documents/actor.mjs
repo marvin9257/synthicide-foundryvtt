@@ -11,9 +11,7 @@ const DAMAGEABLE_ACTOR_TYPES = new Set(['sharper', 'npc', 'vehicle']);
  */
 export class SynthicideActor extends foundry.documents.Actor {
 
-  
-
-  /** @override */
+    /** @override */
   async _preUpdate(changed, options, user) {
     const allowed = await super._preUpdate(changed, options, user);
     if (allowed === false) return false;
@@ -62,42 +60,51 @@ export class SynthicideActor extends foundry.documents.Actor {
     foundry.utils.setProperty(changed, valuePath, clamped);
   }
 
-  /** @override */
+      /** @override */
   async _onUpdate(changed, options, user) {
     await super._onUpdate?.(changed, options, user);
 
-    // Only the client that initiated the change should apply actor-level toggles
     if (user !== game.user.id) return;
-    //Only sharpers and npc have statuses
     if (!['sharper', 'npc'].includes(this.type)) return;
 
     const hpPath = "system.hitPoints.value";
-
-    // If HP isn't part of the change, nothing more to do here.
     if (!foundry.utils.hasProperty(changed, hpPath)) return;
 
+    //skip processing if already processed by damageActor method
+    if (options.fromDamageActor === true) return;
+
     const currHP = foundry.utils.getProperty(changed, hpPath);
-    const prevHP = this.system.hitPoints.previous;
+    const prevHP = Number(this.system.hitPoints.previous ?? 0);
+    
+    // Safety check: Exit if values match, UNLESS an execution shot option is present
     if (prevHP === currHP) return;
 
     const actorIsDead = this.statuses?.has("dead");
     const actorIsBleeding = this.statuses?.has("bleeding");
 
-    // Recovery: above 0 clears downed/dead
+    // =========================================================================
+    // MANUAL TOKEN INPUT RULE A: RECOVERY
+    // =========================================================================
     if (currHP > 0) {
       if (actorIsBleeding) await this.toggleStatusEffect("bleeding", { active: false });
       if (actorIsDead) await this.toggleStatusEffect("dead", { active: false });
       return;
     }
 
-    // Immediate death: was already bleeding and took additional damage (HP dropped further)
-    if (prevHP <= 0 && currHP < prevHP /* && actorIsBleeding*/) {
-      if (actorIsBleeding) await this.toggleStatusEffect("bleeding", { active: false });
-      if (!actorIsDead) await this.toggleStatusEffect("dead", { active: true });
-      return;
-    }
+    // =========================================================================
+    // MANUAL TOKEN INPUT RULE B: IMMEDIATE DEATH (Subsequent Damage While Down)
+    // Evaluates true if health numbers dropped, OR if our option packet verifies
+    // a manual canvas execution shot occurred.
+    // =========================================================================
+    //if ( prevHP <= 0 && currHP < prevHP && !actorIsDead) {
+    //  if (actorIsBleeding) await this.toggleStatusEffect("bleeding", { active: false });
+    //  await this.toggleStatusEffect("dead", { active: true });
+    //  return;
+    //}
 
-    // Otherwise, ensure bleeding is applied when HP <= 0 (but don't auto-kill)
+    // =========================================================================
+    // MANUAL TOKEN INPUT RULE C: FIRST-TIME NATURAL INCAPACITATION
+    // =========================================================================
     if (currHP <= 0 && !actorIsBleeding && !actorIsDead) {
       await this.toggleStatusEffect("bleeding", { active: true });
     }
@@ -111,25 +118,56 @@ export class SynthicideActor extends foundry.documents.Actor {
    * @returns {Promise}
    */
   async modifyTokenAttribute(attribute, value, isDelta, isBar) {
-    //Must override hipPoints to allow negative values for actors as super clamps a min at zero
-    if (attribute === 'hitPoints' && ['sharper', 'npc'].includes(this.type)) {
+    const isVehicle = this.type === 'vehicle';
+    const isNpcOrSharper = ['sharper', 'npc'].includes(this.type);
+
+    if (attribute === 'hitPoints' && (isNpcOrSharper || isVehicle)) {
       const attr = foundry.utils.getProperty(this.system, attribute);
       const current = isBar ? attr.value : attr;
-      const update = isDelta ? current + value : value;
-      if ( update === current ) return this;
+      const rawUpdate = isDelta ? current + value : value;
+      if ( rawUpdate === current ) return this;
 
-      // Determine the updates to make to the actor data
       let updates;
-      //override clamp preventing negative values
-      if ( isBar ) updates = {[`system.${attribute}.value`]: Math.min(update, attr.max)};
-      else updates = {[`system.${attribute}`]: update};
+      
+      if ( isBar ) {
+        const damageWasDealt = rawUpdate < current;
 
+        // =====================================================================
+        // TOKEN BAR EXCLUSION: IMMEDIATE DEATH FROM SUBSEQUENT DAMAGE
+        // If they are already at or below 0, and new damage is typed in,
+        // instantly execute them using native, standalone toggles.
+        // =====================================================================
+        if (isNpcOrSharper && current <= 0 && damageWasDealt) {
+          // Clamp health pool safely to -1
+          updates = {[`system.${attribute}.value`]: -1};
+          await this.update(updates);
+
+          // Instantly clear out bleeding tracking and apply death status icons
+          if (this.statuses?.has("bleeding")) {
+            await this.toggleStatusEffect("bleeding", { active: false });
+          }
+          if (!this.statuses?.has("dead")) {
+            await this.toggleStatusEffect("dead", { active: true });
+          }
+          return this; // Exit early! 
+        }
+
+        // Standard first-time knockdown clamp boundaries
+        const minFloor = isVehicle ? 0 : -1;
+        const clampedUpdate = Math.min(Math.max(rawUpdate, minFloor), attr.max);
+        updates = {[`system.${attribute}.value`]: clampedUpdate};
+      } else {
+        updates = {[`system.${attribute}`]: rawUpdate};
+      }
+
+      // Execute standard database write transaction
       await this.update(updates);
     } else {
       return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
     }
-    
+    return this;
   }
+
 
   /**
    * @override
@@ -218,66 +256,109 @@ export class SynthicideActor extends foundry.documents.Actor {
     return data;
   }
 
+    /**
+   * Processes incoming damage against the actor, accounting for Force Barriers,
+   * standard health reduction, vehicle rules, and conditional Shocking Strike mechanics.
+   * @param {number} damage - The raw incoming damage total.
+   * @param {object} options - Roll contexts, ammo modifications, and system triggers.
+   * @returns {Promise<SynthicideActor|null>}
+   */
   async damageActor(damage, options = {}) {
-    // 1. Guard clause: Exit early if invalid damage or un-damageable actor type
-    if (!damage || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return;
+    if (!damage || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return this;
 
     const updates = {};
     const isVehicle = this.type === 'vehicle';
     const isNpcOrSharper = ['sharper', 'npc'].includes(this.type);
+    const specialAmmo = String(options?.specialAmmoUsed ?? 'none');
+    const isFlashAmmo = specialAmmo === 'flash';
+    const forceBarrier = Number(this.system.armorValues?.forceBarrier?.value ?? 0);
 
-    // 2. Handle Vehicle logic
-    if (isVehicle) {
-      const preHP = Number(this.system.hitPoints.value ?? 0);
-      if (damage > this.system.damageThreshold) {
-        updates['system.hitPoints.value'] = Math.clamp(preHP - damage, 0, this.system.hitPoints.max);
-        await this.update(updates);
-      }
-      return; // Exit early after vehicle resolution
+    // 1. Process Force Barrier Absorption
+    let damageRemaining = damage;
+    if (!isFlashAmmo && forceBarrier > 0) {
+      const absorbed = Math.min(forceBarrier, damageRemaining);
+      damageRemaining -= absorbed;
+      updates['system.armorValues.forceBarrier.value'] = forceBarrier - absorbed;
     }
 
-    // 3. Handle NPC and Sharper logic
-    if (isNpcOrSharper) {
-      const specialAmmo = String(options?.specialAmmoUsed ?? 'none');
-      const isFlashAmmo = specialAmmo === 'flash';
-      const forceBarrier = this.system.armorValues?.forceBarrier?.value ?? 0;
-      
-      // Process barrier reduction
-      let damageRemaining = damage;
-      if (!isFlashAmmo && forceBarrier > 0) {
-        const absorbed = Math.min(forceBarrier, damageRemaining);
-        damageRemaining -= absorbed;
-        updates['system.armorValues.forceBarrier.value'] = forceBarrier - absorbed;
-      }
+    const preHP = Number(this.system.hitPoints.value ?? 0);
 
-      // Process health reduction and special status effects
-      const preHP = Number(this.system.hitPoints.value ?? 0);
+    // =========================================================================
+    // BRANCH A: Dedicated Vehicle Damage Path (Early Return)
+    // =========================================================================
+    if (isVehicle) {
+      if (!isFlashAmmo && damageRemaining > 0) {
+        updates['system.hitPoints.value'] = preHP - damageRemaining;
+      }
+      await this.update(updates);
+      
+      if (damageRemaining > 0 || isFlashAmmo) {
+        await this._applySpecialAmmoOnHitEffects({ ...options, specialAmmoUsed: specialAmmo });
+      }
+      return this;
+    }
+
+    // =========================================================================
+    // BRANCH B: Living Character Path (NPC / Sharper)
+    // =========================================================================
+    if (isNpcOrSharper) {
       const isDead = this.statuses?.has("dead");
+      let statusToApply = null;
 
       if (!isFlashAmmo && damageRemaining > 0 && !isDead) {
-        updates['system.hitPoints.value'] = preHP - damageRemaining;
-
+        const baselineHP = preHP - damageRemaining;
         const useShockingStrike = game.settings.get('synthicide', SYNTHICIDE.USE_SHOCKING_STRIKE_KEY);
-        if (useShockingStrike) {
+        const shockThreshold = Number(this.system.shockThreshold?.value ?? 0);
+        const breachesThreshold = damageRemaining > shockThreshold;
+
+        // Rule 1: Execution Clause (Already down, subsequent damage kills)
+        if (preHP <= 0) {
+          updates['system.hitPoints.value'] = -1;
+          statusToApply = "dead";
+        }
+        // Rule 2: Natural Incapacitation
+        else if (baselineHP < 0) {
+          updates['system.hitPoints.value'] = -1;
+          statusToApply = "bleeding";
+        } 
+        // Rule 3: Shocking Strike Trauma Check
+        else if (useShockingStrike && breachesThreshold) {
           const shockArgs = { ...options, specialAmmoUsed: specialAmmo, barrierAbsorbed: damage - damageRemaining };
-          const outcome = await this._handleShockingStrike(damageRemaining, preHP, updates, shockArgs);
+          const shockOutcome = await this._handleShockingStrike(damageRemaining, preHP, updates, shockArgs);
           
-          const isLethal = [SYNTHICIDE.SHOCK_OUTCOMES.LETHAL, SYNTHICIDE.SHOCK_OUTCOMES.DEATH].includes(outcome);
-          if (isLethal && !this.statuses?.has("dead")) {
-            await this.toggleStatusEffect("dead", { active: true });
+          if (shockOutcome === SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS) {
+            updates['system.hitPoints.value'] = baselineHP; 
+          } else {
+            updates['system.hitPoints.value'] = -1; 
+            
+            const isLethal = [SYNTHICIDE.SHOCK_OUTCOMES.LETHAL, SYNTHICIDE.SHOCK_OUTCOMES.DEATH].includes(shockOutcome);
+            statusToApply = isLethal ? "dead" : "bleeding";
           }
+        } 
+        // Rule 4: Standard Damage Taken
+        else {
+          updates['system.hitPoints.value'] = baselineHP;
         }
       }
 
-      // Finalize state updates and hit triggers
-      await this.update(updates);
+      // Step 1: Lock health pools into the database first
+      await this.update(updates, { fromDamageActor: true });
+
+      // Step 2: Use your standard toggleStatusEffect methods sequentially
+      if (statusToApply === "dead" && !this.statuses?.has("dead")) {
+        if (this.statuses?.has("bleeding")) await this.toggleStatusEffect("bleeding", { active: false });
+        await this.toggleStatusEffect("dead", { active: true });
+      } 
+      else if (statusToApply === "bleeding" && !this.statuses?.has("bleeding") && !this.statuses?.has("dead")) {
+        await this.toggleStatusEffect("bleeding", { active: true });
+      }
 
       if (damageRemaining > 0 || isFlashAmmo) {
         await this._applySpecialAmmoOnHitEffects({ ...options, specialAmmoUsed: specialAmmo });
       }
     }
+    return this;
   }
-
 
   async healActor(healing) {
     if (!healing || !DAMAGEABLE_ACTOR_TYPES.has(this.type)) return;
@@ -392,7 +473,7 @@ export class SynthicideActor extends foundry.documents.Actor {
     });
     
     // Apply health state overrides to updates object literal
-    this._applyShockOutcomeUpdates({ updates, outcome });
+    //this._applyShockOutcomeUpdates({ updates, outcome, preHitPoints, damageRemaining });
 
     // Return the computed outcome so callers can apply client-only visuals.
     return outcome;
@@ -431,15 +512,16 @@ export class SynthicideActor extends foundry.documents.Actor {
    * Apply post-roll/non-roll shocking-strike outcomes to the pending update payload.
    * @private
    */
-  _applyShockOutcomeUpdates({ updates, outcome } = {}) {
-    if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS) {
-      return;
-    }
-
-    // Any failed shocking strike outcome forces HP to -1.
-    updates['system.hitPoints.value'] = -1;
-
-  }
+  //_applyShockOutcomeUpdates({ updates, outcome, preHitPoints, damageRemaining } = {}) {
+  //  // If the toughness check succeeds, the character takes normal damage without dropping beneath zero
+  //  if (outcome === SYNTHICIDE.SHOCK_OUTCOMES.SUCCESS) {
+  //    updates['system.hitPoints.value'] = Math.max(0, preHitPoints - damageRemaining);
+  //    return;
+  //  }
+  //
+  //  // Any failed shocking strike outcome (MINUS_ONE, DEATH, LETHAL) clamps HP explicitly to -1
+  //  updates['system.hitPoints.value'] = -1;
+  //}
 
   /**
    * Resolve chat visibility options for shocking-strike messages.
