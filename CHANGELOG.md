@@ -1,3 +1,24 @@
+## [1.3.4](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.3...1.3.4) (2026-09-24)
+
+
+### Bug Fixes
+
+* add rollModifiers to collateral damage ([2692a79](https://github.com/marvin9257/synthicide-foundryvtt/commit/2692a794473656cfc12a7137a685a1ad1e2206fb))
+* add rollModifiers to damage calcs since starvation also applies to damage ([4a8d398](https://github.com/marvin9257/synthicide-foundryvtt/commit/4a8d3988d09d4fb3b2a3ae004518aa07c961bb0a))
+* deepscan errors ([4069beb](https://github.com/marvin9257/synthicide-foundryvtt/commit/4069beb43edf3fa46d3f0245a2e5558cab7e5356))
+* deepscan issue ([8bbc6ba](https://github.com/marvin9257/synthicide-foundryvtt/commit/8bbc6bab2b80c9f907ab963435ad257bc70d8161))
+* dont use preparedDerivedData in data cards.  Just a constructor thing. ([11b66ad](https://github.com/marvin9257/synthicide-foundryvtt/commit/11b66ad4153412dec75bf0999dd0aa21432041f6))
+* duplicated computation and checking ([96b39f3](https://github.com/marvin9257/synthicide-foundryvtt/commit/96b39f32f2b8002805e129ba37fe39099ddba127))
+* get rid of recursive call of applying bonus damage for damageActor special ammo ([a47d9a0](https://github.com/marvin9257/synthicide-foundryvtt/commit/a47d9a070412af85e814d8cf1262b236e8b6f47d))
+* improve shock-card code ([8b431f2](https://github.com/marvin9257/synthicide-foundryvtt/commit/8b431f21b2df25c6aad4728f4512c02a4541a2f6))
+* make certain that shock checks, bleeding, and death conditions function correctly. ([149ce82](https://github.com/marvin9257/synthicide-foundryvtt/commit/149ce821259feed5a569eeee0acfc71895823e5a))
+* make challenge card accept optional flavor override ([273380f](https://github.com/marvin9257/synthicide-foundryvtt/commit/273380f74e0c76d53cacfced9f2a7fb9278a834f))
+* make velocity roll more robust ([24416dc](https://github.com/marvin9257/synthicide-foundryvtt/commit/24416dcec55ebb24055cea72d875e8da92d3710c))
+* Merge pull request [#19](https://github.com/marvin9257/synthicide-foundryvtt/issues/19) from marvin9257/fix-rollModifiers-and-add-starvation-penalty-to-damage-rolls ([1fb7edc](https://github.com/marvin9257/synthicide-foundryvtt/commit/1fb7edc7a97fbb946618210e2577a99382261fe3))
+* preliminary attack-card refactor ([1d28528](https://github.com/marvin9257/synthicide-foundryvtt/commit/1d285282b48a6f007a0a37d3e5c28ceaea1583ea))
+* update verified ([aa2c7ab](https://github.com/marvin9257/synthicide-foundryvtt/commit/aa2c7abeea681cd1b551522e1156df780b31d4f8))
+* virtual grid not draw on startup and combat active ([4f34e83](https://github.com/marvin9257/synthicide-foundryvtt/commit/4f34e83165302bce8c68444156ae1c79f0ca0650))
+
 ## [1.3.3](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.2...1.3.3) (2026-09-05)
 
 
