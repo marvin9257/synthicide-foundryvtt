@@ -81,6 +81,13 @@ export function buildEquationTerms({ subtype, attributeKey, rollData }) {
 
   if (isDamage) {
     terms.push({ label: localize('SYNTHICIDE.Roll.Card.DamageBonus'), value: rollData.damageBonus ?? 0 });
+    const actorModTotal = Number(rollData.actorModifierTotal ?? 0);
+    if (actorModTotal !== 0) {
+      terms.push({ 
+        label: localize('SYNTHICIDE.Roll.Dialog.RollModifiers'), 
+        value: actorModTotal 
+      });
+    }
     return terms;
   }
 
@@ -149,7 +156,7 @@ export function getRollResultSummary(rollResult) {
   };
 }
 
-export function buildBaseActionCardData({
+/*export function buildBaseActionCardData({
   subtype,
   rollResult,
   total,
@@ -184,4 +191,13 @@ export function buildBaseActionCardData({
     outcomeClass,
     metadataRows,
   };
+}*/
+
+/**
+ * Validates and normalizes chat message visibility modes.
+ * @param {string} mode - The requested roll mode
+ * @returns {string} The verified mode or a fallback to 'public'
+ */
+export function normalizeMessageMode(mode) {
+  return CONFIG.ChatMessage?.modes?.[mode] ? mode : "public";
 }

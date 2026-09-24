@@ -1,10 +1,9 @@
 import SYNTHICIDE from '../helpers/config.mjs';
-import { localize, formatSignedNumber, formatRollModifiers } from './roll-utils.mjs';
+import { localize, formatSignedNumber, formatRollModifiers, normalizeMessageMode } from './roll-utils.mjs';
 import { computeRollModifiers, parseNumeric, getActionAttributeKey, ATTRIBUTE_COMBAT, hasWeaponModification } from './modifiers.mjs';
 import { resolveWeaponAttackContext, getTargetDefense, getActorToken } from './attack-rolls.mjs';
 import { buildRollContext } from './roll-context.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
-import { normalizeMessageMode } from './cards.mjs';
 
 const DIALOG_TEMPLATE = 'systems/synthicide/templates/dialog/action-roll-dialog.hbs';
 const ACTION_ROLL_DIALOG_ICON = 'systems/synthicide/assets/synthicidePause.svg';
@@ -63,7 +62,7 @@ export function buildDialogDefaults({ actor, subtype, attributeKey, sourceItem, 
     shieldBonus: isMeleeAttack ? targetDefense.shieldBonus : 0,
     weaponClass: String(sourceItem?.system?.weaponClass ?? ''),
     sourceItem,
-    messageMode: getDefaultMessageMode(),
+    messageMode: normalizeMessageMode(game.settings.get('core', 'messageMode')),
     allowSubtypeChange,
     rollModifiers,
   };
@@ -174,11 +173,4 @@ export function extractDialogData(formElement) {
     rangeModifier: parseNumeric(formData.get('rangeModifier'), 0),
     shieldBonus: parseNumeric(formData.get('shieldBonus'), 0),
   };
-}
-
-
-
-function getDefaultMessageMode() {
-  const modeFromCore = game.settings.get('core', 'messageMode');
-  return normalizeMessageMode(modeFromCore);
 }

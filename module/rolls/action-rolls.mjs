@@ -1,15 +1,12 @@
-import { localize } from './roll-utils.mjs';
-import { prepareChallengeCardData } from './challenge-card-data.mjs';
-import { prepareDamageCardData } from './damage-card-data.mjs';
+import { localize, normalizeMessageMode } from './roll-utils.mjs';
 import { getControlledActor } from '../helpers/get-controlled-actor.mjs';
 import { renderActionRollDialog, buildDialogDefaults } from './dialogs.mjs';
 import { executeAttackActionRoll, getActorToken } from './attack-rolls.mjs';
 import { executeDemolitionActionRoll, getDemolitionRollAttributeKey } from './demolition-rolls.mjs';
-import { createActionMessage, normalizeMessageMode } from './cards.mjs';
-export { createActionMessage };
 import { getActionAttributeKey, getActorAttributeValue } from './modifiers.mjs';
 import { buildRollContext } from './roll-context.mjs';
 import { SpecializationData } from './specialization-data.mjs';
+import { SynthicideChatMessage } from '../documents/synthicide-chat-message.mjs';
 
 const CARD_TEMPLATE = 'systems/synthicide/templates/chat/action-roll-card.hbs';
 const SUBTYPES = {
@@ -72,50 +69,52 @@ export async function rollVehicleWeaponDamageCard({ actor, sourceItem, messageMo
   const bonusDamage = dieValue * (dmgMultiplier - 1);
   const totalDamage = dieValue + bonusDamage;
 
-  const cardData = prepareDamageCardData({
-    input: {
-      d10: dieValue,
-      damageBonus: bonusDamage,
-      baseDamageBonus: 0,
-      total: totalDamage,
-      source: sourceItem.name ?? '',
-      lethal: 0,
-      hideAttributeRow: true,
-      sourceItemUuid: sourceItem.uuid,
-      messageMode: normalizedMode,
-      userId: game.user.id,
-      dmgMultiplier
-    },
-    actor,
-    item: sourceItem,
+  // Pack the variables straight into a systemData footprint matching vehicle configurations
+  const systemData = {
+    subtype: 'vehicleDamage',
+    userId: game.user.id,
+    messageMode: normalizedMode,
+    
+    d10: dieValue,
+    total: totalDamage,
+    extraDamageDice: 0,
     attributeValue: 0,
-    rollData: {
-      attributeValue: 0,
-      damageBonus: bonusDamage,
-      hideAttributeRow: true,
-    },
-    overrides: {
-      title: localize('SYNTHICIDE.Roll.Card.TitleDamage'),
-      flavor: localize('SYNTHICIDE.Roll.Card.VehicleWeaponAutoHitFlavor', {
-        item: sourceItem.name ?? '',
-      }),
-      metadataRows: [
-        { label: localize('SYNTHICIDE.Roll.Card.SourceAttack'), value: sourceItem.name ?? '' },
-        { label: localize('SYNTHICIDE.Roll.Card.VehicleWeaponMultiplier'), value: `x${dmgMultiplier}` },
-      ],
-    },
+    specialAmmoUsed: 'none',
+    
+    damageBonus: bonusDamage,
+    lethal: 0,
+    shockRdBonus: 0,
+    baneDamageBonus: 0,
+    doubleShotBonus: 0,
+    slugShotActive: false,
+    baseDamageBonus: 0,
+    hideAttributeRow: true,
+    dmgMultiplier: dmgMultiplier,
+    
+    source: sourceItem.name ?? '',
+    actorUuid: actor.uuid,
+    sourceItemUuid: sourceItem.uuid,
+    sourceMessageId: null,
+    
+    clamped: false,
+    rawTotal: totalDamage,
+    
+    actorModifierTotal: 0,
+    modifierDetails: [],
+    specialization: {}
+  };
+
+  // Dispatch straight to the universal document-driven message router
+  return SynthicideChatMessage.createActionMessage({ 
+    actor, 
+    roll: dieRoll,
+    messageMode: normalizedMode,
+    systemData,
+    type: 'damage'
   });
-
-  return createActionMessage({ actor, roll: dieRoll, messageMode: normalizedMode, cardData, template: CARD_TEMPLATE });
 }
 
-export function registerActionRollHooks() {
-  Hooks.on('renderChatMessageHTML', activateActionRollChatListeners);
-}
-
-
-
-async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
+export async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
   if (!sourceMessage) {
     console.warn('executeDerivedDamageRoll called without sourceMessage');
     return null;
@@ -189,19 +188,74 @@ async function executeDerivedDamageRoll({ sourceMessage, userMessageMode }) {
     specialAmmoUsed: messageRollData.specialAmmoUsed ?? 'none',
     messageMode,
     userId: game.user.id,
+    rollModifiers: messageRollData.rollModifiers
   } });
 
   // attach rollData snapshot to context for completeness
-  ctx.rollData = { attribute: damageAttributeValue, d10: messageRollData.d10, damageBonus: messageRollData.damageBonus };
+  ctx.rollData.attribute = damageAttributeValue;
+  ctx.rollData.d10 = messageRollData.d10;
+  ctx.rollData.damageBonus = messageRollData.damageBonus;
+  ctx.prepareRoll({ includeSpecialization: true }); //needed?
+
+  // Inject any calculated actor totals dynamically into the damage total calculation
+  const actorModifierTotal = Number(ctx.rollData.actorModifierTotal ?? 0);
+  const correctedDamageTotal = damageTotal + actorModifierTotal;
+  ctx.input.total = correctedDamageTotal;
+  ctx.rollData.total = correctedDamageTotal;
 
   // Propagate special ammo choice into card input
   ctx.input.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
-  const cardData = prepareDamageCardData({ input: ctx.input, actor, item: null, rollResult: extraDamageDice > 0 ? extraDamageRoll : null, attributeValue: damageAttributeValue, rollData: ctx.rollData, baseDamageBonus: Number(ctx.input.baseDamageBonus ?? 0) });
 
-  return createActionMessage({ actor, roll: extraDamageDice > 0 ? extraDamageRoll : null, messageMode, cardData, template: CARD_TEMPLATE });
+  // 1. ASSEMBLE SYSTEM DATA: Map your variables straight to the modern DataModel fields
+  const systemData = {
+    subtype: 'damage',
+    userId: game.user.id,
+    messageMode: messageMode,
+    
+    // Core dice values & math bases
+    d10: Number(messageRollData.d10 ?? 0),
+    total: correctedDamageTotal,
+    extraDamageDice: extraDamageDice,
+    attributeValue: damageAttributeValue,
+    specialAmmoUsed: ctx.input.specialAmmoUsed,
+    
+    // Layout presentation modifiers
+    damageBonus: Number(messageRollData.damageBonus ?? 0),
+    lethal: effectiveLethal,
+    shockRdBonus: Number(messageRollData.shockRdBonus ?? 0),
+    baneDamageBonus: Number(messageRollData.baneDamageBonus ?? 0),
+    doubleShotBonus: Number(messageRollData.doubleShotBonus ?? 0),
+    slugShotActive: Boolean(messageRollData.slugShotActive),
+    baseDamageBonus: Number(ctx.input.baseDamageBonus ?? 0),
+    hideAttributeRow: messageIsPlanted,
+    dmgMultiplier: 0, 
+    
+    // Core structural identity tracking pointers
+    source: sourceMessage?.getSpeakerAlias?.() ?? sourceMessage.speaker?.alias ?? sourceMessage.id,
+    actorUuid: actor.uuid,
+    sourceItemUuid: messageRollData.sourceItemUuid ?? null,
+    sourceMessageId: sourceMessage.id,
+    
+    // Capping fields for template context states
+    clamped: false, 
+    rawTotal: damageTotal + actorModifierTotal,
+    
+    // Subsystem evaluation structures
+    actorModifierTotal: actorModifierTotal,
+    modifierDetails: Array.isArray(ctx.rollData.modifierDetails) ? ctx.rollData.modifierDetails : [],
+    specialization: specializationSource
+   };
+
+  // 2. DISPATCH TO ROUTER: Hand the plain object block straight to your modern Document Creator
+  return SynthicideChatMessage.createActionMessage({ 
+    actor, 
+    roll: extraDamageDice > 0 ? extraDamageRoll : null,
+    messageMode,
+    systemData // This triggers modern local RAM validation inside DamageCardSystemData flawlessly!
+  });
 }
 
-async function executeOpposedChallengeRoll({ sourceMessage }) {
+export async function executeOpposedChallengeRoll({ sourceMessage }) {
   if (!sourceMessage) {
     console.warn('executeOpposedChallengeRoll called without sourceMessage');
     return null;
@@ -314,19 +368,27 @@ async function executeChallengeActionRoll({ ctx } = {}) {
   const actorObj = ctx.actor ?? null;
   const messageMode = normalizeMessageMode(ctx.input.messageMode);
   const difficulty = Number(ctx.input.difficulty ?? 6);
+  
+  // 1. Evaluate the authentic dice check natively on the client
   const evaluatedRoll = await new Roll('1d10 + @attribute + @misc + @modifiers', ctx.rollData).evaluate();
+  const d10Value = Number(evaluatedRoll.dice[0].results[0].result ?? 0);
+  const finalTotal = Number(evaluatedRoll.total ?? 0);
 
-  // Propagate special ammo choice into card input
-  ctx.input.specialAmmoUsed = String(ctx.getAmmoInfo()?.specialAmmoUsed ?? 'none');
-  const cardData = prepareChallengeCardData({
-    input: ctx.input,
-    actor: actorObj,
-    rollResult: evaluatedRoll,
-    attributeValue: ctx.rollData.attribute,
+  // 2. Package data fields matching our strict DataModel configuration
+  const systemData = {
+    subtype: "challenge",
+    attribute: ctx.attributeKey || "combat",
     difficulty,
-    rollData: ctx.rollData,
-  });
-  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, cardData, template: CARD_TEMPLATE });
+    total: finalTotal,
+    d10: d10Value,
+    misc: Number(ctx.rollData.misc ?? 0),
+    modifiers: Number(ctx.rollData.modifiers ?? 0),
+    attributeValue: Number(ctx.rollData.attribute ?? 0),
+    actorUuid: actorObj?.uuid ?? null,
+    actorName: actorObj?.name ?? ""
+  };
+
+  return SynthicideChatMessage.createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData, type: "challenge"  });
 }
 
 async function executeDriverVelocityActionRoll({ ctx } = {}) {
@@ -335,48 +397,30 @@ async function executeDriverVelocityActionRoll({ ctx } = {}) {
   const messageMode = normalizeMessageMode(ctx.input.messageMode);
   const difficulty = Number(ctx.input.difficulty ?? 6);
   const velocity = Number(foundry.utils.getProperty(actorObj, 'system.velocity') ?? 0);
-
+  
   ctx.rollData.velocity = velocity;
+  ctx.rollData.attributeValue = velocity; 
+  
+  // 1. Evaluate the velocity roll formula
   const evaluatedRoll = await new Roll('1d10 + @velocity + @misc + @modifiers', ctx.rollData).evaluate();
+  const d10Value = Number(evaluatedRoll.dice[0]?.results?.[0]?.result ?? 0);
+  const finalTotal = Number(evaluatedRoll.total ?? 0);
 
-  const cardData = prepareChallengeCardData({
-    input: ctx.input,
-    actor: actorObj,
-    rollResult: evaluatedRoll,
-    attributeValue: velocity,
+  // 2. Map snapshot payload straight to your centralized Challenge schema structure!
+  const systemData = {
+    subtype: "challenge", // Map to challenge schema class natively
+    attribute: "velocity", // Overrides attribute name so our model triggers velocity row translations
     difficulty,
-    rollData: {
-      ...ctx.rollData,
-      attributeValue: velocity,
-    },
-  });
+    total: finalTotal,
+    d10: d10Value,
+    misc: Number(ctx.rollData.misc ?? 0),
+    modifiers: Number(ctx.rollData.modifiers ?? 0),
+    attributeValue: velocity,
+    actorUuid: actorObj?.uuid ?? null,
+    actorName: actorObj?.name ?? ""
+  };
 
-  cardData.title = localize('SYNTHICIDE.Roll.Card.TitleDriverVelocity');
-  cardData.flavor = localize('SYNTHICIDE.Roll.Card.DefaultFlavorDriverVelocity');
-  cardData.showEffectOutcomeRow = false;
-  cardData.showTotalRow = true;
-  delete cardData.effectText;
-  delete cardData.outcomeLabel;
-  delete cardData.outcomeClass;
-  cardData.showOpposedButton = false;
-  if (Array.isArray(cardData.metadataRows)) {
-    const labelsToHide = new Set([
-      localize('SYNTHICIDE.Roll.Card.Effect'),
-      localize('SYNTHICIDE.Roll.Card.Difficulty'),
-    ]);
-    cardData.metadataRows = cardData.metadataRows.filter((row) => !labelsToHide.has(row?.label));
-  }
-  if (Array.isArray(cardData.equationTerms) && cardData.equationTerms.length >= 2) {
-    cardData.equationTerms[0] = {
-      label: localize('SYNTHICIDE.Vehicle.Velocity'),
-      value: velocity,
-    };
-    cardData.equationTerms = cardData.equationTerms.filter((term, index) => (
-      index !== 1 && term?.label !== localize('SYNTHICIDE.Roll.Card.AttributeValue')
-    ));
-  }
-
-  return createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, cardData, template: CARD_TEMPLATE });
+  return SynthicideChatMessage.createActionMessage({ actor: actorObj, roll: evaluatedRoll, messageMode, systemData, type: 'challenge' });
 }
 
 async function handleOtherRoll({ _actor, _input, _sourceItem, subtype }) {
@@ -384,69 +428,7 @@ async function handleOtherRoll({ _actor, _input, _sourceItem, subtype }) {
   return null;
 }
 
-function activateActionRollChatListeners(message, htmlElement) {
-  if (!htmlElement || typeof htmlElement.querySelectorAll !== 'function' || typeof htmlElement.addEventListener !== 'function') return;
-  if (!message) {
-    console.warn('activateActionRollChatListeners called without message', { htmlElement });
-    return;
-  }
-  const messageRollData = message.getCardPayload?.();
-  if (!messageRollData || (messageRollData.subtype !== SUBTYPES.ATTACK
-    && messageRollData.subtype !== SUBTYPES.CHALLENGE
-    && messageRollData.subtype !== SUBTYPES.DEMOLITION)) return;
-
-  const followupAllowed = canExecuteFollowup(message);
-  if (htmlElement.dataset.synthicideActionBound === 'true') return;
-  htmlElement.dataset.synthicideActionBound = 'true';
-
-  htmlElement.addEventListener('click', (event) => {
-    const button = event.target?.closest?.('[data-action]');
-    if (!button) return;
-
-    const action = button.dataset.action;
-    if (action !== 'rollDamage' && action !== 'rollOpposed') return;
-
-    if (action === 'rollDamage' && !followupAllowed) {
-      event.preventDefault();
-      ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NotPermitted'));
-      return;
-    }
-
-    onActionRollCardClick(event, message);
-  });
-}
-
-async function onActionRollCardClick(event, message) {
-  const button = event.target?.closest?.('[data-action]');
-  if (!button || button.disabled) return;
-
-  if (!message) {
-    console.warn('onActionRollCardClick called without message');
-    return;
-  }
-
-  const action = button.dataset.action;
-  if (action !== 'rollDamage' && action !== 'rollOpposed') return;
-
-  event.preventDefault();
-  if (action === 'rollDamage' && !canExecuteFollowup(message)) {
-    ui.notifications.warn(localize('SYNTHICIDE.Roll.Warnings.NotPermitted'));
-    return;
-  }
-
-  button.disabled = true;
-  try {
-    if (action === 'rollDamage') {
-      await executeDerivedDamageRoll({ sourceMessage: message });
-    } else {
-      await executeOpposedChallengeRoll({ sourceMessage: message });
-    }
-  } finally {
-    button.disabled = false;
-  }
-}
-
-function canExecuteFollowup(message, user = game.user) {
+export function canExecuteFollowup(message, user = game.user) {
   if (!message) {
     console.warn('canExecuteFollowup called without message');
     return false;

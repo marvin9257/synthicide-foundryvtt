@@ -1,124 +1,126 @@
 /**
- * A lightweight ChatMessage subclass for Synthicide that centralizes
- * card/roll message preprocessing (speaker, system deep-clone, style)
- * and provides convenience helpers for working with action/card payloads.
+ * Modernized Document-Driven ChatMessage subclass for Synthicide.
+ * Strictly mirrors the dnd5e delegation pipeline architecture.
  */
 export class SynthicideChatMessage extends ChatMessage {
-  /**
-   * Intercept message creation to normalise common chat/card fields.
-   * Keep changes minimal: ensure `speaker`, `system` is cloned, and
-   * default `style` is set for roll-like messages.
-   */
-  static async create(data = {}, options = {}) {
-    const chatData = typeof data === 'object' && data ? data : {};
 
-    // Ensure speaker is present when an actor was supplied
-    if (!chatData.speaker && chatData.actor) {
-      chatData.speaker = ChatMessage.getSpeaker({ actor: chatData.actor });
+  /* -------------------------------------------- */
+  /*  Data Preparation & Database Pre-Hooks       */
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  async _preCreate(data, options, user) {
+    if ((await super._preCreate(data, options, user)) === false) return false;
+
+    const updates = {};
+
+    // Automatically resolve missing speaker references before committing to the DB
+    if (!this.speaker.actor && options.actor) {
+      updates.speaker = ChatMessage.getSpeaker({ actor: options.actor });
     }
 
-    // Clone system card data to avoid accidental mutation by callers
-    if (chatData.system && foundry?.utils?.deepClone) {
-      chatData.system = foundry.utils.deepClone(chatData.system);
-    }
-
-    // Default chat style for roll cards when not provided
-    if (typeof chatData.style === 'undefined') {
-      const styles = CONST.CHAT_MESSAGE_STYLES;
-      chatData.style = styles.ROLL ?? styles.OTHER ?? 0;
-    }
-
-    return super.create(chatData, options);
+    this.updateSource(updates);
   }
 
+  /* -------------------------------------------- */
+  /*  Dynamic Client-Side Rendering Loop          */
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  async renderHTML(options = {}) {
+    // 1. Let Core Foundry build the default visual bubble frame naturally
+    const html = await super.renderHTML(options);
+
+    // 2. Guard path: Fallback immediately if this isn't an instantiated system data model type
+    if (!(this.system instanceof foundry.abstract.TypeDataModel)) {
+      return html;
+    }
+
+    // 3. Delegate HTML compilation and inner injection down to the data model
+    if ( typeof this.system?.getHTML === "function" ) {
+      await this.system.getHTML(html, options);
+    }
+
+    // 4. Fire system-specific hooks for module compatibility (like Dice So Nice)
+    Hooks.callAll("synthicide.renderChatMessage", this, html);
+
+    return html;
+  }
+
+
+  /* -------------------------------------------- */
+  /*  Centralized System Enrichment Fallbacks     */
+  /* -------------------------------------------- */
+
   /**
-   * Prepare a chat data object from common card pieces.
-   * This mirrors the previous `buildChatMessageData` but centralizes cloning
-   * and defaults so callers no longer need to duplicate that logic.
+   * Augments the live chat card markup frame for interactive listeners.
+   * @param {HTMLElement} html - The compiled live element node
+   * @protected
    */
-  static prepareData({ actor, content, cardData, whisper } = {}) {
+  async _enrichChatCard(html) {
+    if (!html.classList.contains("synthicide-card")) {
+      html.classList.add("synthicide-card");
+    }
+
+    // Re-establish click toggle expand behaviors for core d10 tray containers safely
+    html.querySelectorAll(".dice-roll").forEach(el => {
+      el.addEventListener("click", event => {
+        event.stopPropagation();
+        el.classList.toggle("expanded");
+      });
+    });
+  }
+
+  /* -------------------------------------------- */
+  /*  Universal Message Creation Factory          */
+  /* -------------------------------------------- */
+
+  /**
+   * Universal Document-Driven Action Message Creator.
+   * Stores raw data parameters into standard database fields to maintain full UI reactivity.
+   */
+  static async createActionMessage({ actor, roll, systemData, messageMode, whisper, type } = {}) {
+    const normalizedMode = CONFIG.ChatMessage.modes?.[messageMode] ? messageMode : 'public';
+    const documentType = type || systemData.subtype || "base";
+
     const chatData = {
       speaker: ChatMessage.getSpeaker({ actor }),
-      content,
-      style: CONST.CHAT_MESSAGE_STYLES.ROLL ?? CONST.CHAT_MESSAGE_STYLES.OTHER ?? 0,
+      type: documentType, // Coordinates data model lookup AND layout styling natively
+      system: systemData,
+      whisper: Array.isArray(whisper) && whisper.length ? whisper : undefined
     };
 
-    chatData.system = foundry?.utils?.deepClone ? foundry.utils.deepClone(cardData?.system ?? {}) : (cardData?.system ?? {});
-    // Prefer `cardData.type` for the ChatMessage `type` (used to select the DataModel),
-    // but prefer `cardData.subtype` for the system-level `subtype` used by templates and logic.
-    const messageType = cardData?.type ?? CONST.BASE_DOCUMENT_TYPE;
-    chatData.type = String(messageType);
-    const systemSubtype = cardData?.subtype ?? cardData?.type ?? '';
-    if (systemSubtype) chatData.system.subtype = String(systemSubtype);
-    if (cardData?.flags) {
-      chatData.flags = foundry?.utils?.deepClone ? foundry.utils.deepClone(cardData.flags) : cardData.flags;
+    if (roll) {
+      chatData.rolls = [roll];
     }
-    if (cardData?.title) chatData.title = cardData.title;
-    if (Array.isArray(whisper) && whisper.length) chatData.whisper = whisper;
-    return chatData;
+
+    return await ChatMessage.implementation.create(chatData, { messageMode: normalizedMode, actor });
   }
 
-  /**
-   * Instance helper to return the standardized card/roll payload for this message.
-   * Mirrors the old `getStandardizedRollData(message)` utility so callers can use
-   * `message.getCardPayload()` instead of importing the utility.
-   */
+  /* -------------------------------------------- */
+  /*  System Backwards-Compatibility Helpers      */
+  /* -------------------------------------------- */
+
   getCardPayload() {
     return this.constructor.getStandardizedRollData(this);
   }
 
-  /** Return the whisper array or undefined. */
-  getWhisper() {
-    return this.whisper ?? undefined;
-  }
-
-  /** Return the total of the first embedded Roll, if any. */
-  getFirstRollTotal() {
-    return this.rolls?.[0]?.total ?? undefined;
-  }
-
-  /** Return speaker alias for convenience. */
-  getSpeakerAlias() {
-    return this.speaker?.alias ?? null;
-  }
-
-  static normalizeMessageMode(mode) {
-    return CONFIG.ChatMessage.modes?.[mode] ? mode : 'public';
-  }
+  getWhisper() { return this.whisper ?? undefined; }
+  getFirstRollTotal() { return this.rolls?.[0]?.total ?? undefined; }
+  getSpeakerAlias() { return this.speaker?.alias ?? null; }
 
   static getStandardizedRollData(message) {
     const type = message.type ?? (message.system?.subtype ?? message.system?.type ?? null);
     const system = message.system?.toObject?.(false) ?? message.system ?? {};
     const legacyFlags = message.flags?.synthicide ?? {};
-    const payload = { ...legacyFlags, ...system };
     return {
       subtype: type,
-      ...payload,
-      userId: payload.userId,
-      messageMode: payload.messageMode,
-      sourceItemUuid: payload.sourceItemUuid,
-      sourceMessageId: payload.sourceMessageId,
+      ...legacyFlags,
+      ...system,
+      userId: system.userId,
+      messageMode: system.messageMode,
+      sourceItemUuid: system.sourceItemUuid,
+      sourceMessageId: system.sourceMessageId,
     };
-  }
-
-  /**
-   * High-level helper to render card HTML (when needed), prepare chat data,
-   * and create the chat message (via `roll.toMessage` when a Roll is provided).
-   */
-  static async createActionMessage({ actor, roll, cardData, template, messageMode, whisper } = {}) {
-    const normalizedMode = this.normalizeMessageMode(messageMode);
-
-    if (roll) {
-      const rollHtml = await roll.render();
-      const cardHtml = await foundry.applications.handlebars.renderTemplate(template, { ...cardData, rollHtml });
-      return roll.toMessage(this.prepareData({ actor, content: cardHtml, cardData, whisper }), {
-        messageMode: normalizedMode,
-        create: true,
-      });
-    }
-
-    const cardHtml = await foundry.applications.handlebars.renderTemplate(template, cardData);
-    const chatData = this.prepareData({ actor, content: cardHtml, cardData, whisper });
-    return this.create(chatData, { messageMode: normalizedMode });
   }
 }

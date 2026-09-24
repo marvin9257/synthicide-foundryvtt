@@ -18,7 +18,7 @@ import  SynthicideCombat from './documents/combat.mjs';
 // Misc Imports
 import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
-import { openSynthicideActionRollDialog, registerActionRollHooks } from './rolls/action-rolls.mjs';
+import { openSynthicideActionRollDialog } from './rolls/action-rolls.mjs';
 import { registerSynthicideChatContextHook, SynthicideChatPopout } from './documents/chatlog.mjs';
 import { registerCombatTrackerApHooks } from './hooks/combat-tracker-ap.mjs';
 import { registerProseMirrorFocusGuard } from './hooks/prosemirror-focus-guard.mjs';
@@ -28,6 +28,7 @@ import SynthicideVirtualTokenRuler from './canvas/synthicide-virtual-token-ruler
 import { SynthicideChatMessage } from './documents/synthicide-chat-message.mjs';
 import {itemPilesIntegration} from './hooks/itemPilesIntegration.js'
 import SynthicideCombatant from './documents/combatant.mjs';
+import { executeAttackActionRoll } from './rolls/attack-rolls.mjs';
 
 const collections = foundry.documents.collections;
 
@@ -51,6 +52,7 @@ const synthicide = {
   utils: {
     rollItemMacro,
     openSynthicideActionRollDialog,
+    executeAttackActionRoll
   },
   models,
 };
@@ -133,7 +135,6 @@ Hooks.once('init', function () {
 
   // Register application/document hooks
   registerSynthicideChatContextHook();
-  registerActionRollHooks();
   registerCombatTrackerApHooks();
   itemPilesIntegration();
 
