@@ -200,14 +200,6 @@ export class SynthicideActor extends foundry.documents.Actor {
   }
 
   /**
-   * Backward-compatible armor equip wrapper.
-   * @param {string} armorItemId - The ID of the armor item to equip.
-   */
-  //async equipArmor(armorItemId) {
-  //  return this.equipExclusiveItemType('armor', armorItemId);
-  //}
-
-  /**
    * @override
    * Return a mutable roll-data snapshot while invoking system roll-data shaping
    * only once.
@@ -243,7 +235,7 @@ export class SynthicideActor extends foundry.documents.Actor {
     return data;
   }
 
-    /**
+  /**
    * Processes incoming damage against the actor, accounting for Force Barriers,
    * standard health reduction, vehicle rules, and conditional Shocking Strike mechanics.
    * @param {number} damage - The raw incoming damage total.
@@ -352,10 +344,7 @@ export class SynthicideActor extends foundry.documents.Actor {
         await this.toggleStatusEffect("bleeding", { active: true });
        
       }
-      //if (this.statuses?.has("dead") || statusToApply === "dead") {
-      //  return this;
-      //}
-       
+             
       if (damageRemaining > 0 || isFlashAmmo) {
         await this._applySpecialAmmoOnHitEffects({ ...options, specialAmmoUsed: specialAmmo });
       }
@@ -387,14 +376,6 @@ export class SynthicideActor extends foundry.documents.Actor {
   }
 
   /**
-   * Handle shocking-strike resolution: calculates RD, performs toughness roll,
-   * applies HP/death outcomes by mutating the passed `updates` object, and
-   * posts the appropriate chat message and flags.
-   * @param {number} damageRemaining - damage reaching HP after barriers
-   * @param {number} preHitPoints - HP value before applying this damage
-   * @param {Object} updates - the update payload being built by damageActor
-   */
-    /**
    * Handle shocking-strike resolution using unified Document-Driven DataModels.
    * Calculates RD, evaluates auto-lethal thresholds, performs toughness checks,
    * and maps data straight into the schema pipeline.
@@ -467,9 +448,6 @@ export class SynthicideActor extends foundry.documents.Actor {
       messageMode: preferredMode, 
       whisper 
     });
-    
-    // Apply health state overrides to updates object literal
-    //this._applyShockOutcomeUpdates({ updates, outcome, preHitPoints, damageRemaining });
 
     // Return the computed outcome so callers can apply client-only visuals.
     return outcome;
