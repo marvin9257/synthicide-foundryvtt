@@ -199,68 +199,49 @@ export class SynthicideItem extends foundry.documents.Item {
 
   async _rollFormulaItem() {
     const item = this;
-    const speaker = ChatMessage.getSpeaker({ actor: item.actor });
+    const messageMode = game.settings.get('core', 'messageMode');
     const description = String(item.system.description ?? '');
     const sanitizedDescription = foundry.utils?.sanitizeHTML ? foundry.utils.sanitizeHTML(description) : description;
 
     if (!item.system.roll?.enabled || !item.system.formula || (item.system.roll.diceSize === "" && item.system.roll.diceBonus === "")) {
-      const cardData = {
-        title: game.i18n.format('SYNTHICIDE.Roll.Card.ItemDescription', { type: item.type, name: item.name }),
+      const systemData = {
         subtype: 'itemDescription',
-        flavor: sanitizedDescription,
+        itemName: item.name ?? '',
+        itemType: item.type ?? '',
+        description: sanitizedDescription,
+        actorUuid: item.actor?.uuid ?? '',
+        sourceItemUuid: item.uuid ?? '',
       };
       return SynthicideChatMessage.createActionMessage({
         actor: item.actor,
         roll: null,
-        cardData,
-        template: 'systems/synthicide/templates/chat/item-description-card.hbs',
-        messageMode: game.settings.get('core', 'messageMode'),
+        systemData,
+        messageMode,
+        type: 'itemDescription',
       });
     }
 
     const rollData = item.getRollData();
     const evaluatedRoll = await new Roll(rollData.formula, rollData.actor).evaluate();
-    const { total, d10, equation, dieClass } = getRollResultSummary(evaluatedRoll);
-    const cardData = {
-      title: game.i18n.format('SYNTHICIDE.Roll.Card.ItemRoll', { type: item.type, name: item.name }),
-      subtype: 'item',
-      equation,
+    const { total, d10 } = getRollResultSummary(evaluatedRoll);
+    const systemData = {
+      subtype: 'itemRoll',
+      itemName: item.name ?? '',
+      itemType: item.type ?? '',
+      formula: String(rollData.formula ?? ''),
       total,
-      dieValue: d10,
-      dieClass,
-      equationTerms: buildItemEquationTerms(rollData, item),
-      showEffectOutcomeRow: false,
-      showDamageButton: false,
-      showOpposedButton: false,
-      flavor: '',
-      metadataRows: [
-        { label: 'Formula', valueHtml: `<code>${foundry.utils.escapeHTML(String(rollData.formula ?? ''))}</code>` },
-      ],
-      flags: {
-        synthicide: {
-          total,
-          dieValue: d10,
-          userId: game.user.id,
-          actorUuid: item.actor?.uuid ?? '',
-          sourceItemUuid: item.uuid ?? '',
-          messageMode: game.settings.get('core', 'messageMode') ?? '',
-        },
-      },
+      d10,
+      storedEquationTerms: buildItemEquationTerms(rollData, item),
+      actorUuid: item.actor?.uuid ?? '',
+      sourceItemUuid: item.uuid ?? '',
     };
 
-    const rollHtml = await evaluatedRoll.render();
-    const cardHtml = await foundry.applications.handlebars.renderTemplate(
-      'systems/synthicide/templates/chat/action-roll-card.hbs',
-      { ...cardData, rollHtml }
-    );
-
-    return evaluatedRoll.toMessage({
-      speaker,
-      content: cardHtml,
-      title: cardData.title,
-      flags: { synthicide: cardData },
-    }, {
-      messageMode: game.settings.get('core', 'messageMode'),
+    return SynthicideChatMessage.createActionMessage({
+      actor: item.actor,
+      roll: evaluatedRoll,
+      systemData,
+      messageMode,
+      type: 'itemRoll',
     });
   }
 

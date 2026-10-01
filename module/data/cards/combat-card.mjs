@@ -28,16 +28,6 @@ function createSpecializationSchema() {
  * Natively provides lethal and weapon proficiency specialization layers.
  */
 export class CombatCardSystemData extends BaseCardSystemData {
-  prepareDerivedData() {
-    super.prepareDerivedData();
-  }
-
-  /** @override */
-  async getHTML(html, options = {}) {
-    // Pass execution cleanly up to BaseCardSystemData
-    await super.getHTML(html, options);
-  }
-
   static defineSchema() {
     const schema = super.defineSchema(); // Inherits actorUuid, actorName, total, subtype, d10, etc.
     
