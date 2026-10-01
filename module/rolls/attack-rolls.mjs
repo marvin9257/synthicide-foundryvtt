@@ -43,8 +43,9 @@ export async function executeAttackActionRoll({ ctx, rollData = null, template }
   // 4. Construct the clean DataModel structural schema
   const cardSystemData = {
     subtype: "attack",
-    lethal: Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(resolvedInput.specialization?.lethalBonus ?? 0),
-    shockRdBonus: Number(sourceItem?.system?.shockRdBonus ?? 0),
+    baseLethalValue: Number(sourceItem?.system?.bonuses?.lethal ?? 0),
+    lethalOverride: Number.isFinite(resolvedInput.lethalOverride) ? resolvedInput.lethalOverride : null,
+    shockRdBonus: Number(sourceItem?.system?.shockRdBonus ?? 0) + Number(resolvedInput.specialization?.shockRdBonus ?? 0),
     hideAttributeRow: Boolean(resolvedInput.isPlantedDemolitionAttack),
     specialization: resolvedInput.specialization ?? {},
 

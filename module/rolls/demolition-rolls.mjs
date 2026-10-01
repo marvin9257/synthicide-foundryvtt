@@ -65,7 +65,7 @@ async function executeThrownDemolitionActionRoll({ ctx, template }) {
   const finalDamageBonus = Number(ctx.input.damageBonus ?? sourceItem?.system?.bonuses?.damage ?? 0);
   const finalBaseDamageBonus = Number(sourceItem?.system?.bonuses?.damage ?? 0);
   const finalLethalValue = Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(specialization?.lethalBonus ?? 0);
-  const finalShockRdBonus = Number(sourceItem?.system?.shockRdBonus ?? 0);
+  const finalShockRdBonus = Number(sourceItem?.system?.shockRdBonus ?? 0) + Number(specialization?.shockRdBonus ?? 0);
 
   // Pack variables directly into the document structure to honor the Explicit Total Persistence Rule
   const cardSystemData = {
@@ -153,7 +153,7 @@ async function executePlantedDemolitionActionRoll({ ctx, plantNumber, template }
   const finalDamageBonus = Number(ctx.input.damageBonus ?? sourceItem?.system?.bonuses?.damage ?? 0);
   const finalBaseDamageBonus = Number(sourceItem?.system?.bonuses?.damage ?? 0);
   const finalLethalValue = Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(specialization?.lethalBonus ?? 0);
-  const finalShockRdBonus = Number(sourceItem?.system?.shockRdBonus ?? 0);
+  const finalShockRdBonus = Number(sourceItem?.system?.shockRdBonus ?? 0) + Number(specialization?.shockRdBonus ?? 0);
 
   // Map snapshot properties cleanly to your standalone document schema definition
   const cardSystemData = {
@@ -290,8 +290,8 @@ async function resolveBlastTargetAttacks({ ctx, specialization, blastTargets, me
       rangeModifier: Number(rollData?.rangeModifier ?? 0),
       attackBonus: Number(baseAttackBonus),
 
-      lethal: Number(sourceItem?.system?.bonuses?.lethal ?? 0) + Number(specialization?.lethalBonus ?? 0),
-      shockRdBonus: Number(sourceItem?.system?.shockRdBonus ?? 0),
+      baseLethalValue: Number(sourceItem?.system?.bonuses?.lethal ?? 0),
+      shockRdBonus: Number(sourceItem?.system?.shockRdBonus ?? 0) + Number(specialization?.shockRdBonus ?? 0),
       hideAttributeRow: isPlanted, // Planted explosives cleanly hide the combat line from layout views
       specialization: specialization,
 
