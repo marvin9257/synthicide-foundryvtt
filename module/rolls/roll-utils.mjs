@@ -2,24 +2,6 @@ import SYNTHICIDE from '../helpers/config.mjs';
 
 const ATTRIBUTE_COMBAT = 'combat';
 
-/**
- * DRY utility to extract messageMode, sourceItemUuid, and sourceMessageId from input/sourceItem.
- * @param {object} params
- * @param {object} params.input - Card input data
- * @param {object|null} params.sourceItem - Source item (optional)
- * @returns {object} { messageMode, sourceItemUuid, sourceMessageId }
- */
-export function extractCardContext({ input = {}, sourceItem = null }) {
-  return {
-    messageMode: input.messageMode ?? 'public',
-    sourceItemUuid: input.sourceItemUuid ?? sourceItem?.uuid ?? '',
-    sourceMessageId: input.sourceMessageId ?? '',
-  };
-}
-
-// `getStandardizedRollData` moved to SynthicideChatMessage; callers should use
-// `message.getCardPayload()` when available. Kept no-op here for compatibility.
-
 export function localize(key, data) {
   return game.i18n.format(key, data);
 }
@@ -155,43 +137,6 @@ export function getRollResultSummary(rollResult) {
     dieClass: getDieClass(d10, 10),
   };
 }
-
-/*export function buildBaseActionCardData({
-  subtype,
-  rollResult,
-  total,
-  equation,
-  dieValue,
-  dieClass,
-  attributeKey,
-  equationTerms,
-  showEffectOutcomeRow = false,
-  showDamageButton = false,
-  showOpposedButton = false,
-  effectText,
-  effectClass,
-  outcomeLabel,
-  outcomeClass,
-  metadataRows = [],
-} = {}) {
-  return {
-    subtype,
-    equation: equation ?? String(rollResult?.result ?? ''),
-    total: Number(total ?? rollResult?.total ?? 0),
-    dieValue: Number(dieValue ?? rollResult?.dice?.[0]?.results?.[0]?.result ?? 0),
-    dieClass: dieClass ?? getDieClass(dieValue ?? rollResult?.dice?.[0]?.results?.[0]?.result ?? 0, 10),
-    attributeKey,
-    equationTerms,
-    showEffectOutcomeRow,
-    showDamageButton,
-    showOpposedButton,
-    effectText,
-    effectClass,
-    outcomeLabel,
-    outcomeClass,
-    metadataRows,
-  };
-}*/
 
 /**
  * Validates and normalizes chat message visibility modes.
