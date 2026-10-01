@@ -88,7 +88,9 @@
       "challenge": {},
       "damage": {},
       "demolition": {},
-      "shock": {}
+      "shock": {},
+      "itemRoll": {},
+      "itemDescription": {}
     }
   },
   "flags": {

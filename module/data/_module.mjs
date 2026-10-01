@@ -26,4 +26,5 @@ export { ChallengeCardSystemData } from './cards/challenge-card.mjs';
 export { CombatCardSystemData } from './cards/combat-card.mjs';
 export { DamageCardSystemData } from './cards/damage-card.mjs'; 
 export { AttackCardSystemData } from './cards/attack-card.mjs'; 
-export { DemolitionCardSystemData } from './cards/demolition-card.mjs'; 
+export { DemolitionCardSystemData } from './cards/demolition-card.mjs';
+export { ItemCardSystemData } from './cards/item-card.mjs'; 

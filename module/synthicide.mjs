@@ -124,7 +124,9 @@ Hooks.once('init', function () {
     challenge: models.ChallengeCardSystemData,
     damage: models.DamageCardSystemData,
     demolition: models.DemolitionCardSystemData,
-    shock: models.ShockCardSystemData
+    shock: models.ShockCardSystemData,
+    itemRoll: models.ItemCardSystemData,
+    itemDescription: models.ItemCardSystemData
   });
 
   // Internal settings used by world migrations

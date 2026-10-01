@@ -2,6 +2,8 @@
  * Modernized Document-Driven ChatMessage subclass for Synthicide.
  * Strictly mirrors the dnd5e delegation pipeline architecture.
  */
+import { normalizeMessageMode } from "../rolls/roll-utils.mjs";
+
 export class SynthicideChatMessage extends ChatMessage {
 
   /* -------------------------------------------- */
@@ -49,29 +51,6 @@ export class SynthicideChatMessage extends ChatMessage {
 
 
   /* -------------------------------------------- */
-  /*  Centralized System Enrichment Fallbacks     */
-  /* -------------------------------------------- */
-
-  /**
-   * Augments the live chat card markup frame for interactive listeners.
-   * @param {HTMLElement} html - The compiled live element node
-   * @protected
-   */
-  async _enrichChatCard(html) {
-    if (!html.classList.contains("synthicide-card")) {
-      html.classList.add("synthicide-card");
-    }
-
-    // Re-establish click toggle expand behaviors for core d10 tray containers safely
-    html.querySelectorAll(".dice-roll").forEach(el => {
-      el.addEventListener("click", event => {
-        event.stopPropagation();
-        el.classList.toggle("expanded");
-      });
-    });
-  }
-
-  /* -------------------------------------------- */
   /*  Universal Message Creation Factory          */
   /* -------------------------------------------- */
 
@@ -80,8 +59,8 @@ export class SynthicideChatMessage extends ChatMessage {
    * Stores raw data parameters into standard database fields to maintain full UI reactivity.
    */
   static async createActionMessage({ actor, roll, systemData, messageMode, whisper, type } = {}) {
-    const normalizedMode = CONFIG.ChatMessage.modes?.[messageMode] ? messageMode : 'public';
-    const documentType = type || systemData.subtype || "base";
+    const normalizedMode = normalizeMessageMode(messageMode);
+    const documentType = type || systemData?.subtype || "base";
 
     const chatData = {
       speaker: ChatMessage.getSpeaker({ actor }),
@@ -117,10 +96,6 @@ export class SynthicideChatMessage extends ChatMessage {
       subtype: type,
       ...legacyFlags,
       ...system,
-      userId: system.userId,
-      messageMode: system.messageMode,
-      sourceItemUuid: system.sourceItemUuid,
-      sourceMessageId: system.sourceMessageId,
     };
   }
 }

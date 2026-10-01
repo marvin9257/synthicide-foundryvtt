@@ -36,7 +36,7 @@ export class BaseCardSystemData extends foundry.abstract.TypeDataModel {
 
   get templateContext() {
     return {
-      type: this.subtype || this.type,
+      type: this.subtype,
       title: this.title ?? "",
       flavor: this.flavor ?? "",
       equation: this.equation ?? "",
@@ -87,7 +87,7 @@ export class BaseCardSystemData extends foundry.abstract.TypeDataModel {
 
     // 6. Apply shared architectural styling anchors directly onto the live wrapper frame
     if (!html.classList.contains("synthicide-card")) {
-      html.classList.add("synthicide-card", `subtype-${this.subtype || this.type}`);
+      html.classList.add("synthicide-card", `subtype-${this.subtype}`);
     }
 
     // 7. Bind shared layout interaction animations (like expanding dice boxes)
