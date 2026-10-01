@@ -1,3 +1,13 @@
+## [1.3.5](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.4...1.3.5) (2026-10-01)
+
+
+### Bug Fixes
+
+* add demolition placement bonuses to chat metadata ([ea6bf96](https://github.com/marvin9257/synthicide-foundryvtt/commit/ea6bf96a34f66a6874f66f35873133fbf18048ea))
+* address bug with shockRDBonus for specialization ([88c009f](https://github.com/marvin9257/synthicide-foundryvtt/commit/88c009f3122fcef6d14166334e8acf29e520a4a7))
+* cleanup actor file ([cf23d73](https://github.com/marvin9257/synthicide-foundryvtt/commit/cf23d73693fdbb4c0fea1e8aaa8ead6690f41af9))
+* fix item rolls now that chat cards have migrated ([04ee08a](https://github.com/marvin9257/synthicide-foundryvtt/commit/04ee08a8ede6322bdf570f3598d2d852a63d9971))
+
 ## [1.3.4](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.3...1.3.4) (2026-09-24)
 
 
