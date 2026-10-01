@@ -86,9 +86,9 @@ export function hasWeaponFeature(sourceItem, featureKey) {
 /**
  * Build standardized metadata rows for weapon specialization traceability.
  */
-export function buildWeaponSpecializationMetadataRows({ input = {}, includeAttackBonus = false, includeDamageBonus = false, includeLethalBonus = false, includeShockRdBonus = false } = {}) {
+export function buildWeaponSpecializationMetadataRows({ input = {}, includeAttackBonus = false, includeDamageBonus = false, includeLethalBonus = false, includeShockRdBonus = false, includeDemolitionThrow = false, includeDemolitionPlacement = false } = {}) {
   const specializationData = SpecializationData.fromInput(input);
-  const { key, level, attackBonus, damageBonus, lethalBonus, shockRdBonus, description } = specializationData.toCardPayload();
+  const { key, level, attackBonus, damageBonus, lethalBonus, shockRdBonus, demolitionThrow, demolitionPlacement, description } = specializationData.toCardPayload();
 
   const hasSpecializationDescriptor = Boolean(key || level || description);
   if (!hasSpecializationDescriptor) return [];
@@ -111,6 +111,12 @@ export function buildWeaponSpecializationMetadataRows({ input = {}, includeAttac
   const bonusParts = [];
   if (includeAttackBonus && attackBonus !== 0) bonusParts.push(`ATT ${formatSignedNumber(attackBonus)}`);
   if (includeDamageBonus && damageBonus !== 0) bonusParts.push(`DMG ${formatSignedNumber(damageBonus)}`);
+  if (includeDemolitionThrow && demolitionThrow !== 0) {
+    bonusParts.push(`${game.i18n.localize('SYNTHICIDE.Roll.Card.DemolitionThrowBonus')} ${formatSignedNumber(demolitionThrow)}`);
+  }
+  if (includeDemolitionPlacement && demolitionPlacement !== 0) {
+    bonusParts.push(`${game.i18n.localize('SYNTHICIDE.Roll.Card.DemolitionPlacementBonus')} ${formatSignedNumber(demolitionPlacement)}`);
+  }
   if (bonusParts.length) {
     rows.push({
       label: game.i18n.localize('SYNTHICIDE.Roll.Card.WeaponSpecializationBonuses'),
@@ -125,48 +131,6 @@ export function buildWeaponSpecializationMetadataRows({ input = {}, includeAttac
     rows.push({
       label: game.i18n.localize('SYNTHICIDE.Roll.Card.WeaponSpecializationEffects'),
       value: effectParts.join(' · '),
-    });
-  }
-
-  return rows;
-}
-
-/**
- * Build metadata rows for demolition specialization traceability.
- */
-export function buildDemolitionSpecializationMetadataRows({ input = {} } = {}) {
-  const specializationData = SpecializationData.fromInput(input);
-  const { key, level, description, demolitionThrow: throwBonus, demolitionPlacement: placementBonus } = specializationData.toCardPayload();
-
-  if (!key && !level && !throwBonus && !placementBonus) return [];
-
-  const rows = [];
-  const descriptorName = String(description || (key ? formatSpecializationName(key) : '')).trim();
-  const descriptorValue = description
-    ? descriptorName
-    : (level > 0
-      ? `${descriptorName || game.i18n.localize('SYNTHICIDE.Roll.Card.SpecShort')} (Lvl ${level})`
-      : descriptorName);
-
-  if (descriptorValue) {
-    rows.push({
-      label: game.i18n.localize('SYNTHICIDE.Roll.Card.WeaponSpecialization'),
-      value: descriptorValue,
-    });
-  }
-
-  const bonusParts = [];
-  if (throwBonus !== 0) {
-    bonusParts.push(`${game.i18n.localize('SYNTHICIDE.Roll.Card.DemolitionThrowBonus')} ${formatSignedNumber(throwBonus)}`);
-  }
-  if (placementBonus !== 0) {
-    bonusParts.push(`${game.i18n.localize('SYNTHICIDE.Roll.Card.DemolitionPlacementBonus')} ${formatSignedNumber(placementBonus)}`);
-  }
-
-  if (bonusParts.length) {
-    rows.push({
-      label: game.i18n.localize('SYNTHICIDE.Roll.Card.WeaponSpecializationBonuses'),
-      value: bonusParts.join(' · '),
     });
   }
 

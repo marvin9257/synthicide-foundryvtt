@@ -158,6 +158,8 @@ export class DemolitionCardSystemData extends CombatCardSystemData {
         includeDamageBonus: true,
         includeLethalBonus: true,
         includeShockRdBonus: true,
+        includeDemolitionThrow: this.isThrowMode,
+        includeDemolitionPlacement: this.isPlantedMode,
       })
     );
 
