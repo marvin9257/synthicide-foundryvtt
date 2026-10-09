@@ -4419,3 +4419,126 @@ body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .tab.at
 body:is(.synthicide-style-bold, .synthicide-style-cyberpunk) .synthicide .items-list .item:not(.items-header) {
   padding: 1px 5px 1px 9px; /* even tighter vertical spacing */
 }
+
+/* ============================================================ */
+/* UNIFIED SYSTEM CHAT LOG RESETS (Bypasses Cascade Layers)     */
+/* ============================================================ */
+
+/* 1. Base Configuration for Dark Layout Containers */
+ol.chat-log.theme-dark .chat-message {
+  background-image: none; /* Discards the core default parchment texture asset */
+  box-shadow: none;
+  border-color: var(--synthicide-border-groove, #444);
+  font-family: var(--synthicide-default-font), sans-serif;
+  
+  /* Locally remap core layout text slots over to your custom dark variables */
+  --color-text-primary: var(--form-field-color, #e6e4df);
+  --color-text-dark-primary: var(--form-field-color, #e6e4df);
+  --color-dark-1: var(--form-field-color, #e6e4df);
+  --color-dark-2: var(--form-field-color, #e6e4df);
+}
+
+/* Base System Rolls background fallback settings (Applies only to normal cards) */
+ol.chat-log.theme-dark .chat-message:not(.whisper):not(.blind):not(.emote) {
+  background-color: var(--form-field-bg, #232323);
+}
+
+/* 2. CORE DARK MODE INVERSIONS FOR SPECIALIZED MESSAGE TYPES 
+   Overrides core light values with native-aligned dark color slots */
+ol.chat-log.theme-dark .chat-message.whisper {
+  background-color: #1a1924; /* Slate purple dark tint */
+  border-color: #38354c;      /* High contrast purple border */
+}
+ol.chat-log.theme-dark .chat-message.blind {
+  background-color: #241924; /* Muted magenta dark tint */
+  border-color: #4c354c;
+}
+ol.chat-log.theme-dark .chat-message.emote {
+  background-color: #1e1d1a; /* Warm ash brown dark tint */
+  border-color: #42403a;
+}
+
+/* 3. Header and Text Color Adjustments inside Specialized Backgrounds */
+ol.chat-log.theme-dark .chat-message .message-header .message-sender {
+  color: var(--synthicide-c-tan, #c9c7b8);
+}
+ol.chat-log.theme-dark .chat-message .message-metadata,
+ol.chat-log.theme-dark .chat-message .message-timestamp {
+  color: var(--synthicide-c-beige, #b5b3a4);
+  font-size: 0.72rem; /* Modern balanced font size alignment */
+  opacity: 0.85;
+}
+
+/* 4. Force Action Roll Cards Layouts to Inherit Variables Smoothly */
+ol.chat-log.theme-dark .synthicide-action-roll-card {
+  background: var(--synthicide-c-panel-bg, rgba(255,255,255,0.04));
+  border-color: var(--synthicide-border-groove, #444);
+}
+ol.chat-log.theme-dark .synthicide-action-roll-card .formula-row,
+ol.chat-log.theme-dark .synthicide-action-roll-card .equation-terms li,
+ol.chat-log.theme-dark .synthicide-action-roll-card .metadata-list li {
+  color: var(--form-field-color, #e6e4df);
+}
+
+/* 5. Native Core Roll Detail Blocks Contrast Format Alignments */
+ol.chat-log.theme-dark .dice-roll .dice-formula,
+ol.chat-log.theme-dark .dice-roll .dice-total {
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--synthicide-c-white, #ffffff);
+  border-color: var(--synthicide-border-groove, #444);
+  box-shadow: none;
+}
+ol.chat-log.theme-dark .dice-rolls li.roll.die {
+  color: var(--synthicide-c-white, #ffffff);
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* Interactive footer button states and details layout wrappers overrides */
+ol.chat-log.theme-dark .chat-message .card-footer button,
+ol.chat-log.theme-dark .chat-message .card-details summary {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--synthicide-c-tan, #c9c7b8);
+  border: 1px solid var(--synthicide-border-groove, #444);
+}
+ol.chat-log.theme-dark .chat-message .card-footer button:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 4px var(--synthicide-c-style-accent, #c9c7b8);
+}
+
+/* ============================================================ */
+/* MODE INTERCEPTION & RECONSTRUCTION LAYER                     */
+/* ============================================================ */
+
+/* Rulebook Bold Style Sizing Adjustments */
+body.synthicide-style-bold ol.chat-log.theme-dark .chat-message {
+  border-width: 2px;
+}
+body.theme-dark.synthicide-style-bold ol.chat-log.theme-dark .chat-message:not(.whisper):not(.blind):not(.emote) {
+  border-color: color-mix(in srgb, var(--rb-strong, #8c2a12) 45%, transparent);
+}
+
+/* Cyberpunk Style Sync - Fixes Font Mismatches and Sizes comprehensively */
+body.synthicide-style-cyberpunk ol.chat-log .chat-message,
+body.synthicide-style-cyberpunk ol.chat-log .chat-message .message-sender,
+body.synthicide-style-cyberpunk ol.chat-log .chat-message .message-timestamp,
+body.synthicide-style-cyberpunk ol.chat-log .synthicide-action-roll-card .card-title,
+body.synthicide-style-cyberpunk ol.chat-log .synthicide-action-roll-card .card-details summary,
+body.synthicide-style-cyberpunk ol.chat-log .synthicide-action-roll-card .card-footer button {
+  font-family: var(--cp-display-font, "Orbitron", sans-serif);
+}
+
+/* Balance font sizes across your custom elements */
+body.synthicide-style-cyberpunk ol.chat-log .chat-message .message-sender {
+  font-size: 0.95rem;
+}
+body.synthicide-style-cyberpunk ol.chat-log .chat-message .synthicide-action-roll-card .card-title {
+  font-size: 0.88rem; /* Scaled down slightly for ideal typeface spacing */
+  letter-spacing: 0.04em;
+}
+body.synthicide-style-cyberpunk ol.chat-log .chat-message .synthicide-action-roll-card .card-footer button {
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+}
+body.theme-dark.synthicide-style-cyberpunk ol.chat-log.theme-dark .chat-message:hover {
+  box-shadow: inset 3px 0 var(--cp-alt, #ffd35a);
+}
