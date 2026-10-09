@@ -54,43 +54,45 @@
     </div>
   {{/if}}
 
-  <details class="card-details">
-    <summary>{{localize "SYNTHICIDE.Roll.Card.ShowDetails"}}</summary>
-    <div class="formula-row">
-      <strong>{{localize "SYNTHICIDE.Roll.Card.Equation"}}:</strong>
-      <span>{{equation}}</span>
-    </div>
+  {{#unless (eq type "itemDescription")}}
+    <details class="card-details">
+      <summary>{{localize "SYNTHICIDE.Roll.Card.ShowDetails"}}</summary>
+      <div class="formula-row">
+        <strong>{{localize "SYNTHICIDE.Roll.Card.Equation"}}:</strong>
+        <span>{{equation}}</span>
+      </div>
 
-    {{#if equationTerms.length}}
-      <ul class="equation-terms">
-        {{#each equationTerms as |term|}}
-          <li>
-            <strong>{{term.label}}:</strong>
-            {{#if term.valueHtml}}
-              {{{term.valueHtml}}}
-            {{else}}
-              {{term.value}}
-            {{/if}}
-          </li>
-        {{/each}}
-      </ul>
-    {{/if}}
+      {{#if equationTerms.length}}
+        <ul class="equation-terms">
+          {{#each equationTerms as |term|}}
+            <li>
+              <strong>{{term.label}}:</strong>
+              {{#if term.valueHtml}}
+                {{{term.valueHtml}}}
+              {{else}}
+                {{term.value}}
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      {{/if}}
 
-    {{#if metadataRows.length}}
-      <ul class="metadata-list">
-        {{#each metadataRows as |row|}}
-          <li>
-            <strong>{{row.label}}:</strong>
-            {{#if row.valueHtml}}
-              <span class="metadata-value">{{{row.valueHtml}}}</span>
-            {{else}}
-              <span class="metadata-value">{{row.value}}</span>
-            {{/if}}
-          </li>
-        {{/each}}
-      </ul>
-    {{/if}}
-  </details>
+      {{#if metadataRows.length}}
+        <ul class="metadata-list">
+          {{#each metadataRows as |row|}}
+            <li>
+              <strong>{{row.label}}:</strong>
+              {{#if row.valueHtml}}
+                <span class="metadata-value">{{{row.valueHtml}}}</span>
+              {{else}}
+                <span class="metadata-value">{{row.value}}</span>
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </details>
+  {{/unless}}
 
   {{#if showDamageButton}}
     <footer class="card-footer">

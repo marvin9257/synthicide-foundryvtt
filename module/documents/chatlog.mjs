@@ -1,4 +1,30 @@
-// Use `message.getCardPayload()` on SynthicideChatMessage for standardized payloads.
+
+/**
+ * Modern Application V2 ChatLog Override subclass for Synthicide.
+ * Achieves pure, seamless Pattern 3 theme reactivity through options pipeline inheritance.
+ */
+export class SynthicideChatLog extends foundry.applications.sidebar.tabs.ChatLog {
+
+  /** @override */
+  static PARTS = {
+    log: {
+      template: "systems/synthicide/templates/chat/chat-log-view.hbs",
+      templates: ["systems/synthicide/templates/chat/notifications.hbs"]
+    },
+    input: {
+      template: "templates/sidebar/tabs/chat/input.hbs"
+    }
+  };
+
+  /** @override */
+  async _prepareOptions(options) {
+    const prepared = await super._prepareOptions(options);
+    prepared.classes.push("synthicide-chat-panel");
+    return prepared;
+  }
+
+}
+
 /**
  * The chat popout
  * @extends {ChatPopout}

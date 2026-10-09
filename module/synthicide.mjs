@@ -19,7 +19,7 @@ import  SynthicideCombat from './documents/combat.mjs';
 import { migrateWorld, registerMigrationSettings } from './data/migrations.mjs';
 import {SynthicideGamePause} from './documents/pause.mjs';
 import { openSynthicideActionRollDialog } from './rolls/action-rolls.mjs';
-import { registerSynthicideChatContextHook, SynthicideChatPopout } from './documents/chatlog.mjs';
+import { registerSynthicideChatContextHook, SynthicideChatLog, SynthicideChatPopout } from './documents/chatlog.mjs';
 import { registerCombatTrackerApHooks } from './hooks/combat-tracker-ap.mjs';
 import { registerProseMirrorFocusGuard } from './hooks/prosemirror-focus-guard.mjs';
 import { registerVirtualGridOverlay, safeRenderVirtualGrid } from './canvas/virtual-grid-overlay.mjs';
@@ -170,6 +170,9 @@ Hooks.once('init', function () {
 
   //Game pause icon change
   CONFIG.ui.pause = SynthicideGamePause;
+
+  //Custom Chat log so that syles are respectd
+  CONFIG.ui.chat = SynthicideChatLog;
 
   // Add custom chat popout class.
   CONFIG.ChatMessage.popoutClass = SynthicideChatPopout;

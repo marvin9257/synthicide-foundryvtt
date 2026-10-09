@@ -1,5 +1,5 @@
 import { BaseCardSystemData } from "./base-card.mjs";
-import { getDegreeLabel, getDifficultyLabel } from "../../rolls/roll-utils.mjs";
+import { getChallengeOutcomeClass, getDegreeLabel, getDifficultyLabel } from "../../rolls/roll-utils.mjs";
 
 const fields = foundry.data.fields;
 const requiredInteger = { required: true, nullable: false, integer: true };
@@ -66,7 +66,7 @@ export class ChallengeCardSystemData extends BaseCardSystemData {
   }
 
   get outcomeClass() {
-    return this.effectValue >= 0 ? "success" : "failure";
+    return getChallengeOutcomeClass(this.effectValue);
   }
 
   get showOpposedButton() {
