@@ -4517,20 +4517,12 @@ body.theme-dark.synthicide-style-bold ol.chat-log.theme-dark .chat-message:not(.
   border-color: color-mix(in srgb, var(--rb-strong, #8c2a12) 45%, transparent);
 }
 
-/* Cyberpunk Style Sync - Fixes Font Mismatches and Sizes comprehensively */
-body.synthicide-style-cyberpunk ol.chat-log .chat-message,
-body.synthicide-style-cyberpunk ol.chat-log .chat-message .message-sender,
-body.synthicide-style-cyberpunk ol.chat-log .chat-message .message-timestamp,
+/* Cyberpunk Style Sync - Fixes Font for titke and buttons */
 body.synthicide-style-cyberpunk ol.chat-log .synthicide-action-roll-card .card-title,
-body.synthicide-style-cyberpunk ol.chat-log .synthicide-action-roll-card .card-details summary,
 body.synthicide-style-cyberpunk ol.chat-log .synthicide-action-roll-card .card-footer button {
   font-family: var(--cp-display-font, "Orbitron", sans-serif);
 }
 
-/* Balance font sizes across your custom elements */
-body.synthicide-style-cyberpunk ol.chat-log .chat-message .message-sender {
-  font-size: 0.95rem;
-}
 body.synthicide-style-cyberpunk ol.chat-log .chat-message .synthicide-action-roll-card .card-title {
   font-size: 0.88rem; /* Scaled down slightly for ideal typeface spacing */
   letter-spacing: 0.04em;
