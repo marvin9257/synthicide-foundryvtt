@@ -1,3 +1,16 @@
+## [1.3.6](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.5...1.3.6) (2026-10-09)
+
+
+### Bug Fixes
+
+* don't show details section on item description chat cards ([6df2d90](https://github.com/marvin9257/synthicide-foundryvtt/commit/6df2d90bf81138401f420025d6a89a45ddce176f))
+* improve cyberpunk style and limit the use of Obitron font for messages ([1c6aad0](https://github.com/marvin9257/synthicide-foundryvtt/commit/1c6aad077c0b8f6972de5f332b15c5fd5b3e86e8))
+* kludge chat messages to respect theme (light/dark) ([6e244cc](https://github.com/marvin9257/synthicide-foundryvtt/commit/6e244ccc1560ca25f5b0178ebb657d068fe1cd4c))
+* make notifications match chat cards ([ca65e88](https://github.com/marvin9257/synthicide-foundryvtt/commit/ca65e884be2bbce5f6b7a38b0b38cae103d16be4))
+* Merge pull request [#21](https://github.com/marvin9257/synthicide-foundryvtt/issues/21) from marvin9257/fix-some-final-cleanup ([d705c1d](https://github.com/marvin9257/synthicide-foundryvtt/commit/d705c1d468d5d1eb6c78fdd6dc890f73aee67ded))
+* missing challenge outcome classification ([8b6b151](https://github.com/marvin9257/synthicide-foundryvtt/commit/8b6b1510a796d7f3bc2a7fb2c2a329eff3575c7d))
+* remove dead code ([ef304ae](https://github.com/marvin9257/synthicide-foundryvtt/commit/ef304ae1627460d06805b9dc49cbc0286d166684))
+
 ## [1.3.5](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.4...1.3.5) (2026-10-01)
 
 
