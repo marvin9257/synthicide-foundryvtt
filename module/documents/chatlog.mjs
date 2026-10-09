@@ -9,12 +9,19 @@ export class SynthicideChatLog extends foundry.applications.sidebar.tabs.ChatLog
   static PARTS = {
     log: {
       template: "systems/synthicide/templates/chat/chat-log-view.hbs",
-      templates: ["templates/sidebar/tabs/chat/notifications.hbs"]
+      templates: ["systems/synthicide/templates/chat/notifications.hbs"]
     },
     input: {
       template: "templates/sidebar/tabs/chat/input.hbs"
     }
   };
+
+  /** @override */
+  async _prepareOptions(options) {
+    const prepared = await super._prepareOptions(options);
+    prepared.classes.push("synthicide-chat-panel");
+    return prepared;
+  }
 
 }
 
