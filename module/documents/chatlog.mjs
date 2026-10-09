@@ -1,4 +1,23 @@
-// Use `message.getCardPayload()` on SynthicideChatMessage for standardized payloads.
+
+/**
+ * Modern Application V2 ChatLog Override subclass for Synthicide.
+ * Achieves pure, seamless Pattern 3 theme reactivity through options pipeline inheritance.
+ */
+export class SynthicideChatLog extends foundry.applications.sidebar.tabs.ChatLog {
+
+  /** @override */
+  static PARTS = {
+    log: {
+      template: "systems/synthicide/templates/chat/chat-log-view.hbs",
+      templates: ["templates/sidebar/tabs/chat/notifications.hbs"]
+    },
+    input: {
+      template: "templates/sidebar/tabs/chat/input.hbs"
+    }
+  };
+
+}
+
 /**
  * The chat popout
  * @extends {ChatPopout}
@@ -116,38 +135,3 @@ function applyChatCardDamage(li, multiplier) {
     ui.notifications.warn("SYNTHICIDE.Roll.Warnings.NoDamageToApply", {localize: true});
   }
 }
-
-/**
- * Programmatically synchronizes theme class lists across all ol.chat-log instances.
- * Call this inside your main system initialization loop during setup.
- */
-export function registerSynthicideChatThemeSync() {
-  
-  // Helper loop function to target all log elements across sidebars and popouts
-  const syncChatLogContainers = (isDark) => {
-    const logs = globalThis.document.querySelectorAll("ol.chat-log");
-    logs.forEach(log => {
-      if (isDark) {
-        log.classList.remove("theme-light");
-        log.classList.add("theme-dark");
-      } else {
-        log.classList.remove("theme-dark");
-        log.classList.add("theme-light");
-      }
-    });
-  };
-
-  // A. Handle class normalization when the sidebar logs load initially
-  Hooks.on("renderChatLog", (_app, _html, _data) => {
-    const isCoreDark = game.settings.get('core', 'uiConfig')?.colorScheme?.interface === 'dark';
-    syncChatLogContainers(isCoreDark);
-  });
-
-  // B. Catch live toggles instantly as they shift in real-time core client panels
-  Hooks.on('clientSettingChanged', (key, value) => {
-    if (key !== "core.uiConfig") return;
-    const isCoreDark = value?.colorScheme?.interface === 'dark';
-    syncChatLogContainers(isCoreDark);
-  });
-}
-
