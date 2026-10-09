@@ -1,3 +1,11 @@
+## [1.3.7](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.6...1.3.7) (2026-10-09)
+
+
+### Bug Fixes
+
+* Merge pull request [#22](https://github.com/marvin9257/synthicide-foundryvtt/issues/22) from marvin9257/marvin9257-patch-1 ([95d795a](https://github.com/marvin9257/synthicide-foundryvtt/commit/95d795afcb8a751d566a4037ec58007ced38a706))
+* Update system.json ([a341be7](https://github.com/marvin9257/synthicide-foundryvtt/commit/a341be72dac771d57dfb34dd7148c4a908045111))
+
 ## [1.3.6](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.5...1.3.6) (2026-10-09)
 
 
