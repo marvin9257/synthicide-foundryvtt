@@ -42,8 +42,54 @@
                 />
               </a>
             </div>
-            <div class='item-label'>{{item.name}}</div>
+            
+            <!-- Unified CSS Layout block replaces style string variables -->
+            <div class='item-label-container'>
+              <div class='item-label'>{{item.name}}</div>
+              
+              {{#if item.powerUsesList}}
+                <ul class='power-uses-tracking'>
+                  {{#each item.powerUsesList as |power|}}
+                    <li class='flexrow power-row'>
+                      <!-- Left Aligned Power Name Title -->
+                      <span class='power-name'>
+                        <i class='fas fa-bolt'></i>{{power.label}}
+                      </span>
+                      
+                      <!-- Right Aligned Harmonized Stepper Layout Framework -->
+                      <div class='resource-content flexrow flex-center flex-between resource-counter'>
+                        <div class='resource-stepper' data-counter-key='powerUse'>
+                          
+                          <!-- Reused Core Subtraction Control Component Button -->
+                          <button type='button' 
+                                  class='resource-step-btn' 
+                                  data-action='decreaseCounter' 
+                                  data-counter-key='powerUse' 
+                                  data-item-id='{{item._id}}' 
+                                  data-power-key='{{power.key}}' 
+                                  aria-label='Decrease {{power.label}}'>-</button>
+                                  
+                          <!-- Reused Standard Counter Display Slot -->
+                          <span class='counter-value'>{{power.count}}</span>
+                          
+                          <!-- Reused Core Addition Control Component Button -->
+                          <button type='button' 
+                                  class='resource-step-btn' 
+                                  data-action='increaseCounter' 
+                                  data-counter-key='powerUse' 
+                                  data-item-id='{{item._id}}' 
+                                  data-power-key='{{power.key}}' 
+                                  aria-label='Increase {{power.label}}'>+</button>
+                                  
+                        </div>
+                      </div>
+                    </li>
+                  {{/each}}
+                </ul>
+              {{/if}}
+            </div>
           </div>
+
           <div class='item-controls'>
             <a
               class='item-control item-edit'

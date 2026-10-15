@@ -6,6 +6,7 @@ import { ICON_MAP } from '../helpers/icons.mjs';
 import { openSynthicideActionRollDialog, rollVehicleWeaponDamageCard } from '../rolls/action-rolls.mjs';
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import { computeHpPercent, deleteDocAction, getEmbeddedDocument, prepareBiographyPartContext, showInfoAction, toggleEffectAction, viewDocAction } from './sheet-utils.mjs';
+import { parseKnowledgePowerOptions } from '../data/commonSchemaUtils.mjs';
 const { api, sheets } = foundry.applications;
 
 /**
@@ -255,8 +256,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     const actorRollData = this.actor.getRollData();
 
-    context.aspect = this.actor.itemTypes.aspect[0] ?? null;
-    context.bioclass = this.actor.itemTypes.bioclass[0] ?? null;
+    context.aspect = this.actor.itemTypes.aspect?.[0] ?? null;
+    context.bioclass = this.actor.itemTypes.bioclass?.[0] ?? null;
     context.aspectBonusSummary = this._buildAspectBonusSummary(context.aspect?.system);
     
     // Iterate through traits as they need special handling
@@ -271,6 +272,21 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           rollData: actorRollData,
         });
       }
+
+      if (i.system.traitType === 'knowledgeArea') {
+        // Parse the dynamic description text options dictionary in real-time
+        const dynamicOptions = parseKnowledgePowerOptions(i.system.description || "");
+        
+        // Convert the schema SetField directly to an array loop template list
+        const activeSetKeys = Array.from(i.system.powersKnown || []);
+        
+        i.powerUsesList = activeSetKeys.map(key => ({
+          key: key,
+          label: dynamicOptions[key] || key,
+          count: Number(i.system.powerUses?.[key] ?? 0) // Read flat integer primitive fields directly
+        }));
+      }
+
       if (i.system.traitType === FEATURE_TYPE.BIOCLASS) {
         bioclassTraits.push(i);
       } else if (i.system.traitType === FEATURE_TYPE.ASPECT) {
@@ -607,6 +623,17 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         current = Number(this.actor.system.foodDays.value ?? 0);
         max = undefined;
         break;
+      case "powerUse": {
+        const { itemId, powerKey } = target.dataset;
+        const item = this.actor.items.get(itemId);
+        if (!item) return;
+
+        path = `system.powerUses.${powerKey}`;
+        current = Number(foundry.utils.getProperty(item, path) ?? 0);
+        
+        // Execute the update directly on the embedded item document instead of the actor
+        return await item.update({ [path]: current + 1 });
+      }
       // Add more cases as needed
       default:
         return;
@@ -637,6 +664,17 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         current = Number(this.actor.system.foodDays.value ?? 0);
         min = this.actor.system.foodDays.min;
         break;
+      case "powerUse": {
+        const { itemId, powerKey } = target.dataset;
+        const item = this.actor.items.get(itemId);
+        if (!item) return;
+
+        path = `system.powerUses.${powerKey}`;
+        current = Number(foundry.utils.getProperty(item, path) ?? 0);
+        
+        // Execute update on the embedded item document with a strict floor clamp of 0
+        return await item.update({ [path]: Math.max(0, current - 1) });
+      }
       // Add more cases as needed
       default:
         return;
@@ -644,6 +682,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     const next = Math.max(min, current - 1);
     await this.actor.update({ [path]: next });
   }
+
   /**
    * Open the trait item sheet for editing
    * @param {PointerEvent} event

@@ -55,10 +55,16 @@ export default class SynthicideTrait extends SynthicideItemBase {
     schema.usesLimit = new fields.StringField({...requiredBlankString});
     schema.overchargeCost = new fields.StringField({...requiredBlankString});
     schema.traitPoints = new fields.NumberField({...requiredInteger, initial: 0});
-    // Which of the powers parsed from `description` (see commonSchemaUtils.parseKnowledgePowerOptions)
-    // the character has learned, keyed by slugified power name.
-    schema.knownPowerKeys = new fields.SetField(new fields.StringField({ required: true, blank: false }), { initial: [] });
+    
+    schema.powersKnown = new fields.SetField(
+      new fields.StringField({ required: true, blank: false }),
+      { initial: [] }
+    );
 
+    schema.powerUses = new fields.ObjectField({
+      initial: {}, 
+      required: true
+    });
     return schema;
   }
 
@@ -67,7 +73,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
     super.prepareDerivedData();
 
     if (this.traitType === 'knowledgeArea') {
-      this.knownPowerCount = this.knownPowerKeys.size;
+      this.knownPowerCount = Object.keys(this.powerUses || {}).length;
     }
   }
 
@@ -107,6 +113,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
       }
     }
 
+    // 2. Weapon Specialization normalization logic
     if (changed?.system) {
       const nextTraitType = changed.system.traitType ?? this.traitType;
       const nextSpecializationKey = String(changed.system.specializationKey ?? this.specializationKey ?? '').trim();
@@ -125,6 +132,32 @@ export default class SynthicideTrait extends SynthicideItemBase {
 
       if (nextTraitType !== 'weaponProficiency' && nextSpecializationKey) {
         changed.system.specializationKey = '';
+      }
+    }
+
+    // Synchronize powerUses map whenever powersKnown changes
+    if (changed?.system && foundry.utils.hasProperty(changed.system, 'powersKnown')) {
+      const incomingKeys = changed.system.powersKnown;
+      const nextKnownArray = incomingKeys instanceof Set ? Array.from(incomingKeys) : (Array.isArray(incomingKeys) ? incomingKeys : []);
+      const currentUses = changed.system.powerUses ?? this.powerUses ?? {};
+      const synchronizedUses = {};
+
+      for (const key of nextKnownArray) {
+        // Enforce the 0 floor floor boundary directly during setup initialization
+        synchronizedUses[key] = Math.max(0, Number(currentUses[key] ?? 0));
+      }
+      changed.system.powerUses = synchronizedUses;
+    }
+
+    // Clean Counter Floor Safety: Catch all flat or nested primitive update entries
+    if (changed && typeof changed === 'object') {
+      const flatPatch = foundry.utils.flattenObject(changed);
+      for (const [keyPath, rawValue] of Object.entries(flatPatch)) {
+        // Targets simple paths like "system.powerUses.slug" directly without trailing ".value" string checks
+        if (keyPath.startsWith('system.powerUses.') && !keyPath.endsWith('.')) {
+          const validValue = Math.max(0, Math.floor(Number(rawValue) || 0));
+          foundry.utils.setProperty(changed, keyPath, validValue);
+        }
       }
     }
 
