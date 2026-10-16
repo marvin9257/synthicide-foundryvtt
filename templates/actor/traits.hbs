@@ -49,6 +49,10 @@
               
               {{#if item.powerUsesList}}
                 <ul class='power-uses-tracking'>
+                  <li class='flexrow power-header-row'>
+                    <span class='power-name-header'>{{localize "SYNTHICIDE.Item.Trait.PowerHeader"}}</span>
+                    <span class='power-uses-header'>{{localize "SYNTHICIDE.Item.Trait.UsesHeader"}}</span>
+                  </li>
                   {{#each item.powerUsesList as |power|}}
                     <li class='flexrow power-row'>
                       <!-- Left Aligned Power Name Title -->

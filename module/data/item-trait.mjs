@@ -55,6 +55,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
     schema.usesLimit = new fields.StringField({...requiredBlankString});
     schema.overchargeCost = new fields.StringField({...requiredBlankString});
     schema.traitPoints = new fields.NumberField({...requiredInteger, initial: 0});
+    schema.addsKnowledgePoints = new fields.BooleanField({ required: true, nullable: false, initial: false });
     
     schema.powersKnown = new fields.SetField(
       new fields.StringField({ required: true, blank: false }),
@@ -95,6 +96,27 @@ export default class SynthicideTrait extends SynthicideItemBase {
   }
 
   /**
+   * Foundry hook: Called before the item is created.
+   * Auto-updates addsKnowledgePoints.
+   *
+   * @param {object} data - The item data being applied to the item
+   * @param {object} options - Additional update options
+   * @param {string} userId - The ID of the user making the update
+   * @returns {Promise<boolean|void>} - Return false to prevent the update
+   * @override
+   */
+  async _preCreate(data, options, userId) {
+    const allowed = await super._preCreate(data, options, userId);
+    if (allowed === false) return false;
+
+    if (this.traitType === 'knowledgeArea') {
+        this.updateSource({ addsKnowledgePoints: true });
+    }
+
+    return allowed;
+  }
+
+  /**
    * DataModel pre-update hook for trait normalization logic.
    * @this {SynthicideTrait}
    * @param {object} changed
@@ -113,7 +135,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
       }
     }
 
-    // 2. Weapon Specialization normalization logic
+    // Weapon Specialization normalization logic
     if (changed?.system) {
       const nextTraitType = changed.system.traitType ?? this.traitType;
       const nextSpecializationKey = String(changed.system.specializationKey ?? this.specializationKey ?? '').trim();
@@ -132,6 +154,22 @@ export default class SynthicideTrait extends SynthicideItemBase {
 
       if (nextTraitType !== 'weaponProficiency' && nextSpecializationKey) {
         changed.system.specializationKey = '';
+      }
+    }
+
+    // Update addsKnowledgePoints
+    if (foundry.utils.hasProperty(changed, "system.traitType")) {
+      const nextTraitType = changed.system.traitType;
+      
+      if (nextTraitType !== this.traitType) {
+        // A REAL change to traitType is occurring right now
+        if (nextTraitType === 'knowledgeArea') {
+          changed.system.addsKnowledgePoints = true;
+        } else {
+          changed.system.addsKnowledgePoints = false;
+          changed.system.powersKnown = [];
+          changed.system.powerUses = {};
+        }
       }
     }
 

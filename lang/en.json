@@ -655,6 +655,8 @@
         "Condition": "Condition",
         "Source": "Source",
         "AddTrait": "Add Trait",
+        "PowerHeader": "Powers",
+        "UsesHeader": "Uses",
         "FIELDS": {
           "level": {"label": "Trait Level"},
           "traitType": {"label": "Trait Type"},
@@ -665,7 +667,8 @@
           "usesLimit": {"label": "Uses Limit"},
           "apCost": {"label": "AP Cost"},
           "range": {"label": "Range"},
-          "knownPowerKeys": {"label": "Known Powers"}
+          "knownPowerKeys": {"label": "Known Powers"},
+          "addsKnowledgePoints": {"label": "Adds Knowledge Points"}
         },
         "TypeLabel": "Trait/Power",
         "TraitLVL": "Level {level} Traits & Powers",

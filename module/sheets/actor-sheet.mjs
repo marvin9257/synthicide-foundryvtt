@@ -216,6 +216,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           }
         }
         break;
+      case 'traits':
+        //await this._prepareItems(context);
+        break;
     }
     return context;
   }
@@ -285,6 +288,10 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           label: dynamicOptions[key] || key,
           count: Number(i.system.powerUses?.[key] ?? 0) // Read flat integer primitive fields directly
         }));
+      } else {
+        // FIX: Cleanly strip the layout object property from the memory instance reference.
+        // This forces Handlebars to evaluate {{#if item.powerUsesList}} as false.
+        i.powerUsesList = null;
       }
 
       if (i.system.traitType === FEATURE_TYPE.BIOCLASS) {

@@ -4725,3 +4725,44 @@ body:not(.theme-dark):not(.synthicide-style-bold):not(.synthicide-style-cyberpun
 body:not(.theme-dark):not(.synthicide-style-bold):not(.synthicide-style-cyberpunk) .synthicide .tracker-label i {
   color: var(--synthicide-c-dark, #191813);
 }
+
+/* Base Power Header Styles (Inherits Light/Dark automatically) */
+.power-header-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.25rem 0.5rem;
+  font-size: var(--font-size-small, 11px);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+  border-bottom: 1px solid currentColor; /* Dynamic line: blends with text color automatically */
+  border-bottom-width: 1px;
+  margin-bottom: 0.25rem;
+}
+
+.power-uses-header {
+  min-width: 66px; /* Matches the width profile of your button steppers */
+  text-align: center;
+}
+
+/* --- Theme Specific Enhancements --- */
+
+/* Rulebook Bold Theme overrides */
+.theme-rulebook-bold .power-header-row,
+[data-theme="rulebook-bold"] .power-header-row {
+  font-weight: 800; /* Extra chunky font profile */
+  font-family: var(--font-family-bold-header, sans-serif);
+  opacity: 0.85; /* crisper contrast */
+  border-bottom-width: 2px; /* Thick bold lines */
+}
+
+/* Cyberpunk Theme overrides */
+.theme-cyberpunk .power-header-row,
+[data-theme="cyberpunk"] .power-header-row {
+  color: var(--color-cyberpunk-neon, #00ffcc); /* Leverages system neon accent */
+  text-shadow: 0 0 4px rgba(0, 255, 204, 0.4);
+  font-family: var(--font-family-mono, monospace); /* Monospace text profile */
+  opacity: 0.9;
+  border-bottom: 1px dashed var(--color-cyberpunk-neon, #00ffcc);
+}
