@@ -295,7 +295,10 @@
           "armorDefense": {"value": {"label": "Armor Defense"}},
           "shockThreshold": {"value": {"label": "Shock Threshold"}},
           "nerveDefense": {"value": {"label": "Nerve Defense"}},
-          "DerivedValues": "Derived Values"
+          "DerivedValues": "Derived Values",
+          "ResetKP": "Rest Knowledge Points and Uses",
+          "ConfirmReset": "Confirm Reset",
+          "ConfirmResetPrompt": "Confirm the reset of knowledge points and use knowledge power counters?"
         }
       },
       "Character": {

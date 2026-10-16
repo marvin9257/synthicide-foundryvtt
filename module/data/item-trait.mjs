@@ -1,5 +1,6 @@
 import SYNTHICIDE from '../helpers/config.mjs';
 import SynthicideItemBase from './base-item.mjs';
+import { parseKnowledgePowerOptions } from './commonSchemaUtils.mjs';
 
 /**
  * Trait item system model.
@@ -73,8 +74,32 @@ export default class SynthicideTrait extends SynthicideItemBase {
   prepareDerivedData() {
     super.prepareDerivedData();
 
+    // 1. Enforce default fallbacks for non-knowledge area traits
+    this.knownPowerCount = 0;
+    this.powerCountersList = null;
+
     if (this.traitType === 'knowledgeArea') {
-      this.knownPowerCount = Object.keys(this.powerUses || {}).length;
+      const activeKeys = Array.from(this.powersKnown || []);
+      this.knownPowerCount = activeKeys.length;
+
+      // 2. Filter and rebuild powerUses in-memory to strip away phantom database keys
+      const rawUses = this.powerUses || {};
+      const synchronizedUses = {};
+      for (const key of activeKeys) {
+        synchronizedUses[key] = Math.max(0, Math.floor(Number(rawUses[key] ?? 0)));
+      }
+      this.powerUses = synchronizedUses;
+
+      // 3. Derived UI View-Model: Drive labels directly out of the description options dictionary
+      // Access description string from the parent Item document wrapper context safely
+      const descriptionText = this.description || "";
+      const dynamicTextLabels = parseKnowledgePowerOptions(descriptionText);
+
+      this.powerCountersList = activeKeys.map(key => ({
+        key: key,
+        label: dynamicTextLabels[key] || key,
+        count: synchronizedUses[key]
+      }));
     }
   }
 
@@ -171,20 +196,6 @@ export default class SynthicideTrait extends SynthicideItemBase {
           changed.system.powerUses = {};
         }
       }
-    }
-
-    // Synchronize powerUses map whenever powersKnown changes
-    if (changed?.system && foundry.utils.hasProperty(changed.system, 'powersKnown')) {
-      const incomingKeys = changed.system.powersKnown;
-      const nextKnownArray = incomingKeys instanceof Set ? Array.from(incomingKeys) : (Array.isArray(incomingKeys) ? incomingKeys : []);
-      const currentUses = changed.system.powerUses ?? this.powerUses ?? {};
-      const synchronizedUses = {};
-
-      for (const key of nextKnownArray) {
-        // Enforce the 0 floor floor boundary directly during setup initialization
-        synchronizedUses[key] = Math.max(0, Number(currentUses[key] ?? 0));
-      }
-      changed.system.powerUses = synchronizedUses;
     }
 
     // Clean Counter Floor Safety: Catch all flat or nested primitive update entries

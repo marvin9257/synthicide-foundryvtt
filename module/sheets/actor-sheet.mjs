@@ -6,7 +6,6 @@ import { ICON_MAP } from '../helpers/icons.mjs';
 import { openSynthicideActionRollDialog, rollVehicleWeaponDamageCard } from '../rolls/action-rolls.mjs';
 import { prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import { computeHpPercent, deleteDocAction, getEmbeddedDocument, prepareBiographyPartContext, showInfoAction, toggleEffectAction, viewDocAction } from './sheet-utils.mjs';
-import { parseKnowledgePowerOptions } from '../data/commonSchemaUtils.mjs';
 const { api, sheets } = foundry.applications;
 
 /**
@@ -79,6 +78,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       editTraitItem: this._editTraitItem,
       deleteTraitItem: this._deleteTraitItem,
       changeEquippedState: this._onChangeEquippedState,
+      resetKP: this._onResetKP
     },
 
     // Custom property that's merged into `this.options`
@@ -274,24 +274,6 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           isOwner: this.document.isOwner,
           rollData: actorRollData,
         });
-      }
-
-      if (i.system.traitType === 'knowledgeArea') {
-        // Parse the dynamic description text options dictionary in real-time
-        const dynamicOptions = parseKnowledgePowerOptions(i.system.description || "");
-        
-        // Convert the schema SetField directly to an array loop template list
-        const activeSetKeys = Array.from(i.system.powersKnown || []);
-        
-        i.powerUsesList = activeSetKeys.map(key => ({
-          key: key,
-          label: dynamicOptions[key] || key,
-          count: Number(i.system.powerUses?.[key] ?? 0) // Read flat integer primitive fields directly
-        }));
-      } else {
-        // FIX: Cleanly strip the layout object property from the memory instance reference.
-        // This forces Handlebars to evaluate {{#if item.powerUsesList}} as false.
-        i.powerUsesList = null;
       }
 
       if (i.system.traitType === FEATURE_TYPE.BIOCLASS) {
@@ -748,6 +730,51 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       { refresh: !CONFIG.SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES.includes(doc.type) }
     );
   }
+
+  /**
+   * Handles resetting Knowledge Points and clearing all power counters to 0.
+   *
+   * @this SynthicideActorSheet
+   * @param {PointerEvent} event   The originating click event
+   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
+   * @protected
+   */
+  static async _onResetKP(event, _target) {
+    event.preventDefault();
+
+    const confirmed = await foundry.applications.api.DialogV2.confirm({
+      window: {
+        title: game.i18n.localize('SYNTHICIDE.Actor.base.FIELDS.ConfirmReset'),
+      },
+      content: `<p>${game.i18n.localize('SYNTHICIDE.Actor.base.FIELDS.ConfirmResetPrompt')}</p>`,
+    });
+    if (!confirmed) return;
+    
+    // 1. Prepare the top-level Actor pool restore payload
+    const actorUpdate = {
+      'system.knowledgePoints.value': this.actor.system.knowledgePoints.max
+    };
+
+    // 2. Locate all knowledgeFocus items currently held by this actor
+    const itemUpdates = [];
+    for (const item of this.actor.itemTypes.trait) {
+      if (item.system.traitType === 'knowledgeArea') {
+        // Clear all tracked integer values for this item back to 0
+        const clearedUses = {};
+        for (const key of Object.keys(item.system.powerUses || {})) {
+          clearedUses[key] = 0;
+        }
+        itemUpdates.push({ _id: item.id, 'system.powerUses': clearedUses });
+      }
+    }
+
+    // 3. Write everything to the database
+    await this.actor.update(actorUpdate);
+    if (itemUpdates.length) {
+      await this.actor.updateEmbeddedDocuments('Item', itemUpdates);
+    }
+  }
+
 
   /***************
    *

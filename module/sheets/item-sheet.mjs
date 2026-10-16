@@ -215,16 +215,6 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
         const dynamicTextLabels = parseKnowledgePowerOptions(this.item.system.description || "");
         context.config.knowledgePowerOptions = dynamicTextLabels;
 
-        // Convert the SetField elements to an array layout list so selection elements read it perfectly
-        const flatKnownList = Array.from(this.item.system.powersKnown || []);
-        context.system.flatKnownArray = flatKnownList;
-
-        // Map selection entries directly out of the flat array list coordinates
-        context.system.powerCountersList = flatKnownList.map(key => ({
-          key: key,
-          label: dynamicTextLabels[key] || key,
-          value: Number(this.item.system.powerUses?.[key] ?? 0)
-        }));
       }
     }
 

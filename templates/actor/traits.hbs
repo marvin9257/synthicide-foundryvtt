@@ -47,13 +47,13 @@
             <div class='item-label-container'>
               <div class='item-label'>{{item.name}}</div>
               
-              {{#if item.powerUsesList}}
+              {{#if item.system.powerCountersList}}
                 <ul class='power-uses-tracking'>
                   <li class='flexrow power-header-row'>
                     <span class='power-name-header'>{{localize "SYNTHICIDE.Item.Trait.PowerHeader"}}</span>
                     <span class='power-uses-header'>{{localize "SYNTHICIDE.Item.Trait.UsesHeader"}}</span>
                   </li>
-                  {{#each item.powerUsesList as |power|}}
+                  {{#each item.system.powerCountersList as |power|}}
                     <li class='flexrow power-row'>
                       <!-- Left Aligned Power Name Title -->
                       <span class='power-name'>

@@ -50,7 +50,7 @@
       <div class='knowledge-column-left'>
         <label class='resource-label'>Known Powers</label>
         <multi-select class='select knowledge-powers' name='system.powersKnown' multiple>
-          {{selectOptions @root.config.knowledgePowerOptions selected=system.flatKnownArray}}
+          {{selectOptions @root.config.knowledgePowerOptions selected=system.powersKnown}}
         </multi-select>
       </div>
 
@@ -62,7 +62,7 @@
             {{#each system.powerCountersList as |power|}}
               <li class='flexrow power-tracker-item'>
                 <span class='tracker-label'><i class='fas fa-bolt'></i>{{power.label}}</span>
-                <input type='number' name='system.powerUses.{{power.key}}' value='{{power.value}}' min='0' />
+                <input type='number' name='system.powerUses.{{power.key}}' value='{{power.count}}' min='0' />
               </li>
             {{/each}}
           </ul>
