@@ -4625,7 +4625,7 @@ body.theme-dark .synthicide .power-name {
 
 .synthicide .power-name i {
   margin-right: 6px;
-  font-size: 0.8rem;
+  font-size: smaller;
   color: var(--synthicide-c-style-accent);
 }
 
