@@ -4570,17 +4570,39 @@ body.theme-dark.synthicide-style-cyberpunk ol.chat-log .chat-message:hover {
 .synthicide .power-uses-tracking {
   list-style: none;
   margin: 4px 0 0 0;
-  padding: 0;
+  padding: 4px 0;
   background: var(--synthicide-c-panel-bg);
+  border: 1px solid var(--synthicide-c-border-subtle);
   border-radius: 4px;
   width: 100%;
+}
+
+/* Base Power Header Styles (Classic Mode) */
+.synthicide .power-header-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px 0;
+  font-family: var(--synthicide-default-font);
+  font-size: smaller;
+  text-transform: uppercase;
+  font-weight: 700;            /* Muted text weight so it steps back */
+  letter-spacing: 0.04em;
+  /*color: var(--synthicide-c-muted); /* Soft neutral grey */
+  opacity: 0.8;
+  border-bottom: none;         /* Discards the loud header divider line */
+  margin-bottom: 2px;
+}
+
+.power-uses-header {
+  min-width: 66px;
+  text-align: center;
 }
 
 .synthicide .power-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 8px;
+  padding: 2px 8px;
   border-bottom: 1px solid var(--synthicide-c-meter-line);
 }
 
@@ -4588,8 +4610,16 @@ body.theme-dark.synthicide-style-cyberpunk ol.chat-log .chat-message:hover {
   border-bottom: none;
 }
 
+/* Classic Mode Contrast Fix: Boost font weight to prevent washed-out text */
 .synthicide .power-name {
-  font-size: var(--reduced-font-size);
+  font-family: var(--synthicide-default-font);
+  font-size: smaller;
+  font-weight: 500;            /* Brought up from 600 to stand out sharply */
+  color: var(--synthicide-c-dark); /* Crisp dark charcoal instead of field-color */
+}
+
+/* Dark mode classic fallback variant stays readable but low-glare */
+body.theme-dark .synthicide .power-name {
   color: var(--form-field-color);
 }
 
@@ -4651,6 +4681,7 @@ body.theme-dark.synthicide-style-cyberpunk ol.chat-log .chat-message:hover {
 }
 
 .synthicide .tracker-label {
+  font-family: var(--synthicide-default-font);
   font-size: var(--reduced-font-size);
   color: var(--form-field-color);
 }
@@ -4726,43 +4757,58 @@ body:not(.theme-dark):not(.synthicide-style-bold):not(.synthicide-style-cyberpun
   color: var(--synthicide-c-dark, #191813);
 }
 
-/* Base Power Header Styles (Inherits Light/Dark automatically) */
-.power-header-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.25rem 0.5rem;
-  font-size: var(--font-size-small, 11px);
-  text-transform: uppercase;
+/* ============================================================ */
+/* THEME OVERRIDES CONFIGURATIONS                               */
+/* ============================================================ */
+
+/* --- Rulebook Bold Theme Overrides --- */
+body.synthicide-style-bold .synthicide .power-uses-tracking {
+  background: var(--rb-cell);
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  border-left: 4px solid var(--rb-accent);
+}
+
+body.synthicide-style-bold .synthicide .power-header-row {
+  /*font-weight: 500;*/            /* Softened weight matching Option 1 */
+  /*opacity: 0.7;*/
+  /*color: var(--synthicide-c-muted);*/
+  border-bottom: none;
+}
+
+body.synthicide-style-bold .synthicide .power-name {
   font-weight: 600;
-  letter-spacing: 0.05em;
-  opacity: 0.6;
-  border-bottom: 1px solid currentColor; /* Dynamic line: blends with text color automatically */
-  border-bottom-width: 1px;
-  margin-bottom: 0.25rem;
 }
 
-.power-uses-header {
-  min-width: 66px; /* Matches the width profile of your button steppers */
-  text-align: center;
+body.theme-dark.synthicide-style-bold .synthicide .power-header-row {
+  color: var(--synthicide-c-beige);
+  opacity: 1;
 }
 
-/* --- Theme Specific Enhancements --- */
-
-/* Rulebook Bold Theme overrides */
-.theme-rulebook-bold .power-header-row,
-[data-theme="rulebook-bold"] .power-header-row {
-  font-weight: 800; /* Extra chunky font profile */
-  font-family: var(--font-family-bold-header, sans-serif);
-  opacity: 0.85; /* crisper contrast */
-  border-bottom-width: 2px; /* Thick bold lines */
+/* --- Cyberpunk Theme Overrides --- */
+body.synthicide-style-cyberpunk .synthicide .power-uses-tracking {
+  background: var(--cp-cell);
+  border: 1px solid var(--cp-line);
+  border-left: 4px solid var(--cp-accent);
 }
 
-/* Cyberpunk Theme overrides */
-.theme-cyberpunk .power-header-row,
-[data-theme="cyberpunk"] .power-header-row {
-  color: var(--color-cyberpunk-neon, #00ffcc); /* Leverages system neon accent */
-  text-shadow: 0 0 4px rgba(0, 255, 204, 0.4);
-  font-family: var(--font-family-mono, monospace); /* Monospace text profile */
-  opacity: 0.9;
-  border-bottom: 1px dashed var(--color-cyberpunk-neon, #00ffcc);
+body.synthicide-style-cyberpunk .synthicide .power-header-row {
+  /*font-family: var(--cp-display-font);*/
+  font-size: smaller;          /* Scaled down smaller to match hierarchy */
+  /*font-weight: 500;*/            /* Drops heavy styling to blend backward */
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+  /*color: var(--synthicide-c-muted);*/
+  border-bottom: none;         /* Replaced dashed line with clean space layout */
+}
+
+/* Keeps Orbitron on the actual Power items, but scales text footprint safely */
+body.synthicide-style-cyberpunk .synthicide .power-name {
+  /*font-family: var(--cp-display-font);*/
+  font-size: smaller;          /* Tightened tracker print size footprint */
+  font-weight: 600;
+}
+
+body.theme-dark.synthicide-style-cyberpunk .synthicide .power-header-row {
+  color: var(--synthicide-c-beige);
+  opacity: 1;
 }
