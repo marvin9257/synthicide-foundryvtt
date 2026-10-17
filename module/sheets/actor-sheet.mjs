@@ -596,6 +596,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     event.stopPropagation();
     const key = target.dataset.counterKey || target.closest('[data-counter-key]')?.dataset.counterKey;
     let path, current, max;
+    
     switch (key) {
       case "resolve":
         path = "system.resolve";
@@ -619,15 +620,16 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
         path = `system.powerUses.${powerKey}`;
         current = Number(foundry.utils.getProperty(item, path) ?? 0);
-        
+
         // Execute the update directly on the embedded item document instead of the actor
-        return await item.update({ [path]: current + 1 });
+        return await item.update({ [path]: Math.floor(current + 1) });
       }
       // Add more cases as needed
       default:
         return;
     }
-    const next = max !== undefined ? Math.min(max, current + 1) : current + 1;
+    const nextValue = Math.floor(current + 1);
+    const next = max !== undefined ? Math.min(max, nextValue) : nextValue;
     await this.actor.update({ [path]: next });
   }
 
@@ -758,13 +760,16 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     // 2. Locate all knowledgeFocus items currently held by this actor
     const itemUpdates = [];
     for (const item of this.actor.itemTypes.trait) {
-      if (item.system.traitType === 'knowledgeArea') {
+      const type = item.system.traitType;
+      if (type === 'knowledgeArea') {
         // Clear all tracked integer values for this item back to 0
         const clearedUses = {};
         for (const key of Object.keys(item.system.powerUses || {})) {
           clearedUses[key] = 0;
         }
         itemUpdates.push({ _id: item.id, 'system.powerUses': clearedUses });
+      } else if (type === 'psychicPower') {
+        itemUpdates.push({ _id: item.id, 'system.powerUses.direct_use': 0 });
       }
     }
 

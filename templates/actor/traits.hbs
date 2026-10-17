@@ -49,41 +49,47 @@
               
               {{#if item.system.powerCountersList}}
                 <ul class='power-uses-tracking'>
-                  <li class='flexrow power-header-row'>
-                    <span class='power-name-header'>{{localize "SYNTHICIDE.Item.Trait.PowerHeader"}}</span>
-                    <span class='power-uses-header'>{{localize "SYNTHICIDE.Item.Trait.UsesHeader"}}</span>
-                  </li>
+                  
+                  {{#unless item.system.powerCountersList.0.isDirectTrait}}
+                    <li class='flexrow power-header-row'>
+                      <span class='power-name-header'>{{localize "SYNTHICIDE.Item.Trait.PowerHeader"}}</span>
+                      <span class='power-uses-header'>{{localize "SYNTHICIDE.Item.Trait.UsesHeader"}}</span>
+                    </li>
+                  {{/unless}}
+
                   {{#each item.system.powerCountersList as |power|}}
                     <li class='flexrow power-row'>
-                      <!-- Left Aligned Power Name Title -->
                       <span class='power-name'>
-                        <i class='fas fa-bolt'></i>{{power.label}}
+                        {{#if power.isDirectTrait}}
+                          <i class='fas fa-bolt'></i> {{localize "SYNTHICIDE.Item.Trait.UsesHeader"}}
+                        {{else}}
+                          <i class='fas fa-bolt'></i> {{power.label}}
+                        {{/if}}
                       </span>
                       
-                      <!-- Right Aligned Harmonized Stepper Layout Framework -->
                       <div class='resource-content flexrow flex-center flex-between resource-counter'>
                         <div class='resource-stepper' data-counter-key='powerUse'>
                           
-                          <!-- Reused Core Subtraction Control Component Button -->
                           <button type='button' 
                                   class='resource-step-btn' 
                                   data-action='decreaseCounter' 
                                   data-counter-key='powerUse' 
                                   data-item-id='{{item._id}}' 
                                   data-power-key='{{power.key}}' 
-                                  aria-label='Decrease {{power.label}}'>-</button>
+                                  {{disabled (eq power.count 0)}}>-</button>
                                   
-                          <!-- Reused Standard Counter Display Slot -->
-                          <span class='counter-value'>{{power.count}}</span>
+                          <span class='counter-value'>
+                            {{power.count}}
+                            {{#unless power.isUnlimited}} / {{power.max}}{{/unless}}
+                          </span>
                           
-                          <!-- Reused Core Addition Control Component Button -->
                           <button type='button' 
                                   class='resource-step-btn' 
                                   data-action='increaseCounter' 
                                   data-counter-key='powerUse' 
                                   data-item-id='{{item._id}}' 
                                   data-power-key='{{power.key}}' 
-                                  aria-label='Increase {{power.label}}'>+</button>
+                                  {{disabled (and (not power.isUnlimited) (gte power.count power.max))}}>+</button>
                                   
                         </div>
                       </div>
@@ -92,6 +98,7 @@
                 </ul>
               {{/if}}
             </div>
+
           </div>
 
           <div class='item-controls'>

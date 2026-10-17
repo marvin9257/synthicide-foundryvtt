@@ -671,7 +671,8 @@
           "apCost": {"label": "AP Cost"},
           "range": {"label": "Range"},
           "knownPowerKeys": {"label": "Known Powers"},
-          "addsKnowledgePoints": {"label": "Adds Knowledge Points"}
+          "addsKnowledgePoints": {"label": "Adds Knowledge Points"},
+          "currentTrackedUses": {"label":"Currrent Tracked Uses"}
         },
         "TypeLabel": "Trait/Power",
         "TraitLVL": "Level {level} Traits & Powers",

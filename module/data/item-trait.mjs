@@ -78,6 +78,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
     this.knownPowerCount = 0;
     this.powerCountersList = null;
 
+    // --- KNOWLEDGE AREA MULTI-TRACKING ---
     if (this.traitType === 'knowledgeArea') {
       const activeKeys = Array.from(this.powersKnown || []);
       this.knownPowerCount = activeKeys.length;
@@ -98,8 +99,28 @@ export default class SynthicideTrait extends SynthicideItemBase {
       this.powerCountersList = activeKeys.map(key => ({
         key: key,
         label: dynamicTextLabels[key] || key,
-        count: synchronizedUses[key]
+        count: synchronizedUses[key],
+        isUnlimited: true,
+        isDirectTrait: false
       }));
+    }
+
+    // --- PSYCHIC POWER SINGLE-TRAIT TRACKING ---
+    else if (this.traitType === 'psychicPower') {
+      const traitKey = "direct_use";
+      const rawUses = this.powerUses || {};
+      const currentUses = Math.max(0, Math.floor(Number(rawUses[traitKey] ?? 0)));
+
+      this.powerUses = { [traitKey]: currentUses };
+
+      this.powerCountersList = [{
+        key: traitKey,
+        label: this.parent?.name || "Uses",
+        count: currentUses,
+        max: Infinity,
+        isUnlimited: true,
+        isDirectTrait: true
+      }];
     }
   }
 
