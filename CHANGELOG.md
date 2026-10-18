@@ -1,3 +1,21 @@
+# [1.4.0](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.7...1.4.0) (2026-10-18)
+
+
+### Bug Fixes
+
+* adjust power icon size ([1729320](https://github.com/marvin9257/synthicide-foundryvtt/commit/172932042c51cec74963965b7557cc736032624f))
+* attempt some style improvements ([436ef02](https://github.com/marvin9257/synthicide-foundryvtt/commit/436ef0298735e32ce7746d43bd28bb71dc80c6aa))
+* correct labels for trait use reset ([cff4163](https://github.com/marvin9257/synthicide-foundryvtt/commit/cff41639c54f9df5d283e947b7607c6342ea807d))
+* Merge pull request [#23](https://github.com/marvin9257/synthicide-foundryvtt/issues/23) from marvin9257/feat-track-knowledge-are-use ([c13162e](https://github.com/marvin9257/synthicide-foundryvtt/commit/c13162e2d3cc16bfe014837a0e6b6120067f8e1b))
+* some final changes to style ([29d8ad7](https://github.com/marvin9257/synthicide-foundryvtt/commit/29d8ad76301995878c5ac56ad88aaff94fb6c708))
+* try to cleanup redundant tracking and add reset button ([39601dc](https://github.com/marvin9257/synthicide-foundryvtt/commit/39601dcd0d033df8cfff2abd35a6c4ea41aa2275))
+* update fields on changing traitType, add power list headers, add field if trait adds KPs ([386d092](https://github.com/marvin9257/synthicide-foundryvtt/commit/386d0922e9a5bada024285d2d109c2560e6072f7))
+
+
+### Features
+
+* add psychic power use tracking ([dd84212](https://github.com/marvin9257/synthicide-foundryvtt/commit/dd84212abd471dd115a4d22126f98da6e382f3c9))
+
 ## [1.3.7](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.6...1.3.7) (2026-10-09)
 
 
