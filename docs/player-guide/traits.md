@@ -39,7 +39,7 @@ When you open a generated trait (from bioclass or aspect):
 **Important:** Traits handle Active Effects (AE) differently depending on how they're designed.
 
 **Traits with a single AE (no choices):**
-- These traits automatically apply their mechanical effects (bonuses, penalties, status effects) when the trait is added to your sheet.
+- These traits automatically apply their effects (bonuses, penalties, status effects) when the trait is added to your sheet.
 - Example: A trait that grants +2 to a specific attribute includes an AE that modifies that attribute.
 - No manual setup needed—the effect is automatic.
 
@@ -56,7 +56,7 @@ When you open a generated trait (from bioclass or aspect):
   4. Leave all matching effects enabled when the trait choice allows stacking.
   5. Disable any effects that don't match your choice by toggling **disabled** ON.
   6. Save the trait.
-- This is critical—if you don't configure the effects, your choice won't take mechanical effect.
+- This is critical—if you don't configure the effects, your choice won't take effect.
 
 **Traits without AE (manual setup required):**
 - These traits are text-only descriptions of abilities or mechanics that your table must apply manually.
@@ -84,7 +84,7 @@ When you open a generated trait (from bioclass or aspect):
 3. Weapon proficiency traits feed weapon-specialization bonuses into supported roll flows.
 4. Trait lists update when features are replaced.
 5. Knowledge Area powers know choose list are automatically determined from Description if power names begin with bullet and end with colon.
-6. Knowledge Points are automatically calculated based on the Kwowledge Powers kKnow that are selected.
+6. Knowledge Points (KP) are automatically calculated based on whether the trait has "Adds Knowledge Points" checkbox selected.  Note that since each level adds a KP, it is best to split each trait by level. In other words, There should be two traits listed for a Knowledge area where the actor has both level 1 and 4 for that area. 
 
 ## What You Must Set Manually
 
@@ -93,6 +93,7 @@ When you open a generated trait (from bioclass or aspect):
 3. Weapon specialization selection and proficiency level on Weapon Proficiency traits.
 4. Manual follow-up trait effects required.
 5. Knowledge Powers Known.
+6. Whether the trait adds to Knowledge Points.
 
 ## Limitations and Not Implemented
 
