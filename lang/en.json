@@ -296,7 +296,7 @@
           "shockThreshold": {"value": {"label": "Shock Threshold"}},
           "nerveDefense": {"value": {"label": "Nerve Defense"}},
           "DerivedValues": "Derived Values",
-          "ResetKP": "Rest Knowledge Points and Trait Uses",
+          "ResetKP": "Reset Knowledge Points and Trait Uses",
           "ConfirmReset": "Confirm Reset",
           "ConfirmResetPrompt": "Confirm the reset of knowledge points and trait use counters?"
         }

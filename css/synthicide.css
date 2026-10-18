@@ -35,7 +35,7 @@
   --synthicide-c-warning: yellow;
   --synthicide-c-success: #2f9e44;
   --synthicide-c-panel-bg: rgba(0, 0, 0, 0.04);
-  --synthicide-c-meter-line: rgba(0, 0, 0, 0.02);
+  --synthicide-c-meter-line: rgba(0, 0, 0, 0.08);
   --synthicide-c-border-subtle: var(--synthicide-c-faint);
   --synthicide-c-hover-glow: red;
   --synthicide-c-style-accent: var(--synthicide-c-tan);
@@ -4570,7 +4570,7 @@ body.theme-dark.synthicide-style-cyberpunk ol.chat-log .chat-message:hover {
 .synthicide .power-uses-tracking {
   list-style: none;
   margin: 4px 0 0 0;
-  padding: 4px 0;
+  padding: 2px 0;
   background: var(--synthicide-c-panel-bg);
   border: 1px solid var(--synthicide-c-border-subtle);
   border-radius: 4px;
@@ -4811,4 +4811,82 @@ body.synthicide-style-cyberpunk .synthicide .power-name {
 body.theme-dark.synthicide-style-cyberpunk .synthicide .power-header-row {
   color: var(--synthicide-c-beige);
   opacity: 1;
+}
+
+/* ============================================================ */
+/* UNIFIED PSYCHIC & KNOWLEDGE AREA TRACKING HUD                */
+/* ============================================================ */
+
+/* 1. Global Flex Positioning Layout Alignment Framework */
+.synthicide .power-row,
+.synthicide .power-uses-tracking li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+/* 2. Hierarchical Indentation for Nested Knowledge Area Sub-Powers */
+.synthicide .power-uses-tracking .power-row {
+  /*margin-left: 1.5rem;*/
+  padding: 2px 8px 2px 18px;
+  /* Utilizes existing core meter lines for sub-borders */
+  /*border-bottom: 1px solid var(--synthicide-c-meter-line, rgba(0, 0, 0, 0.08));*/
+}
+
+.synthicide .power-uses-tracking .power-row:last-child {
+  border-bottom: none;
+}
+
+/* 3. Theme-Aware Stepper Element Formatting Rules */
+.synthicide .resource-stepper .counter-value {
+  border-radius: 3px;
+  padding: 2px 8px;
+  min-width: 2.2rem;
+  text-align: center;
+  font-weight: 700;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  font-size: smaller;
+}
+
+/* --- CLASSIC LIGHT SPECIFIC ADJUSTMENTS --- */
+.theme-light .resource-stepper .counter-value {
+  background: var(--synthicide-c-panel-bg, rgba(0, 0, 0, 0.04));
+  color: var(--synthicide-c-dark, #191813);
+  border: 1px solid var(--synthicide-c-border-subtle, #bdbdbd);
+}
+
+/* --- CLASSIC DARK SPECIFIC ADJUSTMENTS --- */
+.theme-dark .resource-stepper .counter-value {
+  background: var(--synthicide-c-panel-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--synthicide-border-groove, #444);
+  color: var(--form-field-color, #e6e4df);
+}
+
+/* --- RULEBOOK BOLD SPECIFIC ADJUSTMENTS --- */
+.synthicide-style-bold .resource-stepper .counter-value {
+  background: var(--synthicide-c-panel-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid color-mix(in srgb, var(--rb-accent, #8c2a12) 40%, transparent);
+  color: var(--form-field-color, #e6e4df);
+}
+
+/* --- CYBERPUNK SPECIFIC ADJUSTMENTS --- */
+.synthicide-style-cyberpunk .resource-stepper .counter-value {
+  /* Cyberpunk style can safely mix a transparent version of its main accent color variable */
+  background: color-mix(in srgb, var(--cp-accent, #41d7ff) 8%, transparent);
+  border: 1px solid var(--cp-accent, #41d7ff);
+  /*color: var(--cp-on-accent, #f5fbff);
+  font-family: var(--cp-display-font, "Orbitron", sans-serif);
+  font-size: 0.8rem;
+  box-shadow: 0 0 4px color-mix(in srgb, var(--cp-accent, #41d7ff) 50%, transparent);*/
+  font-size: smaller;
+}
+
+
+/* 4. Standalone Psychic Trait Overrides (Hides extra list backgrounds) */
+/* If a single psychic power is listed, the inner tracking row expands naturally */
+.synthicide .power-uses-tracking {
+  border-radius: 4px;
+  margin-top: 4px;
 }
