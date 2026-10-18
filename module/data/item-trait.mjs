@@ -85,11 +85,6 @@ export default class SynthicideTrait extends SynthicideItemBase {
 
       // 2. Filter and rebuild powerUses in-memory to strip away phantom database keys
       const rawUses = this.powerUses || {};
-      const synchronizedUses = {};
-      for (const key of activeKeys) {
-        synchronizedUses[key] = Math.max(0, Math.floor(Number(rawUses[key] ?? 0)));
-      }
-      this.powerUses = synchronizedUses;
 
       // 3. Derived UI View-Model: Drive labels directly out of the description options dictionary
       // Access description string from the parent Item document wrapper context safely
@@ -99,7 +94,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
       this.powerCountersList = activeKeys.map(key => ({
         key: key,
         label: dynamicTextLabels[key] || key,
-        count: synchronizedUses[key],
+        count: Math.max(0, Math.floor(Number(rawUses[key] ?? 0))),
         isUnlimited: true,
         isDirectTrait: false
       }));
@@ -110,8 +105,6 @@ export default class SynthicideTrait extends SynthicideItemBase {
       const traitKey = "direct_use";
       const rawUses = this.powerUses || {};
       const currentUses = Math.max(0, Math.floor(Number(rawUses[traitKey] ?? 0)));
-
-      this.powerUses = { [traitKey]: currentUses };
 
       this.powerCountersList = [{
         key: traitKey,
@@ -172,16 +165,16 @@ export default class SynthicideTrait extends SynthicideItemBase {
    * @override
    */
   async _preUpdate(changed, options, user) {
-    // Strict validation: reject updates attempting to set an invalid trait level.
+    // 1. Strict validation: reject updates attempting to set an invalid trait level.
     if (changed?.system && foundry.utils.hasProperty(changed.system, 'level')) {
       const lvl = Number(changed.system.level);
       if (!SYNTHICIDE.ALLOWED_TRAIT_LEVELS.includes(lvl)) {
         console.warn(`[Synthicide] Rejected invalid trait level update: ${lvl}`);
-        return false; // cancel the update
+        return false;
       }
     }
 
-    // Weapon Specialization normalization logic
+    // 2. Weapon Specialization normalization logic
     if (changed?.system) {
       const nextTraitType = changed.system.traitType ?? this.traitType;
       const nextSpecializationKey = String(changed.system.specializationKey ?? this.specializationKey ?? '').trim();
@@ -203,12 +196,11 @@ export default class SynthicideTrait extends SynthicideItemBase {
       }
     }
 
-    // Update addsKnowledgePoints
+    // 3. Update addsKnowledgePoints and clear data structures during trait conversions
     if (foundry.utils.hasProperty(changed, "system.traitType")) {
       const nextTraitType = changed.system.traitType;
       
       if (nextTraitType !== this.traitType) {
-        // A REAL change to traitType is occurring right now
         if (nextTraitType === 'knowledgeArea') {
           changed.system.addsKnowledgePoints = true;
         } else {
@@ -219,18 +211,40 @@ export default class SynthicideTrait extends SynthicideItemBase {
       }
     }
 
-    // Clean Counter Floor Safety: Catch all flat or nested primitive update entries
+    // 4. CLEAN FLOOR SANITATION LAYER (With ForcedDeletion Safety Guard)
     if (changed && typeof changed === 'object') {
       const flatPatch = foundry.utils.flattenObject(changed);
       for (const [keyPath, rawValue] of Object.entries(flatPatch)) {
-        // Targets simple paths like "system.powerUses.slug" directly without trailing ".value" string checks
         if (keyPath.startsWith('system.powerUses.') && !keyPath.endsWith('.')) {
+          // Skip flattening paths if they contain a pre-injected _del operator instance
+          if (rawValue === globalThis._del) continue;
+
           const validValue = Math.max(0, Math.floor(Number(rawValue) || 0));
           foundry.utils.setProperty(changed, keyPath, validValue);
         }
       }
     }
 
+    // 5. THE FORCEDDELETION INJECTION LAYER (Executes last on safe, flattened data structures)
+    if (foundry.utils.hasProperty(changed, "system.powersKnown")) {
+      const currentKeys = Array.from(this.powersKnown || []);
+      const incomingKeys = Array.from(changed.system.powersKnown || []);
+      
+      const deletedKeys = currentKeys.filter(key => !incomingKeys.includes(key));
+      
+      if (deletedKeys.length > 0) {
+        // Safe decoupled patch initialization prevents reference leakage
+        const usesPatch = { ...foundry.utils.getProperty(changed, "system.powerUses") };
+        
+        for (const key of deletedKeys) {
+          usesPatch[key] = globalThis._del;
+        }
+        
+        foundry.utils.setProperty(changed, "system.powerUses", usesPatch);
+      }
+    }
+
     return super._preUpdate(changed, options, user);
   }
+
 }
