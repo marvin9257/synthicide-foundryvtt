@@ -211,7 +211,10 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       context.isPsychicOrTactical = ['psychicPower', 'tacticalPower'].includes(this.item.system.traitType);
       context.isPsychic = this.item.system.traitType === 'psychicPower';
       if (this.item.system.traitType === 'knowledgeArea') {
-        context.config.knowledgePowerOptions = parseKnowledgePowerOptions(this.item.system.description);
+        // 1. Parse the options dictionary from description text ONCE
+        const dynamicTextLabels = parseKnowledgePowerOptions(this.item.system.description || "");
+        context.config.knowledgePowerOptions = dynamicTextLabels;
+
       }
     }
 

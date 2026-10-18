@@ -295,7 +295,10 @@
           "armorDefense": {"value": {"label": "Armor Defense"}},
           "shockThreshold": {"value": {"label": "Shock Threshold"}},
           "nerveDefense": {"value": {"label": "Nerve Defense"}},
-          "DerivedValues": "Derived Values"
+          "DerivedValues": "Derived Values",
+          "ResetKP": "Reset Knowledge Points and Trait Uses",
+          "ConfirmReset": "Confirm Reset",
+          "ConfirmResetPrompt": "Confirm the reset of knowledge points and trait use counters?"
         }
       },
       "Character": {
@@ -655,6 +658,8 @@
         "Condition": "Condition",
         "Source": "Source",
         "AddTrait": "Add Trait",
+        "PowerHeader": "Powers",
+        "UsesHeader": "Uses",
         "FIELDS": {
           "level": {"label": "Trait Level"},
           "traitType": {"label": "Trait Type"},
@@ -665,7 +670,9 @@
           "usesLimit": {"label": "Uses Limit"},
           "apCost": {"label": "AP Cost"},
           "range": {"label": "Range"},
-          "knownPowerKeys": {"label": "Known Powers"}
+          "knownPowerKeys": {"label": "Known Powers"},
+          "addsKnowledgePoints": {"label": "Adds Knowledge Points"},
+          "currentTrackedUses": {"label":"Currrent Tracked Uses"}
         },
         "TypeLabel": "Trait/Power",
         "TraitLVL": "Level {level} Traits & Powers",

@@ -1,4 +1,4 @@
-{{!-- On traits show type/level above requirements --}}
+{{! On traits show type/level above requirements }}
 <div class='trait-top-fields'>
   <div class='resource resource-pair'>
     <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.traitType.label'}}</label>
@@ -38,14 +38,36 @@
       value='{{system.traitPoints}}'
     />
   </div>
+  <div class='resource resource-pair'>
+    <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.addsKnowledgePoints.label'}}</label>
+    <input type='checkbox' name='system.addsKnowledgePoints' {{checked system.addsKnowledgePoints}} />
+  </div>
 </div>
 <div class='trait-top-fields'>
   {{#if (eq system.traitType 'knowledgeArea')}}
-    <div class='resource resource-pair'>
-      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.knownPowerKeys.label'}}</label>
-      <multi-select class='select knowledge-powers' name='system.knownPowerKeys' multiple>
-        {{selectOptions @root.config.knowledgePowerOptions selected=system.knownPowerKeys}}
-      </multi-select>
+    <div class='knowledge-area-columns-split'>
+      <!-- Left Column: Handles Multi-select Choices -->
+      <div class='knowledge-column-left'>
+        <label class='resource-label'>Known Powers</label>
+        <multi-select class='select knowledge-powers' name='system.powersKnown' multiple>
+          {{selectOptions @root.config.knowledgePowerOptions selected=system.powersKnown}}
+        </multi-select>
+      </div>
+
+      <!-- Right Column: Handles Active Power Trackers -->
+      <div class='knowledge-column-right'>
+        <div class='knowledge-trackers-wrapper'>
+          <label class='resource-label'>Active Power Trackers</label>
+          <ul class='power-trackers-list'>
+            {{#each system.powerCountersList as |power|}}
+              <li class='flexrow power-tracker-item'>
+                <span class='tracker-label'><i class='fas fa-bolt'></i>{{power.label}}</span>
+                <input type='number' name='system.powerUses.{{power.key}}' value='{{power.count}}' min='0' />
+              </li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
     </div>
   {{/if}}
 
@@ -67,6 +89,15 @@
         type='text'
         name='system.usesLimit'
         value='{{system.usesLimit}}'
+      />
+    </div>
+    <div class='resource resource-pair'>
+      <label class='resource-label'>{{localize 'SYNTHICIDE.Item.Trait.FIELDS.currentTrackedUses.label'}}</label>
+      <input
+        type='number'
+        name='system.powerUses.direct_use'
+        value='{{#if system.powerUses.direct_use}}{{system.powerUses.direct_use}}{{else}}0{{/if}}'
+        min='0'
       />
     </div>
   {{/if}}

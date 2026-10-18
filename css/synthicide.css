@@ -35,7 +35,7 @@
   --synthicide-c-warning: yellow;
   --synthicide-c-success: #2f9e44;
   --synthicide-c-panel-bg: rgba(0, 0, 0, 0.04);
-  --synthicide-c-meter-line: rgba(0, 0, 0, 0.02);
+  --synthicide-c-meter-line: rgba(0, 0, 0, 0.08);
   --synthicide-c-border-subtle: var(--synthicide-c-faint);
   --synthicide-c-hover-glow: red;
   --synthicide-c-style-accent: var(--synthicide-c-tan);
@@ -4554,4 +4554,339 @@ body.theme-dark.synthicide-style-cyberpunk ol.chat-log .chat-message:hover {
   color: #51cf66; /* Light high-contrast green */
   border-color: #2f9e44;
   background-color: rgba(47, 158, 68, 0.12); /* Safe ambient green fill */
+}
+
+/* ============================================================ */
+/* KNOWLEDGE AREA POWER TRACKER HUDS                           */
+/* ============================================================ */
+
+/* Actor Sheet Layout Blocks */
+.synthicide .item-label-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.synthicide .power-uses-tracking {
+  list-style: none;
+  margin: 4px 0 0 0;
+  padding: 2px 0;
+  background: var(--synthicide-c-panel-bg);
+  border: 1px solid var(--synthicide-c-border-subtle);
+  border-radius: 4px;
+  width: 100%;
+}
+
+/* Base Power Header Styles (Classic Mode) */
+.synthicide .power-header-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px 0;
+  font-family: var(--synthicide-default-font);
+  font-size: smaller;
+  text-transform: uppercase;
+  font-weight: 700;            /* Muted text weight so it steps back */
+  letter-spacing: 0.04em;
+  /*color: var(--synthicide-c-muted); /* Soft neutral grey */
+  opacity: 0.8;
+  border-bottom: none;         /* Discards the loud header divider line */
+  margin-bottom: 2px;
+}
+
+.power-uses-header {
+  min-width: 66px;
+  text-align: center;
+}
+
+.synthicide .power-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 8px;
+  border-bottom: 1px solid var(--synthicide-c-meter-line);
+}
+
+.synthicide .power-row:last-child {
+  border-bottom: none;
+}
+
+/* Classic Mode Contrast Fix: Boost font weight to prevent washed-out text */
+.synthicide .power-name {
+  font-family: var(--synthicide-default-font);
+  font-size: smaller;
+  font-weight: 500;            /* Brought up from 600 to stand out sharply */
+  color: var(--synthicide-c-dark); /* Crisp dark charcoal instead of field-color */
+}
+
+/* Dark mode classic fallback variant stays readable but low-glare */
+body.theme-dark .synthicide .power-name {
+  color: var(--form-field-color);
+}
+
+.synthicide .power-name i {
+  margin-right: 6px;
+  font-size: smaller;
+  color: var(--synthicide-c-style-accent);
+}
+
+.synthicide .power-counter-controls {
+  display: flex;
+  align-items: center;
+}
+
+.synthicide .power-counter-controls .counter-btn {
+  padding: 2px 6px;
+  cursor: pointer;
+  color: var(--form-field-color);
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+
+.synthicide .power-counter-controls .counter-btn:hover {
+  opacity: 1;
+  color: var(--synthicide-c-style-accent);
+}
+
+.synthicide .power-counter-controls .counter-value {
+  min-width: 24px;
+  text-align: center;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: var(--reduced-font-size);
+  margin: 0 4px;
+  color: var(--form-field-color);
+}
+
+/* Item Sheet Layout Blocks */
+.synthicide .knowledge-trackers-wrapper {
+  margin-top: 14px;
+  border-top: 1px dashed var(--synthicide-c-border-subtle);
+  padding-top: 10px;
+}
+
+.synthicide .power-trackers-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.synthicide .power-tracker-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  background: var(--synthicide-c-panel-bg);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.synthicide .tracker-label {
+  font-family: var(--synthicide-default-font);
+  font-size: var(--reduced-font-size);
+  color: var(--form-field-color);
+}
+
+.synthicide .tracker-label i {
+  margin-right: 6px;
+  font-size: 0.8rem;
+  color: var(--synthicide-c-style-accent);
+}
+
+.synthicide .power-tracker-item input[type="number"] {
+  width: 65px;
+  text-align: center;
+  font-weight: bold;
+  background: var(--form-field-bg);
+  color: var(--form-field-color);
+  border: 1px solid var(--synthicide-border-groove);
+  border-radius: 3px;
+}
+
+/* ============================================================ */
+/* KNOWLEDGE AREA SPLIT COLUMN HUD                             */
+/* ============================================================ */
+
+.synthicide .knowledge-area-columns-split {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.synthicide .knowledge-column-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.synthicide .knowledge-column-right {
+  flex: 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Clear default tracking spacing shifts on the standalone right panel */
+.synthicide .knowledge-column-right .knowledge-trackers-wrapper {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* ============================================================ */
+/* THEME CONTRAST CORRECTIONS FOR TRACKER ICONS                 */
+/* ============================================================ */
+
+/* Forces high contrast color rendition across standard sheet layers */
+.synthicide .power-name i,
+.synthicide .tracker-label i {
+  opacity: 1 !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  display: inline-block;
+}
+
+/* Enhances visual presence on the classic grey item panel backgrounds */
+body:not(.theme-dark):not(.synthicide-style-bold):not(.synthicide-style-cyberpunk) .synthicide .power-name i {
+  color: var(--synthicide-c-dark, #191813);
+}
+
+body:not(.theme-dark):not(.synthicide-style-bold):not(.synthicide-style-cyberpunk) .synthicide .tracker-label i {
+  color: var(--synthicide-c-dark, #191813);
+}
+
+/* ============================================================ */
+/* THEME OVERRIDES CONFIGURATIONS                               */
+/* ============================================================ */
+
+/* --- Rulebook Bold Theme Overrides --- */
+body.synthicide-style-bold .synthicide .power-uses-tracking {
+  background: var(--rb-cell);
+  border: 1px solid color-mix(in srgb, var(--rb-strong) 45%, transparent);
+  border-left: 4px solid var(--rb-accent);
+}
+
+body.synthicide-style-bold .synthicide .power-header-row {
+  /*font-weight: 500;*/            /* Softened weight matching Option 1 */
+  /*opacity: 0.7;*/
+  /*color: var(--synthicide-c-muted);*/
+  border-bottom: none;
+}
+
+body.synthicide-style-bold .synthicide .power-name {
+  font-weight: 600;
+}
+
+body.theme-dark.synthicide-style-bold .synthicide .power-header-row {
+  color: var(--synthicide-c-beige);
+  opacity: 1;
+}
+
+/* --- Cyberpunk Theme Overrides --- */
+body.synthicide-style-cyberpunk .synthicide .power-uses-tracking {
+  background: var(--cp-cell);
+  border: 1px solid var(--cp-line);
+  border-left: 4px solid var(--cp-accent);
+}
+
+body.synthicide-style-cyberpunk .synthicide .power-header-row {
+  /*font-family: var(--cp-display-font);*/
+  font-size: smaller;          /* Scaled down smaller to match hierarchy */
+  /*font-weight: 500;*/            /* Drops heavy styling to blend backward */
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+  /*color: var(--synthicide-c-muted);*/
+  border-bottom: none;         /* Replaced dashed line with clean space layout */
+}
+
+/* Keeps Orbitron on the actual Power items, but scales text footprint safely */
+body.synthicide-style-cyberpunk .synthicide .power-name {
+  /*font-family: var(--cp-display-font);*/
+  font-size: smaller;          /* Tightened tracker print size footprint */
+  font-weight: 600;
+}
+
+body.theme-dark.synthicide-style-cyberpunk .synthicide .power-header-row {
+  color: var(--synthicide-c-beige);
+  opacity: 1;
+}
+
+/* ============================================================ */
+/* UNIFIED PSYCHIC & KNOWLEDGE AREA TRACKING HUD                */
+/* ============================================================ */
+
+/* 1. Global Flex Positioning Layout Alignment Framework */
+.synthicide .power-row,
+.synthicide .power-uses-tracking li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+/* 2. Hierarchical Indentation for Nested Knowledge Area Sub-Powers */
+.synthicide .power-uses-tracking .power-row {
+  /*margin-left: 1.5rem;*/
+  padding: 2px 8px 2px 18px;
+  /* Utilizes existing core meter lines for sub-borders */
+  /*border-bottom: 1px solid var(--synthicide-c-meter-line, rgba(0, 0, 0, 0.08));*/
+}
+
+.synthicide .power-uses-tracking .power-row:last-child {
+  border-bottom: none;
+}
+
+/* 3. Theme-Aware Stepper Element Formatting Rules */
+.synthicide .resource-stepper .counter-value {
+  border-radius: 3px;
+  padding: 2px 8px;
+  min-width: 2.2rem;
+  text-align: center;
+  font-weight: 700;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  font-size: smaller;
+}
+
+/* --- CLASSIC LIGHT SPECIFIC ADJUSTMENTS --- */
+.theme-light .resource-stepper .counter-value {
+  background: var(--synthicide-c-panel-bg, rgba(0, 0, 0, 0.04));
+  color: var(--synthicide-c-dark, #191813);
+  border: 1px solid var(--synthicide-c-border-subtle, #bdbdbd);
+}
+
+/* --- CLASSIC DARK SPECIFIC ADJUSTMENTS --- */
+.theme-dark .resource-stepper .counter-value {
+  background: var(--synthicide-c-panel-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--synthicide-border-groove, #444);
+  color: var(--form-field-color, #e6e4df);
+}
+
+/* --- RULEBOOK BOLD SPECIFIC ADJUSTMENTS --- */
+.synthicide-style-bold .resource-stepper .counter-value {
+  background: var(--synthicide-c-panel-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid color-mix(in srgb, var(--rb-accent, #8c2a12) 40%, transparent);
+  color: var(--form-field-color, #e6e4df);
+}
+
+/* --- CYBERPUNK SPECIFIC ADJUSTMENTS --- */
+.synthicide-style-cyberpunk .resource-stepper .counter-value {
+  /* Cyberpunk style can safely mix a transparent version of its main accent color variable */
+  background: color-mix(in srgb, var(--cp-accent, #41d7ff) 8%, transparent);
+  border: 1px solid var(--cp-accent, #41d7ff);
+  /*color: var(--cp-on-accent, #f5fbff);
+  font-family: var(--cp-display-font, "Orbitron", sans-serif);
+  font-size: 0.8rem;
+  box-shadow: 0 0 4px color-mix(in srgb, var(--cp-accent, #41d7ff) 50%, transparent);*/
+  font-size: smaller;
+}
+
+
+/* 4. Standalone Psychic Trait Overrides (Hides extra list backgrounds) */
+/* If a single psychic power is listed, the inner tracking row expands naturally */
+.synthicide .power-uses-tracking {
+  border-radius: 4px;
+  margin-top: 4px;
 }

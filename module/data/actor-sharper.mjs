@@ -160,11 +160,10 @@ export default class SynthicideSharperData extends SynthicideActorBaseData {
  */
 function getKnownKnowledgePoints(actor) {
   const knowledgeAreas = (actor?.itemTypes?.trait ?? [])
-    .filter(trait => trait.system?.traitType === 'knowledgeArea');
+    .filter(trait => trait.system?.addsKnowledgePoints);
   if (knowledgeAreas.length === 0) return 0;
 
-  return (actor?.system?.attributes?.operation?.value ?? 0)
-    + knowledgeAreas.reduce((total, trait) => total + (trait.system?.knownPowerCount ?? 0), 0);
+  return (actor?.system?.attributes?.operation?.value ?? 0) + knowledgeAreas.length;
 }
 
 /**

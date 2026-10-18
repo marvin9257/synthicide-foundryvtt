@@ -78,6 +78,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       editTraitItem: this._editTraitItem,
       deleteTraitItem: this._deleteTraitItem,
       changeEquippedState: this._onChangeEquippedState,
+      resetKP: this._onResetKP
     },
 
     // Custom property that's merged into `this.options`
@@ -215,6 +216,9 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           }
         }
         break;
+      case 'traits':
+        //await this._prepareItems(context);
+        break;
     }
     return context;
   }
@@ -255,8 +259,8 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
 
     const actorRollData = this.actor.getRollData();
 
-    context.aspect = this.actor.itemTypes.aspect[0] ?? null;
-    context.bioclass = this.actor.itemTypes.bioclass[0] ?? null;
+    context.aspect = this.actor.itemTypes.aspect?.[0] ?? null;
+    context.bioclass = this.actor.itemTypes.bioclass?.[0] ?? null;
     context.aspectBonusSummary = this._buildAspectBonusSummary(context.aspect?.system);
     
     // Iterate through traits as they need special handling
@@ -271,6 +275,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
           rollData: actorRollData,
         });
       }
+
       if (i.system.traitType === FEATURE_TYPE.BIOCLASS) {
         bioclassTraits.push(i);
       } else if (i.system.traitType === FEATURE_TYPE.ASPECT) {
@@ -591,6 +596,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     event.stopPropagation();
     const key = target.dataset.counterKey || target.closest('[data-counter-key]')?.dataset.counterKey;
     let path, current, max;
+    
     switch (key) {
       case "resolve":
         path = "system.resolve";
@@ -607,11 +613,23 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         current = Number(this.actor.system.foodDays.value ?? 0);
         max = undefined;
         break;
+      case "powerUse": {
+        const { itemId, powerKey } = target.dataset;
+        const item = this.actor.items.get(itemId);
+        if (!item) return;
+
+        path = `system.powerUses.${powerKey}`;
+        current = Number(foundry.utils.getProperty(item, path) ?? 0);
+
+        // Execute the update directly on the embedded item document instead of the actor
+        return await item.update({ [path]: Math.floor(current + 1) });
+      }
       // Add more cases as needed
       default:
         return;
     }
-    const next = max !== undefined ? Math.min(max, current + 1) : current + 1;
+    const nextValue = Math.floor(current + 1);
+    const next = max !== undefined ? Math.min(max, nextValue) : nextValue;
     await this.actor.update({ [path]: next });
   }
 
@@ -637,6 +655,17 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
         current = Number(this.actor.system.foodDays.value ?? 0);
         min = this.actor.system.foodDays.min;
         break;
+      case "powerUse": {
+        const { itemId, powerKey } = target.dataset;
+        const item = this.actor.items.get(itemId);
+        if (!item) return;
+
+        path = `system.powerUses.${powerKey}`;
+        current = Number(foundry.utils.getProperty(item, path) ?? 0);
+        
+        // Execute update on the embedded item document with a strict floor clamp of 0
+        return await item.update({ [path]: Math.max(0, current - 1) });
+      }
       // Add more cases as needed
       default:
         return;
@@ -644,6 +673,7 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
     const next = Math.max(min, current - 1);
     await this.actor.update({ [path]: next });
   }
+
   /**
    * Open the trait item sheet for editing
    * @param {PointerEvent} event
@@ -702,6 +732,54 @@ export class SynthicideActorSheet extends api.HandlebarsApplicationMixin(
       { refresh: !CONFIG.SYNTHICIDE.EXCLUSIVE_EQUIP_TYPES.includes(doc.type) }
     );
   }
+
+  /**
+   * Handles resetting Knowledge Points and clearing all power counters to 0.
+   *
+   * @this SynthicideActorSheet
+   * @param {PointerEvent} event   The originating click event
+   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
+   * @protected
+   */
+  static async _onResetKP(event, _target) {
+    event.preventDefault();
+
+    const confirmed = await foundry.applications.api.DialogV2.confirm({
+      window: {
+        title: game.i18n.localize('SYNTHICIDE.Actor.base.FIELDS.ConfirmReset'),
+      },
+      content: `<p>${game.i18n.localize('SYNTHICIDE.Actor.base.FIELDS.ConfirmResetPrompt')}</p>`,
+    });
+    if (!confirmed) return;
+    
+    // 1. Prepare the top-level Actor pool restore payload
+    const actorUpdate = {
+      'system.knowledgePoints.value': this.actor.system.knowledgePoints.max
+    };
+
+    // 2. Locate all knowledgeFocus items currently held by this actor
+    const itemUpdates = [];
+    for (const item of this.actor.itemTypes.trait) {
+      const type = item.system.traitType;
+      if (type === 'knowledgeArea') {
+        // Clear all tracked integer values for this item back to 0
+        const clearedUses = {};
+        for (const key of Object.keys(item.system.powerUses || {})) {
+          clearedUses[key] = 0;
+        }
+        itemUpdates.push({ _id: item.id, 'system.powerUses': clearedUses });
+      } else if (type === 'psychicPower') {
+        itemUpdates.push({ _id: item.id, 'system.powerUses.direct_use': 0 });
+      }
+    }
+
+    // 3. Write everything to the database
+    await this.actor.update(actorUpdate);
+    if (itemUpdates.length) {
+      await this.actor.updateEmbeddedDocuments('Item', itemUpdates);
+    }
+  }
+
 
   /***************
    *
