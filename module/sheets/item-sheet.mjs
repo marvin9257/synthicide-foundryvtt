@@ -288,8 +288,19 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
       }
     }
 
+    // Capture the exact pre-update values for tracking uses
+    let forceTraitRedraw = false;
+    if (this.document.type === 'trait' && submitData?.system?.powerUses) {
+      for (const value of Object.values(submitData.system.powerUses)) {
+        if (Number(value) < 0) {
+          forceTraitRedraw = true;
+          break; // Exit early the instant a single negative value is discovered!
+        }
+      }
+    }
+
     await this.document.update(submitData, { render: true });
-    if (didClampArtifactValue) {
+    if (didClampArtifactValue || forceTraitRedraw) {
       await this.render({ force: true });
     }
   }

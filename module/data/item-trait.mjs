@@ -100,7 +100,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
       }));
     }
 
-    // --- PSYCHIC POWER SINGLE-TRAIT TRACKING ---
+    // --- PSYCHIC POWER USE TRACKING ---
     else if (this.traitType === 'psychicPower') {
       const traitKey = "direct_use";
       const rawUses = this.powerUses || {};
@@ -211,7 +211,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
       }
     }
 
-    // 4. CLEAN FLOOR SANITATION LAYER (With ForcedDeletion Safety Guard)
+    // 4. CLEAN FLOOR SANITATION LAYER (With Forced Deletion Safety Guard)
     if (changed && typeof changed === 'object') {
       const flatPatch = foundry.utils.flattenObject(changed);
       for (const [keyPath, rawValue] of Object.entries(flatPatch)) {
@@ -225,7 +225,7 @@ export default class SynthicideTrait extends SynthicideItemBase {
       }
     }
 
-    // 5. THE FORCEDDELETION INJECTION LAYER (Executes last on safe, flattened data structures)
+    // 5. Deletes powerUses keys if power has been deleted using special FVTT deletion
     if (foundry.utils.hasProperty(changed, "system.powersKnown")) {
       const currentKeys = Array.from(this.powersKnown || []);
       const incomingKeys = Array.from(changed.system.powersKnown || []);
