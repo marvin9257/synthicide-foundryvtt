@@ -270,39 +270,38 @@ export class SynthicideItemSheet extends api.HandlebarsApplicationMixin(sheets.I
     return context;
   }
 
-  /** @override */
-  async _processSubmitData(event, form, submitData) {
-    let didClampArtifactValue = false;
+    /** @override */
+  async _processSubmitData(event, form, submitData, options) {
 
-    if (this.document.type === 'artifact') {
+    // 1. Bridge the dependent field logic: clamp artifact current uses to the ceiling parameter
+    if (this.document.type === 'artifact' && foundry.utils.hasProperty(submitData, 'system.uses.value')) {
       const incomingValue = Number(foundry.utils.getProperty(submitData, 'system.uses.value'));
-      const incomingMax = Number(foundry.utils.getProperty(submitData, 'system.uses.max'));
-      const max = Number.isFinite(incomingMax) ? incomingMax : Number(this.document.system?.uses?.max ?? 0);
-
-      if (Number.isFinite(incomingValue)) {
-        const clampedValue = Math.clamp(incomingValue, 0, max);
-        if (clampedValue !== incomingValue) {
-          foundry.utils.setProperty(submitData, 'system.uses.value', clampedValue);
-          didClampArtifactValue = true;
-        }
-      }
+      const incomingMax = foundry.utils.getProperty(submitData, 'system.uses.max');
+      
+      const currentMax = incomingMax !== undefined ? Number(incomingMax) : Number(this.document.system?.uses?.max ?? 1);
+      const clampedValue = Math.clamp(incomingValue, 0, Math.max(1, currentMax));
+      
+      foundry.utils.setProperty(submitData, 'system.uses.value', clampedValue);
     }
 
-    // Force a refresh if powerUses input value is less than floor (as value will be zero and not input value)
-    let forceTraitRedraw = false;
-    if (this.document.type === 'trait' && submitData?.system?.powerUses) {
-      for (const value of Object.values(submitData.system.powerUses)) {
-        if (Number(value) < 0) {
-          forceTraitRedraw = true;
-          break; // Exit early any negative value
+    // 2. Let the core framework and schema do all the clamping and cleaning natively!
+    await super._processSubmitData(event, form, submitData, options);
+
+    // If the active HTML element's typed value doesn't match the clean, schema-sanitized 
+    // number inside submitData, forcefully snap the DOM element back to the true database value.
+    if (event?.target instanceof globalThis.HTMLInputElement) {
+      const inputName = event.target.name;
+      
+      // Look up if this field path exists inside your finished system data structure
+      if (foundry.utils.hasProperty(this.document, inputName)) {
+        const trueDatabaseValue = foundry.utils.getProperty(this.document, inputName);
+        const rawBrowserValue = Number(event.target.value);
+
+        // If the screen displays an illegal boundary entry that was clamped by the system, snap it back!
+        if (rawBrowserValue !== trueDatabaseValue) {
+          event.target.value = String(trueDatabaseValue);
         }
       }
-    }
-
-    await this.document.update(submitData, { render: true });
-    
-    if (didClampArtifactValue || forceTraitRedraw) {
-      await this.render({ force: true });
     }
   }
 
