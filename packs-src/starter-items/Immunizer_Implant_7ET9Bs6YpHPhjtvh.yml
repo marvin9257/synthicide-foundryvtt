@@ -21,7 +21,7 @@ system:
   location: body
   implantType: custom
   modifications: []
-  customMods: |-
+  customMods: >-
     Immunizers grant +10 to rolls made to resist
     disease.
   slotSize: 1
