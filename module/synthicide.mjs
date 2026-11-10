@@ -29,6 +29,7 @@ import { SynthicideChatMessage } from './documents/synthicide-chat-message.mjs';
 import {itemPilesIntegration} from './hooks/itemPilesIntegration.js'
 import SynthicideCombatant from './documents/combatant.mjs';
 import { executeAttackActionRoll } from './rolls/attack-rolls.mjs';
+import { getControlledActor } from './helpers/get-controlled-actor.mjs';
 
 const collections = foundry.documents.collections;
 
@@ -288,7 +289,7 @@ async function createDocMacro(data, slot) {
   const item = await Item.fromDropData(data);
 
   // Create the macro command using the uuid. Call the utils directly.
-  const command = `await game.synthicide.utils.rollItemMacro("${data.uuid}");`;
+  const command = `await game.synthicide.utils.rollItemMacro("${data.uuid}", ${JSON.stringify(item.name)});`;
   let macro = game.macros.find(
     (m) => m.name === item.name && m.command === command
   );
@@ -306,24 +307,36 @@ async function createDocMacro(data, slot) {
 }
 
 /**
- * Create a Macro from an Item drop.
- * Get an existing item macro if one exists, otherwise create a new one.
+ * Roll an item by UUID, falling back to its name on the controlled actor.
  * @param {string} itemUuid
+ * @param {string} [itemName]
  */
-async function rollItemMacro(itemUuid) {
+async function rollItemMacro(itemUuid, itemName) {
   // Reconstruct the drop data so that we can load the item.
   const dropData = { type: 'Item', uuid: itemUuid };
+  let item;
+  let resolutionError;
   try {
-    const item = await Item.fromDropData(dropData);
-    // Determine if the item loaded and if it's an owned item.
-    if (!item || !item.parent) {
-      const itemName = item?.name ?? itemUuid;
-      return ui.notifications.warn(
-        `Could not find item ${itemName}. You may need to delete and recreate this macro.`
-      );
-    }
+    item = await Item.fromDropData(dropData);
+  } catch (err) {
+    resolutionError = err;
+  }
 
-    // Trigger the item roll
+  const fallbackName = itemName?.trim() ? itemName : item?.name;
+  if (!item?.parent) {
+    const currentActor = getControlledActor();
+    item = fallbackName ? currentActor?.items.getName(fallbackName) : null;
+  }
+
+  if (!item?.parent) {
+    if (resolutionError) console.error('rollItemMacro item resolution error', resolutionError);
+    return ui.notifications.warn(
+      `Could not find item ${fallbackName ?? itemUuid}. You may need to delete and recreate this macro.`
+    );
+  }
+
+  try {
+    // Trigger the item roll.
     const sItem = /** @type {import('./documents/item.mjs').SynthicideItem} */ (item);
     await sItem.roll();
   } catch (err) {
