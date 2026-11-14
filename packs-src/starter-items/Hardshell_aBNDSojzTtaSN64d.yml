@@ -15,7 +15,7 @@ system:
   traits:
     - name: Starter Hardware
       sort: 10
-      description: |-
+      description: >-
         You begin with body cybernetic implants worth up to §200. Any unspent
         lurans exceeding §30 are lost.
   startingAttributes:

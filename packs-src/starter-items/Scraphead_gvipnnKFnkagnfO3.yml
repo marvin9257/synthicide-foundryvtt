@@ -14,10 +14,10 @@ system:
   traits:
     - name: Hard Brain
       sort: 10
-      description: You may not purchase psychic powers with trait points.
+      description: You may not gain psychic powers through trait points, though other methods are still valid.
     - name: Starter Hardware
       sort: 20
-      description: |-
+      description: >-
         You start with your choice of brain cybernetics of value up to §150. Any
         unspent lurans exceeding §30 are lost.
     - name: Starter Software

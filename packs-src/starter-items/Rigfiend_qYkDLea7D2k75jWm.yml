@@ -15,11 +15,11 @@ system:
     - name: Mod Focused
       sort: 10
       description: >-
-        You cannot purchase mutations or psychic powers with trait points.
-        General traits cost 3 TP instead of 2.
+        You cannot gain mutations or psychic powers through trait points, though 
+        other methods are still valid. General traits cost 3 TP instead of 2.
     - name: Starter Hardware
       sort: 20
-      description: |-
+      description: >-
         You begin with cybernetic implants of any type worth up to §350. Any
         unspent lurans exceeding §60 are lost.
   startingAttributes:

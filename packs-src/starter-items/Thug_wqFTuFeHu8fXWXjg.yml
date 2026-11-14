@@ -33,7 +33,7 @@ system:
         Death has brushed past you more times than you can count, but raw
         martial skill has kept you alive. Gain 1 weapon proficiency and 1 battle
         power.
-    - description: |-
+    - description: >-
         You also gain bonus max HP equal to
         your HP per level.
     - description: >-
