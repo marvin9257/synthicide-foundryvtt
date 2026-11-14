@@ -1,3 +1,16 @@
+## [1.4.1](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.4.0...1.4.1) (2026-11-14)
+
+
+### Bug Fixes
+
+* add clamping / revert to valid behavior for item sheet ([9567c0d](https://github.com/marvin9257/synthicide-foundryvtt/commit/9567c0d9f9456844637ffa778290a05c924bee2a))
+* change power deletion code so that old values are not kept when deleting and re-adding ([c1de485](https://github.com/marvin9257/synthicide-foundryvtt/commit/c1de4856f7fe68f0bb156ebf2a3a998abdd1cded))
+* comment updates ([99247f3](https://github.com/marvin9257/synthicide-foundryvtt/commit/99247f3a966fd1deb2216c3955e2404027d517f0))
+* make item macro on bar more robust by adding item name as an optional parameter ([862a684](https://github.com/marvin9257/synthicide-foundryvtt/commit/862a68457d34946e0bf49f81f24fb606f90750f4))
+* Merge pull request [#24](https://github.com/marvin9257/synthicide-foundryvtt/issues/24) from marvin9257/fix-non-zero-count-for-trait ([fdfa693](https://github.com/marvin9257/synthicide-foundryvtt/commit/fdfa693af7cf68e26645a50c11f0dfa185192700))
+* some comment cleanup and refresh item sheet if powerUses floor invoked ([c1d8edb](https://github.com/marvin9257/synthicide-foundryvtt/commit/c1d8edb66d2cd33dae15f24f597711d53438baea))
+* update to early release v3 changes ([3e812d7](https://github.com/marvin9257/synthicide-foundryvtt/commit/3e812d72640b6d27701df72b24c8944249a074e8))
+
 # [1.4.0](https://github.com/marvin9257/synthicide-foundryvtt/compare/1.3.7...1.4.0) (2026-10-18)
 
 
